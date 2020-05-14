@@ -59,6 +59,10 @@
 					$(this).one('click', function() {
 						if (fngallery_open) {
 							if (M.device_type == 'm') {
+								$fngalleryimg.each(function(index, el) {
+									var size='400x400';
+									$(this).parents('[data-med][data-size="x"]').attr({'data-size':size,'data-med-size':size});
+								});
 								$.initPhotoSwipeFromDOM('.fngallery', '.slick-slide:not(.slick-cloned) [data-med]'); //（需调用PhotoSwipe插件）
 							} else {
 								$fngallery.galleryLoad(); //（需调用lightGallery插件）
