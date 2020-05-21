@@ -778,7 +778,7 @@ $.fn.extend({
         }
         // ajax表格
         if($('.dataTable',dom).length){
-            if(typeof dataTable =='undefined'){
+            if(typeof datatable =='undefined'){
                 $.include(M['plugin']['datatables']);
             }else{
                 $(dom).metDataTable();

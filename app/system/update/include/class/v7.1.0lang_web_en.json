@@ -1675,7 +1675,7 @@
     },
     "browserupdatetips": {
         "name": "browserupdatetips",
-        "value": "You are using a <strong> obsolete <\/ strong> browser. Please <a href=https:\/\/browsehappy.com\/ target=_blank> upgrade your browser <\/a> to enhance your experience.",
+        "value": "You are using a obsolete upgrade your browser to enhance your experience.",
         "site": "0",
         "no_order": "0",
         "array": "0",

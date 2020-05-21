@@ -56,6 +56,7 @@ class loadtemp extends admin
                         $data_class = load::module($dir . $data['n'] . '/admin/', $data['c'], 'new');
                         $data['handle'] = call_user_func(array($data_class, $data['a']));
                         $_M['form']['noajax'] = 0;
+                        $_M['form']['path'] = $path;
                     }
                 }
                 // 模板文件所需参数

@@ -32,7 +32,7 @@ class menu_handle extends handle
     {
         global $_M;
         $list['icon'] = $list['icon'];
-        if (!strstr($list['url'], 'tel:')) {
+        if (!strstr($list['url'], 'tel:') && !strstr($list['url'], 'mailto:') && !strstr($list['url'], 'sms:')) {
             $list['url'] = $this->url_transform(str_replace('../', '', $list['url']));
         }
         return $list;

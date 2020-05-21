@@ -280,13 +280,13 @@ str;
         <li class='page-item m-b-0 {\$data['preinfo']['disable']}'>
             <a href='<?php if(\$data['preinfo']['url']){?>{\$data['preinfo']['url']}<?php }else{?>javascript:;<?php }?>' title="{\$data['preinfo']['title']}" class='page-link text-truncate'>
                 {\$word['Previous_news']}
-                <span aria-hidden="true" class='hidden-xs-down'>: <?php if(\$data['preinfo']['title']){?>{\$data['preinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
+                <span aria-hidden="true" class='<?php if(\$data['preinfo']['url']){?>hidden-xs-down<?php }?>'>: <?php if(\$data['preinfo']['title']){?>{\$data['preinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
             </a>
         </li>
         <li class='page-item m-b-0 {\$data['nextinfo']['disable']}'>
             <a href='<?php if(\$data['nextinfo']['url']){?>{\$data['nextinfo']['url']}<?php }else{?>javascript:;<?php }?>' title="{\$data['nextinfo']['title']}" class='page-link pull-xs-right text-truncate'>
                 {\$word['Next_news']}
-                <span aria-hidden="true" class='hidden-xs-down'>: <?php if(\$data['nextinfo']['title']){?>{\$data['nextinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
+                <span aria-hidden="true" class='<?php if(\$data['nextinfo']['url']){?>hidden-xs-down<?php }?>'>: <?php if(\$data['nextinfo']['title']){?>{\$data['nextinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
             </a>
         </li>
     </ul>

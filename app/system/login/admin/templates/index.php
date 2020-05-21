@@ -37,7 +37,7 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
         <button type="button" class="close" data-dismiss="alert">
             <span aria-hidden="true">×</span>
         </button>
-        {$word.browserupdatetips}
+        你正在使用一个 <strong>过时</strong> 的浏览器。请 <a href='https://browsehappy.com/' target=_blank>升级您的浏览器</a>，以提高您的体验。
     </div>
     <div class="d-flex text-left align-items-center">
         <a href="{$data.met_agents_linkurl}" title="{$word.metinfo}" target="_blank">

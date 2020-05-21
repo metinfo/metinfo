@@ -86,7 +86,7 @@ $.fn.metShopVideo=function(item,dots,dots_events){
 		var playinfo=$('textarea[name="met_product_video"]').data('playinfo').split('|'),
 			autoplay=parseInt(M.device_type=='m'?playinfo[1]:playinfo[0]);
 		if(autoplay) product_video=product_video.replace('<video ','<video muted ');
-		product_video=product_video.replace('<video ','<video playsinline webkit-playsinline ');
+		product_video=product_video.replace('<video ','<video playsinline webkit-playsinline controlsList="nodownload"');
 		$self.append('<div class="met-product-showvideo-wrapper">'
 			+'<div class="met-product-showvideo-btn" '+($(product_video).find('video').length?'':'style="display:none;"')+'><a href="javascript:;"><i class="fa-play-circle-o"></i></a></div>'
 			+'<div class="met-product-showvideo w-full w-100p bg-white vertical-align text-xs-center text-center">'
@@ -94,16 +94,15 @@ $.fn.metShopVideo=function(item,dots,dots_events){
 			+'</div><a href="javascript:;" class="video-close text-xs-center text-center">×</a></div>'
 		+'</div>');
 		var $item0=$self.find((item||'img')+':eq(0)'),
-			max_width=Math.max(800,$item0.width()),
-			max_height=Math.max(500,$item0.height()),
+			min_width=Math.min(800,$item0.width()),
+			min_height=Math.min(500,$item0.height()),
 			height=$item0.height()||300,
 			$video_wrapper=$self.find('.met-product-showvideo-wrapper'),
 			$showvideo=$video_wrapper.find('.met-product-showvideo'),
 			$btn_showvideo=$video_wrapper.find('.met-product-showvideo-btn'),
 			$video_close=$video_wrapper.find('.video-close'),
 			$video=$showvideo.find('video')[0];
-		$showvideo.height(height).find('video,iframe,embed').width('100%').height(height).css({'max-width':max_width,'max-height':max_height}).addClass('m-x-auto');
-		$video && $showvideo.find('video').attr({controlsList:'nodownload'});
+		$showvideo.height(height).find('video,iframe,embed').width('100%').height(height).css({'max-width':min_width,'max-height':min_height}).addClass('m-x-auto');
 		// 播放按钮
 		$btn_showvideo.css({
 			top: height

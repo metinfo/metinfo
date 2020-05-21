@@ -13,7 +13,7 @@
 .onlinebox_three .online-item i{font-size: 14px;}
 }
 </style>
-<div id='onlinebox'  class="onlinebox onlinebox_three" m-type='online' m-id='online' style="border-color:{$c.met_online_color};">
+<div id='onlinebox'  class="onlinebox onlinebox_three hide" m-type='online' m-id='online' style="border-color:{$c.met_online_color};">
     <div class="onlinebox-open" style="background:{$c.met_online_color};"><i class="fa fa-comments-o"></i></div>
     <div class="onlinebox-box">
         <div class="onlinebox-top" style="background:{$c.met_online_color};">

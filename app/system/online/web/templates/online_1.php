@@ -22,7 +22,7 @@
 }
 </style>
 <?php $hash_erweima=0; ?>
-<div id='onlinebox'  class="onlinebox onlinebox_one" m-type='online' m-id='online'>
+<div id='onlinebox'  class="onlinebox onlinebox_one hide" m-type='online' m-id='online'>
     <div class="onlinebox-open text-xs-center" id="onlinebox-open" style="background:{$c.met_online_color};"> <i class="fa fa-comments-o"></i>
     </div>
     <list data="$data['online_list']"></list>

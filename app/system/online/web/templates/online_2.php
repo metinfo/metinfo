@@ -18,7 +18,7 @@
     height: 15px; display: block;font-size: 14px !important; font-family: arial;text-align: center; z-index: 10;}
 }
 </style>
-<div id='onlinebox'  class="onlinebox onlinebox_two" m-type='online' m-id='online'>
+<div id='onlinebox'  class="onlinebox onlinebox_two hide" m-type='online' m-id='online'>
 	<div class="onlinebox-open text-xs-center" id="onlinebox-open" style="background:{$c.met_online_color};"> <i class="fa fa-comments-o"></i>
 	</div>
 	<list data="$data['online_list']"></list>
