@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-user-func">
-	<form method="POST" action="{$url.own_name}c=admin_set&a=doSaveThirdParty" class="info-form mt-3" data-submit-ajax='1'>
+	<form method="POST" action="{$url.own_name}c=admin_set&a=doSaveThirdParty" class="info-form" data-submit-ajax='1'>
 		<div class="metadmin-fmbx">
 			<h3 class="example-title">QQ</h3>
 			<dl>

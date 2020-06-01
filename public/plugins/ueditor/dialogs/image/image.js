@@ -806,9 +806,21 @@
         this.init();
     }
     OnlineImage.prototype = {
+        imgList:function(result){
+            var html = '';
+            $.each(result, function(index, val) {
+                if(val.type=='dir'){
+                    html+='<li><a href="javascript:;" data-path="'+val.path+'"><i class="fa-folder-open-o"></i><h4>'+val.name+'</h4></a></li>';
+                }else{
+                    html += '<li class="img-item" title="'+val.name+'"><img '+(index>14?'data-original':'src')+'="'+M.weburl+val.path+'" data-path="'+val.value+'"><span class="icon"></span><a href="'+M.url.admin+val.value+'" title="'+METLANG.View+METLANG.image+'" target="_blank" class="view"><i class="fa-search-plus"></i></a></li>';
+                }
+            });
+            return html;
+        },
         init: function () {
             this.reset();
             this.initEvents();
+            var _this = this;
             $('#online .online-tips').html(METLANG.enter_folder);
             // 文件夹绑定双击事件-加载图片列表
             $(document).on('dblclick', '#imageList li a,#online .online-breadcrumb a', function(event) {
@@ -823,14 +835,7 @@
                     data: {dir: dir},
                     success:function(result){
                         if (result) {
-                            var html = '';
-                            $.each(result, function(index, val) {
-                                if(val.type=='dir'){
-                                    html+='<li><a href="javascript:;" data-path="'+val.path+'"><img src="images/folder.png" width="90%"/><h4>'+val.name+'</h4></a></li>';
-                                }else{
-                                    html += '<li class="img-item"><img '+(index>14?'data-original':'src')+'="'+M.weburl+val.path+'" data-path="'+val.value+'" width="100%" height="115"><span class="icon"></span></li>';
-                                }
-                            });
+                            var html = _this.imgList(result);
                             !html && (html='<div style="height: 100%;line-height:355px;text-align: center;font-size:20px;">'+METLANG.nopicture+'</div>');
                             $('#imageList').html(html);
                             $('#imageList [data-original]').lazyload({
@@ -899,10 +904,7 @@
                     'method': 'post',
                     'onsuccess': function (r) {
                         var json = eval('(' + r.responseText + ')'),
-                            html='';
-                        $.each(json, function(index, val) {
-                            html+='<li><a href="javascript:;" data-path="'+val.path+'"><img src="images/folder.png" width="90%"/><h4>'+val.name+'</h4></a></li>';
-                        });
+                            html=_this.imgList(json);
                         $(_this.list).html(html);
                         $('#online .online-breadcrumb').hide().html('');
                     },

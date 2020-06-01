@@ -9,9 +9,9 @@ $html_class.=' met-admin';
 <if value="!$_M['form']['noside']">
 <div class="h-100 cover d-flex">
 	<div class="metadmin-sidebar h-100 transition500">
-		<div class="metadmin-logo d-flex align-items-center justify-content-center" style="height: 70px;">
+		<div class="metadmin-logo d-flex align-items-center justify-content-center p-2" style="height: 70px;">
 			<a href="#/home" title="{$word.metinfo}" class="d-block">
-				<img src="{$data.met_admin_logo}" alt="{$word.metinfo}" width="150">
+				<img src="{$data.met_admin_logo}" alt="{$word.metinfo}" class="img-fluid" style="max-height: 54px;">
 				<i class="fa-home h2 mb-0 text-white"></i>
 			</a>
 		</div>

@@ -33,6 +33,7 @@
                 data-toggle="modal"
                 data-modal-url="user/user_edit"
                 data-modal-size="lg"
+                data-modal-fullheight="1"
                 data-modal-title="${METLANG.editor}"
                 data-target=".user-edit-modal"
                 data-modal-tablerefresh="#user-table"

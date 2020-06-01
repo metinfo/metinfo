@@ -13,6 +13,7 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 <include file="pub/header"/>
 <link rel="stylesheet" href="{$url.public_fonts}metinfo-icon/metinfo-icon.css">
 <link rel="stylesheet" href="{$url.own_tem}css/pageset.css?{$pageset_css_filemtime}">
+<!-- 顶部导航 -->
 <header class='pageset-head bg-dark' style="height: 50px;">
 	<div class="container-fluid h-100 position-relative">
 		<if value="$c['met_agents_pageset_logo'] eq 1 || !isset($c['met_agents_pageset_logo'])">
@@ -155,6 +156,7 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 		<if value="is_mobile()"></div></if>
 	</div>
 </header>
+<!-- 后台文件夹安全提示 -->
 <if value="!$data['admin_folder_safe']">
 <div class="text-center mb-0 bg-grey alert pageset-tips">
     <button type="button" class="close" aria-label="Close" data-dismiss="alert">
@@ -167,9 +169,11 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
     </div>
 </div>
 </if>
+<!-- 可视化窗口 -->
 <iframe src="{$data.pageset_iframe_src}" class='page-iframe flex-fill' frameborder="0" width="100%"></iframe>
 <button type="button" data-toggle="modal" class="btn-pageset-common-modal" hidden></button>
 <button type="button" class="btn-pageset-common-page" hidden></button>
+<!-- 可视化窗口中部分情况右键菜单 -->
 <menu class="met-menu position-fixed m-0 pl-0 border bg-light shadow rounded">
     <li class="menu-item d-block">
         <button type="button" class="btn btn-light text-left menu-btn obj-remove">
@@ -180,6 +184,7 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
         </button>
     </li>
 </menu>
+<!-- 手机端引导图 -->
 <if value="$c['met_uiset_guide'] && !is_mobile()">
 <div class="modal fade met-scrollbar met-modal show alert p-0 mb-0 border-none rounded-0" data-keyboard="false" data-backdrop="false" style="display: block;">
 	<div class="modal-dialog modal-dialog-centered modal-xl">
@@ -197,9 +202,11 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 	</div>
 </div>
 </if>
+<!-- 手机端提示 -->
 <if value="is_mobile() && !$_COOKIE['pageset_mobile_tips_hide']">
 <div class="pageset-mobile-tips-wrapper" hidden><span class="pageset-mobile-tips">{$word.visualization1}</span></div>
 </if>
+<!-- 系统许可协议 -->
 <if value="!$data['license']">
 <div class="modal fade show met-scrollbar met-modal alert p-0 met-agreement-modal" data-keyboard="false" data-backdrop="false" style="display: block;">
 	<div class="modal-dialog modal-dialog-centered modal-lg my-0 mx-auto h-100">

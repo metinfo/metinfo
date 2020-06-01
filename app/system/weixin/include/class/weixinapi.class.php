@@ -56,6 +56,25 @@ class weixinapi
     }
 
     /**
+     * 加测token是否失效
+     * @param string $access_token
+     * @return bool
+     */
+    protected function checkToken($access_token = '')
+    {
+        global $_M;
+        $res = file_get_contents("https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token={$access_token}");
+        if($res){
+            //errcode 40001
+            $info = json_decode($res,true);
+            if ($info['ip_list']) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 获取 access_token
      * @return bool
      */
@@ -72,7 +91,7 @@ class weixinapi
         if(!$info){
             $info = self::getWxToken();
         }else{
-            if($info['expires_in'] < time()){
+            if($info['expires_in'] < time() || !self::checkToken($info['access_token'])){
                 $info = self::getWxToken();
             }
         }

@@ -29,7 +29,7 @@ class weixinreply
         global $_M;
         $log = array();
         $log['FromUserName'] = $data['FromUserName'];
-        $log['Content'] = json_encode($data);
+        $log['Content'] = json_encode($data,JSON_UNESCAPED_UNICODE);
         $log['CreateTime'] = $data['CreateTime'];
 
         $sql = '';
@@ -39,7 +39,7 @@ class weixinreply
         }
         $sql = trim($sql, ',');
         $query = "INSERT INTO {$_M['table']['weixin_reply_log']} SET $sql";
-        return DB::query($query);
+        DB::query($query);
     }
 
     /**
@@ -52,7 +52,7 @@ class weixinreply
         global $_M;
         libxml_disable_entity_loader(true);
         $data = json_decode(jsonencode(simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
-        
+
         $this->openid = $data['FromUserName'];
 
         $this->replyLog($data);
@@ -63,6 +63,8 @@ class weixinreply
                         if ($data['EventKey']) {
                             $data['EventKey'] = strReplace('qrscene_', '', $data['EventKey']);
                             return $this->scna($data);
+                        }else{
+                            return $this->Reply($data, strtolower($data['MsgType']));
                         }
                         break;
                     case 'unsubscribe'://取消订阅
@@ -75,24 +77,24 @@ class weixinreply
                         return $this->replyLog($data);
                         break;
                     case 'CLICK'://点击菜单拉取消息时的事件推送
-                        return $this->getReply($data['EventKey']);
+                        return $this->Reply($data, 'click');
                         break;
                     case 'VIEW'://点击菜单跳转链接时的事件推送
                         return $this->replyLog($data);
                         break;
                     default:
-                        return $this->replyContent($_M['config']['weixin_default_reply']);
+                        return $this->Reply($data);
                         break;
                 }
                 break;
             case 'text':
-                return $this->getReply($data['Content']);
+                return $this->Reply($data, strtolower($data['MsgType']));
                 break;
             case 'image':
-                return $this->getReply($data['Content']);
+                return $this->Reply($data, strtolower($data['MsgType']));
                 break;
             default:
-                return $this->replyContent($_M['config']['weixin_default_reply']);
+                return $this->Reply($data);
                 break;
         }
     }
@@ -158,33 +160,18 @@ class weixinreply
         return;
     }
 
+    /*******************************/
     /**
-     * 根据关键词获取回复规则
-     * @param  string  $word 关键词
-     * @return string  回复内容
+     * 事件回复
+     * @param array $data
+     * @param string $type
      */
-    public function getReply($word = '')
+    public function Reply($data = array(), $type = '')
     {
-       global $_M;
         $weixin_app = load::app_class('met_weixin/include/class/reply','new');
-        $weixin_app->getReply($word);
-        return;
+
+        $weixin_app->Reply($data, $type);
     }
-
-    /**
-     * 根据回复规则获取回复内容
-     * @param int  $rid 规则id
-     * @return string   回复内容
-     */
-    public function replyContent($rid = '')
-    {
-        global $_M;
-        $weixin_app = load::app_class('met_weixin/include/class/reply','new');
-        $weixin_app->replyContent($rid);
-        return;
-    }
-
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

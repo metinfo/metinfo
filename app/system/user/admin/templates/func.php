@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-user-func">
-  <form method="POST" action="{$url.own_name}c=admin_set&a=doSaveSetup" class="mt-3" data-submit-ajax='1'
+  <form method="POST" action="{$url.own_name}c=admin_set&a=doSaveSetup" data-submit-ajax='1'
     id="user-func-form" data-validate_order="#user-func-form">
     <div class="metadmin-fmbx">
       <h3 class="example-title">{$word.user_Registratset_v6}</h3>

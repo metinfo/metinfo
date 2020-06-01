@@ -127,7 +127,7 @@ h1,h2,h3,h4,h5,h6{font-family:{$g.met_font} !important;}
 </style>
 <script>(function(){var t=navigator.userAgent;(t.indexOf("rv:11")>=0||t.indexOf("MSIE 10")>=0)&&document.write("<script src=\"{$url.public_plugins}html5shiv.min.js\"><\/script>")})();</script>
 <!--[if lte IE 9]>
-<script src="{$url.public_plugins}/lteie9.js"></script>
+<script src="{$url.public_plugins}lteie9.js"></script>
 <![endif]-->
 </head>
 <!--[if lte IE 9]>

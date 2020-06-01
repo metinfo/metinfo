@@ -116,16 +116,19 @@
 #online{width:100%;height:386px;padding:10px 0 0 0;}
 #online #imageList{width:100%;height:355px;overflow-x:hidden;overflow-y:auto;position:relative;}
 #online ul{display:block;list-style:none;margin:0;padding:0;}
-#online li{float:left;display:block;list-style:none;padding:0;width:113px;height:113px;margin:0 0 9px 9px;*margin:0 0 6px 6px;background-color:#fff;overflow:hidden;cursor:pointer;position:relative;text-align:center;}
+#online li{float:left;display:flex;align-items: center;justify-content: center;list-style:none;padding:0;width:113px;height:113px;margin:0 0 9px 9px;*margin:0 0 6px 6px;background-color:#fff;overflow:hidden;cursor:pointer;position:relative;text-align:center;}
 #online li.clearFloat{float:none;clear:both;display:block;width:0;height:0;margin:0;padding:0;}
-#online li img{cursor:pointer;object-fit:scale-down;}
+#online li img{cursor:pointer;max-width: 100%;max-height: 100%;}
 #online li a{color:#555;text-decoration:none;}
 #online li a:hover{color:#4e97d9;}
 #online li h4{font-size:14px;line-height:1.8;}
-#online li .icon{cursor:pointer;width:113px;height:113px;position:absolute;top:0;left:0;z-index:2;border:0;background-repeat:no-repeat;}
-#online li .icon:hover{width:107px;height:107px;border:3px solid #1094fa;}
-#online li.selected .icon{background-image:url(images/success.png);background-image:url(images/success.gif)\9;background-position:75px 75px;}
-#online li.selected .icon:hover{width:107px;height:107px;border:3px solid #1094fa;background-position:72px 72px;}
+#online li .icon{cursor:pointer;width:107px;height:107px;border:3px solid transparent;position:absolute;top:0;left:0;z-index:2;background-repeat:no-repeat;}
+#online li:hover .icon,
+#online li.selected .icon{border:3px solid #1094fa;}
+#online li.selected .icon{background-image:url(images/success.png);background-image:url(images/success.gif)\9;background-position:69px 69px;}
+#online li .view{display: none;position:absolute;top:3px;right:3px;z-index:2;padding: 5px;font-size: 20px;line-height: 1;background: #fff;border-radius: 100%;}
+#online li:hover .view{display: block;}
+#online li .fa-folder-open-o{font-size: 80px;}
 .online-top{overflow: hidden;margin-bottom: 10px;padding: 0 10px;font-size: 14px;}
 .online-tips{color: #f00;float: left;}
 .online-breadcrumb{float: right;}

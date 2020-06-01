@@ -161,16 +161,20 @@ $.fn.metDataTable=function(){
                     },
                     columnDefs: cjson// 单元格class
                 };
-            if(typeof datatable_option!='undefined'){
-                if(typeof datatable_option[datatable_order]['dataSrc']!='undefined') option.ajax.dataSrc=datatable_option[datatable_order]['dataSrc']; // 自定义的表格返回数据处理
-                if(typeof datatable_option[datatable_order]['columns']!='undefined') option.columns=datatable_option[datatable_order]['columns']; // 自定义表格单元格对应的数据名称
+            if(typeof datatable_option[datatable_order]!='undefined'){
+                if(datatable_option[datatable_order].columnDefs){
+                    option.columnDefs=option.columnDefs.concat(datatable_option[datatable_order].columnDefs);
+                    delete datatable_option[datatable_order].columnDefs;
+                }
+                $.extend(true,option, datatable_option[datatable_order]);
             }
             return option;
         };
-        if($('.dataTable',this).length){
+        if($datatable.length){
             /*动态事件绑定，无需重载*/
             if(typeof datatable =='undefined'){
-                window.datatable=[];
+                window.datatable={};
+                window.datatable_option={};
                 // 自定义搜索框
                 $(document).on('change',"[data-table-search]",function(){
                     if($(this).parents('.form-group').hasClass('has-danger')) return false;

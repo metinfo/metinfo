@@ -483,6 +483,16 @@ class feedback_admin extends message_admin
         return $flag;
     }
 
+    /**
+     * 关闭所有在线询价
+     */
+    private function confInquiryOff()
+    {
+        global $_M;
+        $query = "UPDATE {$_M['table']['config']} SET value = 0 WHERE name = 'met_fd_inquiry' AND lang = '{$_M['lang']}'";
+        DB::query($query);
+    }
+
     /*保存配置*/
     public function dosaveinc()
     {
@@ -500,6 +510,9 @@ class feedback_admin extends message_admin
             $redata['error'] = "Data error no class1";
             $this->ajaxReturn($redata);
         }
+
+        //关闭所有在线询价
+        $this->confInquiryOff();
 
         $config_op = load::mod_class('config/config_op', 'new');
         $conlum_configs = $config_op->getColumnConfArry($classnow);

@@ -259,15 +259,22 @@ select{line-height:31px;height:31px;vertical-align:middle;background-color:#fff;
 .ftype_upload .app-image-list li.upnow div.webuploader-pick{width:auto!important;height:auto!important;}
 .ftype_upload .app-image-list li.add-outside .popover{margin-left:100px;}
 .ftype_upload .app-image-list li.add-outside .popover .arrow{display:none;}
+.modal-content{overflow:hidden;}
 #upimglist{height:440px;overflow:hidden;}
 #upimglist .loader{width:100%;height:100%;line-height:440px;}
-#upimglist li{float:left;position:relative;width:100px;height:100px;background-size:contain;background-repeat:no-repeat;background-position:50% 50%;background-color:#d7d7d7;margin:5px;cursor:pointer;opacity:0;}
-#upimglist li.folder{-webkit-background-size:90%;background-size:90%;}
-.modal-content{overflow:hidden;}
-#UploadModal .modal-body li .check{border:2px solid #09F;position:absolute;left:0px;top:0px;width:100%;height:100%;}
-#UploadModal .modal-body li .check:after{position:absolute;display:block;content:' ';right:0px;bottom:0px;border:14px solid #09f;border-left-color:transparent;border-top-color:transparent;}
-#UploadModal .modal-body li .check i{position:absolute;right:0px;bottom:0px;color:#fff;z-index:2;}
-#UploadModal .modal-body li .widget-image-meta{position:absolute;bottom:0;left:0px;line-height:20px;background:#000;opacity:0.5;color:#fff;width:100%;font-size:12px;text-align:center;}
+#upimglist li{float:left;position:relative;width:100px;height:100px;background-size:contain;background-repeat:no-repeat;background-position:center;margin:5px;cursor:pointer;}
+#upimglist li.folder{text-align: center;}
+#upimglist li .fa-folder-open-o{font-size: 80px;}
+#UploadModal .modal-body li .view{display: none;float: right;position: relative;z-index: 1;background: #fff;border-radius: 100%;padding:0 5px;margin: 2px 2px 0 0;font-size: 16px;}
+#UploadModal .modal-body li .check{display: none;border:2px solid #09F;position:absolute;left:0px;top:0px;width:100%;height:100%;}
+#UploadModal .modal-body li .check:after{display: none;position:absolute;content:' ';right:0px;bottom:0px;border:13px solid #09f;border-left-color:transparent;border-top-color:transparent;}
+#UploadModal .modal-body li .check i{display: none;position:absolute;right:0px;bottom:1px;color:#fff;z-index:2;}
+#UploadModal .modal-body li:hover .view,
+#UploadModal .modal-body li:hover .check,
+#UploadModal .modal-body li.checked  .check,
+#UploadModal .modal-body li.checked  .check:after,
+#UploadModal .modal-body li.checked  .check i{display: block;}
+#UploadModal .modal-body li .widget-image-meta{position:absolute;bottom:0;left:0px;line-height:20px;background:rgba(0,0,0,0.5);color:#fff;width:100%;font-size:12px;}
 #UploadModal .modal-body li .widget-image-title{top:0;}
 #UploadModal .modal-header h4{float:left;margin-top:8px;padding-right:20px;border-right:2px solid #ddd;}
 #UploadModal .modal-header #filePicker div{height:35px!important;width:100%!important;}

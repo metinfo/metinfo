@@ -12,7 +12,7 @@
                 // 输入框文件路径更新
                 var $text=$(this).parents('.input-group-file').find('input[type="text"]'),
                     value='';
-                if(M.is_lteie9){
+                if(M.is_ie){
                     value=$(this).val();
                 }else{
                     var $input_group_file=$(this).parents('.input-group-file');
@@ -35,74 +35,76 @@
         // 验证码点击刷新
         $(document).on('click',"#getcode,.met-getcode",function(){
             var src=$(this).attr("src"),
-                random=Math.floor(Math.random()*9999+1);
+                random=Math.ceil(Math.random()*10000);
             src=src.indexOf('&random')>0?src.split('&random')[0]:src;
             $(this).attr({src:src+'&random='+random}).parents('form').find('input[type="hidden"][name="random"]').val(random);
         });
+        // 点击单选切换显示不同元素
+        $(document).on('change', 'input[type="radio"][data-target]', function(event) {
+            var $target=$($(this).data('target'));
+            $target.length && ($target.removeClass('hide'),$(this).parents('form').find('input[type="radio"][data-target][name="'+$(this).attr('name')+'"][value!="'+$(this).val()+'"]').each(function(index, el) {
+                $($(this).data('target')).addClass('hide');
+            }));
+        });
     });
+    var table_selector='table:not(.edui-default)';
     $.fn.extend({
         // 表单验证通用
         validation:function(){
             $(this).each(function(index, el) {
                 var $self=$(this),
                     order=$(this).attr('data-validate_order')&&$(this).attr('data-validate_order')!=''?$(this).attr('data-validate_order'):($(this).attr('id')?'#'+$(this).attr('id'):new Date().getTime()),
-                    self_validation='';
+                    self_validation='',
+                    $table=$(table_selector,this);
                 $(this).attr({'data-validate_order':order});
                 function success(fun,afterajax_ok){
                     validate[order].ajax_submit=1;
                     self_validation.on('success.form.fv', function(e) {
                         e.preventDefault();
-                        if($self.find('[name="submit_type"]').length && $self.find('table tbody tr td .checkall-item').length && $self.find('[name="allid"]').val()=='') return false;
+                        var action=$self.attr('action');
+                        if(/*$self.find('[name="submit_type"]').length && */action=='#'||action.indexOf('javascript:;')==0||(
+                            $table.length && ($table.find('tbody .checkall-item[name="id"]').length?!$table.find('tbody .checkall-item[name="id"]:checked').length:(!$table.find('tbody tr').length||$table.find('tbody tr .dataTables_empty').length))
+                        )) return false;
                         var ajax_ok=typeof afterajax_ok != "undefined" ?afterajax_ok:true;
                         if(ajax_ok){
                             setTimeout(function(){formDataAjax(e,fun)},0);
                         }else{
                             $self.data('formValidation').resetForm();
-                            if (typeof fun==="function") window.form_data_ajax=fun(e,$self);
+                            if (typeof fun==="function") M.form_data_ajax=fun(e,$self);
                             setTimeout(function(){
-                                if(typeof form_data_ajax =='undefined') $self.data('formValidation').defaultSubmit();
+                                if(typeof M.form_data_ajax =='undefined') $self.data('formValidation').defaultSubmit();
                             },100)
                         }
                     })
                 }
                 function formDataAjax(e,fun,data){
-                    window.form_data_ajax=false;
-                    var type=($self.attr('method')||'POST').toUpperCase(),
-                        url=$self.attr('action'),
-                        formData = {};
-                    if(type!='POST') url+=(url.indexOf('?')>0?'&':'?')+$self.serialize(e.target);
-                    // if(M.is_lteie9){
-                        var serializeArray=$self.serializeArray(e.target),
+                    M.form_data_ajax=false;
+                    if(M.is_ie||$table.length){
+                        var formData = $table.length?M.table_submit_data:$self.serializeArray(e.target),
                             contentType='application/x-www-form-urlencoded',
                             processData=true;
-                        $.each(serializeArray, function(index, val) {
-                            formData[val.name]=val.value;
-                        });
-                    // }else{
-                    //     var formData = new FormData(e.target),
-                    //         // params   = $self.serializeArray(e.target),
-                    //         contentType=false,
-                    //         processData=false;
-                    //     // $.each(params, function(i, val) {
-                    //     //     formData.append(val.name, val.value);
-                    //     // });
-                    //     // if(data){
-                    //     //     $.each(data, function(i, val) {
-                    //     //         formData.append(i, val);
-                    //     //     });
-                    //     // }
-                    // }
-                    if(data){
-                        $.extend(true, formData, data);
+                        M.table_submit_data={};
+                        if(data) $.extend(true, formData, data);
+                    }else{
+                        var formData = new FormData(e.target);
+                            params   = $self.serializeArray(),
+                            contentType=false,
+                            processData=false;
+                        // $.each(params, function(i, val) {
+                        //     formData.append(val.name, val.value);
+                        // });
+                        if(data){
+                            $.each(data, function(i, val) {
+                                formData.append(i, val);
+                            });
+                        }
                     }
-                    $.ajax({
-                        url: url,
+                    metui.ajax({
+                        url: $self.attr('action'),
                         data: formData,
                         cache: false,
                         contentType: contentType,
                         processData: processData,
-                        type: type,
-                        dataType:'json',
                         success: function(result) {
                             $self.data('formValidation').resetForm();
                             if (typeof fun==="function") return fun(result,$self);
@@ -136,14 +138,16 @@
                                 $self.find('.file-input .kv-upload-progress').html('');
                                 $self.find('.file-input').parents('.form-group:eq(0)').find('.form-control-label').text('');
                             });
-                            !$self.find('.dataTable').length && formSaveCallback(order,{
-                                true_fun:function(){
-                                    that1 && that1.reload();
-                                },
-                                false_fun:function(){
-                                    $self.find('.met-getcode').click();
-                                }
-                            });
+                            !$self.find('.dataTable').length && setTimeout(()=>{
+                                formSaveCallback(order,{
+                                    true_fun:function(){
+                                        that1 && that1.reload();
+                                    },
+                                    false_fun:function(){
+                                        $self.find('.met-getcode').click();
+                                    }
+                                });
+                            },0);
                         }
                     });
                 })(that);
@@ -233,17 +237,15 @@
     window.validate=[];
     window.validate_fun=[];
     $('form').validation();
-})();
-/*
-应用表单功能
- */
-(function(){
+
+    // 应用表单功能
     $.fn.extend({
         // 表单两种类型提交前的处理（保存、删除）
         metSubmit:function(type){
             // 插入submit_type字段
             var type=typeof type!='undefined'?type:1,
-                type_str=type?(type==1?'save':type):'del';
+                type_str=type?(type==1?'save':type):'del',
+                $table=$(this).find(table_selector);
             if($(this).find('table').length){
                 if(type=='recycle'){
                     type_str='del';
@@ -255,9 +257,8 @@
             if(!$(this).find('[name="submit_type"]').length) $(this).append(M.component.formWidget('submit_type',''));
             $(this).find('[name="submit_type"]').val(type_str);
             // 插入表格的allid字段
-            if($(this).find('table').length){
-                var $table=$(this).find('table'),
-                    // checked_str=type==1?'':':checked',
+            if($table.length){
+                var // checked_str=type==1?'':':checked',
                     $checkbox=$table.find('tbody input[type="checkbox"][name="id"]:checked'/*+checked_str*/),
                     allid='';
                 if($table.find('tbody input[type="checkbox"][name="id"]').length){
@@ -275,23 +276,22 @@
         },
         // 表单更新验证
         metFormAddField:function(name){
-            var $form=$(this)[0].tagName=='FORM'?$(this):$(this).parents('form');
+            var $form=$(this)[0].tagName=='FORM'?$(this):$(this).parents('form'),
+                $self=$(this);
             if($form.length){
-                if(name){
-                    if(!$.isArray(name)){
-                        if(name.indexOf(',')>=0){
-                            name=name.split(',');
-                        }else name=[name];
-                    }
-                    metui.use('formvalidation',function(){
+                metui.use('formvalidation',function(){
+                    if(name){
+                        if(!$.isArray(name)){
+                            if(name.indexOf(',')>=0){
+                                name=name.split(',');
+                            }else name=[name];
+                        }
                         $.each(name, function(index, val) {
                             $form.data('formValidation').addField(val);
                         })
-                    })
-                }else{
-                    var name_array=[],
-                        $name=$('[name]',this);
-                    metui.use('formvalidation',function(){
+                    }else{
+                        var name_array=[],
+                            $name=$self.find('[name]');
                         $name.each(function(index, el) {
                             var name=$(this).attr('name');
                             if($.inArray(name, name_array)<=0){
@@ -309,8 +309,8 @@
                                 }
                             }
                         });
-                    });
-                }
+                    }
+                });
             }
         },
     });
@@ -322,10 +322,8 @@
         if($(this).data('url')){
             $form.removeAttr('data-submited');
             var $table=$(this).parents('.dataTable');
-            $.ajax({
+            metui.ajax({
                 url: $(this).data('url'),
-                type: 'POST',
-                dataType: 'json',
                 data: $form.serializeArray(),
                 success:function(result){
                     if($table.length){
@@ -345,14 +343,28 @@
             // $(this).parents('form').submit();
         }
     });
+    M.table_submit_data={};
     // 表单提交
     $(document).on('submit', 'form', function(event) {
-        if($(this).attr('action').indexOf('http')<0) return;
-        var $self=$(this);
+        var action=$(this).attr('action'),
+            not_validate_checked=action=='#'||action=='javascript:;';
+        if(action.indexOf('http')<0) return;
+        var $self=$(this),
+            $table=$(table_selector,this);
         $(this).attr('data-submited')?setTimeout(function(){$self.removeAttr('data-submited')},500):$(this).metSubmit();
         $('.dataTable',this).attr({'data-scrolltop':0});
+        // 表单中含有表格时所有字段数组集合
+        if($table.length){
+            var array={};
+            $('[name]',this).each(function(index, el) {
+                if($(this).parents('tbody').length?(not_validate_checked?1:($(this).parents('tr').find('.checkall-item[name="id"]').length?$(this).parents('tr').find('.checkall-item[name="id"]:checked').length:1)):1){
+                    array[$(this).attr('name')]=$(this).val();
+                }
+            });
+            M.table_submit_data=array;
+        }
         // 提交删除时没有勾选时提示
-        if($(this).find('[name="submit_type"]').length && $(this).find('table tbody tr td .checkall-item').length && $(this).find('[name="allid"]').val()==''){
+        if(/*$(this).find('[name="submit_type"]').length && */$table.length && (not_validate_checked?$table.find('tbody tr td').length>1:1) && M.table_submit_data.allid==''){
             event.preventDefault();
             metui.use('alertify',function(){alertify.error(METLANG.jslang3||'请选择至少一项')});
             var $submit=$(M.component.submit_selctor,this);

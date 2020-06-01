@@ -73,12 +73,12 @@
     }
     window.datatableOption=function(obj,datatable_order){
         // 列表class
-        var cjson=[];
-        obj.find("th[data-table-columnclass]").each(function(i){
-            var c = $(this).attr("data-table-columnclass"),n=$(this).index();
-            cjson[i] = [];
-            cjson[i]['className'] = c;
-            cjson[i]['targets']=[n];
+        var columnDefs=[];
+        obj.find("thead th[data-table-columnclass]").each(function(i){
+            columnDefs.push({
+                className:$(this).attr("data-table-columnclass"),
+                targets:[$(this).index()]
+            })
         });
         // 插件参数
         var datatable_order=datatable_order||0,
@@ -172,7 +172,7 @@
                 rowCallback: function(row,data){// 行class
                     if(data.toclass) $(row).addClass(data.toclass);
                 },
-                columnDefs: cjson// 单元格class
+                columnDefs: columnDefs// 单元格class
             };
         if(typeof datatable_option[datatable_order]!='undefined'){
             if(datatable_option[datatable_order].columnDefs){
@@ -187,7 +187,7 @@
         // 执行DataTable函数
         metDataTable:function(fn){
             var $self=$(this),
-                $dataTable=$('.dataTable:not(.dtr-inline)',this);
+                $dataTable=$('.dataTable[data-table-ajaxurl]',this);
             if(!$dataTable.length) return;
             metui.use('datatables',function(){
                 $dataTable.each(function(index, el) {
@@ -223,15 +223,16 @@
             var $form=$(this).parents('form'),
                 $table=$(this).parents('.dataTable'),
                 table_order=$table.attr('data-datatable_order'),
+                url=$(this).data('url')||'',
                 allid=$form.find('[name="allid"]').val();
             $form.removeAttr('data-submited');
-            if(allid!='' || $(this).data('url').indexOf('&id=')>0 || $(this).data('url').indexOf('&allid=')>0){
-                var data={};
-                if($(this).data('url').indexOf('&id=')<0&&$(this).data('url').indexOf('&allid=')<0) data.allid=allid;
-                $.ajax({
-                    url: $(this).data('url')||$form.attr('action'),
-                    type: Object.keys(data).length?'POST':'GET',
-                    dataType:'json',
+           if($(this).data('del_type')?allid!='':url){
+                var data='';
+                if($(this).data('del_type')) data={
+                    allid:allid.indexOf(',')>0?allid.split(','):[allid]
+                };
+                metui.ajax({
+                    url: url||$form.attr('action'),
                     data:data,
                     success: function(result){
                         $table.tabelAjaxFun(result);
@@ -258,8 +259,8 @@
             $table=$(this).parents('table').length?$(this).parents('table'):$($(this).attr('table-addlist')),
             addlist=function(data,new_id){
                 if($table.find('tbody .dataTables_empty').length){
-                    $table.find('tbody').html(data);
-                }else $table.find('tbody').append(data);
+                    $table.find('tbody').html(html);
+                }else $table.find('tbody').append(html);
                 var $new_tr=$table.find('tbody tr:last-child');
                 if(!$new_tr.find('[table-cancel]').length && typeof $self.data('nocancel')=='undefined') $new_tr.find('td:last-child').append(M.component.btn('cancel'));
                 if(new_id){
@@ -268,6 +269,10 @@
                     });
                     $new_tr.find('[name="id"]').val('new-'+datatable_option[table_order]['new_id']);
                 }
+                $table.find('thead th').each(function(index, el) {
+                    var columnclass=$(this).data('tableColumnclass');
+                    columnclass && $new_tr.find('td').eq(index).addClass(columnclass);
+                });
                 $new_tr.metCommon();
                 // 添加表单验证
                 $new_tr.metFormAddField();
@@ -285,10 +290,9 @@
         if($table.find('[table-addlist-data]').length){
             var html=$table.find('[table-addlist-data]').val();
             addlist(html,$(this).data('table-newid')?1:0);
-        }else{
-            $.ajax({
+        }else if($(this).data('url')){
+            metui.ajax({
                 url: $(this).data('url'),
-                type: 'POST',
                 data:{new_id:datatable_option[table_order]['new_id']},
                 success:function(result){
                     addlist(result);
@@ -323,6 +327,7 @@
     $(document).on('click', 'table [table-cancel]', function(event) {
         var $table=$(this).parents('table');
         $(this).parents('tr').remove();
+        if(!$table.find('tbody .checkall-item:checked').length) $table.find('.checkall-all').prop({checked:false});
         if(!$table.find('[table-save-new]').length) $table.find('[type="submit"]').removeClass('disabled disableds').removeAttr('disabled');
     });
     // 删除项-不提交
@@ -347,15 +352,16 @@
     // 删除多项提交
     $(document).on('click', 'table [table-delete]', function(event) {
         event.preventDefault();
-        var $form=$(this).parents('form');
+        var $form=$(this).parents('form'),
+            url=$(this).data('url')||'';
         $form.attr({'data-submited':1}).metSubmit($(this).data('submit_type')||0);
         $(this).parents('table').attr({'data-scrolltop':0});
         if($(this).data('plugin')!='alertify'){
-            if($(this).data('url')){
+            if(url){
                 $(this).metFormAjaxDel();
             }else $form.submit();
         }else{
-            if($form.find('[name="allid"]').val()=='' && !$(this).data('url')){
+            if($(this).data('del_type')&&$form.find('[name="allid"]').val()==''){
                 $form.removeAttr('data-submited');
                 alertify.error(METLANG.jslang3||'请选择至少一项');
             }
@@ -365,8 +371,63 @@
     $(document).on('click', 'button.disableds', function(event) {
         event.preventDefault();
     });
-    // 表格修改后勾选对应项
+    // 表格中内容修改后勾选所在行
     $(document).on('change', 'table tbody [name]:not(.checkall-item)', function(event) {
         $(this).parents('tr:eq(0)').find('td:eq(0) .checkall-item').prop({checked:true}).trigger('change');
     });
 })();
+function Tr(array,columnclass){
+    var html='',
+        columnclass=columnclass||[];
+    array && (html=`<tr ${array.DT_RowClass?`class="${array.DT_RowClass}"`:''}>`,$.each(array, function(index, val) {
+        var isobject=typeof val=='object',
+            innerhtml=isobject?val.html:val,
+            classname=columnclass[index]||(isobject?(val.class||''):'');
+        if(isobject && typeof val.align!='undefined') classname+=` text-${val.align}`;
+        html+=`<td
+        ${classname?`class="${classname}"`:''}
+        ${isobject && typeof val.colspan!='undefined'?`colspan="${val.colspan}"`:''}
+        ${isobject && typeof val.rowspan!='undefined'?`rowspan="${val.rowspan}"`:''}
+        ${isobject && typeof val.attr!='undefined'?`attr="${val.attr}"`:''}>${innerhtml}</td>`
+    }),html+='</tr>');
+    return html;
+}
+function Tbody(options){
+    var html='',
+        colspan='';
+    if(options.table_obj){
+        var $th=options.table_obj.find('thead th'),
+            columnclass=(()=>{
+                var array=[];
+                $th.each(function(index, el) {
+                    array.push($(this).data('tableColumnclass')||'');
+                });
+                return array;
+            })();
+        colspan=$th.length;
+    }
+    if(options.thead){
+        var columnclass=(()=>{
+                var array=[];
+                $.each(options.thead, function(index, val) {
+                    if(!val) return true;
+                    var str='';
+                    val.align && (str+=` text-${val.align}`);
+                    val.columnclass && (str+=` ${val.columnclass}`);
+                    array.push(str);
+                });
+                return array;
+            })();
+        colspan=options.thead.length;
+    }
+    options.data&&options.data.length?$.each(options.data, function(index, val) {
+        html+=Tr(val,columnclass);
+    }):(html=Tr([
+        {
+            html:METLANG.csvnodata,
+            colspan:colspan,
+            align:'center'
+        }
+    ]));
+    return html;
+}

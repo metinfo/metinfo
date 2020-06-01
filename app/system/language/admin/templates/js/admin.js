@@ -72,7 +72,6 @@
                 data-index="${index}"
                 data-toggle="modal"
                 data-target=".langadmin-app-modal"
-                data-modal-url="language/app"
                 data-modal-size="lg"
                 data-modal-footerok="0"
                 data-modal-title="${METLANG.edit_app_lang}"

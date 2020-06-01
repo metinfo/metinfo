@@ -4,11 +4,13 @@
 (function(){
     var that=$.extend(true,{}, admin_module),
         obj=that.obj,
-        column_table='#column-list',
-        $column_list=obj.find(column_table),
+        column_list='#column-list',
+        $column_list=obj.find(column_list),
         delurl=that.own_name+'c=index&a=doDeleteColumn&id=',
         moveurl=that.own_name+'c=index&a=domove',
         edit_dataurl='?c=index&a=doGetColumn&id=',
+        subcolumns={},
+        allsubcolumn=0,
         config={
             module_option:function(classtype,parent_module,fn){
                 var html='',
@@ -46,7 +48,7 @@
                 if(val.subcolumn){
                     name_html='<div class="input-group">'
                         +'<div class="input-group-prepend">'
-                            +'<a href="javascript:;" class="input-group-text px-2 btn-show-subcolumn"><i class="fa-angle-down h5 mb-0"></i></a>'
+                            +'<a href="javascript:;" class="input-group-text px-2 noshow btn-show-subcolumn"><i class="fa-angle-down h5 mb-0"></i></a>'
                         +'</div>'
                         +name_html
                     +'</div>'
@@ -73,7 +75,7 @@
                     +'</div>'
                     +'</div>';
                 }
-                list.push('<button type="button" class="btn btn-sm btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="'+METLANG.columnmeditor+'" data-modal-size="lg" data-modal-url="column/edit/'+edit_dataurl+val.id+'" data-modal-fullheight="1" data-modal-tablerefresh="'+column_table+'">'+METLANG.seting+'</button>'
+                list.push('<button type="button" class="btn btn-sm btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="'+METLANG.columnmeditor+'" data-modal-size="lg" data-modal-url="column/edit/'+edit_dataurl+val.id+'" data-modal-fullheight="1" data-modal-tablerefresh="'+column_list+'">'+METLANG.seting+'</button>'
                     +'<div class="dropdown d-inline-block">'
                         +'<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" data-submenu>'+METLANG.columnmore+'</button>'
                         +'<div class="dropdown-menu dropdown-menu-right">'
@@ -84,10 +86,7 @@
                 list['DT_RowClass']='class'+val.classtype;
                 if(val.classtype>1) list['DT_RowClass']+=' hide';
                 new_data[new_data.length]=list;
-                if(val.subcolumn){
-                    var new_datas=columnList(val.subcolumn);
-                    new_data=new_data.concat(new_datas);
-                }
+                if(val.subcolumn) subcolumns[val.id]=val.subcolumn;
             });
             return new_data;
         };
@@ -97,6 +96,8 @@
             ajax:{
                 dataSrc:function(result){
                     config.nav_option='';
+                    subcolumns={};
+                    allsubcolumn=0;
                     $.each(result.data.nav_list, function(index, val) {
                         config.nav_option+='<option value="'+index+'">'+val+'</option>';
                     });
@@ -117,11 +118,19 @@
         }else{
             var showcolumn=parseInt($column_list.attr('data-showcolumn'));
             if(showcolumn){
-                var $tr=$column_list.find('tbody [name="id"][value="'+showcolumn+'"]').parents('tr'),
-                    classtype=parseInt($tr.data('classtype')),
-                    $btn_show_subcolumn=$tr.find('.btn-show-subcolumn');
-                if(!$btn_show_subcolumn.length) $btn_show_subcolumn=$tr.prevAll('tr[data-classtype="'+(classtype-1)+'"]').eq(0).find('.btn-show-subcolumn');
-                $btn_show_subcolumn.click();
+                var $tr=$column_list.find('tbody [name="id"][value="'+showcolumn+'"]').parents('tr');
+                if(!$tr.length){
+                    $.each(subcolumns, function(index, val) {
+                        $.each(val, function(index1, val1) {
+                            if(parseInt(showcolumn)==parseInt(val1.id)){
+                                $column_list.find('tbody [name="id"][value="'+index+'"]').parents('tr').find('.btn-show-subcolumn').click();
+                                return false;
+                            }
+                        });
+                    });
+                    $tr=$column_list.find('tbody [name="id"][value="'+showcolumn+'"]').parents('tr');
+                }
+                $tr.find('.btn-show-subcolumn').click();
                 $column_list.removeAttr('data-showcolumn');
             }
         }
@@ -142,9 +151,16 @@
         if($('i.rotate180',this).length){
             $column_list.find('tbody tr:not(.class1)').addClass('hide');
             $column_list.find('tbody tr').find('.btn-show-subcolumn i').removeClass('rotate180');
-            obj.find('.btn-show-allsubcolumn2').html();
         }else{
-            $column_list.find('tbody tr').removeClass('hide').find('.btn-show-subcolumn i').addClass('rotate180');
+            $column_list.find('tbody tr').removeClass('hide').find('.btn-show-subcolumn:not(.noshow) i').addClass('rotate180');
+            if(!allsubcolumn){
+                allsubcolumn=1;
+                var $noshow=$column_list.find('tbody tr .btn-show-subcolumn.noshow');
+                $noshow.length && (metAlert('栏目展开中...','',1),$noshow.click());
+                // setTimeout(()=>{
+                    $column_list.find('tbody tr .btn-show-subcolumn.noshow').click();
+                // },0);
+            }
         }
         $('i',this).toggleClass('rotate180');
     });
@@ -152,31 +168,51 @@
         $column_list.find('.btn-show-allsubcolumn').click();
     });
     // 展开子栏目
-    $column_list.on('click', '.btn-show-subcolumn', function(event) {
-        var toggleColumn=function(objs,hide){
+    $column_list.on('click clicks', '.btn-show-subcolumn', function(event) {
+        var is_click=event.type=='click',
+            toggleColumn=function(objs,hide){
                 var $icon=objs.find('i[class*="fa-angle-"]'),
                     $tr=objs.parents('tr'),
                     bigclass=parseInt($tr.find('[name*="bigclass-"]').val()),
                     $bigclass_btn_show_subcolumn=$column_list.find('[name="id"][value="'+bigclass+'"]').parents('tr').find('.btn-show-subcolumn');
                 if(!$icon.hasClass('transition500')) $icon.addClass('transition500');
-                if(hide){
-                    $icon.removeClass('rotate180');
-                }else $icon.toggleClass('rotate180');
-                var $id=$tr.find('[name="id"]'),
+                if(is_click){
+                    if(hide){
+                        $icon.removeClass('rotate180');
+                    }else $icon.toggleClass('rotate180');
+                }
+                var id=$tr.find('[name="id"]').val(),
                     son_classtype=parseInt($tr.find('[name*="classtype-"]').val())+1,
-                    $sub=$column_list.find('[name*="bigclass-"][value="'+$id.val()+'"]').parents('tr.class'+son_classtype);
-                if($icon.hasClass('rotate180')){
-                    $sub.removeClass('hide');
-                    if(bigclass && !$bigclass_btn_show_subcolumn.find('i[class*="fa-angle-"]').hasClass('rotate180')) $bigclass_btn_show_subcolumn.click();
+                    $sub=$column_list.find('[name*="bigclass-"][value="'+id+'"]').parents('tr.class'+son_classtype);
+                if($icon.hasClass('rotate180')||!is_click){
+                    if(!$sub.length){
+                        var html=Tbody({
+                                data:columnList(subcolumns[id]),
+                                table_obj:$column_list
+                            });
+                        $tr.after(html);
+                        $sub=$column_list.find('[name*="bigclass"][value="'+id+'"]').parents('tr.class'+son_classtype);
+                        $sub.metCommon();
+                        $sub.metFormAddField();
+                        $sub.each(function(index, el) {
+                            $(this).attr({'data-bigclass':$(this).find('[name*="bigclass"]').val(),'data-classtype':$(this).find('[name*="classtype"]').val()});
+                        });
+                    }
+                    if(is_click){
+                        $sub.removeClass('hide');
+                        if(bigclass && !$bigclass_btn_show_subcolumn.find('i[class*="fa-angle-"]').hasClass('rotate180')) $bigclass_btn_show_subcolumn.click();
+                    }
                 }else{
                     $sub.addClass('hide');
                 }
-                if(son_classtype==2&&!$icon.hasClass('rotate180')){
+                if(is_click&&son_classtype==2&&!$icon.hasClass('rotate180')){
                     $sub.each(function(index, el) {
                         toggleColumn($(this).find('.btn-show-subcolumn'),1);
                     });
                 }
             };
+        $(this).removeClass('noshow');
+        if(allsubcolumn&&!$column_list.find('tbody tr .btn-show-subcolumn.noshow').length) metAlert(' ');
         toggleColumn($(this));
     });
     // 添加一级栏目、子栏目
@@ -312,18 +348,32 @@
     });
     // 选中一级栏目的回调
     $column_list.on('click', 'tbody tr input[name="id"]', function(event) {
-        var subChecked=function(sub){
-                var checked=sub.prop("checked"),
-                    $sub=$column_list.find('tbody tr input[name^="bigclass-"][value="'+sub.val()+'"]').parents('td').find('input[name="id"]').filter(function(index) {
+        var subChecked=function(obj){
+                var checked=obj.prop("checked"),
+                    $sub=$column_list.find('tbody tr input[name^="bigclass-"][value="'+obj.val()+'"]').parents('td').find('input[name="id"]').filter(function(index) {
+                        return checked!=$(this).prop("checked");
+                    }),
+                    delay=0;
+                if(!$sub.length){
+                    if(obj.parents('tr').find('.btn-show-subcolumn').length){
+                        obj.parents('tr').find('.btn-show-subcolumn').trigger('clicks');
+                        delay=300;
+                    }else{
+                        return;
+                    }
+                }
+                setTimeout(function(){
+                    if(delay) $sub=$column_list.find('tbody tr input[name^="bigclass-"][value="'+obj.val()+'"]').parents('td').find('input[name="id"]').filter(function(index) {
                         return checked!=$(this).prop("checked");
                     });
-                $sub.prop({checked:checked});
-                if(parseInt($(this).parents('tr').data('classtype'))==1){
-                    $sub.each(function(index, el) {
-                        subChecked($(this));
-                    });
-                }
-            }
+                    $sub.prop({checked:checked});
+                    if(parseInt(obj.parents('tr').data('classtype'))==1){
+                        $sub.each(function(index, el) {
+                            subChecked($(this));
+                        });
+                    }
+                },delay);
+            };
         subChecked($(this));
     });
     // 移动栏目

@@ -22,15 +22,15 @@ $data['page_type']=$data['a']=='doeditor'?'details':'add';
 					<if value="$data['n'] eq 'product'">
 					<div class="content-details-column">
 						<select name="class" class="form-control mr-3 met-scrollbar scrollbar-grey" data-checked="{$data.list.class1}-{$data.list.class2}-{$data.list.class3}{$data.list.classother_str}" required multiple data-fv-notEmpty-message="{$word.selectcolumn}" style="min-height:250px;">
-							<list data="$data['columnlist']" name="$a">
+							<list data="$data['columnlist']" name="$a" num="500">
 							<if value="$a['p']['value']">
 							<option value="{$a.p.value}-0-0" class="text-wrap">{$a.p.name}</option>
 								<if value="$a['c']">
-								<list data="$a['c']" name="$b">
+								<list data="$a['c']" name="$b" num="500">
 								<if value="$b['n']['value']">
 								<option value="{$a.p.value}-{$b.n.value}-0" class="text-wrap">—— {$b.n.name}</option>
 									<if value="$b['a']">
-									<list data="$b['a']" name="$d">
+									<list data="$b['a']" name="$d" num="500">
 									<if value="$d['s']['value']">
 									<option value="{$a.p.value}-{$b.n.value}-{$d.s.value}" class="text-wrap">———— {$d.s.name}</option>
 									</if>

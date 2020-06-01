@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div>
   <button type="button" class="btn btn-success btn-add" data-toggle="modal" data-modal-url="admin/admin_add"
-    data-target=".admin-add-modal" data-modal-title="{$word.add}{$word.metadmin}" data-modal-size="lg"
+    data-target=".admin-add-modal" data-modal-title="{$word.add}{$word.metadmin}" data-modal-size="lg" data-modal-fullheight="1"
     data-modal-tablerefresh="#admin-table" data-modal-loading="1">
     <i class="fa fa-plus mr-1"></i>
     {$word.add}{$word.metadmin}

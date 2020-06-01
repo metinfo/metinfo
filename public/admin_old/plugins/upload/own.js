@@ -52,8 +52,9 @@ define(function(require, exports, module) {
 			delay:0,
 			fallback:0,
 			callback:function(pages, items){
+				$('#upimglist .folder-warrper li').removeClass('checked');
 				items.showing.each(function(index, el) {
-					if($(this).css('background-image')=='none') $(this).css({'background-image':'url("'+$(this).data('original')+'")'});
+					if(!$(this).hasClass('folder') && $(this).css('background-image')=='none') $(this).css({'background-image':'url("'+$(this).data('original')+'")'});
 				});
 			}
 		});
@@ -65,7 +66,7 @@ define(function(require, exports, module) {
 			folder_id='folder-'+index,
 			folder_obj='#'+folder_id,
 			$folder=$(folder_obj);
-		$("#upimglist .folder-warrper").hide();
+		$("#upimglist .folder-warrper").hide().find('li').removeClass('checked');
 		if($folder.length){// 展示需要打开的文件夹
 			$folder.show();
 		}else{// 加载需要打开的文件夹
@@ -76,10 +77,12 @@ define(function(require, exports, module) {
 					if(img_paths[i]['name']){
 						var path = weburl + img_paths[i].path;
 						html += '<li title="'+img_paths[i].name+'" data-original="'+path+'">'
-								+'<div class="check hide" data-value="'+img_paths[i].value+'" data-path="'+path+'"><i class="fa fa-check"></i></div>'
+								+'<a href="'+path+'" title="'+METLANG.View+METLANG.image+'" target="_blank" class="view"><i class="fa-search-plus"></i></a>'
+								+'<div class="check" data-value="'+img_paths[i].value+'" data-path="'+path+'"><i class="fa fa-check"></i></div>'
 								+'</li>';
 					}else{
-						html += '<li class="folder" title="'+METLANG.enter_folder+'" data-original="'+siteurl+'public/images/thumb/folder.png">'
+						html += '<li class="folder" title="'+METLANG.enter_folder+'">'
+								+'<i class="fa-folder-open-o"></i>'
 								+'<div class="widget-image-meta" data-name="'+i+'">请双击'+METLANG.physicalfunction4+'<br>'+i+'</div>'
 								+'</li>';
 					}
@@ -322,32 +325,14 @@ define(function(require, exports, module) {
 	}
 	//选中图片事件
 	$(document).on('click','#upimglist li:not(.folder)',function(){
-		var dom = $("input[name='"+$("#UploadModal").data("inputname")+"']"),check = $(this).find("div.check"),ok = check.is(':hidden');
-		if(!dom.data('upload-many')){
-			$("#upimglist li div.check").addClass('hide');
-			$('#upimglist li .widget-image-meta').removeClass('hide');
-		}
-		if(ok){
-			check.removeClass('hide');
-			$(this).find('.widget-image-meta').addClass('hide');
-		}else{
-			check.addClass('hide');
-		}
-	});
-	//鼠标经过显示隐藏尺寸
-	$(document).on('mouseenter mouseout','#upimglist li:not(.folder)',function(){
-		var d = $(this).find('.widget-image-meta'),c=$(this).find('div.check');
-		if(event.type=='mouseover'){
-			d.addClass('hide');
-		}else if(event.type=='mouseout'){
-			if(c.is(':hidden'))d.removeClass('hide');
-		}
+		if(!$("form .ftype_upload input[name='"+$("#UploadModal").data("inputname")+"']").data('upload-many')) $("#upimglist li").removeClass('checked');
+		$(this).toggleClass('checked');
 	});
 	//确定选中图片事件
 	$(document).on('click','#UploadModal button[type="submit"]',function(){
 		var x = $("#upimglist li div.check:visible"),l = x.length;
 		if(l){
-			var dom = $("input[name='"+$("#UploadModal").data("inputname")+"']");
+			var dom = $("form .ftype_upload input[name='"+$("#UploadModal").data("inputname")+"']");
 			if(!dom.data('upload-many')){
 				if(dom.next().find('li.sort').length)dom.next().find('li.sort').remove();
 			}
@@ -377,8 +362,7 @@ define(function(require, exports, module) {
 				$("#UploadModal").data("reload",0);
 			}else{
 				$("#UploadModal").data("inputname",$(this).data('name'));
-				$("#upimglist li div.check").addClass('hide');
-				$('#upimglist li .widget-image-meta').removeClass('hide');
+				$("#upimglist li").removeClass('checked');
 			}
 		}else{
 			imglistlaod();//获取图片列表、分页

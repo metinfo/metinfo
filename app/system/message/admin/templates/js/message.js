@@ -9,7 +9,7 @@
         	ajax:{
         		dataSrc:function(result){
 					var data=[];
-					$.each(result.data, function(index, val) {
+					result.data && $.each(result.data, function(index, val) {
 						val.readok=parseInt(val.readok);
 						val.checkok=parseInt(val.checkok);
 						var item=[

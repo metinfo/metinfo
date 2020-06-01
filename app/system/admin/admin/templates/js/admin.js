@@ -48,6 +48,7 @@
                     data-modal-url="admin/admin_edit"
                     data-modal-dataurl="${val.editor_url}"
                     data-modal-size="lg"
+                    data-modal-fullheight="1"
                     data-modal-title="${val.action_name}"
                     data-target=".admin-edit-modal"
                     data-modal-tablerefresh="#admin-table"

@@ -1,4 +1,4 @@
-<form method="POST" action="{$url.own_name}c=admin_user&a=doSaveUser" class="user-list-form mt-3" data-submit-ajax="1">
+<form method="POST" action="{$url.own_name}c=admin_user&a=doSaveUser" class="user-list-form" data-submit-ajax="1">
   <div class="metadmin-fmbx">
     <dl>
       <dt>

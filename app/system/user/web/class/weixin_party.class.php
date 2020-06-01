@@ -144,8 +144,12 @@ class weixin_party
             $where['openid'] = $other_id;
             $where['type'] = $this->type;
             $this->update_other_user($save_data, $where);
-            return $sys_user['id'];
 
+            $date = date("Y-m-d H:i:s");
+            $msg = "你的账号{$username}注册成功
+注册时间：$date ";
+            $this->weixinapi->customMessage($other_id, $msg);  //注册成功提示
+            return $sys_user['id'];
         }
     }
 

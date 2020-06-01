@@ -1,7 +1,4 @@
-<form method="POST" action="{$url.own_name}c=index&a=doSaveSetup" class="link-form" data-submit-ajax="1"
-  autocomplete="new-password">
-  <input type="text" id="aaa" hidden />
-  　　<input type="password" id="bbb" hidden />
+<form method="POST" action="{$url.own_name}c=index&a=doSaveSetup" class="link-form" data-submit-ajax="1" autocomplete="new-password">
   <div class="metadmin-fmbx">
     <h3 class="example-title">{$word.admininfo}</h3>
     <dl>
