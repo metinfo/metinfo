@@ -40,9 +40,9 @@ class job_manage extends message_admin
     public function doget_position_list()
     {
         global $_M;
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
         $where = '';
         $where .= $class1 ? " AND class1 = '{$class1}'" : " AND class1 = 0";
@@ -63,9 +63,9 @@ class job_manage extends message_admin
     public function dojob_info()
     {
         global $_M;
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         if ($class3) {
             $classnow = $class3;
         } elseif ($class2) {
@@ -120,9 +120,10 @@ class job_manage extends message_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
+
         $keyword = $_M['form']['keyword'];
         $search_type = $_M['form']['search_type'];
         $orderby_hits = $_M['form']['orderby_hits'];
@@ -149,6 +150,7 @@ class job_manage extends message_admin
         } else {
             $classnow = $class1;
         }
+
         $lang = $this->lang;
 
         $config_op = load::mod_class('config/config_op', 'new');
@@ -276,7 +278,6 @@ class job_manage extends message_admin
                 }
             }
 
-
             $list['view_url'] = $_M['url']['own_form'] . "a=doview&lang={$lang}&id={$row['id']}&class1_select={$class1}&class2_select={$class2}&class3_select={$class3}";
             $list['del_url'] = $_M['url']['own_form'] . "a=dolistsave&lang={$lang}&allid={$row['id']}&submit_type=del&class1_select={$class1}";
             $list['export_url'] = $_M['url']['own_form'] . "a=doexport&lang={$lang}&id={$row['id']}&class1={$class1}&class2={$class2}&class3={$class3}";
@@ -319,9 +320,9 @@ class job_manage extends message_admin
         $redata = array();
         $id = $_M['form']['id'];
         $lang = $_M['lang'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
         $query = "UPDATE {$_M['table']['cv']} SET readok  = '1' WHERE id='{$id}' AND lang='{$lang}'";
         DB::query($query);
@@ -378,9 +379,9 @@ class job_manage extends message_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'] ? $_M['form']['class1'] : '';
-        $class2 = $_M['form']['class2'] ? $_M['form']['class2'] : '';
-        $class3 = $_M['form']['class3'] ? $_M['form']['class3'] : '';
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         $classnow = $class3 ? $class3 : ($class2 ? $class2 : $class1);
 
         #$para_list = $this->para_op->get_para_list($this->module, $class1, $class2, $class3);
@@ -437,9 +438,6 @@ class job_manage extends message_admin
         global $_M;
         $redata = array();
         $list = $_M['form'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
         $classnow = $_M['form']['classnow'];
 
         if (!is_numeric($classnow)) {
@@ -494,12 +492,11 @@ class job_manage extends message_admin
     public function doexport()
     {
         global $_M;
-        $redata = array();
         $id = $_M['form']['id'];
         $lang = $_M['lang'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
         if ($class3) {
             $classnow = $class3;
@@ -584,9 +581,9 @@ class job_manage extends message_admin
     function doexportList()
     {
         global $_M;
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         $allid = $_M['form']['allid'];
         $lang = $this->lang;
         $keyword = $_M['form']['keyword'];

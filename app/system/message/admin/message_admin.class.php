@@ -51,9 +51,9 @@ class message_admin extends base_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
         $keyword = $_M['form']['keyword'];
         $search_type = $_M['form']['search_type'];
@@ -83,7 +83,6 @@ class message_admin extends base_admin
         } else {
             $classnow = $class1;
         }
-        $lang = $_M['lang'];
 
         $msg_config = load::mod_class('config/config_op', 'new')->getColumnConfArry($classnow);
 
@@ -128,7 +127,7 @@ class message_admin extends base_admin
                 $para_search_sql .= " OR info LIKE '%{$keyword}%' ";
             }
             $para_search_sql .= ') ';
-            $search_sql .= $para_search_sql."GROUP BY id ";
+            $search_sql .= $para_search_sql . "GROUP BY id ";
 
             if ($keyword) {
                 $para_num = $para_num + 1;
@@ -150,51 +149,42 @@ class message_admin extends base_admin
 
         //留言列表处理
         $rarray = array();
-        if ($msg_list) {
-            foreach ($msg_list as $key => $list) {
-                $list['customerid'] = $list['customerid'] ? $list['customerid'] : $_M['word']['feedbackAccess0'];
-                /*if ($list['readok']) {
-                    $list['readok'] = array('name' => $_M['word']['yes'], 'val' => $list['readok']);
-                } else {
-                    $list['readok'] = array('name' => $_M['word']['no'], 'val' => $list['readok']);
-                }*/
+        foreach ($msg_list as $key => $list) {
+            $list['customerid'] = $list['customerid'] ? $list['customerid'] : $_M['word']['feedbackAccess0'];
+            /*if ($list['readok']) {
+                $list['readok'] = array('name' => $_M['word']['yes'], 'val' => $list['readok']);
+            } else {
+                $list['readok'] = array('name' => $_M['word']['no'], 'val' => $list['readok']);
+            }*/
 
-                $name = $this->plist_database->select_by_listid_paraid($list['id'], $msg_config['met_msg_name_field']);
-                $list['name'] = $name['info'];
-                $tel = $this->plist_database->select_by_listid_paraid($list['id'], $msg_config['met_msg_sms_field']);
-                $list['tel'] = $tel['info'];
-                $email = $this->plist_database->select_by_listid_paraid($list['id'], $msg_config['met_msg_email_field']);
-                $list['email'] = $email['info'];
-                if ($_M['config']['met_member_use']) {
-                    switch ($list['access']) {
-                        case '1':
-                            $list['access'] = array('name' => $_M['word']['access1'], 'val' => $list['access']);
-                            break;
-                        case '2':
-                            $list['access'] = array('name' => $_M['word']['access2'], 'val' => $list['access']);
-                            break;
-                        case '3':
-                            $list['access'] = array('name' => $_M['word']['access3'], 'val' => $list['access']);
-                            break;
-                        default:
-                            $list['access'] = array('name' => $_M['word']['access0'], 'val' => 0);
-                            break;
-                    }
-                }
-                $list['view_url'] = "{$_M['url']['own_form']}a=doview&id={$list['id']}&class1_select={$class1}";
-                $list['del_url'] = "{$_M['url']['own_form']}a=dolistsave&submit_type=del&allid={$list['id']}&class1_select={$class1}";
-                if ($keyword) {
-                    $query = "select * from {$_M['table']['mlist']} where listid='{$list['id']}' and lang='{$lang}' and info like '%{$keyword}%'";
-                    $parainfo = DB::get_all($query);
-                    if (count($parainfo)) {
-                        $rarray[] = $list;
-                    }
-                } else {
-                    $rarray[] = $list;
+            $name = $this->plist_database->select_by_listid_paraid($list['id'], $msg_config['met_msg_name_field']);
+            $list['name'] = $name['info'];
+            $tel = $this->plist_database->select_by_listid_paraid($list['id'], $msg_config['met_msg_sms_field']);
+            $list['tel'] = $tel['info'];
+            $email = $this->plist_database->select_by_listid_paraid($list['id'], $msg_config['met_msg_email_field']);
+            $list['email'] = $email['info'];
+            if ($_M['config']['met_member_use']) {
+                switch ($list['access']) {
+                    case '1':
+                        $list['access'] = array('name' => $_M['word']['access1'], 'val' => $list['access']);
+                        break;
+                    case '2':
+                        $list['access'] = array('name' => $_M['word']['access2'], 'val' => $list['access']);
+                        break;
+                    case '3':
+                        $list['access'] = array('name' => $_M['word']['access3'], 'val' => $list['access']);
+                        break;
+                    default:
+                        $list['access'] = array('name' => $_M['word']['access0'], 'val' => 0);
+                        break;
                 }
             }
+            $list['view_url'] = "{$_M['url']['own_form']}a=doview&id={$list['id']}&class1_select={$class1}";
+            $list['del_url'] = "{$_M['url']['own_form']}a=dolistsave&submit_type=del&allid={$list['id']}&class1_select={$class1}";
+            $rarray[] = $list;
         }
-        return  $this->tabledata->rdata($rarray);
+
+        return $this->tabledata->rdata($rarray);
         #$this->json_return($rarray);
     }
 
@@ -230,9 +220,9 @@ class message_admin extends base_admin
         $redata = array();
         $id = $_M['form']['id'];
         $lang = $_M['lang'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         //$met_message_fd_class   = $_M['config']['met_message_fd_class'];
         //$met_message_fd_sms     = $_M['config']['met_message_fd_sms'];
         //$met_message_fd_email   = $_M['config']['met_message_fd_email'];
@@ -385,9 +375,9 @@ class message_admin extends base_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         if ($class3) {
             $classnow = $class3;
         } elseif ($class2) {
@@ -427,9 +417,6 @@ class message_admin extends base_admin
         global $_M;
         $redata = array();
         $list = $_M['form'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
         $classnow = $_M['form']['classnow'];
 
         if (!is_numeric($classnow)) {

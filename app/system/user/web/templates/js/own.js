@@ -212,7 +212,7 @@ $(function(){
         $('.met-user-login-weixin[data-toggle="modal"]').click(function(event) {
             var delay=0;
             $.ajax({
-                url: M.weburl+'member/login.php/?a=doLoginQrcode',
+                url: M.weburl+'member/login.php?a=doLoginQrcode',
                 type: 'GET',
                 dataType: 'json',
                 success:function(result){

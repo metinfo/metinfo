@@ -104,9 +104,9 @@ class job_admin extends news_admin
     {
         global $_M;
         $id = $_M['form']['id'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         $classnow = $class3 ? $class3 : ($class2 ? $class2 : $class1);
 
         $config_op = load::mod_class('config/config_op', 'new');

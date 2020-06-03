@@ -145,32 +145,32 @@ class  parameter_database extends database
 
         //获取指点栏目熟悉
         $where = "WHERE {$this->langsql} AND (( module = '{$module}' AND class1 = 0) OR ( module = '{$module}'";
-        if ($class1) {
+        if ($class1 && is_numeric($class1)) {
             $where .= " AND class1 = '{$class1}' ";
         } else {
             $where .= " AND class1 = '0' ";
         }
-        if ($class2) {
+        if ($class2 && is_numeric($class2)) {
             $where .= " AND class2 = '{$class2}' ";
         } else {
             $where .= " AND class2 = '0' ";
         }
-        if ($class3) {
+        if ($class3 && is_numeric($class3)) {
             $where .= " AND class3 = '{$class3}' ";
         } else {
             $where .= " AND class3 = '0' ";
         }
         $where .= " ) ";
 
-        if ($class1) {
+        if ($class1 && is_numeric($class1)) {
             $where .= " OR (  module = '{$module}' AND class1 = '{$class1}' AND class2 = 0 AND class3 = 0 )  ";
         }
 
-        if ($class2) {
+        if ($class2 && is_numeric($class2)) {
             $where .= " OR (  module = '{$module}' AND class1 = '{$class1}' AND class2 = '{$class2}' AND class3 = 0 )  ";
         }
 
-        if ($class3) {
+        if ($class3 && is_numeric($class3)) {
             $where .= " OR (  module = '{$module}' AND class1 = '{$class1}' AND class2 = '{$class2}' AND class3 = '{$class3}' )  ";
         }
 

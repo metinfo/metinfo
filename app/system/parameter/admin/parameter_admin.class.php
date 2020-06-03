@@ -59,9 +59,9 @@ class parameter_admin extends base_admin
     function dojson_para_list()
     {
         global $_M;
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         $classnow = $class3 ? $class3 : ($class2 ? $class2 : $class1);
         $module = $_M['form']['module'];
 
@@ -121,9 +121,9 @@ class parameter_admin extends base_admin
     public function doparaaddlist()
     {
         global $_M;
-        $class1 = $_M['form']['class1'] ? $_M['form']['class1'] : '';
-        $class2 = $_M['form']['class2'] ? $_M['form']['class2'] : '';
-        $class3 = $_M['form']['class3'] ? $_M['form']['class3'] : '';
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         $module = $_M['form']['module'];
 
         $redata = array();

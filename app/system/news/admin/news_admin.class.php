@@ -216,10 +216,11 @@ class news_admin extends base_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'] ? $_M['form']['class1'] : 0;
-        $class2 = $_M['form']['class2'] ? $_M['form']['class2'] : 0;
-        $class3 = $_M['form']['class3'] ? $_M['form']['class3'] : 0;
-        $paralist = $this->para_op->paratem($_M['form']['id'], $this->module, $class1, $class2, $class3);
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : 0;
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : 0;
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : 0;
+        $listid = is_numeric($_M['form']['id']) ? $_M['form']['id'] : 0;
+        $paralist = $this->para_op->paratem($listid, $this->module, $class1, $class2, $class3);
         $redata['status'] = 1;
         $redata['data'] = $paralist;
         $this->ajaxReturn($redata);
@@ -402,10 +403,6 @@ class news_admin extends base_admin
     public function dojson_list()
     {
         global $_M;
-        $redata = array();
-        /*$class1 = is_numeric($_M['form']['class1_select']) ? $_M['form']['class1_select'] : (is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '');
-        $class2 = is_numeric($_M['form']['class2_select']) ? $_M['form']['class2_select'] : (is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '');
-        $class3 = is_numeric($_M['form']['class3_select']) ? $_M['form']['class3_select'] : (is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '');*/
         $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
         $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
         $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
@@ -418,8 +415,6 @@ class news_admin extends base_admin
         $list = $this->_dojson_list($class1, $class2, $class3, $keyword, $search_type, $order['hits'], $order['updatetime']);
 
         $this->json_return($list);
-        /*$redata['data'] = $list;
-        $this->ajaxReturn($redata);*/
     }
 
     /**

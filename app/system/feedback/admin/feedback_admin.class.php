@@ -61,9 +61,9 @@ class feedback_admin extends message_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         if ($class3) {
             $classnow = $class3;
         } elseif ($class2) {
@@ -149,9 +149,10 @@ class feedback_admin extends message_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
+
         $keyword = $_M['form']['keyword'];
         $search_type = $_M['form']['search_type'];
         $orderby_hits = $_M['form']['orderby_hits'];
@@ -165,7 +166,7 @@ class feedback_admin extends message_admin
     /**
      * 反馈分页数据
      */
-    function _dojson_list($class1 = 0, $class2 = 0, $class3 = 0, $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '')
+    public function _dojson_list($class1 = 0, $class2 = 0, $class3 = 0, $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '')
     {
         global $_M;
         if ($class3) {
@@ -323,9 +324,9 @@ class feedback_admin extends message_admin
         $redata = array();
         $lang = $_M['lang'];
         $id = $_M['form']['id'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
 
         $update_data = array('id' => $id, 'readok' => 1);
@@ -413,9 +414,9 @@ class feedback_admin extends message_admin
     {
         global $_M;
         $redata = array();
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         if ($class3) {
             $classnow = $class3;
         } elseif ($class2) {
@@ -499,9 +500,6 @@ class feedback_admin extends message_admin
         global $_M;
         $redata = array();
         $list = $_M['form'];
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
         $classnow = $_M['form']['classnow'];
 
         if (!is_numeric($classnow)) {
@@ -567,9 +565,9 @@ class feedback_admin extends message_admin
     function doexport()
     {
         global $_M;
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
         $allid = $_M['form']['allid'];
         $search_type = $_M['form']['search_type'];
         $keyword = $_M['form']['keyword'];

@@ -178,10 +178,11 @@ class product_admin extends news_admin
     {
         global $_M;
         if ($_M['form']['app_type'] == 'shop') {
-            $class1 = $_M['form']['class1'];
-            $class2 = $_M['form']['class2'];
-            $class3 = $_M['form']['class3'];
-            $paralist = $this->para_op->paratem($_M['form']['id'], $this->module, $class1, $class2, $class3);
+            $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+            $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+            $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
+            $listid = is_numeric($_M['form']['id']) ? $_M['form']['id'] : 0;
+            $paralist = $this->para_op->paratem($listid, $this->module, $class1, $class2, $class3);
             require PATH_SYS_TEM.'admin_old/paratype.php';
         } else {
             parent::dopara();
@@ -194,9 +195,9 @@ class product_admin extends news_admin
     public function doGetColumnSeting()
     {
         global $_M;
-        $class1 = $_M['form']['class1'];
-        $class2 = $_M['form']['class2'];
-        $class3 = $_M['form']['class3'];
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
         $redata = self::_GetColumnSeting($class1, $class2, $class3);
         $this->ajaxReturn($redata);
@@ -475,14 +476,13 @@ class product_admin extends news_admin
     function dojson_list()
     {
         global $_M;
-        $redata = array();
         if ($this->shop_exists && $_M['form']['app_type'] == 'shop') {
             $this->shop->plgin_json_list();
             die();
         } else {
-            $class1 = is_numeric($_M['form']['class1_select']) ? $_M['form']['class1_select'] : (is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '');
-            $class2 = is_numeric($_M['form']['class2_select']) ? $_M['form']['class2_select'] : (is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '');
-            $class3 = is_numeric($_M['form']['class3_select']) ? $_M['form']['class3_select'] : (is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '');
+            $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+            $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+            $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
             $keyword = $_M['form']['keyword'];
             $search_type = $_M['form']['search_type'];
             foreach ($_M['form']['order'] as $key => $value) {
@@ -492,8 +492,6 @@ class product_admin extends news_admin
             $list = self::_dojson_list($class1, $class2, $class3, $keyword, $search_type, $order['hits'], $order['updatetime']);
         }
         $this->json_return($list);
-        /*$redata['data'] = $list;
-        $this->ajaxReturn($redata);*/
     }
 
     /**
