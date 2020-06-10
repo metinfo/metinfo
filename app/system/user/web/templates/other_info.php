@@ -11,40 +11,38 @@ defined('IN_MET') or exit('No permission');
 			<input type="hidden" name="type" value="{$data.type}"/>
 			<input type="hidden" name="other_id" value="{$data.other_id}"/>
 			<h1 class='m-t-0 m-b-20 font-size-24 text-xs-center'>{$_M['word']['memberReg']}</h1>
-			<div class="form-group">
                 <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" name="username" required class="form-control" placeholder="{$word.memberName}"
-                               data-fv-remote="true"
-                               data-fv-remote-url="{$url.register_userok}"
-                               data-fv-remote-message="{$word.userhave}"
-
-                               data-fv-notempty-message="{$word.noempty}"
-
-                               data-fv-stringlength="true"
-                               data-fv-stringlength-min="2"
-                               data-fv-stringlength-max="30"
-                               data-fv-stringlength-message="{$word.usernamecheck}"
-                        />
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" name="username"  required class="form-control" placeholder="{$word.memberName}"
+                                   data-fv-remote="true"
+                                   data-fv-remote-url="{$url.register_userok}"
+                                   data-fv-remote-message="{$word.userhave}"
+                                   data-fv-notempty-message="{$word.noempty}"
+                                   data-fv-stringlength="true"
+                                   data-fv-stringlength-min="2"
+                                   data-fv-stringlength-max="30"
+                                   data-fv-stringlength-message="{$word.usernamecheck}"
+                            />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                            <input type="password" name="password" required class="form-control" placeholder="{$word.password}"
+                                   data-fv-notempty-message="{$word.noempty}"
+                                   data-fv-identical="true"
+                                   data-fv-identical-field="confirmpassword"
+                                   data-fv-identical-message="{$word.passwordsame}"
+                                   data-fv-stringlength="true"
+                                   data-fv-stringlength-min="6"
+                                   data-fv-stringlength-max="30"
+                                   data-fv-stringlength-message="{$word.passwordcheck}"
+                            />
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
-                        <input type="password" name="password" required class="form-control" placeholder="{$word.password}"
-                               data-fv-notempty-message="{$word.noempty}"
-                               data-fv-identical="true"
-                               data-fv-identical-field="confirmpassword"
-                               data-fv-identical-message="{$word.passwordsame}"
-                               data-fv-stringlength="true"
-                               data-fv-stringlength-min="6"
-                               data-fv-stringlength-max="30"
-                               data-fv-stringlength-message="{$word.passwordcheck}"
-                        >
-                    </div>
-                </div>
-			</div>
 			<button class="btn btn-lg btn-primary btn-squared btn-block" type="submit">{$word.memberRegister}</button>
 		</form>
 	</div>

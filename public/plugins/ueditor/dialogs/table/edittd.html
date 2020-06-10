@@ -2,23 +2,24 @@
 <html>
 <head>
     <title></title>
+    <script type="text/javascript" src="../../../jquery/jquery.min.js"></script>
     <script type="text/javascript" src="../internal.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../../minicolors/jquery.minicolors.css">
     <style type="text/css">
-        .section {
-            text-align: center;
-            margin-top: 10px;
-        }
+        .section {margin: 160px 0 0 10px;}
         .section input {
-            margin-left: 5px;
-            width: 70px;
+            width: 70px;padding-left: 35px !important;height: 30px !important;
         }
     </style>
 </head>
 <body>
 <div class="section">
     <span><var id="lang_tdBkColor"></var></span>
-    <input type="text" id="J_tone"/>
+    <div style="display: inline-block;margin-left: 5px;">
+        <input type="text" id="J_tone"/>
+    </div>
 </div>
+<script type="text/javascript" src="../../../minicolors/jquery.minicolors.min.js"></script>
 <script type="text/javascript">
     var tone = $G("J_tone"),
             colorPiker = new UE.ui.ColorPicker({
@@ -55,7 +56,7 @@
         }
 
     }
-
+    $('#J_tone').minicolors({position:'top left'});
 </script>
 </body>
 </html>

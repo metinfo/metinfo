@@ -67,6 +67,10 @@
                 me.setColor("");
                 colorPop.hide();
             });
+            $('#J_tone').minicolors({position:'top left'});
+            $('#J_tone').change(function(event) {
+                me.setColor($(this).val());
+            });
         },
 
         createTable:function (hasTitle, hasTitleCol, hasCaption) {

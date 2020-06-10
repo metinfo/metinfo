@@ -6,14 +6,27 @@ defined('IN_MET') or exit('No permission');
 <div class="met-user-func">
 	<form method="POST" action="{$url.own_name}c=admin_set&a=doSaveThirdParty" class="info-form" data-submit-ajax='1'>
 		<div class="metadmin-fmbx">
+			<h3 class="example-title">{$word.user_global_set}</h3>
+            <dl>
+                <dt>
+                    <label class="form-control-label">{$word.user_auto_register}</label>
+                </dt>
+                <dd>
+                    <div class="form-group clearfix">
+                        <input type="checkbox" data-plugin="switchery" name="met_auto_register" value="0"  />
+                        <span class="text-help">{$word.user_auto_register_tips}</span>
+                    </div>
+                </dd>
+            </dl>
+
 			<h3 class="example-title">QQ</h3>
 			<dl>
 				<dd>
-					<span class="text-help"
-						>{$word.user_tips8_v6}
+					<span class="text-help">
+                        {$word.user_tips8_v6}
 						<a href="http://connect.qq.com/" target="_blank">{$word.user_QQinterconnect_v6}</a>
-						{$word.user_tips9_v6}</span
-					>
+						{$word.user_tips9_v6}
+                    </span>
 				</dd>
 			</dl>
 			<dl>

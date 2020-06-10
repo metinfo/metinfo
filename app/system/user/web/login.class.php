@@ -158,6 +158,7 @@ class login extends userweb
         if (!$_M['form']['type'] && !$_M['form']['other_id']) {
             okinfo($_M['url']['login'], $_M['word']['regfail']);
         }
+
         $this->input['type'] = $_M['form']['type'];
         $this->input['other_id'] = $_M['form']['other_id'];
 
@@ -167,7 +168,12 @@ class login extends userweb
             $this->input['submit_url'] = $_M['url']['login_other_register'];
         }
 
-        $this->view('app/other_info', $this->input);
+        //系统生成账号
+        if ($_M['config']['met_auto_register']) {
+            header("location:{$this->input['submit_url']}&type={$this->input['type']}&other_id={$this->input['other_id']}");
+        }else{
+            $this->view('app/other_info', $this->input);
+        }
     }
 
     /**
@@ -176,17 +182,30 @@ class login extends userweb
     public function dologin_other_register()
     {
         global $_M;
-        if (!$_M['form']['type'] && !$_M['form']['other_id'] && !$_M['form']['username'] && !$_M['form']['password']) {
+        $type = $_M['form']['type'];
+        $other_id = $_M['form']['other_id'];
+
+        //系统生成账号
+        if($_M['config']['met_auto_register']){
+            $username = random(3, 3) . "_" . uniqid() . random(5);
+            $password = random(16);
+        }else{
+            $username = $_M['form']['username'];
+            $password = $_M['form']['password'];
+        }
+
+        if (!$type && !$other_id && !$username && !$password) {
             okinfo($_M['url']['login'], $_M['word']['regfail']);
         }
-        $other = $this->other($_M['form']['type']);
-        $uid = $other->register($_M['form']['other_id'], $_M['form']['username'], $_M['form']['password']);
+
+        $other = $this->other($type);
+        $uid = $other->register($other_id, $username, $password);
         if ($uid) {
             $user = $this->userclass->get_user_by_id($uid);
             $this->login($user['username'], md5($user['password']), 'md5');
         } else {
             if ($other->errorno == 're_username') {
-                okinfo($_M['url']['login_other_info'] . "&other_id={$_M['form']['other_id']}&type={$_M['form']['type']}",$_M['word']['userhave']);
+                okinfo($_M['url']['login_other_info'] . "&other_id={$other_id}&type={$type}",$_M['word']['userhave']);
             } else {
                 okinfo($_M['url']['login'], $other->errorno);
             }
@@ -297,13 +316,17 @@ class login extends userweb
     public function doregistwxuser()
     {
         global $_M;
-        if (!$_M['form']['type'] && !$_M['form']['other_id'] && !$_M['form']['username'] && !$_M['form']['password']) {
-            okinfo($_M['url']['login'], $_M['word']['regfail']);
-        }
         $type = $_M['form']['type'];
         $other_id = $_M['form']['other_id'];
-        $username = $_M['form']['username'];
-        $password = $_M['form']['password'];
+
+        //系统生成账号
+        if($_M['config']['met_auto_register']){
+            $username = random(3, 3) . "_" . uniqid() . random(5);
+            $password = random(16);
+        }else{
+            $username = $_M['form']['username'];
+            $password = $_M['form']['password'];
+        }
 
         $weixin_party = load::mod_class('user/web/class/weixin_party', 'new');
         $uid = $weixin_party->otherUserRegister($other_id , $username, $password);

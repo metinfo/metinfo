@@ -193,8 +193,12 @@ class watermark
                 $this->water_text_angle = $value;
                 break;
             case 'water_text_font':
-                $this->water_text_font = str_replace(PATH_WEB . $_M['config']['met_adminfile'] . '/', '', $value);
-                $this->water_text_font = PATH_WEB . $_M['config']['met_adminfile'] . '/' . str_replace('../', '', $value);
+                $water_text_font = PATH_WEB . str_replace('../', '', $value);
+                if (file_exists($water_text_font)) {
+                    $this->water_text_font = $water_text_font;
+                }else{
+                    $this->water_text_font = PATH_PUBLIC . 'fonts/Cantarell-Regular.ttf';
+                }
                 break;
             case 'met_image_transition':
                 $this->met_image_transition = $value;

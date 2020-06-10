@@ -66,6 +66,7 @@ class admin_set extends admin
         global $_M;
 
         $list = array();
+        $list['met_auto_register'] = isset($_M['config']['met_auto_register']) ? $_M['config']['met_auto_register'] : 0;
         //微信
         //开放平台
         $list['met_weixin_open'] = isset($_M['config']['met_weixin_open']) ? $_M['config']['met_weixin_open'] : '';
@@ -94,6 +95,7 @@ class admin_set extends admin
         global $_M;
         if ($_M['config']['met_index_type'] == $_M['lang']){
             $configlist = array();
+            $configlist[] = 'met_auto_register';
             $configlist[] = 'met_weixin_appid';
             $configlist[] = 'met_weixin_appsecret';
             $configlist[] = 'met_weixin_gz_appid';

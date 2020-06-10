@@ -41,7 +41,7 @@ class pin
         $buttum_c = ImageColorAllocate($im, $tmpC0, $tmpC1, $tmpC2);
         imagefill($im, 16, 13, $buttum_c);
 
-        $font = PATH_PUBLIC . 'fonts/font-awesome/verdana.ttf';
+        $font = PATH_PUBLIC . 'fonts/Cantarell-Regular.ttf';
 
         for ($i = 0; $i < strlen($text); $i++) {
             $tmp = substr($text, $i, 1);

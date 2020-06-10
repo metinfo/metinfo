@@ -2276,6 +2276,33 @@
         "app": "0",
         "lang": "en"
     },
+    "user_global_set": {
+        "name": "user_global_set",
+        "value": "Global settings",
+        "site": "1",
+        "no_order": "0",
+        "array": "38",
+        "app": "0",
+        "lang": "en"
+    },
+    "user_auto_register": {
+        "name": "user_auto_register",
+        "value": "Automatic registration system member",
+        "site": "1",
+        "no_order": "0",
+        "array": "38",
+        "app": "0",
+        "lang": "en"
+    },
+    "user_auto_register_tips": {
+        "name": "user_auto_register_tips",
+        "value": "With this configuration enabled, users log in for the first time with social account, and the website member account is automatically generated and bound with social account information by the system.",
+        "site": "1",
+        "no_order": "0",
+        "array": "38",
+        "app": "0",
+        "lang": "en"
+    },
     "user_QQinterconnect_v6": {
         "name": "user_QQinterconnect_v6",
         "value": "QQ interconnection",
@@ -6418,7 +6445,7 @@
     },
     "setimgTip4": {
         "name": "setimgTip4",
-        "value": "Please put the font file in the background management directory admin \/ include \/ fonts \/",
+        "value": "Please put the font file in the root directory of the website public\/fonts\/",
         "site": "1",
         "no_order": "198",
         "array": "13",

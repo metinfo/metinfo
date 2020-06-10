@@ -257,7 +257,7 @@
     $(document).on('click', '[table-addlist]', function(event) {
         var $self=$(this),
             $table=$(this).parents('table').length?$(this).parents('table'):$($(this).attr('table-addlist')),
-            addlist=function(data,new_id){
+            addlist=function(html,new_id){
                 if($table.find('tbody .dataTables_empty').length){
                     $table.find('tbody').html(html);
                 }else $table.find('tbody').append(html);
@@ -294,6 +294,7 @@
             metui.ajax({
                 url: $(this).data('url'),
                 data:{new_id:datatable_option[table_order]['new_id']},
+                dataType:'text',
                 success:function(result){
                     addlist(result);
                 }

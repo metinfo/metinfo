@@ -6058,7 +6058,7 @@
     },
     "setimgTip4": {
         "name": "setimgTip4",
-        "value": "请将字体文件放到后台管理目录admin\/include\/fonts\/下",
+        "value": "请将字体文件放到网站根目录 public\/fonts\/",
         "site": "1",
         "no_order": "198",
         "array": "13",
@@ -9965,6 +9965,33 @@
     "user_tips8_v6": {
         "name": "user_tips8_v6",
         "value": "需要到",
+        "site": "1",
+        "no_order": "0",
+        "array": "38",
+        "app": "0",
+        "lang": "cn"
+    },
+    "user_global_set": {
+        "name": "user_global_set",
+        "value": "全局设置",
+        "site": "1",
+        "no_order": "0",
+        "array": "38",
+        "app": "0",
+        "lang": "cn"
+    },
+    "user_auto_register": {
+        "name": "user_auto_register",
+        "value": "自动注册系统会员",
+        "site": "1",
+        "no_order": "0",
+        "array": "38",
+        "app": "0",
+        "lang": "cn"
+    },
+    "user_auto_register_tips": {
+        "name": "user_auto_register_tips",
+        "value": "开启该配置，用户使用社会化账号首次登录，网站会员账号由系统自动生成并绑定社会化账号信息。",
         "site": "1",
         "no_order": "0",
         "array": "38",

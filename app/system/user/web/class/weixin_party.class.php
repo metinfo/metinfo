@@ -74,9 +74,9 @@ class weixin_party
 
         if ($sys_user) {
             if ($sys_user['lang'] != $_M['lang']) {
-                $this->error[] = '当前网站用户无登陆';
+                $this->error[] = '当前网站用户无法登陆';
 
-                $msg = "当前网站用户无登陆 ";
+                $msg = "当前网站用户无法登陆 ";
                 $this->weixinapi->customMessage($other_user['openid'], $msg);  //登陆成功提示
                 return false;
             }

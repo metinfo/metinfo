@@ -37,7 +37,8 @@ class userweb extends web {
             $url = "{$_M['url']['web_site']}member/login.php?";
             $url .= $lang ? "lang={$lang}" : '';
             $url .= $gourl ? "&gourl={$gourl}" : '';
-			okinfo($url,$_M['word']['please_login']);
+            header("Location: {$url}");
+			#okinfo($url,$_M['word']['please_login']);
 		}
 	}
 
