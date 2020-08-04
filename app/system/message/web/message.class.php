@@ -24,9 +24,17 @@ class message extends web
             $classnow = $this->input_class();
             $_M['config']['met_message_list'] = $this->input['list_length'];
             $data = load::sys_class('label', 'new')->get('column')->get_column_id($classnow);
-            $this->check($data['access']);
             unset($data['id']);
             $this->add_array_input($data);
+
+            //静态页权限验证
+            if ($data['access'] && $_M['form']['html_filename']) {
+                $groupid = load::sys_class('auth', 'new')->encode($data['access']);
+                $data['access_code'] = $groupid;
+            }else{
+                $this->check($data['access']);
+            }
+
             load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
 
             $this->seo($data['name'], $data['keywords'], $data['description']);

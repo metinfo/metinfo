@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-anchor-list">
   <div class="alert dark alert-primary radius0">{$word.applies_paper}</div>
-  <button type="button" class="btn btn-success btn-add" >
+  <button type="button" class="btn btn-primary btn-add" >
     {$word.anchor_textadd}
   </button>
 

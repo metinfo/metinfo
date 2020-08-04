@@ -64,7 +64,7 @@ class weixinreply
                             $data['EventKey'] = strReplace('qrscene_', '', $data['EventKey']);
                             return $this->scna($data);
                         }else{
-                            return $this->Reply($data, strtolower($data['MsgType']));
+                            return $this->Reply($data, strtolower($data['Event']));
                         }
                         break;
                     case 'unsubscribe'://取消订阅

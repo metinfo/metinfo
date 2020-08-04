@@ -86,6 +86,11 @@
 					},300)
 			})
 		}
+		if(M.id && $('#met-imgs-slick').length && $('textarea[name="met_product_video"]').val()){
+			$.include(M.weburl+'public/web/js/shop_video.js',function(){
+				$('#met-imgs-slick').metShopVideo();
+			})
+		}
 	});
 	// 选中选项卡
 	function proNavActive(dom){

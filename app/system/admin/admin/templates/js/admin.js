@@ -266,19 +266,19 @@
         switch (e.target.value) {
           case '1':
             roles = ['s1007', 's1103', 's1201', 's1002', 's1003', 's1301', 's9999', 's1802', 's0', 's1106', 's1604', 's1605', 's1901', 's1902', 's1903', 's1104']
-            $("[name = 'langok']")
+            modal.find("[name = 'langok']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'langok']").attr('disabled', 'disabled')
-            $("[name = 'admin_login_lang']").attr('disabled', 'disabled')
-            $("[name = 'admin_issueok']").attr('checked', null)
-            $("[name = 'admin_issueok']").attr('disabled', 'disabled')
-            $("[name = 'admin_op']")
+            modal.find("[name = 'langok']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_login_lang']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_issueok']").attr('checked', null)
+            modal.find("[name = 'admin_issueok']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_op']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'admin_op']").attr('disabled', 'disabled')
-            $("[name = 'admin_pop']").attr('disabled', 'disabled')
-            $("[name = 'admin_pop']").each(function() {
+            modal.find("[name = 'admin_op']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_pop']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_pop']").each(function() {
               if (
                 $(this)
                   .val()
@@ -296,19 +296,19 @@
             break
           case '2':
             roles = ['s1007', 's1103', 's1201', 's1002', 's1003', 's1401', 's1106', 's1404', 's1301', 's9999', 's1802', 's1901', 's1902', 's1903', 's1104']
-            $("[name = 'langok']")
+            modal.find("[name = 'langok']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'langok']").attr('disabled', 'disabled')
-            $("[name = 'admin_login_lang']").attr('disabled', 'disabled')
-            $("[name = 'admin_issueok']").attr('checked', null)
-            $("[name = 'admin_issueok']").attr('disabled', 'disabled')
-            $("[name = 'admin_op']")
+            modal.find("[name = 'langok']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_login_lang']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_issueok']").attr('checked', null)
+            modal.find("[name = 'admin_issueok']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_op']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'admin_op']").attr('disabled', 'disabled')
-            $("[name = 'admin_pop']").attr('disabled', 'disabled')
-            $("[name = 'admin_pop']").each(function() {
+            modal.find("[name = 'admin_op']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_pop']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_pop']").each(function() {
               if (
                 $(this)
                   .val()
@@ -325,41 +325,41 @@
 
             break
           case '3':
-            $("[name = 'langok']")
+            modal.find("[name = 'langok']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'langok']").attr('disabled', 'disabled')
-            $("[name = 'admin_login_lang']").attr('disabled', 'disabled')
-            $("[name = 'admin_issueok']").attr('checked', null)
-            $("[name = 'admin_issueok']").attr('disabled', 'disabled')
-            $("[name = 'admin_op']")
+            modal.find("[name = 'langok']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_login_lang']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_issueok']").attr('checked', null)
+            modal.find("[name = 'admin_issueok']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_op']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'admin_op']").attr('disabled', 'disabled')
-            $("[name = 'admin_pop']")
+            modal.find("[name = 'admin_op']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_pop']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'admin_pop']").attr('disabled', 'disabled')
+            modal.find("[name = 'admin_pop']").attr('disabled', 'disabled')
 
             break
           case '0':
-            $("[name = 'langok']")
+            modal.find("[name = 'langok']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'langok']").attr('disabled', null)
-            $("[name = 'admin_issueok']").attr('checked', null)
-            $("[name = 'admin_issueok']").attr('disabled', null)
-            $("[name='admin_check']").attr('disabled', null)
-            $("[name = 'admin_login_lang']").attr('disabled', null)
-            $("[name = 'admin_op']")
+            modal.find("[name = 'langok']").attr('disabled', null)
+            modal.find("[name = 'admin_issueok']").attr('checked', null)
+            modal.find("[name = 'admin_issueok']").attr('disabled', null)
+            modal.find("[name='admin_check']").attr('disabled', null)
+            modal.find("[name = 'admin_login_lang']").attr('disabled', null)
+            modal.find("[name = 'admin_op']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'admin_op']").attr('disabled', null)
-            $("[name = 'admin_pop']")
+            modal.find("[name = 'admin_op']").attr('disabled', null)
+            modal.find("[name = 'admin_pop']")
               .attr('checked', true)
               .prop({ checked: true })
-            $("[name = 'admin_pop']").attr('disabled', null)
-            $("[name = 'admin_pop']").each(function() {
+            modal.find("[name = 'admin_pop']").attr('disabled', null)
+            modal.find("[name = 'admin_pop']").each(function() {
               if ($(this).val() == 's1801') {
                 $(this).attr('checked', null)
               }
@@ -374,7 +374,7 @@
       .on('change', function(e) {
         const checked = $(this).attr('checked')
         if (checked) {
-          $('.role').attr('checked', null)
+          modal.find('.role').attr('checked', null)
         } else {
           $('.role')
             .attr('checked', true)
@@ -386,7 +386,7 @@
   function delAll() {
     $(document).on('click', '#admin-table .btn-delete-all', function() {
       let ids = []
-      const $ids = $("[name='id']:checked")
+      const $ids = that.obj.find("#admin-table [name='id']:checked")
       if ($ids.length === 0) {
         alertify.error(`${METLANG.js23}`)
         return

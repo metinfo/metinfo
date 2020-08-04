@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-user-list">
   <div>
-    <button type="button" class="btn btn-success btn-add" data-toggle="modal" data-modal-url="user/user_add"
+    <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-modal-url="user/user_add"
       data-modal-loading="1" data-modal-title="{$word.memberAdd}" data-target=".user-add-modal"
       data-modal-tablerefresh="#user-table">
       <i class="fa fa-plus mr-1"></i>

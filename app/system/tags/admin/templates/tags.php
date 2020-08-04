@@ -6,7 +6,7 @@ $data = $data['handle'];
 ?>
 <div class="met-seo-link">
   <div class="d-flex justify-content-between">
-    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".link-add-modal"
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".link-add-modal"
       data-modal-url="tags/add/?c=index&a=doGetParentColumns" data-modal-size="lg" data-modal-fullheight="1"
       data-modal-title="{$word.mobiletips3}" data-modal-tablerefresh="#tags_table">
         {$word.add_tag}

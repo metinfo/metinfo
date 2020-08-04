@@ -6,7 +6,7 @@ defined('IN_MET') or exit('No permission');
 <div class="met-lang-admin">
 <button
 type="button"
-class="btn btn-success btn-add"
+class="btn btn-primary btn-add"
 data-toggle="modal"
 data-target=".lang-adminAdd-modal"
 data-modal-url="language/admin_add"

@@ -31,8 +31,16 @@ class feedback extends web
             }
             $data = load::sys_class('label', 'new')->get('column')->get_column_id($classnow);
             $this->add_array_input($data);
-            $this->check($data['access']);
             unset($data['id']);
+
+            //静态页权限验证
+            if ($data['access'] && $_M['form']['html_filename']) {
+                $groupid = load::sys_class('auth', 'new')->encode($data['access']);
+                $data['access_code'] = $groupid;
+            }else{
+                $this->check($data['access']);
+            }
+
             $class_config = $config_op->getColumnConfArry($classnow);
             if ($class_config['met_fdtable']) {
                 $this->seo($class_config['met_fdtable'], $data['keywords'], $data['description']);

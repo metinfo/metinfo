@@ -6058,7 +6058,7 @@
     },
     "setimgTip4": {
         "name": "setimgTip4",
-        "value": "请将字体文件放到网站根目录 public\/fonts\/",
+        "value": "请上传.ttf格式的字体文件",
         "site": "1",
         "no_order": "198",
         "array": "13",

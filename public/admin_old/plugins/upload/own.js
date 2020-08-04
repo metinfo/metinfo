@@ -31,8 +31,8 @@ define(function(require, exports, module) {
 					alert(response.errorcode);
 				}else{
 					// 重新加载图片库列表，并跳转到上传的文件夹
-					var folder_name=response.path.replace('upload/','').split('/')[0];
-					imglistlaod(folder_name);
+					var folder_name=response.path.substring(7,response.path.lastIndexOf('/'));
+					imglistload(folder_name);
 				}
 			});
 			// 文件全部上传完成时
@@ -60,8 +60,9 @@ define(function(require, exports, module) {
 		});
 	}
 	// 图片加载完成处理
-	function imglistlaodFun(img_paths,index,name){
+	function imglistloadFun(img_paths,name){
 		var name=name||'',
+			index=name?imgku_folder.indexOf(name.toString()):'all',
 			location='upload/'+(name?name+'/':''),
 			folder_id='folder-'+index,
 			folder_obj='#'+folder_id,
@@ -70,10 +71,11 @@ define(function(require, exports, module) {
 		if($folder.length){// 展示需要打开的文件夹
 			$folder.show();
 		}else{// 加载需要打开的文件夹
-			var html='<ul class="folder-warrper clearfix" id="'+folder_id+'">',
+			var html='',
+				folder_html='';
 				weburl=siteurl.substring(0,siteurl.length-1);
 			for (var i in img_paths) {
-				if(i!='unique'){
+				if(i!='unique' && (index=='all'?i.indexOf('/')<0:1)){
 					if(img_paths[i]['name']){
 						var path = weburl + img_paths[i].path;
 						html += '<li title="'+img_paths[i].name+'" data-original="'+path+'">'
@@ -81,14 +83,14 @@ define(function(require, exports, module) {
 								+'<div class="check" data-value="'+img_paths[i].value+'" data-path="'+path+'"><i class="fa fa-check"></i></div>'
 								+'</li>';
 					}else{
-						html += '<li class="folder" title="'+METLANG.enter_folder+'">'
+						folder_html += '<li class="folder" title="'+METLANG.enter_folder+'">'
 								+'<i class="fa-folder-open-o"></i>'
-								+'<div class="widget-image-meta" data-name="'+i+'">请双击'+METLANG.physicalfunction4+'<br>'+i+'</div>'
+								+'<div class="widget-image-meta" data-name="'+((name?(name+'/'):'')+i)+'">请双击'+METLANG.physicalfunction4+'<br>'+i+'</div>'
 								+'</li>';
 					}
 				}
 			}
-			html+='</ul>';
+			html='<ul class="folder-warrper clearfix" id="'+folder_id+'">'+folder_html+html+'</ul>';
 			$("#upimglist").append(html);
 		}
 		// 图片列表分页
@@ -116,30 +118,44 @@ define(function(require, exports, module) {
 		}
 	}
 	// 加载图片列表
-	function imglistlaod(folder_name){
+	function imglistload(folder_name){
 		$("#upimglist").html('<div class="loader text-center">'+METLANG.fliptext2+'</div>');
 		$.ajax({
 		   type: "GET",
 		   dataType: "json",
 		   url: adminurl+'n=system&c=filept&a=dogetfile',
-		   success: function(obj){
-				window.imgku_path=[];
-				var folder_array=[];
-				$.each(obj, function (n, value) {
-					var path_array=value.path.replace('/upload/','').split('/');
-					if(path_array.length>1){
-						if(!imgku_path[path_array[0]]) imgku_path[path_array[0]]=[];
-						imgku_path[path_array[0]].push(value);
+		   success: function(result){
+				window.imgku_path={};
+				window.imgku_folder=[];
+				$.each(result, function (index, value) {
+					var dir=value.path.substring(8,value.path.lastIndexOf('/'));
+					if(dir){
+						if(dir.indexOf('/')>0){
+							var folder_list=dir.split('/'),
+								last_dir_list=imgku_path;
+							for (var i = 0; i < folder_list.length; i++) {
+								if(!last_dir_list[folder_list[i]]) last_dir_list[folder_list[i]]=[];
+								last_dir_list=last_dir_list[folder_list[i]];
+								if(i>0){
+									var last_dir='';
+									for (var s = 0; s < i; s++) {
+										last_dir+=(last_dir?'/':'')+folder_list[s];
+									}
+									if(!imgku_path[last_dir]) imgku_path[last_dir]=[];
+									if(!imgku_path[last_dir][folder_list[i]]) imgku_path[last_dir][folder_list[i]]=[];
+								}
+							}
+						}
+						if(!imgku_path[dir]) imgku_path[dir]=[];
+						imgku_path[dir].push(value);
 					}else{
 						imgku_path.push(value);
 					}
 				});
 				for (var i in imgku_path) {
-					if(i!='unique') folder_array.push(i);
+					if(i!='unique') imgku_folder.push(i);
 				}
-				var imgku=folder_name?imgku_path[folder_name]:imgku_path,
-					index=folder_name?folder_array.indexOf(folder_name):'all';
-				imglistlaodFun(imgku,index,folder_name);
+				imglistloadFun(folder_name?imgku_path[folder_name]:imgku_path,folder_name);
 				$("#upimglist .loader").remove();
 		   	}
 		});
@@ -348,24 +364,27 @@ define(function(require, exports, module) {
 	// 打开图片文件夹
 	$(document).on('dblclick','#upimglist li.folder',function(){
 		var name=$('.widget-image-meta',this).data('name');
-		imglistlaodFun(imgku_path[name],$(this).index(),name);
+		imglistloadFun(imgku_path[name],name);
 	});
 	// 返回图片根目录
 	$(document).on('click','#UploadModal .imglist-back',function(){
-		imglistlaodFun(imgku_path,'all');
+		var back_folder=$('#UploadModal .upimglist-location').html();
+		back_folder=back_folder.substring(7,back_folder.lastIndexOf('/'));
+		back_folder=back_folder.substring(0,back_folder.lastIndexOf('/'));
+		imglistloadFun(back_folder?imgku_path[back_folder]:imgku_path,back_folder);
 	})
 	//点击图片库按钮
 	$(document).on('click','.ftype_upload .app-image-list li.imgku button',function(){
 		if($("#UploadModal").data("ini")){
 			if($("#UploadModal").data("reload")){
-				imglistlaod();
+				imglistload();
 				$("#UploadModal").data("reload",0);
 			}else{
 				$("#UploadModal").data("inputname",$(this).data('name'));
 				$("#upimglist li").removeClass('checked');
 			}
 		}else{
-			imglistlaod();//获取图片列表、分页
+			imglistload();//获取图片列表、分页
 			imgupload();//上传组件加载
 			$("#UploadModal").data("ini",'1').data("inputname",$(this).data('name'));
 		}

@@ -267,8 +267,8 @@ class html extends admin
         foreach ($pages as $key => $val) {
             $now = $key + 1;
             $f = urldecode($val['filename']);
-            $pages[$key]['suc'] = "<span style=\"color:green\">($now/$all)</span> <a target=\"_blank\" href=\"{$_M['url']['site']}{$f}\">{$f}{$_M['word']['physicalgenok']}</a>";
-            $pages[$key]['fail'] = "<span style=\"color:green\">($now/$all)</span> <a target=\"_blank\" href=\"{$_M['url']['site']}{$f}\" style=\"color:red\">{$f}{$_M['word']['html_createfail_v6']}</a>";
+            $pages[$key]['suc'] = "<a target=\"_blank\" href=\"{$_M['url']['site']}{$f}\">{$f}{$_M['word']['physicalgenok']}</a>";
+            $pages[$key]['fail'] = "<a target=\"_blank\" href=\"{$_M['url']['site']}{$f}\" style=\"color:red\">{$f}{$_M['word']['html_createfail_v6']}</a>";
         }
         //写日志
         logs::addAdminLog('physicalstatic', 'js54', 'jsok', 'doCreatePage');

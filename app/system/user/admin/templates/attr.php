@@ -8,7 +8,7 @@ $colspan=8;
 	<div>
 	    <button
 	    type="button"
-	    class="btn btn-success btn-add"
+	    class="btn btn-primary btn-add"
 	  >
 	  <i class="fa fa-plus mr-1"></i>
 	    {$word.added}

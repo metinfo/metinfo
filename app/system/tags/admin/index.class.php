@@ -25,9 +25,7 @@ class index extends admin
         if ($_M['config']['tag_search_type'] == 'column') {
             $columns = load::sys_class('label', 'new')->get('column')->get_parent_columns();
             array_unshift($columns, array('id' => 0, 'name' => $_M['word']['full_site']));
-            if (!strstr($_M['form']['path'], 'add') && !strstr($_M['form']['path'], 'edit')) {
-                array_unshift($columns, array('id' => -1, 'name' => $_M['word']['cvall']));
-            }
+            ##array_unshift($columns, array('id' => -1, 'name' => $_M['word']['cvall']));
             $data['columns'] = $columns;
 
             return $data;
@@ -41,11 +39,8 @@ class index extends admin
                 $modules[$key]['name'] = modname($val);
             }
             array_unshift($modules, array('id' => 0, 'name' => $_M['word']['full_site']));
-            if (!strstr($_M['form']['path'], 'add') && !strstr($_M['form']['path'], 'edit')) {
-                array_unshift($modules, array('id' => -1, 'name' => $_M['word']['cvall']));
-            }
+            ##array_unshift($modules, array('id' => -1, 'name' => $_M['word']['cvall']));
             $data['modules'] = $modules;
-
             return $data;
         }
     }
@@ -228,6 +223,7 @@ class index extends admin
         $array = $table->getdata($_M['table']['tags'], '*', $where, 'sort DESC,id DESC');
         $columns = $this->doGetParentColumns();
         $modules = isset($columns['columns']) ? $columns['columns'] : $columns['modules'];
+        array_unshift($modules, array('id' => -1, 'name' => $_M['word']['cvall']));
 
         $columns = array();
         foreach ($modules as $key => $val) {

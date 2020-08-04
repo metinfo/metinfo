@@ -54,7 +54,7 @@
     btn_add.click(function() {
       tr_add.before(that.obj.find('textarea[table-addlist-data]').val())
       var $new_tr = tr_add.prev('tr')
-      $('.dataTables_empty').hide()
+      that.obj.find('#anchor-table tbody .dataTables_empty').hide()
       $new_tr.find('td:last-child').append(M.component.btn('cancel'))
     })
   }
@@ -75,7 +75,7 @@
       .off()
       .click(function() {
         let ids = []
-        const $ids = $("[name='id']:checked")
+        const $ids = that.obj.find("#anchor-table [name='id']:checked")
         if ($ids.length === 0) {
           alertify.error(`${METLANG.js23}`)
           return
@@ -113,7 +113,7 @@
   function save() {
     that.obj.find('.btn-save').click(function() {
       let ids = []
-      const $ids = $("[name='id']:checked")
+      const $ids = that.obj.find("#anchor-table [name='id']:checked")
       if ($ids.length === 0) {
         alertify.error(`${METLANG.js23}`)
         return

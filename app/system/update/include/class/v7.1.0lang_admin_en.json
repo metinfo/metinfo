@@ -6445,7 +6445,7 @@
     },
     "setimgTip4": {
         "name": "setimgTip4",
-        "value": "Please put the font file in the root directory of the website public\/fonts\/",
+        "value": "Please upload font file in. TTF format",
         "site": "1",
         "no_order": "198",
         "array": "13",

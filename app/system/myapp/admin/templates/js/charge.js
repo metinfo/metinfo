@@ -172,7 +172,7 @@
           ${METLANG.loginconfirm}
           </button>
           </a>
-          <a href="https://u.mituo.cn/#/user/register" target="_blank"><button class="btn btn-success">${METLANG.registration}</button></a>`;
+          <a href="https://u.mituo.cn/#/user/register" target="_blank"><button class="btn btn-primary">${METLANG.registration}</button></a>`;
           user.html(userHtml);
         }
       },

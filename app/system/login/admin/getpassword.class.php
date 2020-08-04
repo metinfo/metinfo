@@ -9,21 +9,15 @@ load::sys_func('file');
 
 class getpassword extends admin
 {
-    /**
-     * @var
-     */
-    public $page_data;
-
     public function __construct()
     {
         global $_M;
         parent::__construct();
+
         //初始化语言
-        // $query = "select * from {$_M['table']['language']} where lang='{$_M['form']['langset']}' and site = 1";
-        // $langwordlist = DB::get_all($query);
-        // foreach ($langwordlist as $key => $value) {
-        //     $_M['word'][$value['name']] = $value['value'];
-        // }
+        if (!is_simplestr($_M['langset']) || !is_simplestr($_M['form']['langset'])) {
+            die();
+        }
 
         //页面公共数据
         $met_langadmin = DB::get_all("select * from {$_M['table']['lang_admin']} where lang !='metinfo'");
@@ -36,12 +30,6 @@ class getpassword extends admin
         $sys_json = parent::sys_json();
         $data = array_merge($data, $sys_json);
         $this->data = $data;
-
-        //系统密钥
-        $_M['config']['met_webkeys'] = trim(file_get_contents(PATH_WEB . '/config/config_safe.php'));
-        $_M['config']['met_webkeys'] = str_replace(' ', '', $_M['config']['met_webkeys']);
-        $_M['config']['met_webkeys'] = str_replace('<?php/*', '', $_M['config']['met_webkeys']);
-        $_M['config']['met_webkeys'] = str_replace('*/?>', '', $_M['config']['met_webkeys']);
     }
 
     public function doindex()
@@ -55,78 +43,12 @@ class getpassword extends admin
         $abt_type = array();
         $abt_type['sms'] = 1;
         $abt_type['email'] = 1;
-        /*
-        $abt_type['sms']   = self::checkFindBySMS() ? 1 : 0;
-        $abt_type['email'] = self::checkFindByEmail() ? 1 : 0;
-        */
 
         $this->data['url'] = "{$_M['url']['own_form']}a=doInfoSubmit";
         $this->data['description'] = $_M['word']['password1'];
         $this->data['abt_type'] = $abt_type;
         logs::addAdminLog('admin_getpassword', 'doindex', 'OK', 'doindex');
         $this->view('app/getpassword', $this->data);
-    }
-
-    /**
-     * 邮箱找回是否可用
-     */
-    private function checkFindByEmail()
-    {
-        global $_M;
-        if (!get_extension_funcs('openssl') && stripos($_M['form']['met_fd_smtp'], '.gmail.com') !== false) {
-            $this->error[] = $_M['word']['setbasicTip14'];
-            return false;
-        }
-
-        if (!get_extension_funcs('openssl') && $_M['form']['met_fd_way'] == 'ssl') {
-            $this->error[] = $_M['word']['setbasicTip15'];
-            return false;
-        }
-
-        if (!function_exists('fsockopen') && !function_exists('pfsockopen') && !function_exists('stream_socket_client')) {
-            $this->error[] = $_M['word']['setbasicTip15'];
-            return false;
-        } else {
-            $usename = $_M['config']['met_fd_usename'];
-            $fromname = $_M['config']['met_fd_fromname'];
-            $password = $_M['config']['met_fd_password'];
-            $smtp = $_M['config']['met_fd_smtp'];
-            $port = $_M['config']['met_fd_port'];
-            $way = $_M['config']['met_fd_way'];
-
-            $jmail = load::sys_class('jmail', 'new');
-            $jmail->set_send_mailbox($usename, $fromname, $usename, $password, $smtp, $port, $way);
-
-            $res = $jmail->send_email($usename, $_M['word']['basictips3'], $_M['word']['basictips4']);
-
-            if (!$res) {
-                $this->error[] = $_M['word']['basictips6'];
-                return false;
-            } else {
-                //郵箱可用
-                return true;
-            }
-            //写日志
-            logs::addAdminLog('email_Settings', 'basictips3', 'basictips7', 'doTestEmail');
-            $this->success('', $_M['word']['basictips7']);
-        }
-
-    }
-
-    /**
-     * 短信找回是否可用
-     * @return bool
-     */
-    private function checkFindBySMS()
-    {
-        global $_M;
-        $sms = load::app_class('met_sms/include/class/met_sms', 'new');
-        $res = $sms->get_sms();
-        if ($res) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -174,7 +96,7 @@ class getpassword extends admin
      * 邮箱找回
      * @param array $form
      */
-    public function getPasswordByEmail($form = array())
+    protected function getPasswordByEmail($form = array())
     {
         global $_M;
         $admin_id = $form['admin_id'];
@@ -247,6 +169,7 @@ class getpassword extends admin
                 $body .= "</div><div class='copy'>{$this->data['foot']}</a></div>";
             }
 
+            $checkFindByEmail = $this->checkFindByEmail();
             //发送邮件
             $this->jmail = load::sys_class('jmail', 'new');
             $sendMail = $this->jmail->send_email($to, $title, $body);
@@ -267,10 +190,32 @@ class getpassword extends admin
     }
 
     /**
+     * 检测邮箱服务是否可用
+     */
+    protected function checkFindByEmail()
+    {
+        global $_M;
+        if (!get_extension_funcs('openssl') && stripos($_M['form']['met_fd_smtp'], '.gmail.com') !== false) {
+            $this->error[] = $_M['word']['setbasicTip14'];
+            return false;
+        }
+
+        if (!get_extension_funcs('openssl') && $_M['form']['met_fd_way'] == 'ssl') {
+            $this->error[] = $_M['word']['setbasicTip15'];
+            return false;
+        }
+
+        if (!function_exists('fsockopen') && !function_exists('pfsockopen') && !function_exists('stream_socket_client')) {
+            $this->error[] = $_M['word']['setbasicTip15'];
+            return false;
+        }
+    }
+
+    /**
      * 短信找回
      * @param array $form
      */
-    public function getPasswordByMobile($form = array())
+    protected function getPasswordByMobile($form = array())
     {
         global $_M;
         $redata = array();
@@ -356,6 +301,22 @@ class getpassword extends admin
             $redata['msg'] = $_M['word']['password13'];
             $redata['error'] = '短信发送失败';
             $this->ajaxReturn($redata);
+        }
+    }
+
+    /**
+     * 短信找回是否可用
+     * @return bool
+     */
+    protected function checkFindBySMS()
+    {
+        global $_M;
+        $sms = load::app_class('met_sms/include/class/met_sms', 'new');
+        $res = $sms->get_sms();
+        if ($res) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -458,7 +419,7 @@ class getpassword extends admin
     }
 
     //邮箱找回
-    private function resetPassbyEmail($form)
+    protected function resetPassbyEmail($form)
     {
         global $_M;
         if ($form['p']) {
@@ -495,7 +456,7 @@ class getpassword extends admin
     }
 
     //短信找回
-    private function resetPassbyMobile($form)
+    protected function resetPassbyMobile($form)
     {
         global $_M;
         if ($form['p'] && $form['code']) {
@@ -578,7 +539,7 @@ class getpassword extends admin
     /**
      * @param array $form
      */
-    public function ResetSaveByMobile($form = array())
+    protected function ResetSaveByMobile($form = array())
     {
         global $_M;
 
@@ -646,7 +607,7 @@ class getpassword extends admin
     /**
      * @param $form
      */
-    public function ResetSaveByEmail($form = array())
+    protected function ResetSaveByEmail($form = array())
     {
         global $_M;
         $redata = array();

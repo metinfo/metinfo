@@ -48,7 +48,7 @@
   function delAll() {
     $(document).on('click', '#logs-table .btn-delete-all', function() {
       let ids = []
-      const $ids = $("[name='id']:checked")
+      const $ids = that.obj.find("#logs-table [name='id']:checked")
       if ($ids.length === 0) {
         alertify.error(METLANG.js23)
         return

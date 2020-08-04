@@ -130,7 +130,7 @@ class index extends admin
         if (!isset($tabledump)) {
             $tabledump = '';
         }
-        
+
         if (!$startfrom) {
             //生成创表语句
             $tabledump = "DROP TABLE IF EXISTS $table;\n";
@@ -601,7 +601,7 @@ class index extends admin
             }
 
             if (is_array($sqls)) {
-                if($_M['config']['db_type']=='sqlite'){
+                if ($_M['config']['db_type'] == 'sqlite') {
                     DB::$link->exec('begin;');
                 }
                 foreach ($sqls as $sql) {
@@ -638,10 +638,15 @@ class index extends admin
                         $sql = str_replace("\\'", "''", $sql);
                     }
 
+                    //不允许输出文件
+                    if (strstr(strtolower($sql), 'outfile')) {
+                        continue;
+                    }
+
                     if ($_M['config']['db_type'] == 'sqlite') {
                         $sql = DB::escapeSqlite($sql);
                         $rs = DB::$link->exec($sql);
-                    }else{
+                    } else {
                         $res = DB::query($sql);
                     }
                 }
@@ -705,7 +710,7 @@ class index extends admin
                     $update_database->update_tags();
                     //更新语言
                     $update_database->update_language($version);
-                }elseif (version_compare($old_version, '7.1.0', '<')) {//7.0.0beta->7.1.0
+                } elseif (version_compare($old_version, '7.1.0', '<')) {//7.0.0beta->7.1.0
                     //更新语言
                     $update_database->update_language($version);
                 }
@@ -1153,7 +1158,7 @@ class index extends admin
                 if ($lang['site'] == 1) {
                     $lang_admin_cn[$lang['name']] = $lang;
                     $lang_ini_cn_admin .= "{$lang['name']}={$lang['value']}\n";
-                }else{
+                } else {
                     $lang_web_cn[$lang['name']] = $lang;
                     $lang_ini_cn_web .= "{$lang['name']}={$lang['value']}\n";
                 }
@@ -1163,7 +1168,7 @@ class index extends admin
                 if ($lang['site'] == 1) {
                     $lang_admin_en[$lang['name']] = $lang;
                     $lang_ini_en_admin .= "{$lang['name']}={$lang['value']}\n";
-                }else{
+                } else {
                     $lang_web_en[$lang['name']] = $lang;
                     $lang_ini_en_web .= "{$lang['name']}={$lang['value']}\n";
                 }
@@ -1184,17 +1189,55 @@ class index extends admin
         die('lang_json_complete');
     }
 
+    /**
+     * 系统系统标准配置
+     */
+    public function dogetconfigData()
+    {
+        global $_M;
+        $sql = "select * FROM {$_M['table']['config']} WHERE lang = 'cn' OR lang = 'metinfo'";
+        $list = DB::get_all($sql);
+
+        $config_list = array();
+        foreach ($list as $config) {
+            $config_list[$config['name']] = $config;
+        }
+
+        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}config.json", json_encode($config_list, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        die('dogetconfigData');
+    }
+
     public function doTry()
     {
         return;
+    }
+
+    /**
+     * 生成系统数据指纹
+     */
+    public function doGetSysDate()
+    {
         global $_M;
-        $ver = $_M['form']['ver'];
+        $action = $_M['form']['action'];
+        echo "acrion : {$_M['form']['action']} <hr>";
+        echo "
+        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=sqldata'>系统数据库指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=langdata'>系统语言指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=configdata'>配置库指纹</a><br>
+        ";
 
-        $version = $_M['config']['metcms_v'];
-
-        $update_database = load::mod_class('update/update_database', 'new');
-
-        $update_database->update_language($ver);
+        if ($action =='sqldata') {
+            $this->dogetTablesjson();
+            die('Complete');
+        }
+        if ($action == 'langdata') {
+            $this->dogetLangData();
+            die('Complete');
+        }
+        if ($action == 'configdata') {
+            $this->dogetconfigData();
+            die('Complete');
+        }
     }
 }
 

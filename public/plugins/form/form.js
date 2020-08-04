@@ -47,7 +47,7 @@
             }));
         });
     });
-    var table_selector='table:not(.edui-default)';
+    var table_selector='table.table:not(.edui-default)';
     $.fn.extend({
         // 表单验证通用
         validation:function(){
@@ -246,7 +246,7 @@
             var type=typeof type!='undefined'?type:1,
                 type_str=type?(type==1?'save':type):'del',
                 $table=$(this).find(table_selector);
-            if($(this).find('table').length){
+            if($(this).find(table_selector).length){
                 if(type=='recycle'){
                     type_str='del';
                     $(this).append(M.component.formWidget('recycle',1));

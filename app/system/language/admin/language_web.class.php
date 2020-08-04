@@ -242,23 +242,19 @@ class language_web extends admin
         }
 
         //替换数据表里带语言参数的数据
-        $tables = DB::get_all('show tables');
-        foreach ($tables as $key => $value) {
-            foreach ($value as $table_name) {
-                if (!$table_name) {
-                    continue;
-                }
-                $fields = DB::get_all("desc " . $table_name);
-                foreach ($fields as $val) {
-                    if ($val['Field'] == 'lang') {
-                        $query = "DELETE FROM {$table_name} WHERE lang ='{$lang_info['lang']}'";
-                        if (strstr($table_name, 'language')) {
-                            $query .= " and site ='0'";
-                        }
-                        DB::query($query);
-                    }
-                }
+        $excepted = array(
+            "lang_admin",
+        );
+        foreach ($_M['table'] as $key => $table_name) {
+            if (!$table_name || in_array($key,$excepted)) {
+                continue;
             }
+
+            $query = "DELETE FROM {$table_name} WHERE lang ='{$lang_info['lang']}'";
+            if ($table_name == "{$_M['config']['tablepre']}language") {
+                $query .= " AND site ='0'";
+            }
+            DB::query($query);
         }
 
         $query = "SELECT id FROM {$_M['table']['lang']} order by no_order where lang!='metinfo'";

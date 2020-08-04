@@ -14,7 +14,7 @@ define(function(require, exports, module) {
 		var next = $(this).data("next");
 		$("a[aria-controls='"+next+"']").click();
 	});
-
+	// 栏目改变触发事件
 	function classpara(value,type,dom){
 		if(value){
 			var values=value;
@@ -58,6 +58,26 @@ define(function(require, exports, module) {
 			});
 			classother && (classother+='|');
 			$('[name="classother"]').val(classother);
+			// 内容选项卡标题改变
+			var class_info=values[0].split('-');
+			$.ajax({
+				url: basepath+'?n=product&c=product_admin&a=doGetColumnSeting',
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					class1: class_info[0],
+					class2: class_info[1],
+					class3: class_info[2],
+				},
+				success(result){
+					var title=result.tab_name.split('|');
+					$('.product-nav-tab li').addClass('hide');
+					$('.product-nav-tab li:lt('+result.tab_num+')').each(function(index, el) {
+						$('a',this).html(title[index]);
+					}).removeClass('hide');
+					$('.product-nav-tab li:eq(0) a').click();
+				}
+			})
 		}
 	}
 	var selectclass = $("select[name='class']");

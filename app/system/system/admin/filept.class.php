@@ -22,6 +22,7 @@ class filept extends admin
             // $img_info = getimagesize(PATH_WEB.$val);
             $img_name = pathinfo(PATH_WEB . $val);
             $info['name'] = $img_name['basename'];
+            $info['filename'] = $img_name['filename'];
             $info['path'] = $val;
             $info['value'] = '..' . $val;
             // $info['x'] = $img_info[0];
@@ -29,7 +30,7 @@ class filept extends admin
             // $info['time'] = filemtime(PATH_WEB.$val);
             $array[] = $info;
         }
-        $arrays = arr_sort($array, 'time', SORT_DESC);
+        $arrays = arr_sort($array, 'filename', SORT_DESC);
         echo jsonencode($arrays);
     }
 
@@ -48,6 +49,7 @@ class filept extends admin
             $img_name = pathinfo(PATH_WEB . $val);
             $file_type = is_dir(PATH_WEB . $val) ? 'dir' : 'file';
             $info['name'] = $img_name['basename'];
+            $info['filename'] = $img_name['filename'];
             $info['path'] = $val;
             $info['value'] = '..' . $val;
             $info['type'] = $file_type;
@@ -57,7 +59,7 @@ class filept extends admin
             $array[] = $info;
         }
         if (is_array($array)) {
-            $arrays = arr_sort($array, 'time', SORT_DESC);
+            $arrays = $_M['form']['dir']?arr_sort($array, 'filename', SORT_DESC):$array;
         } else {
             $arrays = array();
             /*$arrays['name'] = '';

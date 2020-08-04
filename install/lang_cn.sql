@@ -18,7 +18,7 @@ INSERT INTO met_language VALUES (null, 'unitytxt_13', '底部信息设置（显�
 INSERT INTO met_language VALUES (null, 'unitytxt_14', '样式设置', 1, 378, 23, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'unitytxt_10', '仅适用用于中文前台语言（语言标识为cn或zh时生效），浏览者可以在简繁体之间切换。', 1, 374, 16, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'unitytxt_9', '同步官方参数', 1, 373, 16, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'unitytxt_8', '该语言设置了独立域名，需要修改网站网址请在<font class=''red''>语言设置</font>中修改。', 1, 372, 39, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'unitytxt_8', '该语言设置了独立域名，需要修改网站网址请在<font class="red">语言设置</font>中修改。', 1, 372, 39, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'unitytxt_7', '备份包下载后建议及时删除备份文件，以免影响空间大小（如果你的虚拟主机限定流量，你可以通过FTP下载节省流量）', 1, 371, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'unitytxt_6', '版本不一致', 1, 370, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'unitytxt_2', '勾选则采用默认设置', 1, 366, 0, 0, 'cn');
@@ -672,7 +672,7 @@ INSERT INTO met_language VALUES (null, 'setimgPosition', '水印位置', 1, 227,
 INSERT INTO met_language VALUES (null, 'setimgWordAngle', '水印文字角度', 1, 199, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgTip5', '水平为0', 1, 200, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWordColor', '水印文字颜色', 1, 201, 0, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'setimgTip4', '请将字体文件放到后台管理目录admin/include/fonts/下', 1, 198, 13, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'setimgTip4', '请将字体文件放到网站根目录 public/fonts/', 1, 198, 13, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWordFont', '水印文字字体', 1, 197, 13, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWordSize2', '大图水印文字大小', 1, 196, 13, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWord', '水印文字', 1, 193, 13, 0, 'cn');
@@ -1107,6 +1107,9 @@ INSERT INTO met_language VALUES (null, 'user_Registeredmail_v6', '注册邮件',
 INSERT INTO met_language VALUES (null, 'user_tips6_v6', '邮件下一操作的URL地址，必填项。比如找回密码邮件，这个地址就是找回密码的链接。', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips7_v6', '密码找回邮件', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips8_v6', '需要到', 1, 0, 38, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_global_set', '全局设置', 1, 0, 38, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_auto_register', '自动注册系统会员', 1, 0, 38, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_auto_register_tips', '开启该配置，用户使用社会化账号首次登录，网站会员账号由系统自动生成并绑定社会化账号信息。', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_QQinterconnect_v6', 'QQ互联', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips9_v6', '申请 （管理中心-登录-创建应用-网站）', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_backurl_v6', '回调地址', 1, 0, 38, 0, 'cn');

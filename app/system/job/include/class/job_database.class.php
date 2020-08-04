@@ -50,8 +50,8 @@ class  job_database extends base_database
             //内容权限
             if ($_M['config']['access_type'] == 2) {
                 $access_res = self::get_access_sql();
-                if ($access_res != 'admin') {
-                    $sql .= " AND id IN ({$access_res}) ";
+                if ($access_res !=='') {
+                    $sql .= " AND access IN ({$access_res}) ";
                 }
             }
         }

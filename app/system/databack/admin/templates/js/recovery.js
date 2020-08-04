@@ -26,7 +26,7 @@
                   val.maketime,
                   val.number,
                   `
-                ${val.unzip_url ? `<button class="btn btn-success ml-2 btn-unzip" data-api="${val.unzip_url}">${METLANG.webupate7}</a>` : ''}
+                ${val.unzip_url ? `<button class="btn btn-primary ml-2 btn-unzip" data-api="${val.unzip_url}">${METLANG.webupate7}</a>` : ''}
                 ${
                   val.import_url
                     ? `<button class="btn btn-primary ml-2 btn-import"

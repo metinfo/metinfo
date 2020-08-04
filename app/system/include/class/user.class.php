@@ -806,6 +806,7 @@ class user
             $_M['admin']['username'] = get_met_cookie('metinfo_admin_name');
             $_M['user'] = array();
         }
+
         if ($groupid > 0) {
             if ($_M['admin']['username']) {
                 return 1;

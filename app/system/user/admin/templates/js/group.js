@@ -159,7 +159,7 @@
       .off()
       .click(function() {
         let ids = []
-        const $ids = $("[name='id']:checked")
+        const $ids = that.obj.find("#group-table [name='id']:checked")
         if ($ids.length === 0) {
           alertify.error(`${METLANG.js23}`)
           return
@@ -200,7 +200,7 @@
       .off()
       .click(function() {
         let ids = []
-        const $ids = $("[name='id']:checked")
+        const $ids = that.obj.find("#group-table [name='id']:checked")
         if ($ids.length === 0) return
         $ids.each(function() {
           let data = {}

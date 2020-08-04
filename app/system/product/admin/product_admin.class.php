@@ -416,9 +416,17 @@ class product_admin extends news_admin
         }
     }
 
-    /*编辑产品*/
+    /**
+     * 更新产品
+     * @param array $list
+     * @param string $id
+     * @return bool
+     */
     public function update_list($list = array(), $id = '')
     {
+        $list['displaytype'] = $list['displaytype'] ? 1 : 0;
+        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
+        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
         return parent::update_list($list, $id);
     }
 
@@ -539,13 +547,14 @@ class product_admin extends news_admin
 
         if ($class3) {
             $classother = "|-{$class1}-{$class2}-{$class3}-|";
+        } elseif ($class2) {
+            #$classother = "|-{$class1}-{$class2}-0-|";
+            $classother = "|-{$class1}-{$class2}-";
         } else {
-            if ($class2) {
-                $classother = "|-{$class1}-{$class2}-0-|";
-            } else {
-                $classother = "|-{$class1}-0-0-|";
-            }
+            #$classother = "|-{$class1}-0-0-|";
+            $classother = "|-{$class1}-";
         }
+
         $where .= " or classother like '%{$classother}%'";
 
         $met_class = $this->column(2, $this->module);

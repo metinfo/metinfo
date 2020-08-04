@@ -56,6 +56,9 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
 <meta name="description" content="{$data.page_description}">
 <meta name="keywords" content="{$data.page_keywords}">
 <meta name="generator" content="MetInfo {$c.metcms_v}" data-variable="{$url.site}|{$_M["lang"]}|{$data.synchronous}|{$c.met_skin_user}|{$data.module}|{$data.classnow}|{$data.id}" data-user_name="{$user_name}">
+<?php if($data["access_code"]){ ?>
+<meta name="access_code" content="{$data.access_code}">
+<?php } ?>
 <link href="{$url.site}favicon.ico?{$favicon_filemtime}" rel="shortcut icon" type="image/x-icon">
 <?php
 if($lang_json_file_ok){

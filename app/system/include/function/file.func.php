@@ -605,6 +605,47 @@ function fzip_open($fzip = '',$tagdir = '')
     return false;
 }
 
+/**
+ * 文件下载
+ * @param string $downurl
+ * @return bool
+ */
+function download($filePath = '')
+{
+    global $_M;
+    $filePath = str_replace(array($_M['url']['web_site'] , '../', './'), PATH_WEB, $filePath);
+
+    //检测下载文件是否可读
+    if (!is_readable($filePath) || !is_file($filePath)) {
+        return false;
+    }
+
+    $allowExt = explode('|', $_M['config']['met_file_format']);
+    $f_info = pathinfo($filePath);
+    //检测文件类型是否允许下载
+    if (!in_array($f_info['extension'], $allowExt)) {
+        return false;
+    }
+    $readBuffer = 1024;
+
+    //设置头信息
+    //声明浏览器输出的是字节流
+    header('Content-Type: application/octet-stream');
+    //声明浏览器返回大小是按字节进行计算
+    header('Accept-Ranges:bytes');
+    //告诉浏览器文件的总大小
+    $fileSize = filesize($filePath);
+    header('Content-Length:' . $fileSize); //'Content-Length:' 非Accept-Length
+    //声明下载文件的名称
+    header('Content-Disposition:attachment;filename=' . basename($filePath));//声明作为附件处理和下载后文件的名称
+    //获取文件内容
+    $handle = fopen($filePath, 'rb');//二进制文件用‘rb’模式读取
+    while (!feof($handle)) { //循环到文件末尾 规定每次读取（向浏览器输出为$readBuffer设置的字节数）
+        echo fread($handle, $readBuffer);
+    }
+    fclose($handle);//关闭文件句柄
+    exit;
+}
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.
 # Copyright (C) MetInfo Co., Ltd. (http://www.metinfo.cn). All rights reserved.

@@ -21,7 +21,7 @@ INSERT INTO met_language VALUES (null, 'unitytxt_13', 'Bottom information settin
 INSERT INTO met_language VALUES (null, 'unitytxt_14', 'Style set', 1, 378, 23, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unitytxt_10', 'Only applicable to the Chinese front language (language logo cn or zh effective); visitors can switch between simplified and traditional.', 1, 374, 16, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unitytxt_9', 'Synchronize the official parameters', 1, 373, 16, 0, 'en');
-INSERT INTO met_language VALUES (null, 'unitytxt_8', 'The language is set up an independent domain name, you need to modify the website URL in the <font class = ''red''> language settings </ font> to modify.', 1, 372, 39, 0, 'en');
+INSERT INTO met_language VALUES (null, 'unitytxt_8', 'The language is set up an independent domain name, you need to modify the website URL in the <font class = "red"> language settings </ font> to modify.', 1, 372, 39, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unitytxt_7', 'After the backup package is downloaded, it is recommended to delete the backup file in time to avoid affecting the size of the space (you can save the traffic through FTP if your web host limited the traffic)', 1, 371, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unitytxt_6', 'Inconsistent version', 1, 370, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unitytxt_2', 'Check to use the default settings', 1, 366, 0, 0, 'en');
@@ -251,6 +251,9 @@ INSERT INTO met_language VALUES (null, 'user_tips6_v6', 'Mail address URL the ne
 INSERT INTO met_language VALUES (null, 'user_Registeredmail_v6', 'Registered mail', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips7_v6', 'Password retrieving mail', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips8_v6', 'Need to be', 1, 0, 38, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_global_set', 'Global settings', 1, 0, 38, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_auto_register', 'Automatic registration system member', 1, 0, 38, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_auto_register_tips', 'With this configuration enabled, users log in for the first time with social account, and the website member account is automatically generated and bound with social account information by the system.', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_QQinterconnect_v6', 'QQ interconnection', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips9_v6', 'Application (Management Center - login - create application - Web site)', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_backurl_v6', 'token url', 1, 0, 38, 0, 'en');
@@ -711,7 +714,7 @@ INSERT INTO met_language VALUES (null, 'setimgPosition', 'Watermark location', 1
 INSERT INTO met_language VALUES (null, 'setimgWordAngle', 'Watermark text angle', 1, 199, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgTip5', 'Level is 0', 1, 200, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWordColor', 'Watermark text color', 1, 201, 0, 0, 'en');
-INSERT INTO met_language VALUES (null, 'setimgTip4', 'Please put the font file in the background management directory admin / include / fonts /', 1, 198, 13, 0, 'en');
+INSERT INTO met_language VALUES (null, 'setimgTip4', 'Please put the font file in the root directory of the website public/fonts/', 1, 198, 13, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWordFont', 'Watermark text font', 1, 197, 13, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWordSize2', 'Big picture watermark text size', 1, 196, 13, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWord', 'Watermark text', 1, 193, 13, 0, 'en');

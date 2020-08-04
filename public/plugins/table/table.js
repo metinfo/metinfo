@@ -82,6 +82,7 @@
         });
         // 插件参数
         var datatable_order=datatable_order||0,
+            new_option=datatable_option[datatable_order]||'',
             option={
                 scrollX: M.device_type=='m'?true:'',
                 sDom: obj.data('table-sdom')||'t<"F"pi>',
@@ -102,23 +103,43 @@
                     url: obj.data('table-ajaxurl'),
                     data: function ( para ) {
                         // 参数集
-                        var para_other={};
+                        var filter={},
+                            other_para={};
                         $("[data-table-search]").each(function(index,val){
-                            if($(this).parents('.dataTable').attr('data-datatable_order')==datatable_order || $($(this).data('table-search')).attr('data-datatable_order')==datatable_order) para_other[$(this).attr('name')]=$(this).val();
+                            if(($(this).parents('.dataTable').attr('data-datatable_order')||$($(this).data('table-search')).attr('data-datatable_order'))==datatable_order){
+                                var value=$(this).val();
+                                if($(this).attr('type')=='checkbox'){
+                                    value='';
+                                    $('input[data-table-search][type="checkbox"][name="'+$(this).attr('name')+'"]:checked').each(function(index1,val1){
+                                        value+=(index1?'#@met@#':'')+$(this).val();
+                                    })
+                                }
+                                var $obj=$(this).attr('type')=='checkbox'?$('input[data-table-search][type="checkbox"][name="'+$(this).attr('name')+'"]:eq(0)'):$(this);
+                                if(typeof $obj.attr('data-table-filter')!='undefined') filter[$(this).attr('name')]=value;
+                                other_para[$(this).attr('name')]=value;
+                            }
                         });
+                        para.filter=filter;
                         if(typeof para.order!='undefined'){
+                            var new_order='';
+                            if(new_option.ajax_para&&new_option.ajax_para.order_type==1) new_order={};
                             $.each(para.order, function(index, val) {
                                 var $order=obj.find('thead th').eq(val.column),
                                     order_info=$order.data('order_info');
                                 if(order_info){
                                     order_info=order_info.split('|');
                                     var order_value=order_info[1].split(',');
-                                    para.order[index].name=order_info[0];
-                                    para.order[index].value=order_value[val.dir=='asc'?0:1];
+                                    if(new_order){
+                                        new_order[order_info[0]]=order_value[val.dir=='asc'?0:1];
+                                    }else{
+                                        para.order[index].name=order_info[0];
+                                        para.order[index].value=order_value[val.dir=='asc'?0:1];
+                                    }
                                 }
                             });
+                            if(new_order) para.order=new_order;
                         }
-                        return $.extend(true,para,para_other);
+                        return new_option.ajax_para&&new_option.ajax_para.handle?new_option.ajax_para.handle(para,other_para,filter):$.extend(true,para,other_para);
                     }
                 },
                 initComplete: function(settings, json) {// 表格初始化回调函数
@@ -167,19 +188,19 @@
                     // $('#'+$(this).attr('id')+'_paginate .paginate_button.active').addClass('disabled');
                     // 添加表单验证
                     metui.use(['form','formvalidation'],function(){$show_body.metFormAddField();});
-                    $(this).find('.checkall-all').prop({checked:false});
+                    $('.checkall-all',this).prop({checked:false});
                 },
                 rowCallback: function(row,data){// 行class
                     if(data.toclass) $(row).addClass(data.toclass);
                 },
                 columnDefs: columnDefs// 单元格class
             };
-        if(typeof datatable_option[datatable_order]!='undefined'){
-            if(datatable_option[datatable_order].columnDefs){
-                option.columnDefs=option.columnDefs.concat(datatable_option[datatable_order].columnDefs);
-                delete datatable_option[datatable_order].columnDefs;
+        if(typeof new_option!='undefined'){
+            if(new_option.columnDefs){
+                option.columnDefs=option.columnDefs.concat(new_option.columnDefs);
+                delete new_option.columnDefs;
             }
-            $.extend(true,option, datatable_option[datatable_order]);
+            $.extend(true,option, new_option);
         }
         return option;
     };

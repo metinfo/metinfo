@@ -741,7 +741,7 @@
                 },
                 label:METLANG.block_style,
                 dl:1,
-                other:'<button type="button" class="btn btn-success ml-1 float-left btn-blockui-change">'+METLANG.change+'</button>',
+                other:'<button type="button" class="btn btn-primary ml-1 float-left btn-blockui-change">'+METLANG.change+'</button>',
                 other1:'<div class="blockui-view mt-2"><a href="'+blockui_view+'" title="'+METLANG.clickview+'" target="_blank"><img src="'+blockui_view+'" style="max-width: 300px;max-height: 100px;"/></a></div>',
                 tips:METLANG.change_blockstyle_tips,
             })+html;

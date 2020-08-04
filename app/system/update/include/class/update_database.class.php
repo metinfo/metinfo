@@ -1251,12 +1251,14 @@ class update_database extends database
 
             $query = "DELETE FROM {$_M['table']['app_plugin']} WHERE no = 10043";
             DB::query($query);
-        }else{
-            $file = PATH_WEB.'app/app/shop/admin/install.class.php';
-            include $file;
-            $install = new install();
-            if (method_exists($install, 'appupdate')) {
-                $install->appcheke();
+        } else {
+            $file = PATH_WEB . 'app/app/shop/admin/install.class.php';
+            if (file_exists($file)) {
+                include $file;
+                $install = new install();
+                if (method_exists($install, 'appupdate')) {
+                    $install->appcheke();
+                }
             }
         }
 
@@ -1267,12 +1269,14 @@ class update_database extends database
             DB::query($query);
             $query = "DELETE FROM {$_M['table']['pay_config']}";
             DB::query($query);
-        }else{
-            $file = PATH_WEB.'app/app/pay/admin/install.class.php';
-            include $file;
-            $install = new install();
-            if (method_exists($install, 'appupdate')) {
-                $install->appcheke();
+        } else {
+            $file = PATH_WEB . 'app/app/pay/admin/install.class.php';
+            if (file_exists($file)) {
+                include $file;
+                $install = new install();
+                if (method_exists($install, 'appupdate')) {
+                    $install->appcheke();
+                }
             }
         }
     }

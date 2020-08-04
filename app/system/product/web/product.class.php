@@ -42,6 +42,7 @@ class product extends news
         $shop_plugin_file = PATH_ALL_APP . 'shop/plugin/plugin_shop.class.php';
         if ($_M['config']['shopv2_open'] && file_exists($shop_plugin_file)) {
             define('MET_SHOP_PARA', 1);
+            load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
             load::plugin('doproduct_show', 0, $this->input);
         } else {
             load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转

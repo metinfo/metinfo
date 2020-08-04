@@ -13,7 +13,6 @@ function fetch(that) {
     function(result) {
       let data = result.data
       Object.keys(data).map(item => {
-        console.log(item);
           if (item === 'met_auto_register') {
             if (data[item] > 0 && $(`[name="${item}"]`).val() === '0') $(`[name="${item}"]`).click()
             return

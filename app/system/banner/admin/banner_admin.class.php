@@ -224,9 +224,12 @@ class banner_admin extends base_admin
         if ($_M['form']['met_clumid_all'] != 1) {
             $module = ',' . $module . ',';
         }
+
+        $_M['form']['height'] = is_numeric($_M['form']['height']) ? $_M['form']['height'] : 0;
+        $_M['form']['height_t'] = is_numeric($_M['form']['height_t']) ? $_M['form']['height_t'] : 0;
+        $_M['form']['height_m'] = is_numeric($_M['form']['height_m']) ? $_M['form']['height_m'] : 0;
         // 添加banner属性img_title_color、img_des、img_des_color、img_text_position（新模板框架v2）
         if ($_M['form']['action'] == 'add') {
-
             $query = "INSERT INTO {$_M['table']['flash']} (module,img_path,mobile_img_path,img_link,img_title,img_title_color,img_des,img_des_color,img_text_position,img_title_fontsize,img_des_fontsize,flash_path,flash_back,no_order,width,height,height_t,height_m,img_title_mobile,img_title_color_mobile,img_text_position_mobile,img_title_fontsize_mobile,img_des_mobile,img_des_color_mobile,img_des_fontsize_mobile,wap_ok,target,lang) VALUES('$module','{$_M['form']['img_path']}','{$_M['form']['mobile_img_path']}','{$_M['form']['img_link']}','{$_M['form']['img_title']}','{$_M['form']['img_title_color']}','{$_M['form']['img_des']}','{$_M['form']['img_des_color']}','{$_M['form']['img_text_position']}','{$_M['form']['img_title_fontsize']}','{$_M['form']['img_des_fontsize']}','{$_M['form']['flash_path']}','{$_M['form']['flash_back']}','{$_M['form']['no_order']}','{$_M['form']['width']}','{$_M['form']['height']}','{$_M['form']['height_t']}','{$_M['form']['height_m']}','{$_M['form']['img_title_mobile']}','{$_M['form']['img_title_color_mobile']}','{$_M['form']['img_text_position_mobile']}','{$_M['form']['img_title_fontsize_mobile']}','{$_M['form']['img_des_mobile']}','{$_M['form']['img_des_color_mobile']}','{$_M['form']['img_des_fontsize_mobile']}','0','{$_M['form']['target']}','{$_M['lang']}')";
            
             $res = DB::query($query);

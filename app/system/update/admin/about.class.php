@@ -104,6 +104,10 @@ class about extends admin
     {
         global $_M;
         $version = $_M['form']['version'];
+        $pattern = "/^[0-9\.]+$/";
+        if (!preg_match($pattern, $version)) {
+            return false;
+        }
         $update_zip = PATH_WEB.'cache/update/'.$version.'.zip';
         if (!file_exists($update_zip)) {
             $this->error($_M['word']['updatenofile']);

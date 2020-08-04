@@ -4,11 +4,11 @@
 $.fn.metDataTable=function(){
     var $datatable=$('.dataTable',this);
     if($datatable.length){
-        if(!performance.navigation.type && location.search.indexOf('&turnovertext=')<0){// 如果是重新进入页面，则清除DataTable表格的Local Storage，清除本插件stateSave参数保存的表格信息
+        // if(!performance.navigation.type){// 如果是重新进入页面，则清除DataTable表格的Local Storage，清除本插件stateSave参数保存的表格信息
             for(var i=0;i<localStorage.length;i++){
                 if(localStorage.key(i).indexOf('DataTables_')>=0) localStorage.removeItem(localStorage.key(i));
             }
-        }
+        // }
         var datatable_langurl= M['weburl']+'public/web/plugins/datatables/language/';
         // datatable多语言选择
         if("undefined" != typeof M){
@@ -74,20 +74,17 @@ $.fn.metDataTable=function(){
         datatable_langurl+='.json';
         window.datatableOption=function(obj,datatable_order){
             // 列表class
-            var cadcs = obj.find("th[data-table-columnclass]"),
-                cjson=[];
-            if(cadcs.length>0){
-                cadcs.each(function(i){
-                    var c = $(this).attr("data-table-columnclass"),n=$(this).index();
-                    cjson[i] = [];
-                    cjson[i]['className'] = c;
-                    cjson[i]['targets']=[];
-                    cjson[i]['targets'][0] = n;
-                });
-            }
+            var columnDefs=[];
+            obj.find("thead th[data-table-columnclass]").each(function(i){
+                columnDefs.push({
+                    className:$(this).attr("data-table-columnclass"),
+                    targets:[$(this).index()]
+                })
+            });
             // 插件参数
             datatable_order=datatable_order||0;
-            var option={
+            var new_option=datatable_option[datatable_order]||'',
+                option={
                     scrollX: M['device_type']=='m'?true:'',
                     sDom: 'tip',
                     responsive: true,
@@ -106,13 +103,44 @@ $.fn.metDataTable=function(){
                     ajax: {
                         url: obj.data('table-ajaxurl')||obj.data('ajaxurl'),
                         data: function ( para ) {
-                            var para_other={};
-                            if($("[data-table-search]").length){
-                                $("[data-table-search]").each(function(index,val){
-                                    para_other[$(this).attr('name')]=$(this).val();
+                            // 参数集
+                            var filter={},
+                                other_para={};
+                            $("[data-table-search]").each(function(index,val){
+                                if(($(this).parents('.dataTable').attr('data-datatable_order')||(typeof $(this).data('table-search')=='boolean'||!$(this).data('table-search')?0:$(this).data('table-search')))==datatable_order){
+                                    var value=$(this).val();
+                                    if($(this).attr('type')=='checkbox'){
+                                        value='';
+                                        $('input[data-table-search][type="checkbox"][name="'+$(this).attr('name')+'"]:checked').each(function(index1,val1){
+                                            value+=(index1?'#@met@#':'')+$(this).val();
+                                        })
+                                    }
+                                    var $obj=$(this).attr('type')=='checkbox'?$('input[data-table-search][type="checkbox"][name="'+$(this).attr('name')+'"]:eq(0)'):$(this);
+                                    if(typeof $obj.attr('data-table-filter')!='undefined') filter[$(this).attr('name')]=value;
+                                    other_para[$(this).attr('name')]=value;
+                                }
+                            });
+                            para.filter=filter;
+                            if(typeof para.order!='undefined'){
+                                var new_order='';
+                                if(new_option.ajax_para&&new_option.ajax_para.order_type==1) new_order={};
+                                $.each(para.order, function(index, val) {
+                                    var $order=obj.find('thead th').eq(val.column),
+                                        order_info=$order.data('order_info');
+                                    if(order_info){
+                                        order_info=order_info.split('|');
+                                        var order_value=order_info[1].split(',');
+                                        if(new_order){
+                                            new_order[order_info[0]]=order_value[val.dir=='asc'?0:1];
+                                        }else{
+                                            para.order[index].name=order_info[0];
+                                            para.order[index].value=order_value[val.dir=='asc'?0:1];
+                                        }
+                                    }
                                 });
+                                if(new_order) para.order=new_order;
                             }
-                            return $.extend({},para,para_other);
+                            return new_option.ajax_para&&new_option.ajax_para.handle?new_option.ajax_para.handle(para,other_para,filter):$.extend(true,para,other_para);
                         }
                     },
                     initComplete: function(settings, json) {// 表格初始化回调函数
@@ -120,11 +148,11 @@ $.fn.metDataTable=function(){
                             $paginate=$wrapper.find('.dataTables_paginate'),
                             $info=$wrapper.find('.dataTables_info');
                         $wrapper.addClass('clearfix');
-                        $paginate.addClass('pull-xs-left');
-                        $info.addClass('pull-xs-right');
-                        if(json.recordsTotal>settings._iDisplayLength){
+                        $paginate.addClass('pull-md-left text-xs-center');
+                        $info.addClass('pull-md-right');
+                        if(json.recordsTotal>2){
                             // 跳转到某页
-                            var gotopage_html='<div class="gotopage pull-xs-left m-t-15 m-l-10"><span>跳转到第</span> <input type="text" name="gotopage" class="form-control form-control-sm w-50 text-xs-center"/> 页 <input type="button" class="btn btn-default btn-sm gotopage-btn" value="跳转"/></div>';
+                            var gotopage_html='<div class="gotopage inline-block m-t-15 m-l-10"><span>'+(M['synchronous']=='cn'?'跳转至':'Go to')+'</span> <input type="text" name="gotopage" class="form-control form-control-sm w-50 text-xs-center"/> 页 <input type="button" class="btn btn-default btn-sm gotopage-btn" value="'+(M['synchronous']=='cn'?'跳转':'to')+'"/></div>';
                             $paginate.after(gotopage_html);
                             var $gotopage=$paginate.next('.gotopage');
                             $gotopage.find('.gotopage-btn').click(function(event) {
@@ -155,18 +183,19 @@ $.fn.metDataTable=function(){
                         $('#'+$(this).attr('id')+'_paginate .paginate_button.active').addClass('disabled');
                         // 添加表单验证
                         if(typeof $.fn.metFormAddField !='undefined') $show_body.metFormAddField();
+                        $('.checkall-all',this).prop({checked:false});
                     },
                     rowCallback: function(row,data){// 行class
                         if(data.toclass) $(row).addClass(data.toclass);
                     },
-                    columnDefs: cjson// 单元格class
+                    columnDefs: columnDefs// 单元格class
                 };
-            if(typeof datatable_option[datatable_order]!='undefined'){
-                if(datatable_option[datatable_order].columnDefs){
-                    option.columnDefs=option.columnDefs.concat(datatable_option[datatable_order].columnDefs);
-                    delete datatable_option[datatable_order].columnDefs;
+            if(new_option){
+                if(new_option.columnDefs){
+                    option.columnDefs=option.columnDefs.concat(new_option.columnDefs);
+                    delete new_option.columnDefs;
                 }
-                $.extend(true,option, datatable_option[datatable_order]);
+                $.extend(true,option, new_option);
             }
             return option;
         };

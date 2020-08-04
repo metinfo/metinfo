@@ -249,9 +249,10 @@ class admin extends common
         }
         $n = $m_name;
 
-        if ($n == 'index') {
-            $n = 'manage';
-        }
+//        if ($n == 'index') {
+//            $n = 'manage';
+//        }
+
         $field = '-';
 
         if ($n == 'myapp' && $m_class == 'index' && $m_action == 'doAction') {

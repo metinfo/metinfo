@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-link-list">
   <div class="d-flex justify-content-between">
-    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".link-add-modal"
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".link-add-modal"
       data-modal-url="link/add/?n=link&c=link_admin&a=doGetColumnList" data-modal-size="lg" data-modal-fullheight="1"
       data-modal-title="{$word.mobiletips3}" data-modal-tablerefresh="#link-table">
       {$word.mobiletips3}

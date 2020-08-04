@@ -27,9 +27,11 @@ echo <<<EOT
 <body>
 <div class="bg-primary py-3">
 	<div class="container">
-		<div class="d-flex justify-content-between align-items-center">
-			<a href="https://www.metinfo.cn" title='米拓企业建站系统' target="_blank"><img src="../public/images/logo1.png" alt="MetInfo|米拓企业建站系统" height="40"/></a>
-			<div class="text-white h5 mb-0">MetInfo|米拓企业建站系统 7.1.0 <font>全新安装</font></div>
+		<div class="row justify-content-center">
+			<div class="col-12 col-lg-10 col-xl-9 d-flex justify-content-between align-items-center">
+				<a href="https://www.metinfo.cn" title='米拓企业建站系统' target="_blank"><img src="../public/images/logo.png" alt="MetInfo|米拓企业建站系统" height="30"/></a>
+				<div class="text-white h5 mb-0">MetInfo|米拓企业建站系统 7.1.0 <font>全新安装</font></div>
+			</div>
 		</div>
 	</div>
 </div>

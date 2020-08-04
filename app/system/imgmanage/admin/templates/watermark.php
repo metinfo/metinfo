@@ -120,17 +120,17 @@
           </div>
         </dd>
       </dl>
-      <dl>
-        <dt>
-          <label class='form-control-label'>{$word.setimgWordFont}</label>
-        </dt>
-        <dd>
-          <div class='form-group clearfix'>
-            <input type="text" name="met_text_fonts" class="form-control">
-            <span class="text-help ml-2">{$word.setimgTip4}</span>
-          </div>
-        </dd>
-      </dl>
+      <?php
+      $upload=array(
+          'title'=>$word['setimgWordFont'],
+          'name'=>'met_text_fonts',
+          'noimage'=>1,
+          'type'=>'file',
+          'format'=>'ttf',
+          'tips'=>$word['setimgTip4']
+      );
+      ?>
+      <include file="pub/content_details/upload"/>
       <dl>
         <dt>
           <label class='form-control-label'>{$word.setimgWordAngle}</label>
@@ -153,7 +153,6 @@
           </div>
         </dd>
       </dl>
-      <dl>
     </div>
     <div class="met_wate_class-2 hide">
       <dl>

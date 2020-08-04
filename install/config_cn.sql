@@ -184,7 +184,7 @@ INSERT INTO met_language VALUES (null, 'emailcheck', '请输入正确的Email地
 INSERT INTO met_language VALUES (null, 'Previous_news', '上一篇', 0, 9, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'Next_news', '下一篇', 0, 10, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'close', '关闭', 0, 0, 0, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'browserupdatetips', '你正在使用一个 <strong>过时</strong> 的浏览器。请 <a href=https://browsehappy.com/ target=_blank>升级您的浏览器</a>，以提高您的体验。', 0, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'browserupdatetips', '你正在使用一个 的浏览器。请以提高您的体验。', 0, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'newFeedback', '收到了新的反馈', 0, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'opfailed', '操作失败', 0, 0, 1, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'jobPrompt', '收到了新的简历', 0, 0, 0, 0, 'cn');
@@ -261,10 +261,8 @@ INSERT INTO met_config VALUES (null, 'advanced_search_linkage', '1', '', 0, 0, '
 INSERT INTO met_config VALUES (null, 'tag_show_range', '0', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'tag_show_number', '4', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'tag_search_type', 'module', '', 0, 0, 'cn');
-INSERT INTO met_config VALUES (null, 'global_search_type', '0', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'access_type', '1', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_webname', '网站名称', '', 0, 0, 'cn');
-INSERT INTO met_config VALUES (null, 'metconfig_api', 'https://u.mituo.cn/api/client', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_logo', '../upload/201801/1515549638.png', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_mobile_logo', '../upload/201807/1532137488.png', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_404content', '404错误，页面不见了。。。', '', 0, 0, 'cn');
@@ -279,7 +277,6 @@ INSERT INTO met_config VALUES (null, 'metconfig_thumb_kind', '2', '', 0, 0, 'cn'
 INSERT INTO met_config VALUES (null, 'metconfig_text_wate', 'MetInfo', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_text_size', '10', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_text_bigsize', '35', '', 0, 0, 'cn');
-INSERT INTO met_config VALUES (null, 'metconfig_text_fonts', '../include/fonts/arial.ttf', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_text_color', '#000000', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_text_angle', '0', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_watermark', '0', '', 0, 0, 'cn');
@@ -405,6 +402,7 @@ INSERT INTO met_config VALUES (null, 'metconfig_qq_open', '0', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_appid', '', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_appsecret', '', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_token', '', '', 0, 0, 'cn');
+INSERT INTO met_config VALUES (null, 'metconfig_auto_register', '', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_member_bgcolor', '', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_member_bgimage', '', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_title', '{webname} 会员中心 注册验证', '', 0, 0, 'cn');

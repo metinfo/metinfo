@@ -85,7 +85,7 @@
                   modalOktext:METLANG.confirm,
                   modalFooterclass:'text-right',
                   modalFooter: `<button type="button" class="btn btn-default mr-2" data-dismiss="modal">${METLANG.cancel}</button>
-                  ${install ? `<button type="button" class="btn btn-success mr-2 btn-backup" >${METLANG.databackup4}</button>` : ''}`
+                  ${install ? `<button type="button" class="btn btn-primary mr-2 btn-backup" >${METLANG.databackup4}</button>` : ''}`
                 })
               )
               modal = $('.update-warning-modal')

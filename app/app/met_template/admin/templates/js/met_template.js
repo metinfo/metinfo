@@ -27,7 +27,7 @@
 
         const noTemplate = `<div class="alert alert-primary tips w-100">
         <p>还没有购买模板或购买的模板绑定域名不是：${url}（注意域名不能带http://、二级目录） </p>
-        <a href="https://www.metinfo.cn/product/" target="_blank"><button class="btn btn-success">${METLANG.met_template_buytemplates}</button></a>
+        <a href="https://www.metinfo.cn/product/" target="_blank"><button class="btn btn-primary">${METLANG.met_template_buytemplates}</button></a>
           </div>`
         if (result.status && !result.data) {
           list.html(noTemplate)
@@ -61,7 +61,7 @@
           ${
             item.install
               ? `<div class="overlay">
-            <button class="btn btn-success btn-install" >安装</button>
+            <button class="btn btn-primary btn-install" >安装</button>
           </div>`
               : ''
           }
@@ -511,7 +511,7 @@
           ${METLANG.loginconfirm}
           </button>
           </a>
-          <a href="https://u.mituo.cn/#/user/register" target="_blank"><button class="btn btn-success">${METLANG.registration}</button></a>`
+          <a href="https://u.mituo.cn/#/user/register" target="_blank"><button class="btn btn-primary">${METLANG.registration}</button></a>`
           user.html(userHtml)
           tips.html(noLoginTips)
         }

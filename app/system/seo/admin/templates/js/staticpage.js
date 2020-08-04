@@ -85,7 +85,7 @@
                 .okBtn(METLANG.confirm)
                 .cancelBtn(METLANG.cancel)
                 .confirm(METLANG.seotips12, function(e) {
-                  that.obj.find(".btn-success").click();
+                  that.obj.find(".met_webhtm .btn").click();
                   setTimeout(() => {
                     $(".html-link:first").click();
                   }, 800);
@@ -158,39 +158,39 @@
       const name = $(this).text();
       const title = $(this).data("name");
       const html_loading = modal.find(".html-loading");
+      const html_loading_h = html_loading.height();
       html_loading.html(
-        `<p style="font-size:16px;" class="createing">${name}${METLANG.ing}...</p>`
+        `<p style="font-size:16px;" class="createing">${name}${METLANG.ing}...</p><div class="html-list"></div>`
       );
       const url = $(this).data("url");
+      const html_list = html_loading.find('.html-list');
       metui.request(
         {
           url: url
         },
         function(result) {
           const len = result.data.length;
-          let html = [];
+          var createHtmlCallback=function(val,res){
+            let order = html_list.find('p').length + 1,
+              p =`<p><span style="color:green">(${order}/${len})</span> ${res.suc > 0 ? val.suc:val.fail}</p>`;
+            html_list.append(p);
+            if (order === len) {
+              $(".createing").text(`${title}${METLANG.static_page_success}`);
+            }
+            var scrolltop=html_list.height()-html_loading_h+40;
+            scrolltop && html_loading.scrollTop(scrolltop);
+          };
           result.data.map((val, index) => {
             metui.request(
               {
                 url: val.url
               },
               function(res) {
-                let p =
-                  res.suc > 0 ? `<p>${val.suc}</p>` : `<p>${val.fail}</p>`;
-                html[index] = p;
-                if (index + 1 === len) {
-                  $(".createing").text(
-                    `${title}${METLANG.static_page_success}`
-                  );
-                  html.map((v, k) => {
-
-                      html_loading.append(v);
-
-                  });
-                }
-
+                createHtmlCallback(val,res);
               }
-            );
+            ).fail(function(asdas) {
+              createHtmlCallback(val,{suc:0});
+            });
           });
         }
       );

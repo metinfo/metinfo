@@ -186,7 +186,7 @@ if(!$head_no && !$_M['head_no']){
                         <li class="dropdown-item"><a href="{$val.url}&switch=1" class='block'>{$val.name}</a></li>
                         <?php } ?>
                         <li class="dropdown-item">
-                            <a href='{$url.adminurl}anyid=10&n=language&c=language_admin&a=dolangadd' class="btn btn-success"><i class="fa fa-plus"></i>{$word.added}{$word.langweb}</a>
+                            <a href='{$url.adminurl}anyid=10&n=language&c=language_admin&a=dolangadd' class="btn btn-primary"><i class="fa fa-plus"></i>{$word.added}{$word.langweb}</a>
                         </li>
                     </ul>
                 </div>

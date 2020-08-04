@@ -474,6 +474,8 @@ class web extends common
         $data = load::sys_class('label', 'new')->get($module)->get_one_list_contents($_M['form']['id']);
         $classnow = $data['class3'] ? $data['class3'] : ($data['class2'] ? $data['class2'] : $data['class1']);
         $this->input_class($classnow);
+        $data['updatetime'] = date($_M['config']['met_contenttime'], strtotime($data['original_updatetime']));
+        $data['addtime'] = date($_M['config']['met_contenttime'], strtotime($data['original_addtime']));
 
         //产品模块数据处理
         if ($module == 'product') {
@@ -497,9 +499,14 @@ class web extends common
             }
         }
 
-        $data['updatetime'] = date($_M['config']['met_contenttime'], strtotime($data['original_updatetime']));
-        $data['addtime'] = date($_M['config']['met_contenttime'], strtotime($data['original_addtime']));
-        $this->check($data['access']);
+        //静态页权限验证
+        if ($data['access'] && $_M['form']['html_filename']) {
+            $groupid = load::sys_class('auth', 'new')->encode($data['access']);
+            $data['access_code'] = $groupid;
+        }else{
+            $this->check($data['access']);
+        }
+
         $this->add_array_input($data);
         $this->seo($data['title'], $data['keywords'], $data['description']);
         $this->seo_title($data['ctitle']);
@@ -534,7 +541,15 @@ class web extends common
         }
         $classnow = $this->input_class($classnow);
         $data = load::sys_class('label', 'new')->get('column')->get_column_id($classnow);
-        $this->check($data['access']);
+
+        //静态页权限验证
+        if ($data['access'] && $_M['form']['html_filename']) {
+            $groupid = load::sys_class('auth', 'new')->encode($data['access']);
+            $data['access_code'] = $groupid;
+        }else{
+            $this->check($data['access']);
+        }
+
         unset($data['id']);
         unset($data['list_length']);
         $this->add_array_input($data);

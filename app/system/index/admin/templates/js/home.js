@@ -8,7 +8,7 @@
 		modalBody:'<p class="text-danger">'+METLANG.tips8_v6+'！</p>'
 		    +'<div>'
 		        +'<button type="button" class="btn btn-default no-prompt" data-url="'+M.url.admin+'?n=index&c=index&a=do_no_prompt" data-dismiss="modal">'+METLANG.nohint+'</button>'
-		        +'<a href="#/safe" class="btn btn-success ml-5 btn-adminfolder-change" title="'+METLANG.safety_efficiency+'">'+METLANG.tochange+'</a>'
+		        +'<a href="#/safe" class="btn btn-primary ml-5 btn-adminfolder-change" title="'+METLANG.safety_efficiency+'">'+METLANG.tochange+'</a>'
 		    +'</div>',
 		modalRefresh:'one',
 		modalFooterok:0

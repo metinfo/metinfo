@@ -30,7 +30,7 @@ defined('IN_MET') or exit('No permission');
             </div>
             <span class="text-help ml-2">{$word.setbasicTip4}</span>
             <div class="hide met_webhtm">
-              <a class="btn btn-success" tabindex="1" data-toggle="modal" data-target=".html-modal"
+              <a class="btn btn-primary" tabindex="1" data-toggle="modal" data-target=".html-modal"
                 data-modal-url="seo/html" data-modal-footerok="0" data-modal-size="xl"
                 data-modal-title="{$word.indexhtm}">{$word.indexhtm}</a>
             </div>

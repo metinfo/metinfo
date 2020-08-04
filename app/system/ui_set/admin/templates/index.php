@@ -165,7 +165,7 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
     <p>{$word.help2}：<span class='text-danger'>{$word.tips8_v6}！</span></p>
     <div>
         <button type='button' class="btn btn-default no-prompt" data-url="{$url.site_admin}?n=index&c=index&a=do_no_prompt" data-dismiss="alert">{$word.nohint}</button>
-        <button type='button' data-url="safe" class="btn btn-success ml-5 btn-adminfolder-change" title="{$word.safety_efficiency}" data-toggle="modal" data-target=".pageset-nav-modal" data-dismiss="alert">{$word.tochange}</button>
+        <button type='button' data-url="safe" class="btn btn-primary ml-5 btn-adminfolder-change" title="{$word.safety_efficiency}" data-toggle="modal" data-target=".pageset-nav-modal" data-dismiss="alert">{$word.tochange}</button>
     </div>
 </div>
 </if>

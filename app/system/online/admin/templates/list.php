@@ -7,7 +7,7 @@ $table_addlist='online-list';
 ?>
 <div class="alert alert-danger">{$word.online_tips1_v6}</div>
 <div>
-    <button type="button" class="btn btn-success btn-add" table-addlist="#{$table_addlist}" data-table-newid='1'><i class="fa fa-plus-circle"></i> {$word.online_addkefu_v6}</button>
+    <button type="button" class="btn btn-primary btn-add" table-addlist="#{$table_addlist}" data-table-newid='1'><i class="fa fa-plus-circle"></i> {$word.online_addkefu_v6}</button>
     <font class='text-danger ml-2'>{$word.admin_content_list1}</font>
 </div>
 <form method="POST" action="{$url.own_name}c=online&a=dolistsave" data-submit-ajax="1">

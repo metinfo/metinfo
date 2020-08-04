@@ -117,8 +117,8 @@ class base_database extends database
             //内容列表权限
             if ($_M['config']['access_type'] == 2) {
                 $access_res = self::get_access_sql();
-                if ($access_res != 'admin') {
-                    $sql .= " AND id IN ({$access_res}) ";
+                if ($access_res !== '') {
+                    $sql .= " AND access IN ({$access_res}) ";
                 }
             }
         }
@@ -195,28 +195,32 @@ class base_database extends database
             }
         }
 
+        //栏目条件
         if($_M['form']['search_module'] && $_M['form']['search'] == 'search'){
             //按模块收索不指定特定栏目
             $class123 = '';
         }
 
-        if ($this->multi_column == 1 && !$_M['form']['searchword']) {
-            //产品模块
-            $sql .= $this->get_multi_column_sql($class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
-        } else {
-            if ($class123['class1']['id'] && !$_M['form']['searchword']) {//搜索模块的兼容
-                if ($_M['form']['search'] != 'tag' || $_M['config']['tag_search_type'] == 'column') {
+        if ($_M['form']['search'] == 'tag' && $_M['config']['tag_search_type'] == 'module') {
+            $sql .= '';
+        }else{
+            if ($this->multi_column == 1) {
+                //产品模块
+                $sql .= $this->get_multi_column_sql($class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
+            } else {
+                if ($class123['class1']['id']) {
                     $sql .= "AND class1 = '{$class123['class1']['id']}' ";
                 }
-            }
-            if ($class123['class2']['id']) {
-                $sql .= "AND class2 = '{$class123['class2']['id']}' ";
-            }
-            if ($class123['class3']['id']) {
-                $sql .= "AND class3 = '{$class123['class3']['id']}' ";
+                if ($class123['class2']['id']) {
+                    $sql .= "AND class2 = '{$class123['class2']['id']}' ";
+                }
+                if ($class123['class3']['id']) {
+                    $sql .= "AND class3 = '{$class123['class3']['id']}' ";
+                }
             }
         }
 
+        //内容排序
         if ($class123['class1']['id']) {
             $defult_order = $class123['class1']['list_order'];
         }
@@ -245,39 +249,30 @@ class base_database extends database
     }
 
     /**
-     * 权限sql
+     * 内容权限
      * @return string
      */
     public function get_access_sql()
     {
         global $_M;
+        if (!$_M['user']) {
+            return 0;
+        }
         $access = load::sys_class('user', 'new')->get_user_access();
 
         if ($access === 'admin') {
-            return 'admin';
+            return '';
         } elseif ($access !== '') {
-            $query = "SELECT t1.id as main_id FROM `{$this->table}` as t1 JOIN `{$_M['table']['user_group']}`  as t2 on t1.access = t2.id AND t1.lang = t2.lang WHERE t1.lang = '{$_M['lang']}' AND t2.access <= {$access}; ";
-            $list1 = DB::get_all($query);
+            $user_group = DB::get_all("SELECT * FROM {$_M['table']['user_group']} WHERE {$this->langsql} AND access = '{$access}'");
 
-
-            $query = "SELECT t1.id as main_id FROM `{$this->table}` as t1 WHERE {$this->langsql} AND access = 0 ; ";
-            $list2 = DB::get_all($query);
-
-            if (is_array($list1) && is_array($list2)) {
-                $data = array_merge($list1, $list2);
-            } elseif ($list1 && is_array($list1)) {
-                $data = $list1;
-            } elseif ($list2 && is_array($list2)) {
-                $data = $list2;
+            $access_str = '0';
+            if ($user_group) {
+                foreach ($user_group as $row) {
+                    $access_str .= ",{$row['id']}";
+                };
+                $access_str = trim($access_str, ',');
             }
-
-            $new_data = array();
-            foreach ($data as $row) {
-                $new_data[] = $row['main_id'];
-            }
-
-            $list = implode(',', $new_data);
-            return $list;
+            return $access_str;
         }
     }
 

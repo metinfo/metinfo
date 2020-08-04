@@ -120,7 +120,7 @@ $html_class.=' met-admin';
 		                	<list data="$_M['user']['langok']" name="$v">
 		                    <a href="javascript:;" data-val='{$v.mark}' class='dropdown-item px-3'>{$v.name}</a>
 		                    </list>
-	                        <li class="px-3 py-1"><a href="#/language" class="btn btn-success btn-add-lang"><i class="fa fa-plus"></i> {$word.added}{$word.langweb}</a></li>
+	                        <li class="px-3 py-1"><a href="#/language" class="btn btn-primary btn-add-lang"><i class="fa fa-plus"></i> {$word.added}{$word.langweb}</a></li>
 		                </ul>
 		            </div>
 		            <div class="btn-group">

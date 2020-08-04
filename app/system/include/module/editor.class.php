@@ -94,8 +94,13 @@ class editor extends admin
         } else {
             echo $result;
         }
-
+        die();
     }
+
+    public function __destruct()
+    {
+    }
+
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

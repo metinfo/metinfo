@@ -75,6 +75,26 @@ class access extends web
             }
         }
     }
+
+    public function dochekpage()
+    {
+        global $_M;
+        $groupid = load::sys_class('auth', 'new')->decode($_M['form']['groupid']);
+        $power = load::sys_class('user', 'new')->check_power($groupid);
+        $lang = $_M['form']['lang'] ? $_M['form']['lang'] : $_M['lang'];
+        $gourl = $_M['gourl'] ? base64_encode($_M['gourl']) : base64_encode($_M['url']['web_site']);
+        if ($power > 0) {
+            $this->success();
+        } else {
+            if ($power == -2) {//跳登录
+                $this->error($_M['word']['systips1'], 0, $_M['url']['web_site'] . 'member/login.php?lang=' . $lang . '&gourl=' . $gourl, $_M['word']['systips1']);
+            }
+            if ($power == -1) {//跳首页
+                $this->error($_M['word']['systips2'],0,$_M['url']['web_site'] . 'index.php?lang=' . $lang);
+            }
+        }
+
+    }
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

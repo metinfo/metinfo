@@ -128,8 +128,8 @@ M['plugin']['datatables']=[
 ];
 M['plugin']['ueditor']=M['url']['public_plugins']+'ueditor/ueditor.all.min.js';
 M['plugin']['minicolors']=[
-    M['url']['public_plugins']+'color/jquery.minicolors.css',
-    M['url']['public_plugins']+'color/jquery.minicolors.min.js'
+    M['url']['public_plugins']+'minicolors/jquery.minicolors.css',
+    M['url']['public_plugins']+'minicolors/jquery.minicolors.min.js'
 ];
 M['plugin']['tokenfield']=[
     M['url']['public_plugins']+'bootstrap-tokenfield/bootstrap-tokenfield.min.css',

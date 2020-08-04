@@ -26,8 +26,16 @@ defined('IN_MET') or exit('No permission');
 				<if value="$upload['size']">data-size='1'</if>
 				<if value="$upload['multiple']">multiple</if>
 				<if value="$upload['delimiter']">data-delimiter='{$upload.delimiter}'</if>
-				accept="<if value="$upload['type'] neq 'file'">image/*<else/>*</if>"
+				<if value="$upload['type'] eq 'file'">
+				accept="*"
+				<elseif value="$upload['type'] eq 'image' || !$upload['type']" />
+				accept="image/*"
+				<else/>
+				accept="{$upload.type}"
+				</if>
+				<if value="$upload['format']">data-format="{$upload.format}"</if>
 				<if value="$upload['callback']">data-callback="{$upload.callback}"</if>
+				<if value="$upload['attr']">{$upload.attr}</if>
 				>
 			</div>
 			<if value="$upload['tips']">

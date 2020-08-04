@@ -916,6 +916,22 @@ INSERT INTO met_config VALUES(null,'metconfig_agents_img','../public/images/meti
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright_foot','Powered by <b><a href=https://www.metinfo.cn target=_blank title=CMS>MetInfo $metcms_v</a></b> &copy;2008-$m_now_year &nbsp;<a href=https://www.mituo.cn target=_blank title=米拓建站>mituo.cn</a>','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright_foot1','本站基于 <b><a href=https://www.metinfo.cn target=_blank title=米拓建站>米拓企业建站系统 $metcms_v</a></b> 搭建','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright_foot2','技术支持：<b><a href=https://www.mituo.cn target=_blank title=米拓建站>米拓建站 </a></b> $metcms_v ','','0','0','metinfo');
+INSERT INTO met_config VALUES (null, 'metconfig_text_fonts', '../public/fonts/Cantarell-Regular.ttf', '','0','0', 'metinfo');
+
+INSERT INTO met_config VALUES(null,'metconfig_secret_key','','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_host_new','app.metinfo.cn','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_editor', 'ueditor', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_sms_url', 'https://u.mituo.cn/api/sms', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_sms_token', '', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_smsprice','0.1','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_safe_prompt', '0', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_uiset_guide', '1', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_api', 'https://u.mituo.cn/api/client', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_301jump', '', '', 0, 0, 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_https', '', '', 0, 0, 'metinfo');
+INSERT INTO met_config VALUES(null,'disable_cssjs', 0, '', 0, 0, 'metinfo');
+
+INSERT INTO met_config VALUES(null,'metconfig_copyright_nofollow', 0, '', 0, 0, 'metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_copyright_type','0','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_type','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_linkurl','https://www.mituo.cn','','0','0','metinfo');
@@ -937,20 +953,6 @@ INSERT INTO met_config VALUES(null,'metconfig_agents_copyright','China Changsha 
 INSERT INTO met_config VALUES(null,'metconfig_agents_about','About Us','','0','0','en-metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_metmsg', '1', '', '', '', 'metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_pageset_name', 'Metinfo', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_patch','0','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_secret_key','','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_host_new','app.metinfo.cn','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_editor', 'ueditor', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_sms_url', 'https://u.mituo.cn/api/sms', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_sms_token', '', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_smsprice','0.1','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_safe_prompt', '0', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_uiset_guide', '1', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_api', 'https://u.mituo.cn/api/client', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null, 'metconfig_301jump', '', '', 0, 0, 'metinfo');
-INSERT INTO met_config VALUES(null, 'metconfig_https', '', '', 0, 0, 'metinfo');
-INSERT INTO met_config VALUES(null, 'disable_cssjs', 0, '', 0, 0, 'metinfo');
-INSERT INTO met_config VALUES(null, 'metconfig_copyright_nofollow', 0, '', 0, 0, 'metinfo');
 
 
 INSERT INTO `met_admin_column` VALUES ('1', 'lang_administration', 'manage', '0', '1301', '1', '0', 'manage', '', '1');

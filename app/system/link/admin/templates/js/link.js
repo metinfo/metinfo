@@ -71,7 +71,7 @@
   function delAll() {
     $(document).on('click', `#link-table .btn-delete-all`, function() {
       let ids = []
-      const $ids = $("[name='id']:checked")
+      const $ids = that.obj.find("#link-table [name='id']:checked")
       if ($ids.length === 0) {
         alertify.error(`${METLANG.js23}`)
         return
@@ -135,7 +135,7 @@
         }
         if (item === 'module') {
           that.activeData[item].map(val => {
-            $('.module-' + val).attr('checked', 'checked')
+            modal.find('.module-' + val).attr('checked', 'checked')
           })
           return
         }

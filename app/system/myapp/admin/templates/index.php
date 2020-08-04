@@ -30,7 +30,7 @@ if (!strstr($admin['admin_type'],'s1800') && !strstr($admin['admin_type'],'metin
     		{$word.landing}
     	</button>
     	</a>
-    	<button class="btn btn-success">{$word.registration}</button>
+    	<button class="btn btn-primary">{$word.registration}</button>
     </div>
     </if>
     <div class="met-myapp-list mt-3">
