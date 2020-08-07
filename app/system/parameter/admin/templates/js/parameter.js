@@ -22,6 +22,11 @@
 								item=[
 									M.component.checkall('item',val.id)+M.component.formWidget('no_order-'+val.id,val.no_order),
 									M.component.formWidget('name-'+val.id,val.name,'text',1),
+								];
+								if($.inArray(that.data.module, ['product','img','download'])<0){
+									item=item.concat([M.component.formWidget('description-'+val.id,val.description,'text')]);
+								}
+								item=item.concat([
 									M.component.formWidget({
 										name:'type-'+val.id,
 										type:'select',
@@ -43,8 +48,8 @@
 										data:val.access_options,
 										data_value_key:'val'
 									})
-								];
-								that.data.module=='message' && item.splice(3, 1);
+								]);
+								that.data.module=='message' && item.splice(4, 1);
 								if($.inArray(that.data.module, ['product','img','download'])<0) item=item.concat([M.component.formWidget({
 									name:'wr_ok-'+val.id,
 									type:'select',

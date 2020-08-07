@@ -30,20 +30,17 @@ class parameter_handle extends handle
             if ($val['type_class'] != 'ftype_input ftype_code') {
                 $val['para'] = "para{$val['id']}";// 兼容v5模板
                 $val['dataname'] = "para{$val['id']}";
-                $val['placeholder'] = $val['description'];
-                $val['simplify'] = 0;
+                $val['placeholder'] = $val['description']?$val['description']:$val['name'];
+                // $val['simplify'] = 0;
                 $val['type_html'] = '';
-                $val['wr_ok'] = $val['wr_ok'];
 
                 if ($simplify && ($val['type'] < 4 || $val['type'] == 8 || $val['type'] == 9)) {
-                    $val['simplify'] = 1;
-                    $val['placeholder'] = $val['name'] . ' ' . $val['description'];
+                    // $val['simplify'] = 1;
                 } else {
-                    $val['type_html'] = "<label class='control-label'>{$val['name']}</label>";
+                    $val['type_html'] = "<label class='control-label'>{$val['placeholder']}</label>";
                 }
                 $fv_type = '';
                 $wr_ok = $val['wr_ok'] ? "data-fv-notempty=\"true\" data-fv-message=\"{$_M['word']['Empty']}\"{$fv_type}" : '';
-
 
                 //更具类型渲染表单
                 switch ($val['type']) {
@@ -56,7 +53,7 @@ class parameter_handle extends handle
                         }
                         if ($val['productlist']) {
                             $val['type_html'] .= "<select name='{$val['dataname']}' class='form-control' {$wr_ok}>";
-                            $val['type_html'] .= "<option value=''>{$val['name']}</option>";
+                            $val['type_html'] .= "<option value=''>{$val['placeholder']}</option>";
                             if (is_numeric($val['productlist'])) {
                                 $product = load::sys_class('label', 'new')->get('product')->get_module_list($val['productlist']);
                             } else {
@@ -204,7 +201,8 @@ class parameter_handle extends handle
                         $val['type_html'] .= "<input name='{$val['dataname']}' class='form-control' type='email' placeholder='{$val['placeholder']}' {$fv_email} {$wr_ok} />";
                         break;
                 }
-                $val['type_html'] = "<div class='form-group'>{$val['type_html']}</div>";
+                $required=$val['wr_ok']?'required':'';
+                $val['type_html'] = "<div class='form-group {$required}'>{$val['type_html']}</div>";
                 $list[] = $val;
             }
         }

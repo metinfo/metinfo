@@ -51,6 +51,7 @@ $.fn.extend({
             locale:M['validation_locale'],
             framework:'bootstrap4'
         });
+        $('[name][data-fv-notempty],[name][required],[name][data-required]',this).parents('.form-group:not(.required)').addClass('required');
         function success(fun,afterajax_ok){
             self_validation.on('success.form.fv', function(e) {
                 e.preventDefault();

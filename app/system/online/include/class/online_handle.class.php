@@ -37,7 +37,7 @@ class online_handle extends news_handle
                 break;
             case 1://taobao
                 // $url = "http://www.taobao.com/webww/ww.php?ver=3&touid=" . urlencode($content['value']) . "&siteid=cntaobao&status={$_M['config']['met_taobao_type']}&charset=utf-8'";
-                $url = "https://amos.alicdn.com/msg.aw?v=2&uid={$content['value']}&site=cnalichn&s={$_M['comfig']['met_alibaba_type']}&charset=UTF-8";
+                $url = "http://www.taobao.com/webww/ww.php?ver=3&touid=" . urlencode($content['value']) . "&siteid=cntaobao&status=1&charset=utf-8";
                 $content['url'] = $url;
                 break;
             case 2://wangwang

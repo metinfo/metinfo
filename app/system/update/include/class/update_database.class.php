@@ -177,7 +177,7 @@ class update_database extends database
         add_table('tags');
         add_table('admin_logs');
         add_table('menu');
-        add_table('met_weixin_reply_log');
+        add_table('weixin_reply_log');
     }
 
     /**

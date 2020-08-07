@@ -7,6 +7,7 @@ if($data['handle']){
 	unset($data['handle']);
 }
 $table_order='parameter-list-'.$data['module'].'-'.$data['class1'].'-'.$data['class2'].'-'.$data['class3'];
+$colspan=$data['module']=='message'?5:6;
 ?>
 <font class="text-danger">{$word.admin_content_list1}</font>
 <form method="POST" action="{$url.own_name}c=parameter_admin&a=doparasave&module={$data.module_value}&class1={$data.class1}&class2={$data.class2}&class3={$data.class3}" data-submit-ajax='1'>
@@ -15,14 +16,18 @@ $table_order='parameter-list-'.$data['module'].'-'.$data['class1'].'-'.$data['cl
 			<tr>
 				<include file="pub/content_list/checkall_all"/>
 				<th>{$word.paraname}</th>
+                <?php if (in_array($data['module_value'],array(6,7,8))) {
+                    $colspan++;
+                ?>
+                <th>{$word.message_tips2_v6}<span role="button" class="ml-1" data-plugin="webuiPopover" data-trigger="hover" data-animation="pop" data-width="300" data-padding="0" data-content="{$word.message_tips3_v6}"><i class="icon fa-question-circle-o text-primary"></i></span></th>
+                <?php } ?>
 				<th data-table-columnclass="text-center" width="80">{$word.parametertype}</th>
-				<if value="$data['module'] neq 'message'">
-				<th data-table-columnclass="text-center">{$word.category}</th>
-				</if>
+                <if value="$data['module'] neq 'message'">
+                    <th data-table-columnclass="text-center">{$word.category}</th>
+                </if>
 				<th data-table-columnclass="text-center" width="90">{$word.webaccess}</th>
 				<?php
-				$colspan=$data['module']=='message'?5:6;
-				if(strpos('345', $data['module_value'])===false){
+				if(in_array($data['module_value'],array(6,7,8))){
 					$colspan++;
 				?>
 				<th data-table-columnclass="text-center" width="60">{$word.user_must_v6}</th>
@@ -52,6 +57,11 @@ $table_order='parameter-list-'.$data['module'].'-'.$data['class1'].'-'.$data['cl
 									<input type="text" name="name" required class="form-control">
 								</div>
 							</td>
+							<if value="$data['module_value'] egt 6 && $data['module_value'] elt 8">
+							<td>
+								<input type="text" name="description" class="form-control">
+							</td>
+							</if>
 							<td class="text-center">
 								<select name="type" class="form-control w-a d-inline-block">
 									<list data="$data['type_options']" name="$v">

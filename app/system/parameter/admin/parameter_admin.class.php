@@ -90,6 +90,7 @@ class parameter_admin extends base_admin
             $list = array();
             $list['id'] = $val['id'];
             $list['name'] = $val['name'];
+            $list['description'] = $val['description'];
             $list['no_order'] = $val['no_order'];
             $list['type'] = $val['type'];
             $list['type_options'] = $this->para_type($val['type'], $module);
