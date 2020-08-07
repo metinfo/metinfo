@@ -248,78 +248,43 @@ INSERT INTO met_language VALUES (null, 'unbind', 'Unbind', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'weixin_login_error', 'Wechat login is not allowed in the current language', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'login_ok', 'Login successful', 0, 0, 1, 0, 'en');
 
-INSERT INTO met_config VALUES (null, 'global_search_range', 'all', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'global_search_type', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'global_search_module', '2', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'global_search_column', '3', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'column_search_range', 'parent', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'column_search_type', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'advanced_search_range', 'all', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'advanced_search_type', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'advanced_search_column', '3', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'advanced_search_linkage', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'tag_show_range', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'tag_show_number', '8', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'tag_search_type', 'module', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'access_type', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_webname', 'Website Name', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_logo', '../upload/201801/1515663135.png', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_mobile_logo', '../upload/201807/1532139830.png', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_404content', '404 error, the page is gone. . .', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_data_null', 'The page is gone', '', 0, 0, 'en');
+
+#系统配置
+INSERT INTO met_config VALUES (null, 'debug','0','','0','0','en');
 INSERT INTO met_config VALUES (null, 'metconfig_skin_user', 'metv7', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_big_wate', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_thumb_wate', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_wate_class', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_wate_img', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_wate_bigimg', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_thumb_kind', '2', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_text_wate', 'www.MetInfo.cn', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_text_size', '10', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_text_bigsize', '15', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_text_color', '#808080', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_text_angle', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_watermark', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_newsimg_x', '800', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_newsimg_y', '500', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productimg_x', '800', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productimg_y', '500', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_imgs_x', '800', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_imgs_y', '500', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_keywords', 'Website Keywords', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_description', 'MetInfo enterprise content manager system', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_listtime', 'Y/m/d', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_contenttime', 'Y-m-d H:i:s', '', 0, 0, 'en');
+
+#SEO-参数设置
+INSERT INTO met_config VALUES (null, 'metconfig_hometitle', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_title_type', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_alt', 'MetInfo enterprise content manager system | MetInfo CMS', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_atitle', 'MetInfo CMS', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_linkname', 'MetInfo CMS', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_footaddress', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_foottel', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_footother', '', '', 0, 0, 'en');
+#SEO-TAG标签设置
+INSERT INTO met_config VALUES (null, 'tag_show_number', '8', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'tag_show_range', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'tag_search_type', 'module', '', 0, 0, 'en');
+#SEO-404页面内容
+INSERT INTO met_config VALUES (null, 'metconfig_404content', '404 error, the page is gone. . .', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_data_null', 'The page is gone', '', 0, 0, 'en');
+#SEO-优化文字设置
 INSERT INTO met_config VALUES (null, 'metconfig_foottext', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_product_list', '8', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_news_list', '8', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_download_list', '10', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_img_list', '12', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_job_list', '2', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_message_list', '10', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_search_list', '10', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_fromname', 'MetInfo Co.,Ltd', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_smtp', '61.152.188.131', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_usename', 'test@mail.metinfo.cn', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_password', '123456', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_skin_css', 'metinfo.css', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_autothumb_ok', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_use', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_register', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_idvalidate', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_idvalid_key', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_newsdays', '3', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_hot', '100', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_listtime', 'Y/m/d', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_contenttime', 'Y-m-d H:i:s', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_vecan', '4', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_membercontrol', 'Welcome to register the member of【MetInfo】www.metinfo.cn, after activated you can enjoy more professional service!', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_seo', '<p><a href=\"http://www.metinfo.cn/\" target=\"_blank\">MetInfo CMS</a> | <a href=\"http://www.metinfo.cn/idc\" target=\"_blank\">Foreign Host</a> | <a href=\"http://ok.metinfo.cn/\" target=\"_blank\">Domain Registration</a></p>', '', 0, 0, 'en');
+#SEO-静态及伪静态配置
+INSERT INTO met_config VALUES (null, 'metconfig_webhtm', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_htmtype', 'html', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_htmpagename', '2', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_listhtmltype', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_htmlistname', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_htmway', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_htmlurl', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_pseudo', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_defult_lang', '0', '0', 0, 0, 'en');
+#SEO-siteMap
+INSERT INTO met_config VALUES (null, 'metconfig_sitemap_auto', '1', '', 0, 0, 'en');
+
+#客服配置
 INSERT INTO met_config VALUES (null, 'metconfig_online_skin', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_online_type', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_online_color', '#1baadb', '', 0, 0, 'en');
@@ -328,66 +293,87 @@ INSERT INTO met_config VALUES (null, 'metconfig_online_x', '10', '', 0, 0, 'en')
 INSERT INTO met_config VALUES (null, 'metconfig_online_y', '300', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_onlinenameok', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_qq_type', '4', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_msn_type', '1', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_taobao_type', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_alibaba_type', '10', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_skype_type', '13', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_addlinkopen', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_pageskin', '8', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_indexskin', 'index', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_urlblank', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_pnorder', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_hitsok', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_product_page', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_img_page', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_product_detail', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_img_detail', '1', '', 0, 0, 'en');
+
+#基本设置-网站信息
+INSERT INTO met_config VALUES (null, 'metconfig_webname', 'Website Name', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_logo', '../upload/201801/1515663135.png', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_mobile_logo', '../upload/201807/1532139830.png', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_logo_keyword', 'Logo Keywords', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_keywords', 'Website Keywords', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_description', 'MetInfo enterprise content manager system', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_footright', 'MSN:0000@000.com Email:sales@metinfo.cn', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_footaddress', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_foottel', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_footother', '', '', 0, 0, 'en');
+#基本设置-邮箱配置
+INSERT INTO met_config VALUES (null, 'metconfig_fd_fromname', 'MetInfo Co.,Ltd', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_fd_smtp', '61.152.188.131', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_fd_usename', 'test@mail.metinfo.cn', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_fd_password', '123456', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_fd_port', '25', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_fd_way', 'tls', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_fd_word', '', '', '0', '0', 'en');
+#基本设置-三方代码设置
+INSERT INTO met_config VALUES (null, 'metconfig_headstat', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_footstat','<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement("script");\r\n  hm.src = "https://hm.baidu.com/hm.js?520556228c0113270c0c772027905838";\r\n  var s = document.getElementsByTagName("script")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>','',0,0,'en');
+INSERT INTO met_config VALUES (null, 'metconfig_headstat_mobile', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_footstat_mobile','<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement("script");\r\n  hm.src = "https://hm.baidu.com/hm.js?520556228c0113270c0c772027905838";\r\n  var s = document.getElementsByTagName("script")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>','',0,0,'en');
+
+#基本设置-水印图
+INSERT INTO met_config VALUES (null, 'metconfig_big_wate', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_thumb_wate', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_wate_class', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_wate_img', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_wate_bigimg', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_text_wate', 'www.MetInfo.cn', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_text_size', '10', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_text_bigsize', '15', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_text_color', '#808080', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_text_angle', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_watermark', '0', '', 0, 0, 'en');
+#基本设置-缩略图
+INSERT INTO met_config VALUES (null, 'metconfig_autothumb_ok', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_thumb_kind', '2', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_newsimg_x', '800', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_newsimg_y', '500', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productimg_x', '800', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productimg_y', '500', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_imgs_x', '800', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_imgs_y', '500', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_productdetail_x', '800', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_productdetail_y', '500', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_imgdetail_x', '800', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_imgdetail_y', '500', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|pdf|jpg|jpeg|xls|png|gif|mp3|mp4|ico|swf', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_file_maxsize', '5', '', 0, 0, 'en');
+
+#安全设置-安全与效率
+INSERT INTO met_config VALUES (null, 'metconfig_img_rename', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'access_type', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_logs', 0, '', '0', '0', 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_auto_play_pc', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_auto_play_mobile', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_memberlogin_code', '1', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_login_code', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_webhtm', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_htmtype', 'html', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_htmpagename', '2', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_listhtmltype', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_htmlistname', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_htmway', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_pageclick', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_pagetime', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_pageprint', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_pageclose', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_deleteimg', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_columnshow', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_kzqie', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_seo', '<p><a href=\"http://www.metinfo.cn/\" target=\"_blank\">MetInfo CMS</a> | <a href=\"http://www.metinfo.cn/idc\" target=\"_blank\">Foreign Host</a> | <a href=\"http://ok.metinfo.cn/\" target=\"_blank\">Domain Registration</a></p>', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_footright', 'MSN:0000@000.com Email:sales@metinfo.cn', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_footstat','<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement("script");\r\n  hm.src = "https://hm.baidu.com/hm.js?520556228c0113270c0c772027905838";\r\n  var s = document.getElementsByTagName("script")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>','',0,0,'en');
-INSERT INTO met_config VALUES (null, 'metconfig_tools_ok', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_tools_code', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_img_rename', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_hometitle', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_index_content', '<p><span style=\"color: rgb(102, 102, 102); -webkit-text-size-adjust: none; \">MetInfo Co., Ltd. (</span><a href=\"http://www.metinfo.cn/\" style=\"color: rgb(28, 87, 196); -webkit-text-size-adjust: none; \" target=\"_blank\">MetInfo.cn</a><span style=\"color: rgb(102, 102, 102); -webkit-text-size-adjust: none; \">) focused on the field of network information and network marketing, integrated team of professional marketing ideas and networking technologies to provide customers with high quality online marketing services.</span></p>', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_port', '25', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_way', 'tls', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_headstat', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_sitemap_auto', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_maplng', '116.404', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_maplat', '39.915', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_mapzoom', '15', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_maptitle', 'Demonstration Company Name', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_mapcontents', 'Address: Yuelu District, some 518 South Second Ring Road Metro 3-17 Sunshine 100 International Building 803 # <br/> Tel :0000-88888888 0000-8888888', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_dimensional_logo', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productTabname', 'Detailed information', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productTabname_1', 'Specification', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productTabname_2', 'Packing', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productTabname_3', 'Tab four', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productTabname_4', 'Tab five', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_productTabok', '3', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_htmlurl', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_file_maxsize', '5', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|pdf|jpg|jpeg|xls|png|gif|mp3|mp4|ico|swf', '', 0, 0, 'en');
+
+#用户设置-会员设置
+INSERT INTO met_config VALUES (null, 'metconfig_member_use', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_register', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_vecan', '4', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_bgcolor', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_bgimage', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_agreement', 0, '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_agreement_content', '', '', 0, 0, 'en');
+#用户设置-邮件内容设置
+INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_title', '{webname} Member center registration verification', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} member center, Function is to carry out&nbsp;Member center registration verification, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131, 131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_email_password_title', '{webname} Member center password back', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_email_password_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member Center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} Important message on the member center, Function is to carry out&nbsp;Member center password back, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131, 131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_email_safety_title', '{webname} Member center to modify the binding mailbox', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_email_safety_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member Center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} Important message on the member center, Function is to carry out&nbsp;Member center bound mailbox modification, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131,131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
+#用户设置-社会化登录
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_appid', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_appsecret', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weibo_appkey', '', '', 0, 0, 'en');
@@ -401,25 +387,41 @@ INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_appid', '', '', 0, 0, 
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_appsecret', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_token', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_auto_register', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_bgcolor', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_bgimage', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_title', '{webname} Member center registration verification', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} member center, Function is to carry out&nbsp;Member center registration verification, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131, 131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_email_password_title', '{webname} Member center password back', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_email_password_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member Center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} Important message on the member center, Function is to carry out&nbsp;Member center password back, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131, 131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_email_safety_title', '{webname} Member center to modify the binding mailbox', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_email_safety_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member Center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} Important message on the member center, Function is to carry out&nbsp;Member center bound mailbox modification, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131,131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_defult_lang', '0', '0', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_headstat_mobile', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_footstat_mobile','<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement("script");\r\n  hm.src = "https://hm.baidu.com/hm.js?520556228c0113270c0c772027905838";\r\n  var s = document.getElementsByTagName("script")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>','',0,0,'en');
-INSERT INTO met_config VALUES (null, 'metconfig_fd_word', '', '', '0', '0', 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_logo_keyword', 'Logo Keywords', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (NULL, 'metconfig_logs', 0, '', '0', '0', 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_agreement', 0, '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_member_agreement_content', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_auto_play_pc', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_auto_play_mobile', '0', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'debug','0','','0','0','en');
+#用户设置-实名
+INSERT INTO met_config VALUES (null, 'metconfig_member_idvalidate', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_idvalid_key', '', '', 0, 0, 'en');
+
+#页面配置
+INSERT INTO met_config VALUES (null, 'metconfig_pnorder', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_product_page', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_img_page', '0', '', 0, 0, 'en');
+#页面配置-产品选项卡
+INSERT INTO met_config VALUES (null, 'metconfig_productTabname', 'Detailed information', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productTabname_1', 'Specification', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productTabname_2', 'Packing', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productTabname_3', 'Tab four', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productTabname_4', 'Tab five', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_productTabok', '3', '', 0, 0, 'en');
+#页面配置-分页条数
+INSERT INTO met_config VALUES (null, 'metconfig_product_list', '8', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_news_list', '8', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_download_list', '10', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_img_list', '12', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_job_list', '2', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_message_list', '10', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_search_list', '10', '', 0, 0, 'en');
+
+#页面搜索设置
+INSERT INTO met_config VALUES (null, 'global_search_range', 'all', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'global_search_type', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'global_search_module', '2', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'global_search_column', '3', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'column_search_range', 'parent', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'column_search_type', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'advanced_search_range', 'all', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'advanced_search_type', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'advanced_search_column', '3', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'advanced_search_linkage', '1', '', 0, 0, 'en');
 
 INSERT INTO met_lang VALUES(null,'English','1','2','en','en','en.gif','','0','0','html','','en');
 

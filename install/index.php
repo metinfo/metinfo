@@ -577,23 +577,6 @@ class install
             $query = "update {$met_config} set value='{$met_admin_type}' where name='met_admin_type'";
             $db->query($query);
 
-            $conlist = $db->get_one("SELECT * FROM {$met_config} WHERE name='met_weburl'");
-            $met_weburl = $conlist['value'];
-            $indexcont = $db->get_one("SELECT * FROM {$met_config} WHERE name='met_index_content' and lang='cn'");
-            if ($indexcont) {
-                $index_content = str_replace('#metinfo#', $met_weburl, $indexcont['value']);
-                $query = "update {$met_config} SET value = '{$index_content}' where name='met_index_content' and lang='cn'";
-                $db->query($query);
-            }
-            $showlist = $db->get_all("SELECT * FROM {$met_column} WHERE module='1'");
-            if ($showlist) {
-                foreach ($showlist as $key => $val) {
-                    $contentx = str_replace('#metinfo#', $met_weburl, $val['content']);
-                    $query = "update {$met_column} SET content = '{$contentx}' where id='{$val['id']}'";
-                    $db->query($query);
-                }
-            }
-
             $agents = '';
             if (file_exists('./agents.php')) {
                 include './agents.php';

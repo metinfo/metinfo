@@ -672,7 +672,7 @@ INSERT INTO met_language VALUES (null, 'setimgPosition', '水印位置', 1, 227,
 INSERT INTO met_language VALUES (null, 'setimgWordAngle', '水印文字角度', 1, 199, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgTip5', '水平为0', 1, 200, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWordColor', '水印文字颜色', 1, 201, 0, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'setimgTip4', '请将字体文件放到网站根目录 public/fonts/', 1, 198, 13, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'setimgTip4', '请上传.ttf格式的字体文件', 1, 198, 13, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWordFont', '水印文字字体', 1, 197, 13, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWordSize2', '大图水印文字大小', 1, 196, 13, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setimgWord', '水印文字', 1, 193, 13, 0, 'cn');
@@ -1066,6 +1066,8 @@ INSERT INTO met_language VALUES (null, 'language_updatelang_v6', '更新语言�
 INSERT INTO met_language VALUES (null, 'message_mailtext_v6', '_提交了留言', 1, 0, 20, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'nopicture', '暂无图片', 1, 0, 20, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'message_tips1_v6', '提示文字，为空时显示，输入文字后消失', 1, 0, 20, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'message_tips2_v6', '提示文字', 1, 119, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'message_tips3_v6', '用于设置前台表单输入框提示文字或选项名称；不填会显示参数名称', 1, 119, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'onlone_onlinelist_v6', '客服列表', 1, 0, 23, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'onlone_online_v6', '客服设置', 1, 0, 23, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'online_csname_v6', '客服名称', 1, 0, 23, 0, 'cn');

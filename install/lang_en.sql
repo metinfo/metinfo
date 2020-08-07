@@ -714,7 +714,7 @@ INSERT INTO met_language VALUES (null, 'setimgPosition', 'Watermark location', 1
 INSERT INTO met_language VALUES (null, 'setimgWordAngle', 'Watermark text angle', 1, 199, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgTip5', 'Level is 0', 1, 200, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWordColor', 'Watermark text color', 1, 201, 0, 0, 'en');
-INSERT INTO met_language VALUES (null, 'setimgTip4', 'Please put the font file in the root directory of the website public/fonts/', 1, 198, 13, 0, 'en');
+INSERT INTO met_language VALUES (null, 'setimgTip4', 'Please upload font file in. TTF format', 1, 198, 13, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWordFont', 'Watermark text font', 1, 197, 13, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWordSize2', 'Big picture watermark text size', 1, 196, 13, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setimgWord', 'Watermark text', 1, 193, 13, 0, 'en');
@@ -1100,6 +1100,8 @@ INSERT INTO met_language VALUES (null, 'language_updatelang_v6', 'Update languag
 INSERT INTO met_language VALUES (null, 'message_mailtext_v6', ' submitting a message', 1, 0, 20, 0, 'en');
 INSERT INTO met_language VALUES (null, 'nopicture', 'No picture', 1, 0, 20, 0, 'en');
 INSERT INTO met_language VALUES (null, 'message_tips1_v6', 'Prompt text, blank display, enter the text disappears', 1, 0, 20, 0, 'en');
+INSERT INTO met_language VALUES (null, 'message_tips2_v6', 'Prompt text', 1, 119, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'message_tips3_v6', 'It is used to set the prompt text or option name in the foreground form input box; if it is not filled in, the parameter name will be displayed', 1, 119, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'onlone_onlinelist_v6', 'Customer list', 1, 0, 23, 0, 'en');
 INSERT INTO met_language VALUES (null, 'onlone_online_v6', 'online service', 1, 0, 23, 0, 'en');
 INSERT INTO met_language VALUES (null, 'online_csname_v6', 'Customer service name', 1, 0, 23, 0, 'en');

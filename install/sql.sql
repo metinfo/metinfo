@@ -502,7 +502,7 @@ DROP TABLE IF EXISTS `met_link`;
 CREATE TABLE `met_link` (
   `id` int(11) NOT NULL auto_increment,
   `webname` varchar(255) DEFAULT '',
-  `module` varchar(255) DEFAULT '',
+  `module` text,
   `weburl` varchar(255) DEFAULT '',
   `weblogo` varchar(255) DEFAULT '',
   `link_type` int(11) DEFAULT '0',
