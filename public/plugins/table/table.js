@@ -212,7 +212,7 @@
             if(!$dataTable.length) return;
             metui.use('datatables',function(){
                 $dataTable.each(function(index, el) {
-                    var order=$(this).attr('data-datatable_order')&&$(this).attr('data-datatable_order')!=''?$(this).attr('data-datatable_order'):($(this).attr('id')?'#'+$(this).attr('id'):('met-datatable-'+new Date().getTime()));
+                    var order=$(this).attr('data-datatable_order')&&$(this).attr('data-datatable_order')!=''?$(this).attr('data-datatable_order'):($(this).attr('id')?'#'+$(this).attr('id'):('met-datatable-'+new Date().getTime()+index));
                     $(this).attr({'data-datatable_order':order});
                     !$(this).attr('id') && $(this).attr({id:order.substr(0,1)=='#'?order.substr(1):order});
                     $(this).attr('data-table-ajaxurl') && (datatable[order]=$(this).DataTable(datatableOption($(this),order)));

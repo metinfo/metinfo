@@ -53,7 +53,7 @@
         validation:function(){
             $(this).each(function(index, el) {
                 var $self=$(this),
-                    order=$(this).attr('data-validate_order')&&$(this).attr('data-validate_order')!=''?$(this).attr('data-validate_order'):($(this).attr('id')?'#'+$(this).attr('id'):new Date().getTime()),
+                    order=$(this).attr('data-validate_order')&&$(this).attr('data-validate_order')!=''?$(this).attr('data-validate_order'):($(this).attr('id')?'#'+$(this).attr('id'):(new Date().getTime()+index)),
                     self_validation='',
                     $table=$(table_selector,this);
                 $(this).attr({'data-validate_order':order});

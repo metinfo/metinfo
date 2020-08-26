@@ -608,6 +608,7 @@ class news_admin extends base_admin
             $content['class1'] = $class1;
             $content['class2'] = $class2;
             $content['class3'] = $class3;
+            $content['classother'] = '';
             $content['updatetime'] = date("Y-m-d H:i:s");
             $content['addtime'] = date("Y-m-d H:i:s");
             $content['title'] = str_replace("'", "\'", $content['title']);
@@ -672,6 +673,7 @@ class news_admin extends base_admin
                 $content['class1'] = $new_class[0];
                 $content['class2'] = $new_class[1];
                 $content['class3'] = $new_class[2];
+                $content['classother'] = '';
                 $content['updatetime'] = date("Y-m-d H:i:s");
                 $content['addtime'] = date("Y-m-d H:i:s");
                 $content['title'] = str_replace("'", "\'", $content['title']);

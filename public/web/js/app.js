@@ -209,7 +209,7 @@ $.fn.extend({
                 }else if(M.met_editor=='editormd'){// markdown编辑器
                     $(this).text(toMarkdown($(this).text(), {gfm: true}));
                     var id='editormd-'+new Date().getTime();
-                    if($('#'+id).length) id+=1;
+                    if($('#'+id).length) id+=index;
                     $(this).wrap('<div id="'+id+'" class="mb-0"></div>');
                     UE_VAL[index1] = editormd(id, {
                         name:$(this).attr('name'),
