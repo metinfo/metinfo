@@ -12,6 +12,12 @@ class index extends web
     {
         global $_M;
         parent::__construct();
+
+        $pos = strstr(PHP_SELF, "/index.php/");
+        if ($pos) {
+            header('HTTP/1.1 302 Moved Permanently');
+            header("Location: {$_M['url']['web_site']}");
+        }
     }
 
     public function doindex()

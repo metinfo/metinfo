@@ -33,7 +33,7 @@ $domain=HTTP_HOST;
                                 <div class='form-group clearfix'>
                                     <input type="text" name="met_sms_token" class="form-control" value="{$_M['config']['met_sms_token']}">
                                     <if value="$c.met_agents_metmsg eq '1'">
-                                        <a href="https://u.mituo.cn/#/sms" target="_blank" class="ml-3" style="line-height:35px;">查看</a>
+                                        <a href="https://u.mituo.cn/#/api/sms" target="_blank" class="ml-3" style="line-height:35px;">查看</a>
                                     </if>
                                 </div>
                             </dd>

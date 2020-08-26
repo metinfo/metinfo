@@ -2,6 +2,9 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
+?>
+<if value="!$_M['form']['sidebar_reload']">
+<?php
 $html_class=$body_class='h-100';
 $html_class.=' met-admin';
 ?>
@@ -27,6 +30,9 @@ $html_class.=' met-admin';
 				</if>
 			</li>
 			<hr class="my-0">
+</if>
+</if>
+<if value="!$_M['form']['noside']">
 			<list data="$data['adminnav']['top']" name="$m">
 			<li class="transition500">
 				<a <if value="$m['url']">href="#/{$m.url}"<else/>href="javascript:;"</if> title="{$m.name}" class="d-flex justify-content-between align-items-center px-4">
@@ -36,6 +42,7 @@ $html_class.=' met-admin';
 				<if value="$data['adminnav']['sub'][$m['id']]">
 				<ul class="sub list-unstyled text-nowrap">
 					<list data="$data['adminnav']['sub'][$m['id']]" name="$msub">
+					<if value="$msub['url']||$data['adminnav']['sub'][$msub['id']]">
 					<li class="transition500">
 						<a <if value="$msub['url']">href="#/{$msub.url}"<else/>href="javascript:;"</if> title="{$msub.name}" class="d-block px-4"><i class="iconfont-metadmin icon-metadmin-{$msub.icon}"></i><span>{$msub.name}</span></a>
 						<if value="$data['adminnav']['sub'][$msub['id']]">
@@ -48,11 +55,15 @@ $html_class.=' met-admin';
 						</ul>
 						</if>
 					</li>
+					</if>
 					</list>
 				</ul>
 				</if>
 			</li>
 			</list>
+</if>
+<if value="!$_M['form']['sidebar_reload']">
+<if value="!$_M['form']['noside']">
 		</ul>
 	</div>
 </if>
@@ -148,3 +159,4 @@ $html_class.=' met-admin';
 <button type="button" data-toggle="modal" class="btn-admin-common-modal" hidden></button>
 </if>
 <include file="pub/footer"/>
+</if>

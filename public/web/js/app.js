@@ -944,7 +944,7 @@ $(function(){
     $(document).on('keydown', 'form input[type="text"]', function(event) {
         if(event.keyCode==13){
             event.preventDefault();
-            $(this).parents('form').find('.btn[type="submit"]').click();
+            $(this).parents('form').find('[type="submit"]:not(.fv-hidden-submit)').click();
         }
     });
     // 表单提交

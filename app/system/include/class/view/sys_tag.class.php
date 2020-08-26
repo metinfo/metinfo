@@ -69,15 +69,15 @@ if($lang_json_file_ok){
         $lteie9_css_filemtime_1 = filemtime(PATH_PUBLIC_WEB."css/basic".$basic_css_name."-lteie9-1.css");
         $lteie9_css_filemtime_2 = filemtime(PATH_PUBLIC_WEB."css/basic".$basic_css_name."-lteie9-2.css");
 ?>
-<link href="{$url.site}public/web/css/basic{$basic_css_name}-lteie9-1.css?{$lteie9_css_filemtime_1}" rel="stylesheet" type="text/css">
-<link href="{$url.site}public/web/css/basic{$basic_css_name}-lteie9-2.css?{$lteie9_css_filemtime_2}" rel="stylesheet" type="text/css">
+<link href="{$url.public_web}css/basic{$basic_css_name}-lteie9-1.css?{$lteie9_css_filemtime_1}" rel="stylesheet" type="text/css">
+<link href="{$url.public_web}css/basic{$basic_css_name}-lteie9-2.css?{$lteie9_css_filemtime_2}" rel="stylesheet" type="text/css">
 <?php
     }else{
         $basic_css_filemtime = filemtime(PATH_PUBLIC_WEB."css/basic".$basic_css_name.".css");
 ?>
 <?php
 if(!$c["disable_cssjs"]){?>
-<link rel="stylesheet" type="text/css" href="{$url.site}public/web/css/basic{$basic_css_name}.css?{$basic_css_filemtime}">
+<link rel="stylesheet" type="text/css" href="{$url.public_web}css/basic{$basic_css_name}.css?{$basic_css_filemtime}">
 <?php
 }
 ?>
@@ -193,7 +193,7 @@ if(!$c["disable_cssjs"]){
     if($c["temp_frame_version"]=="v2") $basic_js_name.="_v2";
     $basic_js_time = filemtime(PATH_PUBLIC_WEB."js/basic".$basic_js_name.".js");
 ?>
-<script src="{$url.site}public/web/js/basic{$basic_js_name}.js?{$basic_js_time}" data-js_url="{$url.site}templates/{$c.met_skin_user}/cache/{$metpagejs}" id="met-page-js"></script>
+<script src="{$url.public_web}js/basic{$basic_js_name}.js?{$basic_js_time}" data-js_url="{$url.site}templates/{$c.met_skin_user}/cache/{$metpagejs}" id="met-page-js"></script>
 <?php
 }
 if($lang_json_file_ok){
@@ -202,7 +202,7 @@ if($lang_json_file_ok){
         if(($metinfover_v2=="v2" && $template_type) || $metinfover_v2!="v2"){
             $app_js_filemtime = filemtime(PATH_PUBLIC_WEB."js/app.js");
 ?>
-<script src="{$url.site}public/web/js/app.js?{$app_js_filemtime}"></script>
+<script src="{$url.public_web}js/app.js?{$app_js_filemtime}"></script>
 <?php } ?>
 <script src="{$url.shop_ui}js/own.js?{$shop_js_filemtime}"></script>
 <?php

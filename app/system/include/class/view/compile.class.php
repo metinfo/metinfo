@@ -358,7 +358,7 @@ class compile
     {
         global $_M;
 
-        $query = "SELECT * FROM {$_M['table'][$table]} WHERE id = {$id}";
+        $query = "SELECT * FROM {$_M['table'][$table]} WHERE id = '{$id}'";
         $res = DB::get_one($query);
         if (!$res) {
             return false;
@@ -383,7 +383,7 @@ class compile
         if ($field == 'uip_default') {
             $field = 'uip_value';
         }
-        $query = "UPDATE {$_M['table'][$table]} SET $field = '{$text}' WHERE id = {$id}";
+        $query = "UPDATE {$_M['table'][$table]} SET $field = '{$text}' WHERE id = '{$id}'";
         $row = DB::query($query);
         if (!$row) {
             $this->response['msg'] = $_M['word']['templateseditfalse'];

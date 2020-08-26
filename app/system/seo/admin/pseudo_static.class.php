@@ -188,18 +188,18 @@ class pseudo_static extends admin
     //Nginx伪静态规则
     private function createNginxHttpdurl($metbase = '')
     {
-        $htaccess = 'rewrite ^'.$metbase.'index-([a-zA-Z0-9_^x00-xff]+).html$ '.$metbase.'index.php?lang=$1&pseudo_jump=1;' . "\n";
+        $htaccess = 'rewrite ^'.$metbase.'index-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'index.php?lang=$1&pseudo_jump=1;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'public/plugins/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'public/plugins/ueditor/$1.html last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'app/app/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'app/app/ueditor/$1.html last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'wap/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'wap/$1.html last;' . "\n";
 
-        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^x00-xff]+)/list-([a-zA-Z0-9_^x00-xff]+).html$ '.$metbase.'$1/index.php?metid=$2&list=1&pseudo_jump=1;' . "\n";
-        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^x00-xff]+)/list-([a-zA-Z0-9_^x00-xff]+)-([0-9_]+).html$ '.$metbase.'$1/index.php?metid=$2&list=1&page=$3&pseudo_jump=1;' . "\n";
-        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^x00-xff]+)/list-([a-zA-Z0-9_^x00-xff]+)-([a-zA-Z0-9_^x00-xff]+).html$ '.$metbase.'$1/index.php?lang=$3&metid=$2&list=1&pseudo_jump=1;' . "\n";
-        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^x00-xff]+)/list-([a-zA-Z0-9_^x00-xff]+)-([0-9_]+)-([a-zA-Z0-9_^x00-xff]+).html$ '.$metbase.'$1/index.php?lang=$4&metid=$2&list=1&page=$3&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/list-([a-zA-Z0-9_^\x00-\xff]+)-([0-9_]+)-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?lang=$4&metid=$2&list=1&page=$3&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/list-([a-zA-Z0-9_^\x00-\xff]+)-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?lang=$3&metid=$2&list=1&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/list-([a-zA-Z0-9_^\x00-\xff]+)-([0-9_]+).html$ '.$metbase.'$1/index.php?metid=$2&list=1&page=$3&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/list-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?metid=$2&list=1&pseudo_jump=1;' . "\n";
 
-        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^x00-xff]+)/([a-zA-Z0-9_^\x00-\xff]+)-([a-zA-Z0-9_^x00-xff]+).html$ '.$metbase.'$1/index.php?lang=$3&metid=$2&pseudo_jump=1;' . "\n";
-        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^x00-xff]+)/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?metid=$2&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/([a-zA-Z0-9_^\x00-\xff]+)-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?lang=$3&metid=$2&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?metid=$2&pseudo_jump=1;' . "\n";
 
         $htaccess .= 'rewrite ^'.$metbase.'search/tag/([a-zA-Z0-9_^\x00-\xff]+)-([a-zA-Z]+)-([0-9]+)$ '.$metbase.'search/search.php?class1=&class2=&class3=&search=tag&searchword=$1&lang=$2&page=$3;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'search/tag/([a-zA-Z0-9_^\x00-\xff]+)-([a-zA-Z]+)$ '.$metbase.'search/search.php?class1=&class2=&class3=&search=tag&searchword=$1&lang=$2;' . "\n";

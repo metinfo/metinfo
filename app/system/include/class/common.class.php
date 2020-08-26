@@ -356,7 +356,8 @@ class common
             $_M['config']['met_weburl'] = $http . HTTP_HOST . preg_replace("/\w+\/\w+\/\w+\.php$/", '', PHP_SELF);
         } else {
             if (M_NAME == 'index') {
-                $_M['config']['met_weburl'] = str_ireplace('/index.php', '', $http . HTTP_HOST . PHP_SELF . '/');
+                $_M['config']['met_weburl'] = $http . HTTP_HOST . preg_replace("/\/index.php(.*)/", '', PHP_SELF) . '/';
+                #$_M['config']['met_weburl'] = str_ireplace('/index.php', '', $http . HTTP_HOST . PHP_SELF . '/');
             } else {
                 $_M['config']['met_weburl'] = $http . HTTP_HOST . preg_replace("/[0-9A-Za-z-_]+\/\w+\.php$/", '', PHP_SELF);
             }

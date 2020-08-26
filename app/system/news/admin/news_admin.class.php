@@ -547,6 +547,9 @@ class news_admin extends base_admin
                         $res = $this->list_display($id, 0);
                         break;
                     case 'move':
+                        if (!isset($_M['form']['columnid'])) {
+                            break;
+                        }
                         $log_name = 'columnmove1';
                         $class = explode("-", $_M['form']['columnid']);
                         $class1 = $class[0];
@@ -555,6 +558,9 @@ class news_admin extends base_admin
                         $res = $this->list_move($id, $class1, $class2, $class3);
                         break;
                     case 'copy':
+                        if (!isset($_M['form']['columnid'])) {
+                            break;
+                        }
                         $log_name = 'copycontnet';
                         $class = explode("-", $_M['form']['columnid']);
                         $class1 = $class[0];
@@ -563,6 +569,9 @@ class news_admin extends base_admin
                         $newid = $this->list_copy($id, $class1, $class2, $class3);
                         break;
                     case 'copy_tolang':
+                        if (!isset($_M['form']['columnid'])) {
+                            break;
+                        }
                         $log_name = 'copyotherlang';
                         $new_class = explode("-", $_M['form']['columnid']);
                         $tolang = $_M['form']['tolang'];

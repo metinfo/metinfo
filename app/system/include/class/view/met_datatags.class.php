@@ -55,7 +55,7 @@ class met_datatags
         if ($table = self::getTable($sql)) {
             if ($tableName = self::checkTable($table)) {
                 foreach ($rs as $k => $v) {
-                    $exception = array('met_agents_copyright', 'met_agents_copyright_foot', 'met_agents_copyright_foot1', 'met_agents_copyright_foot2','met_text_wate');
+                    $exception = array('met_agents_copyright', 'met_agents_copyright_foot', 'met_agents_copyright_foot1', 'met_agents_copyright_foot2','met_text_wate','met_alt');
                     if (in_array($v['name'],$exception)) {
                         continue;
                     }

@@ -42,7 +42,7 @@ $head_tab = array(
                 <div class='form-group clearfix'>
                   <span class="avalible"></span>
                     <if value="$c.met_agents_metmsg eq '1'">
-                        <a href="https://u.mituo.cn/#/sms" target="_blank" class="ml-3" style="line-height:35px;">购买</a>
+                        <a href="https://u.mituo.cn/#/api/sms" target="_blank" class="ml-3" style="line-height:35px;">购买</a>
                     </if>
                 </div>
               </dd>

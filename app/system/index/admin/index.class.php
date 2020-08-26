@@ -60,45 +60,48 @@ class index extends admin
                     }
                 }
             }
+            if(!$_M['form']['sidebar_reload']){
+                #$data['met_admin_logo'] = "{$_M['url']['public_images']}logo.png";
+                $data['met_admin_logo'] = "{$_M['url']['site']}" . str_replace('../', '', $_M['config']['met_agents_logo_index']);
+                $auth = load::mod_class('system/class/auth', 'new');
+                $data['otherinfoauth'] = $auth->have_auth();
 
-            #$data['met_admin_logo'] = "{$_M['url']['public_images']}logo.png";
-            $data['met_admin_logo'] = "{$_M['url']['site']}" . str_replace('../', '', $_M['config']['met_agents_logo_index']);
-            $auth = load::mod_class('system/class/auth', 'new');
-            $data['otherinfoauth'] = $auth->have_auth();
-
-            $data['msecount'] = DB::counter($_M['table']['infoprompt'], "WHERE (lang='" . $_M['lang'] . "' or lang='metinfo') and see_ok='0'", "*");
-            $data['privilege'] = background_privilege();
-            setcookie("arrlanguage", $data['privilege']['navigation'], 0, '/');
-            $arrlanguage = explode('|', $data['privilege']['navigation']);
-            if (in_array('metinfo', $arrlanguage) || in_array('1002', $arrlanguage)) {
-                $data['langprivelage'] = 1;
-            } else {
-                $data['langprivelage'] = 0;
-            }
-            $data['admin_group'] = admin_information();
-            //判断是否有环境检测的权限
-            if (strstr($data['admin_group']['admin_type'], 's1903') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
-                $data['environmental_test'] = 1;
-            }
-            //判断是否有功能大全的权限
-            if (strstr($data['admin_group']['admin_type'], 's1902') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
-                $data['function_complete'] = 1;
-            }
-            //判断是否有清空缓存的权限
-            if (strstr($data['admin_group']['admin_type'], 's1901') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
-                $data['clear_cache'] = 1;
-            }
-            //判断是否有检测更新的权限
-            if (strstr($data['admin_group']['admin_type'], '1104') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
-                $data['checkupdate'] = 1;
-                if (!$_M['config']['met_agents_update']) {
-                    $data['checkupdate'] = 0;
+                $data['msecount'] = DB::counter($_M['table']['infoprompt'], "WHERE (lang='" . $_M['lang'] . "' or lang='metinfo') and see_ok='0'", "*");
+                $data['privilege'] = background_privilege();
+                setcookie("arrlanguage", $data['privilege']['navigation'], 0, '/');
+                $arrlanguage = explode('|', $data['privilege']['navigation']);
+                if (in_array('metinfo', $arrlanguage) || in_array('1002', $arrlanguage)) {
+                    $data['langprivelage'] = 1;
+                } else {
+                    $data['langprivelage'] = 0;
                 }
+                $data['admin_group'] = admin_information();
+                //判断是否有环境检测的权限
+                if (strstr($data['admin_group']['admin_type'], 's1903') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
+                    $data['environmental_test'] = 1;
+                }
+                //判断是否有功能大全的权限
+                if (strstr($data['admin_group']['admin_type'], 's1902') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
+                    $data['function_complete'] = 1;
+                }
+                //判断是否有清空缓存的权限
+                if (strstr($data['admin_group']['admin_type'], 's1901') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
+                    $data['clear_cache'] = 1;
+                }
+                //判断是否有检测更新的权限
+                if (strstr($data['admin_group']['admin_type'], '1104') || strstr($data['admin_group']['admin_type'], 'metinfo')) {
+                    $data['checkupdate'] = 1;
+                    if (!$_M['config']['met_agents_update']) {
+                        $data['checkupdate'] = 0;
+                    }
+                }
+                $data['admin_group'] = $data['admin_group']['admin_group'];
             }
-            $data['admin_group'] = $data['admin_group']['admin_group'];
         }
-        $sys_json = parent::sys_json();
-        $data = array_merge($data, $sys_json);
+        if(!$_M['form']['sidebar_reload']){
+            $sys_json = parent::sys_json();
+            $data = array_merge($data, $sys_json);
+        }
         $this->view(is_mobile() ? 'sys/mobile/admin/templates/index' : 'app/index', $data);
     }
 

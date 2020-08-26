@@ -337,6 +337,7 @@ function configsave($config = array(), $have = array(), $lang = '')
             }
         }
     }
+    buffer::clearConfig();
 }
 
 /**
@@ -371,6 +372,7 @@ function appconfigsave($config = array(), $appno = '', $have = '', $lang = '')
             }
         }
     }
+    buffer::clearConfig();
 }
 
 /**
