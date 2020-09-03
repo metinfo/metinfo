@@ -21,11 +21,11 @@ class message_label extends base_label
     {
         global $_M;
         $message_list = parent::get_list_page($id, $page, $para);
+        $config_op = load::mod_class('config/config_op', 'new');
+        $column_config = $config_op->getColumnConfArry($id);
 
         $data = array();
         foreach ($message_list as $message) {
-            $config_op = load::mod_class('config/config_op', 'new');
-            $column_config = $config_op->getColumnConfArry($id);
 
             $list = load::mod_class('parameter/parameter_database', 'new')->get_list($message['id'], 7);
             foreach ($list as $key => $val) {
@@ -40,14 +40,7 @@ class message_label extends base_label
             //没有留言回复内容时默认调用邮件回复内容
             $message['useinfo'] = $message['useinfo'] ? $message['useinfo'] : $column_config['met_msg_content'];
 
-            //留言审核开关
-            if ($column_config['met_msg_show_type'] == 1) {
-                if ($message['checkok'] == 1) {
-                    $data[] = $message;
-                }
-            } else {
-                $data[] = $message;
-            }
+            $data[] = $message;
         }
         return $data;
     }

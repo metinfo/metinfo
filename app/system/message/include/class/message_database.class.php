@@ -28,7 +28,7 @@ class  message_database extends base_database
 
     public function get_list_by_class_sql($id = '', $type = 'all')
     {
-        $confival = $this->get_config_val('met_fd_type', 7);
+        $confival = $this->get_config_val('met_msg_show_type', $id);//留言审核开关
         $sql = '';
         if ($confival) {
             $sql .= " {$this->langsql} and checkok = 1";
@@ -49,12 +49,10 @@ class  message_database extends base_database
         return load::mod_class('parameter/parameter_database', 'new')->get_parameter($this->mod);
     }
 
-    public function get_config_val($name = '', $module = '')
+    public function get_config_val($name = '', $columnid = '')
     {
         global $_M;
-        $query = "select * from {$_M['table']['column']} where module = '$module' and lang='{$_M['lang']}'";
-        $message = DB::get_one($query);
-        $query = "select * from {$_M['table']['config']} where name = '$name' and columnid ='{$message['id']}' and lang='{$_M['lang']}'";
+        $query = "select * from {$_M['table']['config']} where name = '$name' and columnid ='{$columnid}' and lang='{$_M['lang']}'";
         $config = DB::get_one($query);
         return $config[value];
     }

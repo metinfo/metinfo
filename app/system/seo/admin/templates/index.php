@@ -10,7 +10,7 @@ $head_tab=array(
 	array(title=>$word['anchor_text'],url=>'seo/anchor/?nocommon=1'),
 	array(title=>"SiteMap",url=>'seo/sitemap'),
 	array(title=>$word['indexsetFriendly'],url=>'seo/link'),
-	array(title=>$word['tag'],url=>'seo/tags/?n=tags&c=index&a=doGetParentColumns'),
+	array(title=>$word['tag'],url=>'seo/tags/?n=tags&c=index&a=doGetParentColumns&screen=1'),
 );
 $head_tab_ajax=1;
 ?>

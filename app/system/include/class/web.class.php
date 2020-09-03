@@ -27,24 +27,21 @@ class web extends common
         parent::__construct();
         global $_M;
         // 可视化窗口语言栏跳转后，整个可视化页面跳转到新语言
-        $admin_folder = array_slice(explode('/', $_M['url']['site_admin']), -2, 1);
-        $url_site = str_replace($admin_folder[0] . '/', '', $_M['url']['site_admin']);
-        if (strpos($_SERVER['HTTP_REFERER'], 'n=ui_set') !== false && strpos($_SERVER['HTTP_REFERER'], $url_site) !== false) {
+        if (strstr($_SERVER['HTTP_REFERER'], $_M['url']['site_admin']) && strstr($_SERVER['HTTP_REFERER'], 'n=ui_set')) {
             preg_match('/lang=(\w+)/', $_COOKIE['page_iframe_url'], $prev_lang);
             if ($prev_lang && $prev_lang[1] != $_M['lang']) {
-                $new_url = "{$_M['url']['site_admin']}?lang={$_M['lang']}&n=ui_set";
                 echo "<script>
-					parent.document.getElementsByClassName('page-iframe')[0].setAttribute('data-dynamic','{$url_site}index.php?lang={$_M['lang']}');
-					parent.window.location.href='{$new_url}';
-				</script>";
+                    parent.document.getElementsByClassName('page-iframe')[0].setAttribute('data-dynamic','{$_M['url']['web_site']}index.php?lang={$_M['lang']}');
+                    parent.window.location.href='//'+parent.window.location.host+parent.window.location.pathname+'?lang={$_M['lang']}&n=ui_set';
+                </script>";
                 die;
             }
         }
-        // 非可视化状态下pageset=1页面跳转
-        if (strpos($_SERVER['HTTP_REFERER'], $url_site) === false && strpos($_SERVER['QUERY_STRING'], 'pageset=1') !== false) {
-            echo "<script>
-					if(self == top) window.location.href=location.href.replace('&pageset=1','').replace('?pageset=1','');
-				</script>";
+        // 非可视化状态下地址栏带pageset=1的页面跳转
+        if (!strstr($_SERVER['HTTP_REFERER'], $_M['url']['web_site']) && strstr($_SERVER['QUERY_STRING'], 'pageset=1')) {
+            $location='//'.$_SERVER['HTTP_HOST'].str_replace(array('&pageset=1','?pageset=1'), '', $_SERVER['REQUEST_URI']);
+            header('location:'.$location);
+            die;
         }
 
         $this->tem_dir(); //确定模板根目录

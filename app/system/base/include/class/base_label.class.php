@@ -125,9 +125,11 @@ class base_label
     {
         global $_M;
         $one = $this->database->get_list_one_by_id($id);
-        if (!$one) {
+        if (!$one || $one['recycle'] == 1) {
+            die();
             abort();
         }
+
         $one = $this->handle->one_para_handle($one);
 
         //上一条 下一条

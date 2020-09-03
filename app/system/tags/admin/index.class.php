@@ -22,10 +22,13 @@ class index extends admin
     {
         global $_M;
         $data = array();
+        $screen = $_M['form']['screen'];
         if ($_M['config']['tag_search_type'] == 'column') {
             $columns = load::sys_class('label', 'new')->get('column')->get_parent_columns();
             array_unshift($columns, array('id' => 0, 'name' => $_M['word']['full_site']));
-            ##array_unshift($columns, array('id' => -1, 'name' => $_M['word']['cvall']));
+            if ($screen) {
+                array_unshift($columns, array('id' => -1, 'name' => $_M['word']['cvall']));
+            }
             $data['columns'] = $columns;
 
             return $data;
@@ -39,7 +42,9 @@ class index extends admin
                 $modules[$key]['name'] = modname($val);
             }
             array_unshift($modules, array('id' => 0, 'name' => $_M['word']['full_site']));
-            ##array_unshift($modules, array('id' => -1, 'name' => $_M['word']['cvall']));
+            if ($screen) {
+                array_unshift($modules, array('id' => -1, 'name' => $_M['word']['cvall']));
+            }
             $data['modules'] = $modules;
             return $data;
         }
