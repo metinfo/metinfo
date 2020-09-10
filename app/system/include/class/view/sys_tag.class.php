@@ -62,25 +62,12 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
 <link href="{$url.site}favicon.ico?{$favicon_filemtime}" rel="shortcut icon" type="image/x-icon">
 <?php
 if($lang_json_file_ok){
-    $basic_css_name=$metinfover_v2?"":"_web";
-    if($c["temp_frame_version"]=="v2") $basic_css_name.="_v2";
-    $is_lte_ie9=strpos($_SERVER["HTTP_USER_AGENT"],"MSIE 9")!==false || strpos($_SERVER["HTTP_USER_AGENT"],"MSIE 8")!==false;
-    if($is_lte_ie9 && $c["temp_frame_version"]!="v2"){
-        $lteie9_css_filemtime_1 = filemtime(PATH_PUBLIC_WEB."css/basic".$basic_css_name."-lteie9-1.css");
-        $lteie9_css_filemtime_2 = filemtime(PATH_PUBLIC_WEB."css/basic".$basic_css_name."-lteie9-2.css");
-?>
-<link href="{$url.public_web}css/basic{$basic_css_name}-lteie9-1.css?{$lteie9_css_filemtime_1}" rel="stylesheet" type="text/css">
-<link href="{$url.public_web}css/basic{$basic_css_name}-lteie9-2.css?{$lteie9_css_filemtime_2}" rel="stylesheet" type="text/css">
-<?php
-    }else{
+    if(!$c["disable_cssjs"]){
+        $basic_css_name=$metinfover_v2?"":"_web";
+        if($c["temp_frame_version"]=="v2") $basic_css_name.="_v2";
         $basic_css_filemtime = filemtime(PATH_PUBLIC_WEB."css/basic".$basic_css_name.".css");
 ?>
-<?php
-if(!$c["disable_cssjs"]){?>
 <link rel="stylesheet" type="text/css" href="{$url.public_web}css/basic{$basic_css_name}.css?{$basic_css_filemtime}">
-<?php
-}
-?>
 <?php
     }
     if($metinfover_v2){
@@ -129,9 +116,6 @@ body{
 h1,h2,h3,h4,h5,h6{font-family:{$g.met_font} !important;}
 </style>
 <script>(function(){var t=navigator.userAgent;(t.indexOf("rv:11")>=0||t.indexOf("MSIE 10")>=0)&&document.write("<script src=\"{$url.public_plugins}html5shiv.min.js\"><\/script>")})();</script>
-<!--[if lte IE 9]>
-<script src="{$url.public_plugins}lteie9.js"></script>
-<![endif]-->
 </head>
 <!--[if lte IE 9]>
 <div class="text-xs-center m-b-0 bg-blue-grey-100 alert">
@@ -152,19 +136,7 @@ h1,h2,h3,h4,h5,h6{font-family:{$g.met_font} !important;}
     {
         global $_M;
         $php = '
-<?php
-if($lang_json_file_ok){
-    if($metinfover_v2){
-        if(is_file(PATH_TEM."cache/metinfo.js")){
-            $common_js_time = filemtime(PATH_TEM."cache/metinfo.js");
-            $metpagejs="metinfo.js?".$common_js_time;
-        }
-        if($met_page){
-            $page_js_time = filemtime(PATH_TEM."cache/".$met_page."_".$_M["lang"].".js");
-            $metpagejs=$met_page."_".$_M["lang"].".js?".$page_js_time;
-        }
-    }
-?>
+<?php if($lang_json_file_ok){ ?>
 <input type="hidden" name="met_lazyloadbg" value="{$g.lazyloadbg}">
 <?php if($data["module"]==3&&$data["id"]){ ?>
 <textarea name="met_product_video" data-playinfo="{$c.met_auto_play_pc}|{$c.met_auto_play_mobile}" hidden>{$data.video}</textarea>
@@ -189,6 +161,14 @@ var jsonurl="{$url.shop_cart_jsonlist}",
 <?php
 }
 if(!$c["disable_cssjs"]){
+    if(is_file(PATH_TEM."cache/metinfo.js")){
+        $common_js_time = filemtime(PATH_TEM."cache/metinfo.js");
+        $metpagejs="metinfo.js?".$common_js_time;
+    }
+    if($met_page){
+        $page_js_time = filemtime(PATH_TEM."cache/".$met_page."_".$_M["lang"].".js");
+        $metpagejs=$met_page."_".$_M["lang"].".js?".$page_js_time;
+    }
     $basic_js_name=$metinfover_v2?"":"_web";
     if($c["temp_frame_version"]=="v2") $basic_js_name.="_v2";
     $basic_js_time = filemtime(PATH_PUBLIC_WEB."js/basic".$basic_js_name.".js");

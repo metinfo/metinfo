@@ -895,44 +895,49 @@ INSERT INTO met_applist VALUES(null, '0', '1.0', 'ueditor', 'index', 'doindex', 
 INSERT INTO met_applist VALUES(null,'10070','1.4', 'metconfig_sms', 'index', 'doindex', '短信功能', '短信接口', '0', '0', '0','1','','0');
 INSERT INTO met_applist VALUES(null,'50002','1.0', 'metconfig_template', 'temtool', 'dotemlist', '官方模板管理工具', '官方商业模板请在此进行管理操作', '0', '0', '0','1','','1');
 
-
-INSERT INTO met_config VALUES(null,'metcms_v','7.1.0','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_host','api.metinfo.cn','','0','0','metinfo');
+#系统全局配置
+INSERT INTO met_config VALUES(null,'metcms_v','7.2.0','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_ch_lang','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_lang_mark','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_admin_type_ok','0','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_admin_type','cn','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_index_type','cn','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_host','api.metinfo.cn','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_host_new','app.metinfo.cn','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_api', 'https://u.mituo.cn/api/client', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_tablename','admin_array|admin_column|admin_logs|admin_table|app_config|app_plugin|applist|column|config|cv|download|feedback|flash|flash_button|flist|ifcolumn|ifcolumn_addfile|ifmember_left|img|infoprompt|job|label|lang|lang_admin|language|link|menu|message|mlist|news|online|otherinfo|para|parameter|plist|product|skin_table|tags|templates|ui_config|ui_list|user|user_group|user_group_pay|user_list|user_other|weixin_reply_log','','0','0','metinfo');
+
+#其他配置
+INSERT INTO met_config VALUES(null,'metconfig_safe_prompt', '0', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_uiset_guide', '1', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_301jump', '', '', 0, 0, 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_https', '', '', 0, 0, 'metinfo');
+INSERT INTO met_config VALUES(null,'disable_cssjs', 0, '', 0, 0, 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_secret_key','','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_member_force','byuqujz','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_editor', 'ueditor', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES (null, 'metconfig_text_fonts', '../public/fonts/Cantarell-Regular.ttf', '','0','0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_smsprice','0.1','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_sms_token', '', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_sms_url', 'https://u.mituo.cn/api/sms', '', '0', '0', 'metinfo');
+
+#SEO-siteMap
 INSERT INTO met_config VALUES(null,'metconfig_sitemap_lang','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_sitemap_not2','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_sitemap_not1','0','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_sitemap_txt','0','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_sitemap_xml','1','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_index_type','cn','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_member_force','byuqujz','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_tablename','admin_array|admin_column|admin_logs|admin_table|app_config|app_plugin|applist|column|config|cv|download|feedback|flash|flash_button|flist|ifcolumn|ifcolumn_addfile|ifmember_left|img|infoprompt|job|label|lang|lang_admin|language|link|menu|message|mlist|news|online|otherinfo|para|parameter|plist|product|skin_table|tags|templates|ui_config|ui_list|user|user_group|user_group_pay|user_list|user_other|weixin_reply_log','','0','0','metinfo');
+
+#版权控制配置
 INSERT INTO met_config VALUES(null,'metconfig_agents_logo_login','../public/images/login-logo.png','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_logo_index','../public/images/logo.png','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_img','../public/images/metinfo.gif','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright_foot','Powered by <b><a href=https://www.metinfo.cn target=_blank title=CMS>MetInfo $metcms_v</a></b> &copy;2008-$m_now_year &nbsp;<a href=https://www.mituo.cn target=_blank title=米拓建站>mituo.cn</a>','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright_foot1','本站基于 <b><a href=https://www.metinfo.cn target=_blank title=米拓建站>米拓企业建站系统 $metcms_v</a></b> 搭建','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright_foot2','技术支持：<b><a href=https://www.mituo.cn target=_blank title=米拓建站>米拓建站 </a></b> $metcms_v ','','0','0','metinfo');
-INSERT INTO met_config VALUES (null, 'metconfig_text_fonts', '../public/fonts/Cantarell-Regular.ttf', '','0','0', 'metinfo');
-
-INSERT INTO met_config VALUES(null,'metconfig_secret_key','','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_host_new','app.metinfo.cn','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_editor', 'ueditor', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_sms_url', 'https://u.mituo.cn/api/sms', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_sms_token', '', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_smsprice','0.1','','0','0','metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_safe_prompt', '0', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_uiset_guide', '1', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_api', 'https://u.mituo.cn/api/client', '', '0', '0', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_301jump', '', '', 0, 0, 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_https', '', '', 0, 0, 'metinfo');
-INSERT INTO met_config VALUES(null,'disable_cssjs', 0, '', 0, 0, 'metinfo');
-
-INSERT INTO met_config VALUES(null,'metconfig_copyright_nofollow', 0, '', 0, 0, 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_copyright_nofollow', '0', '', '0', '0', 'metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_copyright_type','0','','0','0','metinfo');
+#版权控制
 INSERT INTO met_config VALUES(null,'metconfig_agents_type','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_linkurl','https://www.mituo.cn','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_pageset_logo','1','','0','0','metinfo');
@@ -941,20 +946,18 @@ INSERT INTO met_config VALUES(null,'metconfig_agents_code','','','0','0','metinf
 INSERT INTO met_config VALUES(null,'metconfig_agents_backup','metinfo','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_sms','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_app','1','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_agents_metmsg', '1', '', '', '', 'metinfo');
+#代理信息
 INSERT INTO met_config VALUES(null,'metconfig_agents_thanks','感谢使用 Metinfo','','0','0','cn-metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_agents_depict_login','MetInfo','','0','0','cn-metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_name','MetInfo|米拓企业建站系统','','0','0','cn-metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright','长沙米拓信息技术有限公司（MetInfo Inc.）','','0','0','cn-metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_agents_about','关于我们','','0','0','cn-metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_agents_depict_login','MetInfo','','0','0','cn-metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_thanks','thanks use Metinfo','','0','0','en-metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_agents_depict_login','Metinfo Build marketing value corporate website','','0','0','en-metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_name','Metinfo CMS','','0','0','en-metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_agents_copyright','China Changsha MetInfo Information Co., Ltd.','','0','0','en-metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_agents_about','About Us','','0','0','en-metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_agents_metmsg', '1', '', '', '', 'metinfo');
-INSERT INTO met_config VALUES(null,'metconfig_agents_pageset_name', 'Metinfo', '', '0', '0', 'metinfo');
+INSERT INTO met_config VALUES(null,'metconfig_agents_depict_login','Metinfo Build marketing value corporate website','','0','0','en-metinfo');
 
-
+#后台栏目
 INSERT INTO `met_admin_column` VALUES ('1', 'lang_administration', 'manage', '0', '1301', '1', '0', 'manage', '', '1');
 INSERT INTO `met_admin_column` VALUES ('2', 'lang_htmColumn', 'column', '0', '1201', '1', '1', 'column', '', '1');
 INSERT INTO `met_admin_column` VALUES ('3', 'lang_feedback_interaction', '', '0', '1202', '1', '2', 'feedback-interaction', '', '1');
@@ -989,10 +992,13 @@ INSERT INTO `met_admin_column` VALUES ('40', 'lang_environmental_test', 'environ
 INSERT INTO `met_admin_column` VALUES ('41', 'lang_navSetting', 'navSetting', '6', '1904', '2', '0', 'navSetting', '', '0');
 INSERT INTO `met_admin_column` VALUES ('42', 'lang_style_settings', 'style_settings', '5', '1905', '2', '0', 'style_settings', '', '0');
 
+#后台语言
 INSERT INTO met_lang_admin VALUES (null, '简体中文', '1', '1', 'cn', 'cn', '', 'cn');
 INSERT INTO met_lang_admin VALUES (null, 'English', '1', '2', 'en', 'en', '', 'en');
 
+#管理员
 INSERT INTO met_admin_array VALUES(null,'管理员','metinfo','1','metinfo','0','10000','256','2','metinfo','metinfo');
 
+#模板
 INSERT INTO met_skin_table VALUES(null,'metv7','metv7','MetInfo v7.0正式版新推出一套全新精致免费模板！','0','');
 INSERT INTO met_otherinfo VALUES(null,'NOUSER','2147483647','','','','','','','','','','','','','','','','','metinfo');

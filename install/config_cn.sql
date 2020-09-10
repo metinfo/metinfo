@@ -184,7 +184,7 @@ INSERT INTO met_language VALUES (null, 'emailcheck', '请输入正确的Email地
 INSERT INTO met_language VALUES (null, 'Previous_news', '上一篇', 0, 9, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'Next_news', '下一篇', 0, 10, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'close', '关闭', 0, 0, 0, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'browserupdatetips', '你正在使用一个 的浏览器。请以提高您的体验。', 0, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'browserupdatetips', '你正在使用一个过时的浏览器。请升级你的浏览器，以提高您的体验。', 0, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'newFeedback', '收到了新的反馈', 0, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'opfailed', '操作失败', 0, 0, 1, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'jobPrompt', '收到了新的简历', 0, 0, 0, 0, 'cn');
@@ -356,7 +356,7 @@ INSERT INTO met_config VALUES (null, 'metconfig_auto_play_mobile', '0', '', 0, 0
 INSERT INTO met_config VALUES (null, 'metconfig_memberlogin_code', '1', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_login_code', '0', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_file_maxsize', '8', '', 0, 0, 'cn');
-INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|pdf|jpg|xls|png|gif|mp3|mp4|jpeg|bmp|swf|flv|ico', '', 0, 0, 'cn');
+INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|docx|pdf|jpg|xls|png|gif|mp3|mp4|jpeg|bmp|swf|flv|ico|csv', '', 0, 0, 'cn');
 #用户设置-会员设置
 INSERT INTO met_config VALUES (null, 'metconfig_member_use', '1', '', 0, 0, 'cn');
 INSERT INTO met_config VALUES (null, 'metconfig_member_register', '1', '', 0, 0, 'cn');

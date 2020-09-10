@@ -139,7 +139,7 @@ class app extends admin
         return $base;
     }
 
-    public function get_diff_tables($json_sql)
+    public function get_diff_tables()
     {
         global $_M;
         $tables = self::list_tables();

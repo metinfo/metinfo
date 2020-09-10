@@ -694,6 +694,8 @@ class index extends admin
                 $update_database->add_config();
 
                 if (version_compare($old_version, '7.0.0beta', '<')) {//6.1/6.2->7.0.0beta
+                    //更改配置
+                    $update_database->motify_config();
                     //更新栏目数据
                     $update_database->recovery_column();
                     //表单模块数据迁移
@@ -710,7 +712,8 @@ class index extends admin
                     $update_database->update_tags();
                     //更新语言
                     $update_database->update_language($version);
-                } elseif (version_compare($old_version, '7.1.0', '<')) {//7.0.0beta->7.1.0
+                }
+                if (version_compare($old_version, '7.1.0', '<')) {//7.0.0beta->7.1.0
                     //更新语言
                     $update_database->update_language($version);
                 }
@@ -1106,6 +1109,33 @@ class index extends admin
     }
 
     /*************数据打包方法***************/
+    /**
+     * 生成系统数据指纹
+     */
+    public function doGetSysDate()
+    {
+        global $_M;
+        $action = $_M['form']['action'];
+        echo "acrion : {$_M['form']['action']} <hr>";
+        echo "
+        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=sqldata'>系统数据库指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=langdata'>系统语言指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=configdata'>配置库指纹</a><br>
+        ";
+
+        if ($action =='sqldata') {
+            $this->dogetTablesjson();
+            die('Complete');
+        }
+        if ($action == 'langdata') {
+            $this->dogetLangData();
+            die('Complete');
+        }
+        if ($action == 'configdata') {
+            $this->dogetconfigData();
+            die('Complete');
+        }
+    }
 
     /** 获取系统数据表json */
     public function dogetTablesjson()
@@ -1195,7 +1225,7 @@ class index extends admin
     public function dogetconfigData()
     {
         global $_M;
-        $sql = "select * FROM {$_M['table']['config']} WHERE lang = 'cn' OR lang = 'metinfo'";
+        $sql = "select * FROM {$_M['table']['config']} WHERE (lang = 'cn' OR lang = 'metinfo') AND columnid = '0' AND flashid = 0";
         $list = DB::get_all($sql);
 
         $config_list = array();
@@ -1209,35 +1239,15 @@ class index extends admin
 
     public function doTry()
     {
-        return;
-    }
-
-    /**
-     * 生成系统数据指纹
-     */
-    public function doGetSysDate()
-    {
+        die();
         global $_M;
-        $action = $_M['form']['action'];
-        echo "acrion : {$_M['form']['action']} <hr>";
-        echo "
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=sqldata'>系统数据库指纹</a><br>
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=langdata'>系统语言指纹</a><br>
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=configdata'>配置库指纹</a><br>
-        ";
+        $ver = $_M['form']['ver'];
 
-        if ($action =='sqldata') {
-            $this->dogetTablesjson();
-            die('Complete');
-        }
-        if ($action == 'langdata') {
-            $this->dogetLangData();
-            die('Complete');
-        }
-        if ($action == 'configdata') {
-            $this->dogetconfigData();
-            die('Complete');
-        }
+        $version = $_M['config']['metcms_v'];
+
+        $update_database = load::mod_class('update/update_database', 'new');
+
+        $update_database->update_language($ver);
     }
 }
 

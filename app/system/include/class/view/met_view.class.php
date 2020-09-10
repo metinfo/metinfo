@@ -158,7 +158,8 @@ final class met_view
                     $m_module = 'admin';
                     $app_path = PATH_OWN_FILE;
                     if ($file_info[0] == 'app') {
-                        $app_path = explode('templates/', $this->getTemplateFile($_M['form']['path']));
+                        $path = $_M['form']['path'];
+                        $app_path = explode('templates/', $this->getTemplateFile($path));
                         $app_path = $app_path[0];
                     }
                 } else if ($file_info[0] == 'app') {
@@ -232,10 +233,11 @@ final class met_view
          * 模板文件检测
          */
         if (is_file($file)) {
-
+            if (!strtolower(substr($file, -4)) == ".php") {
+                return false;
+            }
             return $file;
         } else {
-
             if (strstr($filename, '/')) {
                 return false;
             }

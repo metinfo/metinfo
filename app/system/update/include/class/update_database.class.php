@@ -22,7 +22,7 @@ class update_database extends database
     public function __construct()
     {
         global $_M;
-        $this->version = '7.1.0';
+        $this->version = '7.2.0';
         $this->colum_label = load::sys_class('label', 'new')->get('column');
     }
 
@@ -77,7 +77,7 @@ class update_database extends database
         } elseif (version_compare($version, '7.0.0', '<')) {//7.0.0beta->7.0.0
             //更新语言
             $this->update_language($version);
-        }elseif(version_compare($version, '7.1.0', '<')){
+        } elseif (version_compare($version, '7.1.0', '<')) {
             $this->update_language($version);
         }
     }
@@ -91,7 +91,7 @@ class update_database extends database
         global $_M;
         $app = load::sys_class('app', 'new');
         $app->version = $version;
-        $diffs = $app->get_diff_tables(PATH_WEB . 'config/v' . $version . 'mysql.json');
+        $diffs = $app->get_diff_tables();
         if (isset($diffs['table'])) {
             foreach ($diffs['table'] as $table => $detail) {
                 $sql = "CREATE TABLE IF NOT EXISTS `{$table}` (";
@@ -610,7 +610,7 @@ class update_database extends database
             //语言
             if ($lang != 'en') {
                 $path = $path_cn;
-            }else{
+            } else {
                 $path = $path_en;
             }
 
@@ -638,8 +638,8 @@ class update_database extends database
     {
         global $_M;
         //本地指纹
-        $path_cn = __DIR__ . "/update_7.1.0/v{$version}lang_web_cn.json";
-        $path_en = __DIR__ . "/update_7.1.0/v{$version}lang_web_en.json";
+        $path_cn = __DIR__ . "/update_7.2.0/v{$version}lang_web_cn.json";
+        $path_en = __DIR__ . "/update_7.2.0/v{$version}lang_web_en.json";
 
         $sql = "SELECT * FROM {$_M['table']['lang']} ";
         $web_lang_list = DB::get_all($sql);
@@ -675,7 +675,7 @@ class update_database extends database
                 }
 
                 //js语言
-                $js_word = array('confirm','cancel');
+                $js_word = array('confirm', 'cancel');
                 foreach ($js_word as $word) {
                     $sql = "UPDATE {$_M['table']['language']} SET app = 1 WHERE name = '{$word}' AND site = 0";
                     DB::query($sql);
@@ -1178,16 +1178,18 @@ class update_database extends database
             self::update_config('tag_show_number', '4', 0, $lang);
             self::update_config('tag_search_type', 'module', 0, $lang);
             //logs
-            self::update_config('met_logs', '0', 0, 'metinfo');
+            self::update_config('met_logs', '0', 0, $lang);
             //logo
             self::update_config('met_logo_keyword', "{$_M['config']['met_webname']}", 0, $lang);
             //safe
             self::update_config('access_type', '1', 0, $lang);
             self::update_config('met_auto_play_pc', '0', 0, $lang);
             self::update_config('met_auto_play_mobile', '0', 0, $lang);
-            //other_user_weixin
+            //member
             self::update_config('met_weixin_gz_token', '', 0, $lang);
-
+            self::update_config('met_auto_register', '', 0, $lang);
+            self::update_config('met_member_agreement', '', 0, $lang);
+            self::update_config('met_member_agreement_content', '', 0, $lang);
 
             if ($lang == 'cn') {
                 self::update_config('met_data_null', '没有找到数据', 0, $lang);
@@ -1213,6 +1215,48 @@ class update_database extends database
         self::update_config('met_agents_pageset_logo', '1', 0, 'metinfo');
         self::update_config('met_agents_update', '1', 0, 'metinfo');
         self::update_config('met_agents_linkurl', '', 0, 'metinfo');
+        //fonts
+        self::update_config('met_text_fonts', '../public/fonts/Cantarell-Regular.ttf', 0, 'metinfo');
+    }
+
+    /**
+     * 配置变更
+     */
+    public function motify_config()
+    {
+        global $_M;
+        //met_agents_type 前台版权标识
+        $query = "SELECT * FROM {$_M['table']['config']} WHERE name='met_agents_type' AND lang = 'metinfo' ORDER BY ID DESC";
+        $met_agents_type = DB::get_one($query);
+        $query = "DELETE FROM {$_M['table']['config']} WHERE name='met_agents_type' AND lang = 'metinfo'";
+        DB::query($query);
+
+        if (!$met_agents_type || $met_agents_type['value'] == '0') {
+            self::update_config('met_agents_type', '1', 0, 'metinfo');
+        } elseif ($met_agents_type['value'] == '2') {
+            self::update_config('met_agents_type', '0', 0, 'metinfo');
+        } else {
+            self::update_config('met_agents_type', '1', 0, 'metinfo');
+        }
+
+        //met_agents_logo_login 后台登陆logo
+        $query = "SELECT * FROM {$_M['table']['config']} WHERE name='met_agents_logo_login' AND lang = 'metinfo' ORDER BY ID DESC";
+        $met_agents_logo_login = DB::get_one($query);
+        if (!$met_agents_logo_login || !strstr($met_agents_logo_login['value'], 'upload')) {
+            self::update_config('met_agents_logo_login', '../public/images/login-logo.png', 0, 'metinfo');
+        }
+
+        //met_agents_logo_index 后台logo
+        $query = "SELECT * FROM {$_M['table']['config']} WHERE name='met_agents_logo_index' AND lang = 'metinfo' ORDER BY ID DESC";
+        $met_agents_logo_index = DB::get_one($query);
+        if (!$met_agents_logo_index || !strstr($met_agents_logo_index['value'], 'upload')) {
+            self::update_config('met_agents_logo_index', '../public/images/logo.png', 0, 'metinfo');
+        }
+
+        //调用字体文件
+        $query = "DELETE FROM {$_M['table']['config']} WHERE name='met_text_fonts'";
+        DB::query($query);
+        self::update_config('met_text_fonts', '../public/fonts/Cantarell-Regular.ttf', 0, 'metinfo');
     }
 
     /**

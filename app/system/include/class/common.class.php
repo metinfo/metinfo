@@ -201,8 +201,12 @@ class common
         }
 
         if (!$_M['langlist']['web'][$_M['lang']]) {
-            halt('No current language identifier');
+            if(!$_M['langlist']['web'][$_M['config']['met_index_type']]){
+                halt('No current language identifier');
+            }
+            $_M['lang'] = $_M['config']['met_index_type'];
         }
+
         $this->load_config($_M['lang']);
     }
 

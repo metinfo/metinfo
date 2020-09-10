@@ -26,9 +26,6 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
 <meta name="generator" content="MetInfo {$c.metcms_v}" data-variable="{$url.site}|{$_M['lang']}|{$synchronous}|{$c.met_skin_user}||||">
 <link href="{$url.site}favicon.ico?{$favicon_filemtime}" rel="shortcut icon" type="image/x-icon">
 <link href="{$url.public_admin}css/basic_admin.css?{$basic_admin_css_filemtime}" rel='stylesheet' type='text/css'>
-<!--['if lte IE 9']>
-<script src="{$url.public_plugins}lteie9.js"></script>
-<!['endif']-->
 </head>
 <body class="{$body_class}">
 <div>

@@ -1,6 +1,6 @@
 <?php
                    /*
-                   db_type = "sqlite"
+                   db_type = "mysql"
                    db_name = "config/metinfo.db"
                    con_db_host = "localhost"
                    con_db_port = "3306"

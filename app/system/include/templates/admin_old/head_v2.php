@@ -42,9 +42,6 @@ if(file_exists(PATH_OWN_FILE.'templates/css/metinfo.css')){
 ?>
 <link href="{$url.own_tem}css/metinfo.css?{$own_metinfo_css_filemtime}" rel='stylesheet' type='text/css'>
 <?php } ?>
-<!--['if lte IE 9']>
-<script src="{$url.public_plugins}lteie9.js"></script>
-<!['endif']-->
 </head>
 <!--['if lte IE 9']>
 <div class="text-xs-center m-b-0 bg-blue-grey-100 alert">

@@ -3,7 +3,7 @@
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 
 //版本号
-define ('SYS_VER', '7.1.0');
+define ('SYS_VER', '7.2.0');
 define ('SYS_VER_TIME', '20200512');
 
 header("Content-type: text/html;charset=utf-8");

@@ -356,7 +356,7 @@ INSERT INTO met_config VALUES (null, 'metconfig_auto_play_mobile', '0', '', 0, 0
 INSERT INTO met_config VALUES (null, 'metconfig_memberlogin_code', '1', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_login_code', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_file_maxsize', '5', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|pdf|jpg|jpeg|xls|png|gif|mp3|mp4|ico|swf', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|docx|pdf|jpg|xls|png|gif|mp3|mp4|jpeg|bmp|swf|flv|ico|csv', '', 0, 0, 'en');
 
 #用户设置-会员设置
 INSERT INTO met_config VALUES (null, 'metconfig_member_use', '1', '', 0, 0, 'en');

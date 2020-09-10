@@ -190,9 +190,7 @@ if("undefined" != typeof M){
 $.fn.metValidate=function(){
     $('form',this).addClass('met-form-validation');
     if(typeof validate =='undefined') window.validate=[];
-    $('form',this).filter(function(index) {
-        return $('.form-group',this).length;
-    }).each(function(index, el) {
+    $('form',this).each(function(index, el) {
         var order=$(this).index('form');
         $(this).attr({'data-validate_order':order});
         validate[order]=$(this).validation();
