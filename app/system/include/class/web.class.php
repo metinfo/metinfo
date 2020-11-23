@@ -39,7 +39,8 @@ class web extends common
         }
         // 非可视化状态下地址栏带pageset=1的页面跳转
         if (!strstr($_SERVER['HTTP_REFERER'], $_M['url']['web_site']) && strstr($_SERVER['QUERY_STRING'], 'pageset=1')) {
-            $location='//'.$_SERVER['HTTP_HOST'].str_replace(array('&pageset=1','?pageset=1'), '', $_SERVER['REQUEST_URI']);
+            $http = $this->checkHttps();
+            $location = $http . $_SERVER['HTTP_HOST'] . str_replace(array('&pageset=1', '?pageset=1'), '', $_SERVER['REQUEST_URI']);
             header('location:'.$location);
             die;
         }
@@ -501,7 +502,11 @@ class web extends common
             $groupid = load::sys_class('auth', 'new')->encode($data['access']);
             $data['access_code'] = $groupid;
         }else{
-            $this->check($data['access']);
+            if ($_M['config']['met_access_open']) {
+                load::app_class('met_access/include/WebAccess', 'new')->check($data['id'], 2, $module);
+            }else{
+                $this->check($data['access']);
+            }
         }
 
         $this->add_array_input($data);
@@ -544,7 +549,11 @@ class web extends common
             $groupid = load::sys_class('auth', 'new')->encode($data['access']);
             $data['access_code'] = $groupid;
         }else{
-            $this->check($data['access']);
+            if ($_M['config']['met_access_open']) {
+                load::app_class('met_access/include/WebAccess', 'new')->check($data['id'], 2, $module);
+            }else{
+                $this->check($data['access']);
+            }
         }
 
         unset($data['id']);

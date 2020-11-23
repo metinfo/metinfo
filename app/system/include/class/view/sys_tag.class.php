@@ -38,11 +38,13 @@ if(!$data["module"] || $data["module"]==10){
     $nofollow=1;
 }
 $user_name=$_M["user"]?$_M["user"]["username"]:"";
-$oxhclass=$oxh_no?"":"oxh";
+if(!$oxh_no){
+    $html_class.="oxh";
+}
 $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
 ?>
 <!DOCTYPE HTML>
-<html class="{$html_class} met-web {$oxhclass}" {$html_hidden}>
+<html class="{$html_class} met-web" {$html_hidden}>
 <head>
 <meta charset="utf-8">
 <?php if($nofollow){ ?>
@@ -125,7 +127,7 @@ h1,h2,h3,h4,h5,h6{font-family:{$g.met_font} !important;}
     {$word.browserupdatetips}
 </div>
 <![endif]-->
-<body>
+<body <?php if($body_class){ ?>class="{$body_class}"<?php } ?>>
 <?php } ?>';
 
         return $php;

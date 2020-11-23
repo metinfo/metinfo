@@ -428,11 +428,11 @@ class feedback_admin extends message_admin
         $inquiry_abled = $this->checkConfInquiry($classnow);
         $config_op = load::mod_class('config/config_op', 'new');
         $conlum_configs = $config_op->getColumnConfArry($classnow);
-        $met_fd_class = self::get_config_field(array(2, 6), $conlum_configs['met_fd_class']);
-        $met_fd_related = self::get_config_field(array(2, 4, 6), $conlum_configs['met_fd_related']);
+        $met_fd_class = self::get_config_field(array(2, 6), $conlum_configs['met_fd_class'],$classnow);
+        $met_fd_related = self::get_config_field(array(2, 4, 6), $conlum_configs['met_fd_related'],$classnow);
         $met_fd_related['options'] = array_merge(array(array('name' => $_M['word']['listproductreok'], 'val' => 0)), $met_fd_related['options']);
-        $met_fd_email = self::get_config_field(9, $conlum_configs['met_fd_email']);
-        $met_fd_sms_tell = self::get_config_field(8, $conlum_configs['met_fd_sms_tell']);
+        $met_fd_email = self::get_config_field(9, $conlum_configs['met_fd_email'],$classnow);
+        $met_fd_sms_tell = self::get_config_field(8, $conlum_configs['met_fd_sms_tell'],$classnow);
 
         $met_fd_showcol_id = explode('|', $conlum_configs['met_fd_showcol']);
         $met_fd_showcol = array();
@@ -533,19 +533,16 @@ class feedback_admin extends message_admin
      * @param string $value 值
      * @return mixed
      */
-    public function get_config_field($type = '', $value = '')
+    public function get_config_field($type = '', $value = '' ,$classmow = 0)
     {
         global $_M;
+        $query = "SELECT * FROM {$_M['table']['parameter']} WHERE `lang`='{$_M['lang']}' AND `module`='{$this->module}' AND class1 = '{$classmow}' ";
+
         if ($type && is_array($type)) {
-            $condition = "(";
-            foreach ($type as $t) {
-                $condition .= " `type`={$t} OR";
-            }
-            $condition = trim($condition, 'OR');
-            $condition .= ")";
-            $query = "SELECT * FROM {$_M['table']['parameter']} WHERE `lang`='{$_M['lang']}' AND `module`='{$this->module}' AND {$condition}";
+            $in = implode(',', $type);
+            $query .= " AND type IN ({$in}) ";
         } else {
-            $query = "SELECT * FROM {$_M['table']['parameter']} WHERE `lang`='{$_M['lang']}' AND `module`='{$this->module}' AND `type`={$type}";
+            $query .= " AND `type`={$type} ";
         }
         $para = DB::get_all($query);
 

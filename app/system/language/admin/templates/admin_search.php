@@ -2,7 +2,7 @@
 <div class="input-group bootstrap-touchspin search">
   <input class="form-control form-control-lg input" />
   <span class="input-group-btn input-group-append">
-    <button class="btn btn-primary btn-search" type="button">{$word.search}</i>
+    <button class="btn btn-primary btn-lg btn-search" type="button">{$word.search}</i>
     </button></span>
 </div>
 <form method="POST" action="{$url.own_name}c=language_general&a=doModifyParameter" class="lang-search-form mt-3"

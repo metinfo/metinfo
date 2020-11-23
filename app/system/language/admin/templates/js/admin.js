@@ -211,14 +211,18 @@
       alertify.error(`${METLANG.js41}`)
       return
     }
+    let params = {
+      word: val,
+      editor: that.activeData.mark,
+      site: 'web',
+    }
+    if (modal.find('[name="appno"]').val()) {
+      params.appno = modal.find('[name="appno"]').val()
+    }
     metui.request(
       {
         url: that.own_name + 'c=language_general&a=doSearchParameter',
-        data: {
-          word: val,
-          editor: that.activeData.mark,
-          site: 'admin'
-        }
+        data: params
       },
       function(result) {
         metAjaxFun({
@@ -379,15 +383,7 @@
           .off()
           .click(function() {
             const val = modal.find('.input').val()
-            search(
-              {
-                word: val,
-                editor: that.activeData.mark,
-                site: 'admin',
-                appno: that.appActiveData.no
-              },
-              modal
-            )
+            search(val,modal)
           })
         modal.find('.lang-search-form').attr('action', `${that.own_name}c=language_general&a=doAppModifyParameter`)
       }

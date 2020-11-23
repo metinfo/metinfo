@@ -65,7 +65,7 @@ class recycle extends admin
                 $list['title'] = $val['title'];
                 $list['updatetime'] = $val['updatetime'];
                 $list['column_name'] = $column_name;
-                $list['del_url'] = "{$_M['url']['own_form']}a=dolistsave&allid={$val['id']}-{$mod}&submit_type=delete";
+                $list['del_url'] = "{$_M['url']['own_form']}a=dolistsave&allid={$val['id']}-{$mod}&submit_type=del";
                 $list['recyclere_url'] = "{$_M['url']['own_form']}a=dolistsave&allid={$val['id']}-{$mod}&submit_type=restore";
                 $rarray[] = $list;
             }

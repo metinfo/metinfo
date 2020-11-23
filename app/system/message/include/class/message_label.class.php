@@ -67,11 +67,21 @@ class message_label extends base_label
     public function get_module_form_html($id)
     {
         global $_M;
+        $class = load::sys_class('label', 'new')->get('column')->get_column_id($id);
+        if ($class['module'] != 7) {
+            return '';
+        }
+
+        //cxrf_token
+        $form_token = random('5');
+        load::sys_class('session', 'new')->set("form_token_{$id}", $form_token);
+
         $message = $this->get_module_form($id);
         $str = '';
         $str .= <<<EOT
-		<form method='POST' class="met-form met-form-validation"  enctype="multipart/form-data" action='{$message['config']['url']}'>
-		  <input type='hidden' name='lang' value='{$_M['lang']}' />
+		    <form method='POST' class="met-form met-form-validation"  enctype="multipart/form-data" action='{$message['config']['url']}'>
+		    <input type='hidden' name='lang' value='{$_M['lang']}' />
+            <input type='hidden' name='form_token' value='{$form_token}' />
 EOT;
         foreach ($message['para'] as $key => $val) {
             $str .= <<<EOT

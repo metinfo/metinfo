@@ -222,7 +222,11 @@ class online extends admin
         $data['met_onlinetel'] = isset($_M['config']['met_onlinetel']) ? $_M['config']['met_onlinetel'] : '';
         $data['met_online_skin'] = isset($_M['config']['met_online_skin']) ? $_M['config']['met_online_skin'] : '1';
         $data['online_skin_options'] = $this->getSkinList();
-        $this->success($data);
+        if($_M['form']['noajax']){
+            return $data;
+        }else{
+            $this->success($data);
+        }
     }
 
     /**

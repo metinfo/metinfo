@@ -295,6 +295,8 @@ class index extends admin
         $sava_data['icon'] = '';
         $sava_data['foldername'] = $if_in ? '' : $foldername;
         $sava_data['access'] = $access;
+        $sava_data['other_info'] = '';
+        $sava_data['custom_info'] = '';
         //数据入库
         $id = $this->database->insert($sava_data);
         if ($id) {

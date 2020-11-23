@@ -71,7 +71,7 @@
         if(modal_class){
             var $modal_class=$(modal_class);
             if($modal_class.length){
-                $modal_class.find('.modal-body').attr({'data-url':$(this).attr('data-modal-url'),'data-loading':$(this).attr('data-modal-loading'),'data-load':$(this).attr('data-modal-load'),'data-dataurl':$(this).attr('data-modal-dataurl'),'data-tablerefresh':$(this).attr('data-modal-tablerefresh'),'data-tablerefresh-type':$(this).attr('data-modal-tablerefresh-type'),'data-title':$(this).attr('data-modal-title')});
+                $modal_class.find('.modal-body').attr({'data-url':$(this).attr('data-modal-url'),'data-loading':$(this).attr('data-modal-loading'),'data-load':$(this).attr('data-modal-load'),'data-dataurl':$(this).attr('data-modal-dataurl')||'','data-tablerefresh':$(this).attr('data-modal-tablerefresh'),'data-tablerefresh-type':$(this).attr('data-modal-tablerefresh-type'),'data-title':$(this).attr('data-modal-title')});
             }else{
                 var options=$(this).data();
                 options.modal_class=modal_class;
@@ -155,19 +155,25 @@
                     title && $('.modal[data-key="'+key+'"] .modal-title').html(title);
                 };
             if(url && $modal_body.attr('data-dataurl')){
-                $.ajax({
-                    url: $modal_body.attr('data-dataurl'),
-                    type: 'GET',
-                    dataType: 'json',
-                    success:function(result){
-                        if(parseInt(result.status)){
-                            loadTemp(result.data);
-                        }else{
-                            $modal_body.find('.modal-loader').addClass('hide');
-                            $modal_body.find('.modal-html').html(`<div class="text-center h5 mb-0 py-5">${result.msg}</div>`).removeClass('hide');
+                var dataurl=$modal_body.attr('data-dataurl');
+                if(dataurl.indexOf('M.list')>=0){
+                    var result=eval(dataurl);
+                    loadTemp(result);
+                }else{
+                    $.ajax({
+                        url: dataurl,
+                        type: 'GET',
+                        dataType: 'json',
+                        success:function(result){
+                            if(parseInt(result.status)){
+                                loadTemp(result.data);
+                            }else{
+                                $modal_body.find('.modal-loader').addClass('hide');
+                                $modal_body.find('.modal-html').html(`<div class="text-center h5 mb-0 py-5">${result.msg}</div>`).removeClass('hide');
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }else loadTemp();
         },0);
     });

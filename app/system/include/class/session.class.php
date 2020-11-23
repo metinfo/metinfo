@@ -15,8 +15,9 @@ class session
 
     public function start()
     {
-        ##$ip=$this->getip();
-        session_id(md5($_SERVER['HTTP_USER_AGENT']));
+        //$ip=$this->getip();
+        //session_id(md5($ip));
+        //session_regenerate_id();
 
         session_start();
     }

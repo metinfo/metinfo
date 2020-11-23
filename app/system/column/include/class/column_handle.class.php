@@ -324,7 +324,7 @@ class column_handle extends handle
         if ($content['out_url']) {
             return $content['out_url'];
         } else {
-            if ($_M['config']['met_index_type'] == $content['lang'] && ($content['classtype'] == 1 || $content['releclass'] || $content['samefile'])) {
+            if ($_M['config']['met_index_type'] == $content['lang'] && ($content['releclass'] || $content['samefile'])) {
                 return $this->url_transform($content['foldername'] . '/', $content['lang']);
             } else {
                 return $this->url_full($content, $type);

@@ -242,7 +242,7 @@ class parameter_admin extends base_admin
                         $info['class2'] = $class[1];
                         $info['class3'] = $class[2];
                     }
-                    $info['no_order'] = $form['no_order-' . $id];
+                    $info['no_order'] = $form['no_order-' . $id] ?: 0;
                     $info['name'] = $form['name-' . $id];
                     $info['type'] = $form['type-' . $id];
                     //$info['wr_oks']   	 = $form['wr_oks-'.$id];

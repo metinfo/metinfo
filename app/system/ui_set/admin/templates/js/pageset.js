@@ -953,11 +953,12 @@
             // 下拉菜单新窗口打开去除新窗口打开属性
             $('a[data-toggle="dropdown"][data-hover="dropdown"][target="_blank"]',this).removeAttr('target');
             window.pageset_btn_hide=0;
-            setTimeout(function(){
+            $(documents).on('mouseover','*',function(e){
+                if(pageset_btn_hide) return;
                 var html=`<div class="pageset-btn hide" data-mid="" data-index=""><button type="button" class="btn btn-xs btn-primary pageset-block-config" data-mid="" data-index="">${METLANG.seting}</button><button type="button" class="btn btn-xs btn-warning pageset-content" data-mid="" data-type="" data-index="">${METLANG.content}</button></div>`;
                 $this.find('html>.pageset-btns').html(html);
                 pageset_btn_hide=1;
-            },5000);
+            });
             // 自定义链接替换
             $('a[href][href!=""]',this).filter(function(index) {
                 var href=$(this).attr('href');

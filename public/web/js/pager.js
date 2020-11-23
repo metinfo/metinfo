@@ -56,7 +56,7 @@
 				}else{
 					var fielename=pageurl_str.split('/').slice(-1)[0],
 						fielename_name=fielename.split('.')[0],
-						delimiter=fielename_name.indexOf('_')>0?'_':'-',
+						delimiter=fielename_name.indexOf('-')>0?'-':'_',
 						fielename_names=fielename_name.split(delimiter),
 						last=fielename_names.slice(-1)[0],
 						last_is_nan=isNaN(last),

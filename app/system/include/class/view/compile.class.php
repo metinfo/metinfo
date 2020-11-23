@@ -242,7 +242,7 @@ class compile
             $config['met_agents_copyright_foot'] = str_replace("<a ", "<a rel=nofollow ", $config['met_agents_copyright_foot']);
         }
 
-        if ($_M['config']['met_index_type'] == $_M['lang']) {
+        if ($_M['config']['met_index_type'] == $_M['lang'] && (!$_M['config']['met_pseudo'] && !$_M['config']['met_defult_lang'])) {
             $config['index_url'] = $config['met_weburl'];
         } else {
             if ($_M['config']['met_pseudo'] && !$_M['form']['pageset']) {

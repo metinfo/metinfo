@@ -47,8 +47,10 @@ class weixinapi
         $res = file_get_contents($api);
         if($res){
             $info = json_decode($res,true);
-            $info['expires_in'] = time() + $info['expires_in'];
-            cache::put('access_token',$info);
+            if ($info['access_token']) {
+                $info['expires_in'] = time() + $info['expires_in'];
+                cache::put('access_token',$info);
+            }
             return $info;
         }else{
             return false;
@@ -95,6 +97,7 @@ class weixinapi
                 $info = self::getWxToken();
             }
         }
+
         if(!$info){
             $this->error[] = '获取access_token错误';
             return false;
@@ -110,12 +113,14 @@ class weixinapi
                 '89501' => "此IP正在等待管理员确认,请联系管理员",
                 '89506' => "24小时内该IP被管理员拒绝调用两次，24小时内不可再使用该IP调用",
                 '89507' => "1小时内该IP被管理员拒绝调用一次，1小时内不可再使用该IP调用",
+                '40125' => "AppSecret 验证失败",
             );
             $error = array(
                 'errcode' => $info['errcode'],
                 'errmsg' => $info['errmsg'].'--'.$e_list[$info['errcode']]
             );
             $this->error[] = $error;
+            file_put_contents(__DIR__ . '/wx_error.txt', var_export($error, true));
             return false;
         }
         return $info['access_token'];

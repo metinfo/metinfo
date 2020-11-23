@@ -243,15 +243,12 @@
         metFormAjaxDel:function(){
             var $form=$(this).parents('form'),
                 $table=$(this).parents('.dataTable'),
-                table_order=$table.attr('data-datatable_order'),
                 url=$(this).data('url')||'',
-                allid=$form.find('[name="allid"]').val();
+                allid=$form.find('[name="allid"]').val(),
+                data={allid:allid};
             $form.removeAttr('data-submited');
-           if($(this).data('del_type')?allid!='':url){
-                var data='';
-                if($(this).data('del_type')) data={
-                    allid:allid.indexOf(',')>0?allid.split(','):[allid]
-                };
+            if(url?$(this).parents('tbody').length:allid!=''){
+                if(url.indexOf('&allid=')>0) data={};
                 metui.ajax({
                     url: url||$form.attr('action'),
                     data:data,
@@ -260,12 +257,15 @@
                     }
                 });
             }else{
-                alertify.error(METLANG.jslang3||'请选择至少一项');
+                metui.use('alertify',function(){
+                    alertify.error(METLANG.jslang3||'请选择至少一项');
+                });
             }
         }
     });
     window.datatable=[];
     window.datatable_option=[];
+    typeof M.list=='undefined'&&(M.list=[]);
     $(document).metDataTable();
     // 自定义搜索框
     $(document).on('change',"[data-table-search]",function(){
@@ -356,10 +356,10 @@
     $(document).on('click', 'table [table-del]', function(event) {
         var $self=$(this),
             checked_length=$self.parents('table').find('tbody .checkall-item:checked').length;
-        if(!$self.parents('tbody').length && !checked_length){
-            alertify.error(METLANG.jslang3||'请选择至少一项');
-        }else{
-            metui.use('alertify',function(){
+        metui.use('alertify',function(){
+            if(!$self.parents('tbody').length && !checked_length){
+                alertify.error(METLANG.jslang3||'请选择至少一项');
+            }else{
                 alertify.theme('bootstrap').okBtn(METLANG.confirm||'确定').cancelBtn(METLANG.cancel||'取消').confirm(METLANG.delete_information||'您确定要删除该信息吗？删除之后无法再恢复。', function (ev) {
                     if($self.parents('tbody').length){
                         $self.parents('tr').remove();
@@ -367,9 +367,9 @@
                         $self.parents('table').find('tbody .checkall-item[name="id"]:checked').parents('tr').remove();
                         $self.parents('table').find('.checkall-all').prop({checked:false});
                     }
-                })
-            });
-        }
+                });
+            }
+        });
     });
     // 删除多项提交
     $(document).on('click', 'table [table-delete]', function(event) {
@@ -383,9 +383,12 @@
                 $(this).metFormAjaxDel();
             }else $form.submit();
         }else{
-            if($(this).data('del_type')&&$form.find('[name="allid"]').val()==''){
+            var allid=$form.find('[name="allid"]').val()||'';
+            if(url?!$(this).parents('tbody').length&&allid=='':allid==''){
                 $form.removeAttr('data-submited');
-                alertify.error(METLANG.jslang3||'请选择至少一项');
+                metui.use('alertify',function(){
+                    alertify.error(METLANG.jslang3||'请选择至少一项');
+                });
             }
         }
     });

@@ -80,7 +80,7 @@ class feedback extends web
             }
         }
 
-        if ($this->checkword() && $this->checktime()) {
+        if ($this->checkword() && $this->checktime() && $this->checkToken($info['id'])) {
             foreach ($_FILES as $key => $value) {
                 if ($value['tmp_name']) {
                     $this->upfile = load::sys_class('upfile', 'new');
@@ -109,7 +109,7 @@ class feedback extends web
 
                 $this->notice_by_sms($title);
             }
-            setcookie('submit', time());
+            load::sys_class('session', 'new')->set('submit',time());
             okinfo(HTTP_REFERER, $_M['word']['Feedback4']);
         }
     }
@@ -160,7 +160,10 @@ class feedback extends web
         }
     }
 
-    /*表单提交时间检测*/
+    /**
+     * 表单提交时间检测
+     * @return bool
+     */
     public function checktime()
     {
         global $_M;
@@ -172,17 +175,35 @@ class feedback extends web
         } else {
             $time1 = 0;
         }
+
+        $submit = load::sys_class('session', 'new')->get('submit');
         $time2 = time();
         $timeok = (float) ($time2 - $time1);
-        $timeok2 = (float) ($time2 - $_COOKIE['submit']);
+        $timeok2 = (float) ($time2 - $submit);
         $config_op = load::mod_class('config/config_op', 'new');
         $conlum_configs = $config_op->getColumnConfArry($classnow);
+
         if ($timeok <= $conlum_configs['met_fd_time'] && $timeok2 <= $conlum_configs['met_fd_time']) {
             $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_fd_time'] . "{$_M['word']['Feedback2']}";
             okinfo('javascript:history.back();', $fd_time);
         } else {
             return true;
         }
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function checkToken($id = '')
+    {
+        global $_M;
+        $s_token = load::sys_class('session', 'new')->get("form_token_{$id}");
+        $form_token = $_M['form']['form_token'];
+        if (!$form_token || $s_token != $form_token) {
+            okinfo('javascript:history.back();', 'forbidden');
+        }
+        return true;
     }
 
     /*通过邮箱通知*/

@@ -434,11 +434,7 @@ class seo_label
     function html404()
     {
         global $_M;
-        $curl = load::sys_class('curl', 'new');
-        $curl->set('host', $_M['url']['web_site']);
-        $curl->set('file', 'app/system/entrance.php');
-        $curl->set('ignore', 1);
-        $post = array(
+        $param = array(
             'lang' => $_M['config']['met_index_type'],
             'm' => 'include',
             'c' => 'page404',
@@ -446,9 +442,23 @@ class seo_label
             'metinfonow' => $_M['config']['met_member_force'],
             'html_filename' => '404.html'
         );
+
+        foreach ($param as $name => $value) {
+            $tmp[] = "{$name}={$value}";
+        }
+        $param_str = implode('&', $tmp);
+        $url = $_M['url']['web_site'] . "app/system/entrance.php?{$param_str}";
         buffer::clearConfig();
-        $curl->curl_post($post);
+        file_get_contents($url);
         return true;
+
+        /*$curl = load::sys_class('curl', 'new');
+        $curl->set('host', $_M['url']['web_site']);
+        $curl->set('file', 'app/system/entrance.php');
+        $curl->set('ignore', 1);
+        buffer::clearConfig();
+        $curl->curl_post($param);
+        return true;*/
     }
 
 }

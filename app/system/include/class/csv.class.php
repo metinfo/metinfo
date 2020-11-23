@@ -15,8 +15,7 @@ class csv
      */
     public function get_csv($filename, $array, $head, $foot = array())
     {
-
-        // ���Excel�ļ�ͷ
+        // 输出Excel
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.csv"');
         header('Cache-Control: max-age=0');
@@ -24,40 +23,35 @@ class csv
         // ��PHP�ļ������php://output ��ʾֱ������������
         $fp = fopen('php://output', 'a');
 
-        // ���Excel������Ϣ
+        // 表头
         foreach ($head as $i => $v) {
-            // CSV��Excel֧��GBK���룬һ��Ҫת������������
-            $head [$i] = iconv('utf-8', 'gbk', $v);
+            $head [$i] = iconv('utf-8', 'gb2312//TRANSLIT', $v);
         }
-
-        // ������ͨ��fputcsvд���ļ����
         fputcsv($fp, $head);
 
-        // ������
         $cnt = 0;
-        // ÿ��$limit�У�ˢ��һ�����buffer����Ҫ̫��Ҳ��Ҫ̫С
+        // 内容
         $limit = 8000;
         foreach ($array as $row) {
             $cnt++;
-            if ($limit == $cnt) { // ˢ��һ�����buffer����ֹ�������ݹ����������
+            if ($limit == $cnt) {
                 ob_flush();
                 flush();
                 $cnt = 0;
             }
             $content = array();
             foreach ($head as $i => $v) {
-                $content [] = iconv('utf-8', 'gbk', $row [$i]);
+                $content [] = iconv('utf-8', 'gb2312//TRANSLIT', $row [$i]);
             }
             fputcsv($fp, $content);
         }
 
         if ($foot) {
             foreach ($foot as $i => $v) {
-                $foot[$i] = iconv('utf-8', 'gbk', $v);
+                $foot[$i] = iconv('utf-8', 'gb2312//TRANSLIT', $v);
             }
             fputcsv($fp, $foot);
         }
-
     }
 
 }

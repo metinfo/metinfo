@@ -259,7 +259,7 @@
         .off()
         .click(function() {
           $(this)
-            .html(`<i class="fa fa-spinner fa-spin mr-2"></i>${METLANG.dataexplain4}`)
+            .html(`<i class="fa fa-spinner fa-spin mr-2"></i>正在备份，请耐心等待...`)
             .attr('disabled', true)
           that.precent = 0
           let params = {

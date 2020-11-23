@@ -126,8 +126,8 @@ class base_label
         global $_M;
         $one = $this->database->get_list_one_by_id($id);
         if (!$one || $one['recycle'] == 1) {
-            die();
             abort();
+            die();
         }
 
         $one = $this->handle->one_para_handle($one);

@@ -90,7 +90,7 @@ class job extends news
                 okinfo(-1, $_M['word']['membercode']);
             }
         }
-        if ($this->checkword() && $this->checktime()) {
+        if ($this->checkword() && $this->checktime() && $this->checkToken($_M['form']['jobid'])) {
             foreach ($_FILES as $key => $value) {
                 if ($value['tmp_name']) {
                     $this->upfile = load::sys_class('upfile', 'new');
@@ -113,7 +113,7 @@ class job extends news
             $this->notice_by_sms($info);
         }
 
-        setcookie('submit', time());
+        load::sys_class('session', 'new')->set('submit',time());
         okinfo(HTTP_REFERER, $_M['word']['success']);
     }
 
@@ -160,9 +160,10 @@ class job extends news
         } else {
             $time1 = 0;
         }
+        $submit = load::sys_class('session', 'new')->get('submit');
         $time2 = time();
         $timeok = (float) ($time2 - $time1);
-        $timeok2 = (float) ($time2 - $_COOKIE['submit']);
+        $timeok2 = (float) ($time2 - $submit);
         $conlum_configs = $this->getClsaaConfig($classnow);
         if ($timeok <= $conlum_configs['met_cv_time'] && $timeok2 <= $conlum_configs['met_cv_time']) {
             $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_cv_time'] . "{$_M['word']['Feedback2']}";
@@ -170,6 +171,22 @@ class job extends news
         } else {
             return true;
         }
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function checkToken($id = '')
+    {
+        global $_M;
+        $s_token = load::sys_class('session', 'new')->get("form_token_{$id}");
+        $form_token = $_M['form']['form_token'];
+        if (!$form_token || $s_token != $form_token) {
+            okinfo('javascript:history.back();', 'forbidden');
+            return false;
+        }
+        return true;
     }
 
     /*通过邮箱通知*/

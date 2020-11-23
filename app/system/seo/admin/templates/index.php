@@ -16,5 +16,4 @@ $head_tab_ajax=1;
 ?>
 <div class="met-seo">
 <include file="pub/head_tab"/>
-
 </div>

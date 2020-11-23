@@ -38,8 +38,11 @@ class about extends web
         }
 
         $data = $about->get_about($this->input['classnow']);
-        $this->check($data['access']);
+        if (!$data) {
+            abort();
+        }
 
+        $this->check($data['access']);
         if (!$data['isshow']) {
             $next2 = $column->get_column_son($data['id']);
             if ($next2[0]['module'] != 1) {

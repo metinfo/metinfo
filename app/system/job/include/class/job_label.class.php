@@ -44,6 +44,10 @@ class job_label  extends base_label
     public function get_module_form_html($id = '')
     {
         global $_M;
+        //cxrf_token
+        $form_token = random('5');
+        load::sys_class('session', 'new')->set("form_token_{$id}", $form_token);
+
         $job = $this->get_module_form($id);
         $str = '';
         $str .= <<<EOT
@@ -51,6 +55,7 @@ class job_label  extends base_label
 		<input type="hidden" name="id" value="{$job['config']['classnow']}">
 		<input type="hidden" name="lang" value="{$_M['lang']}">
 		<input type="hidden" name="jobid" value="{$id}">
+		<input type='hidden' name='form_token' value='{$form_token}' />
 EOT;
         foreach ($job['para'] as $key => $val) {
             $str .= <<<EOT

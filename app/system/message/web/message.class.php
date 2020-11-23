@@ -53,12 +53,12 @@ class message extends web
     public function add($info)
     {
         global $_M;
-        $class_now = $_M['form']['id'];
+        $class_now = $info['id'];
         $config_op = load::mod_class('config/config_op', 'new');
         $conlum_configs = $config_op->getColumnConfArry($class_now);
 
-        $met_fd_ok = $conlum_configs['met_msg_ok'];
-        if (!$met_fd_ok) {
+        $met_msg_ok = $conlum_configs['met_msg_ok'];
+        if (!$met_msg_ok) {
             okinfo('javascript:history.back();', "{$_M['word']['MessageInfo5']}");
         }
         if ($_M['config']['met_memberlogin_code']) {
@@ -67,7 +67,7 @@ class message extends web
             }
         }
 
-        if ($this->checkword() && $this->checktime()) {
+        if ($this->checkword() && $this->checktime($conlum_configs) && $this->checkToken($info['id'])) {
             foreach ($_FILES as $key => $value) {
                 if ($value['tmp_name']) {
                     $this->upfile = load::sys_class('upfile', 'new');
@@ -92,7 +92,7 @@ class message extends web
 
                 $this->notice_by_sms($insert_id, $conlum_configs);
             }
-            setcookie('submit', time());
+            load::sys_class('session', 'new')->set('submit',time());
             okinfo(HTTP_REFERER, $_M['word']['MessageInfo2']);
         }
     }
@@ -142,8 +142,12 @@ class message extends web
         }
     }
 
-    /*表单提交时间检测*/
-    public function checktime($met_fd_time = '')
+    /**
+     * 表单提交时间检测
+     * @param array $conlum_configs
+     * @return bool
+     */
+    public function checktime($conlum_configs = array())
     {
         global $_M;
         $ip = IP;
@@ -154,22 +158,34 @@ class message extends web
         } else {
             $time1 = 0;
         }
+        $submit = load::sys_class('session', 'new')->get('submit');
         $time2 = time();
         $timeok = (float)($time2 - $time1);
-        $timeok2 = (float)($time2 - $_COOKIE['submit']);
-        if ($_M['form']['id']) {
-            $classnow = $_M['form']['id'];
-        } else {
-            $message = DB::get_one("select * from {$_M['table']['column']} where module = 7 and lang ='{$_M['form']['lang']}'");
-            $classnow = $message['id'];
-        }
-        $met_fd_time = load::mod_class('config/config_op', 'new')->getColumnConf($classnow, 'met_msg_time');
-        if ($timeok <= $met_fd_time && $timeok2 <= $met_fd_time) {
-            $fd_time = "{$_M['word']['Feedback1']}" . $met_fd_time . "{$_M['word']['Feedback2']}";
+        $timeok2 = (float)($time2 - $submit);
+
+        if ($timeok <= $conlum_configs['met_msg_time'] && $timeok2 <= $conlum_configs['met_msg_time']) {
+            $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_msg_time'] . "{$_M['word']['Feedback2']}";
             okinfo('javascript:history.back();', $fd_time);
         } else {
             return true;
         }
+    }
+
+    /**
+     * csrf_token
+     * @param string $id
+     * @return bool
+     */
+    public function checkToken($id = '')
+    {
+        global $_M;
+        $s_token = load::sys_class('session', 'new')->get("form_token_{$id}");
+        $form_token = $_M['form']['form_token'];
+        if (!$form_token || $s_token != $form_token) {
+            okinfo('javascript:history.back();', 'forbidden');
+            return false;
+        }
+        return true;
     }
 
     /*获取表单提交的ip*/
@@ -207,28 +223,28 @@ class message extends web
             }
             $body .= "<b>{$val['imgname']}</b>:{$val['info']}<br />";
         }
-        $met_fd_type = explode('#@met@#', $conlum_configs['met_msg_type']);
-        $met_fd_to = $conlum_configs['met_msg_to'];
+        $met_msg_type = explode('#@met@#', $conlum_configs['met_msg_type']);
+        $met_msg_to = $conlum_configs['met_msg_to'];
 
         $pname = "para" . $conlum_configs['met_msg_name_field'];
         $msg_user_name = $_M['form'][$pname];
         $title = $msg_user_name . "{$_M['word']['message_mailtext_v6']}";
 
-        if (in_array(1, $met_fd_type) && $met_fd_to) {
-            $met_fd_to = explode('|', $met_fd_to);
-            foreach ($met_fd_to as $email) {
+        if (in_array(1, $met_msg_type) && $met_msg_to) {
+            $met_msg_to = explode('|', $met_msg_to);
+            foreach ($met_msg_to as $email) {
                 $mail->send_email($email, $title, $body);
             }
         }
 
         //用户邮件通知
-        $met_fd_back = $conlum_configs['met_msg_back'];
-        $met_fd_title = $conlum_configs['met_msg_title'];
-        $met_fd_content = $conlum_configs['met_msg_content'];
+        $met_msg_back = $conlum_configs['met_msg_back'];
+        $met_msg_title = $conlum_configs['met_msg_title'];
+        $met_msg_content = $conlum_configs['met_msg_content'];
         $email_field = "para" . $conlum_configs['met_msg_email_field'];
         $user_email = $_M['form'][$email_field];
-        if ($met_fd_back == 1 && $user_email != "") {
-            $mail->send_email($user_email, $met_fd_title, $met_fd_content);
+        if ($met_msg_back == 1 && $user_email != "") {
+            $mail->send_email($user_email, $met_msg_title, $met_msg_content);
         }
     }
 
@@ -239,7 +255,7 @@ class message extends web
 
         //管理员短信通知
         $met_msg_admin_tel = $conlum_configs['met_msg_admin_tel'];
-        $met_fd_type = explode('#@met@#', $conlum_configs['met_fd_type']);
+        $met_msg_type = explode('#@met@#', $conlum_configs['met_msg_type']);
 
         $pname = "para" . $conlum_configs['met_msg_name_field'];
         $msg_user_name = $_M['form'][$pname];
@@ -249,7 +265,7 @@ class message extends web
             $title = $_M['word']['MessageInfo1'];
         }
 
-        if (in_array(2, $met_fd_type) && $met_msg_admin_tel) {
+        if (in_array(2, $met_msg_type) && $met_msg_admin_tel) {
             $str = str_replace("http://", "", $_M['config']['met_weburl']);
             $strdomain = explode("/", $str);
             $domain = $strdomain[0];
@@ -319,7 +335,7 @@ class message extends web
             }
         }
     }
-    
+
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

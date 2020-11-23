@@ -255,7 +255,11 @@ class index extends admin
     {
         global $_M;
         $tags = load::sys_class('label', 'new')->get('tags');
-        foreach ($_M['form']['id'] as $id) {
+        $ids = $_M['form']['allid']?explode(',', $_M['form']['allid']):$_M['form']['id'];
+        if(!is_array($ids)){
+            $ids=array($ids);
+        }
+        foreach ($ids as $id) {
             $query = "SELECT * FROM {$_M['table']['tags']} WHERE id = '{$id}'";
             $tag = DB::get_one($query);
             if ($tag) {

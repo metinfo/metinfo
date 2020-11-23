@@ -36,7 +36,7 @@ $html_class.=' met-admin';
 			<list data="$data['adminnav']['top']" name="$m">
 			<li class="transition500">
 				<a <if value="$m['url']">href="#/{$m.url}"<else/>href="javascript:;"</if> title="{$m.name}" class="d-flex justify-content-between align-items-center px-4">
-					<div><i class="iconfont-metadmin icon-metadmin-{$m.icon}"></i><span>{$m.name}</span></div>
+					<div><i class="metinfo-admin-icon metinfo-admin-icon-{$m.icon}"></i><span>{$m.name}</span></div>
 					<if value="$data['adminnav']['sub'][$m['id']]"><span class="fa fa-angle-right h5 mb-0"></span></if>
 				</a>
 				<if value="$data['adminnav']['sub'][$m['id']]">
@@ -44,12 +44,12 @@ $html_class.=' met-admin';
 					<list data="$data['adminnav']['sub'][$m['id']]" name="$msub">
 					<if value="$msub['url']||$data['adminnav']['sub'][$msub['id']]">
 					<li class="transition500">
-						<a <if value="$msub['url']">href="#/{$msub.url}"<else/>href="javascript:;"</if> title="{$msub.name}" class="d-block px-4"><i class="iconfont-metadmin icon-metadmin-{$msub.icon}"></i><span>{$msub.name}</span></a>
+						<a <if value="$msub['url']">href="#/{$msub.url}"<else/>href="javascript:;"</if> title="{$msub.name}" class="d-block px-4"><i class="metinfo-admin-icon metinfo-admin-icon-{$msub.icon}"></i><span>{$msub.name}</span></a>
 						<if value="$data['adminnav']['sub'][$msub['id']]">
 						<ul class="sub list-unstyled text-nowrap">
 							<list data="$data['adminnav']['sub'][$msub['id']]" name="$msub1">
 							<li class="transition500">
-								<a <if value="$msub1['url']">href="#/{$msub1.url}"<else/>href="javascript:;"</if> title="{$msub1.name}" class="d-block px-4"><if value="$msub1['icon']"><i class="iconfont-metadmin icon-metadmin-{$msub1.icon}"></i></if><span>{$msub1.name}</span></a>
+								<a <if value="$msub1['url']">href="#/{$msub1.url}"<else/>href="javascript:;"</if> title="{$msub1.name}" class="d-block px-4"><if value="$msub1['icon']"><i class="metinfo-admin-icon metinfo-admin-icon-{$msub1.icon}"></i></if><span>{$msub1.name}</span></a>
 							</li>
 							</list>
 						</ul>
@@ -84,7 +84,7 @@ $html_class.=' met-admin';
                     <if value="$data['clear_cache'] eq 1">
 		        	<div class="btn-group">
 		                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-		                    <i class="iconfont-metadmin icon-metadmin-clear-chache"></i>
+		                    <i class="metinfo-admin-icon metinfo-admin-icon-clear-chache"></i>
 		                    <span class="d-none d-md-inline-block">{$word.clearCache}</span>
 		                </button>
 		                <ul class="dropdown-menu dropdown-menu-right metadmin-head-langlist">
@@ -95,20 +95,20 @@ $html_class.=' met-admin';
 					</if>
                     <if value="$data['checkupdate'] eq 1">
                     <button class="btn btn-light" data-toggle="modal" data-target=".update-modal" data-modal-size="lg" data-modal-url="update" data-modal-fullheight="1" data-modal-title="{$word.checkupdate}" data-modal-oktext="" data-modal-notext="{$word.close}">
-	                    <i class="iconfont-metadmin icon-metadmin-update"></i>
+	                    <i class="metinfo-admin-icon metinfo-admin-icon-update"></i>
 	                    <span class="d-none d-md-inline-block">{$word.checkupdate}</span>
 	                </button>
                     </if>
 		            <if value="$data['function_complete'] eq 1">
 	                <button class="btn btn-light" data-toggle="modal" data-target=".function-ency-modal" data-modal-size="lg" data-modal-url="#pub/function_ency/?n=ui_set&c=index&a=get_auth" data-modal-refresh="one" data-modal-fullheight="1" data-modal-title="{$word.funcCollection}" data-modal-oktext="" data-modal-notext="{$word.close}">
-	                    <i class="iconfont-metadmin icon-metadmin-function"></i>
+	                    <i class="metinfo-admin-icon metinfo-admin-icon-function"></i>
 	                    <span class="d-none d-md-inline-block">{$word.funcCollection}</span>
 	                </button>
 		            </if>
 		            <if value="$c['met_agents_metmsg']">
 		            <div class="btn-group">
 		            	<button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-		                    <i class="iconfont-metadmin icon-metadmin-manual"></i>
+		                    <i class="metinfo-admin-icon metinfo-admin-icon-manual"></i>
 		                    <span class="d-none d-md-inline-block">{$word.indexbbs}</span>
 		                </button>
 		                <ul class="dropdown-menu dropdown-menu-right">
@@ -124,7 +124,7 @@ $html_class.=' met-admin';
 		            </if>
 		            <div class="btn-group">
 		                <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">
-		                    <i class="iconfont-metadmin icon-metadmin-multilingualism"></i>
+		                    <i class="metinfo-admin-icon metinfo-admin-icon-multilingualism"></i>
 		                    <span class="d-none d-md-inline-block">{$lang_name}</span>
 		                </button>
 		                <ul class="dropdown-menu dropdown-menu-right metadmin-head-langlist">
@@ -136,7 +136,7 @@ $html_class.=' met-admin';
 		            </div>
 		            <div class="btn-group">
 		                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		                	<i class="iconfont-metadmin icon-metadmin-administrator"></i>
+		                	<i class="metinfo-admin-icon metinfo-admin-icon-administrator"></i>
 		                	<span>{$_M['user']['admin_name']}</span>
 		                </button>
 		                <ul class="dropdown-menu dropdown-menu-right">

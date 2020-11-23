@@ -259,9 +259,17 @@ class index extends admin
 
         //编辑权限检测
         $now_admin = admin_information();
-        $query = "SELECT * FROM {$_M['table']['admin_table']} WHERE admin_id='{$data['admin_id']}' AND id='{$data['id']}'";
-        $editor_admin = DB::get_one($query);
-        if (!$this->have_power_eidtor($now_admin['admin_group'], $editor_admin['admin_group'])) {
+
+        if ($data['id']) {
+            $query = "SELECT * FROM {$_M['table']['admin_table']} WHERE admin_id='{$data['admin_id']}' AND id='{$data['id']}'";
+            $editor_admin = DB::get_one($query);
+            if (!$this->have_power_eidtor($now_admin['admin_group'],  $editor_admin['admin_group'])) {
+                logs::addAdminLog('metadmin', $log_name, 'jsok', 'doSaveSetup');
+                $this->error($_M['word']['js81']);
+            }
+        }
+
+        if (!$this->have_power_eidtor($now_admin['admin_group'],   $admin_group = $data['admin_group'])) {
             logs::addAdminLog('metadmin', $log_name, 'jsok', 'doSaveSetup');
             $this->error($_M['word']['js81']);
         }

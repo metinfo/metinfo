@@ -11,14 +11,14 @@ $met_title=$word['veditor'].'-'.$c['met_webname'];
 $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 ?>
 <include file="pub/header"/>
-<link rel="stylesheet" href="{$url.public_fonts}metinfo-icon/metinfo-icon.css">
+<link rel="stylesheet" href="{$url.public_fonts}metinfo-specail-icon/metinfo-specail-icon.css">
 <link rel="stylesheet" href="{$url.own_tem}css/pageset.css?{$pageset_css_filemtime}">
 <!-- 顶部导航 -->
 <header class='pageset-head bg-dark' style="height: 50px;">
 	<div class="container-fluid h-100 position-relative">
 		<if value="$c['met_agents_pageset_logo'] eq 1 || !isset($c['met_agents_pageset_logo'])">
 		<div class='float-left d-none d-lg-flex align-items-center h-100'>
-			<a href="{$c.met_agents_linkurl}" title='{$word.metinfo}' target='_blank' class='text-white pageset-logo'><i class="icon metinfo-icon metinfo-icon-logobd font-size-18"></i> <span>{$word.loginmetinfo}</span></a>
+			<a href="{$c.met_agents_linkurl}" title='{$word.metinfo}' target='_blank' class='text-white pageset-logo'><i class="icon metinfo-specail-icon metinfo-specail-icon-logobd font-size-18"></i> <span>{$word.loginmetinfo}</span></a>
 		</div>
 		</if>
 		<if value="is_mobile()">

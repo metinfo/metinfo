@@ -152,7 +152,8 @@ class pseudo_static extends admin
         $htaccess .= '# ' . $_M['word']['seohtaccess1'] . "\n";
         $htaccess .= 'Options -Indexes' . "\n";
         $htaccess .= 'RewriteBase ' . $metbase . "\n";
-        $htaccess .= 'RewriteRule ^(.*)\.(asp|aspx|asa|asax|dll|jsp|cgi|fcgi|pl)(.*)$ /404.html' . "\n";
+        $htaccess .= 'RewriteRule ^(.*)\.(asp|aspx|asa|asax|dll|jsp|cgi|fcgi|pl)(.*)$ 404.html' . "\n";
+        $htaccess .= 'RewriteRule index\.php/\w+ 404.html' . "\n";
         $htaccess .= '# Rewrite ' . $_M['word']['seohtaccess1'] . "\n";
 
         $htaccess .= 'RewriteRule ^index-([a-zA-Z0-9_^\x00-\xff]+).html$ index.php?lang=$1&pseudo_jump=1' . "\n";
@@ -192,6 +193,8 @@ class pseudo_static extends admin
         $htaccess .= 'rewrite ^'.$metbase.'public/plugins/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'public/plugins/ueditor/$1.html last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'app/app/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'app/app/ueditor/$1.html last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'wap/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'wap/$1.html last;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'(.*)\.(asp|aspx|asa|asax|dll|jsp|cgi|fcgi|pl)(.*)$ '.$metbase.'404.html;' . "\n";
+        $htaccess .= 'rewrite index\.php/\w+ '.$metbase.'404.html;' . "\n";
 
         $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/list-([a-zA-Z0-9_^\x00-\xff]+)-([0-9_]+)-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?lang=$4&metid=$2&list=1&page=$3&pseudo_jump=1;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'([a-zA-Z0-9_^\x00-\xff]+)/list-([a-zA-Z0-9_^\x00-\xff]+)-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'$1/index.php?lang=$3&metid=$2&list=1&pseudo_jump=1;' . "\n";

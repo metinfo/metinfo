@@ -51,7 +51,7 @@ class link_admin extends admin
 
         $data = array();
         $data['columnlist'] = $columnlist;
-        return $columnlist;
+        return $data;
     }
 
     //获取友情链接列表
@@ -168,7 +168,10 @@ class link_admin extends admin
     public function doDelLinks()
     {
         global $_M;
-        $data = isset($_M['form']['id']) ? $_M['form']['id'] : '';
+        $data = $_M['form']['allid']?explode(',', $_M['form']['allid']):$_M['form']['id'];
+        if(!is_array($data)){
+            $data=array($data);
+        }
         if (!$data) {
             $this->error();
         }

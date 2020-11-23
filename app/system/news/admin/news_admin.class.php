@@ -166,9 +166,14 @@ class news_admin extends base_admin
         if (!$list['description']) {
             $list['description'] = $this->description($list['content']);
         };
-        if (!$list['no_order']) {
-            $list['no_order'] = 0;
-        }
+
+        $list['displayimg'] = $list['displayimg'] ? : '';
+        $list['displaytype'] = $list['displaytype'] ? 1: 0;
+        $list['no_order'] = $list['no_order'] ? 1 : 0;
+        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
+        $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
+        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
+        $list['new_ok'] = $list['new_ok'] ? 1 : 0;
 
         $list['text_size'] = is_numeric($list['text_size']) ? $list['text_size'] : 0;
         // $list['updatetime'] = date("Y-m-d H:i:s");
@@ -347,6 +352,13 @@ class news_admin extends base_admin
      */
     public function update_list_sql($list = array(), $id = '')
     {
+        $list['displaytype'] = $list['displaytype'] ? 1: 0;
+        $list['no_order'] = $list['no_order'] ? 1: 0;
+        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
+        $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
+        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
+        $list['new_ok'] = $list['new_ok'] ? 1 : 0;
+
         if (!$list['title']) {
             $this->error[] = 'no title';
             return false;

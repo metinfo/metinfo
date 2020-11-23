@@ -2,7 +2,7 @@
 <div class="input-group bootstrap-touchspin search">
   <input class="form-control form-control-lg input" />
   <span class="input-group-btn input-group-append">
-    <button class="btn btn-primary btn-search" type="button">{$word.search}</i>
+    <button class="btn btn-primary btn-lg btn-search" type="button">{$word.search}</i>
     </button></span>
 </div>
 <span class="text-help m-2">{$word.hotsearches}：<a class="hot-search" tabindex="0">{$word.htmHome}</a></span>

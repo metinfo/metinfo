@@ -38,6 +38,14 @@ class feedback_label extends base_label
     public function get_module_form_html($id, $fdtitle = '')
     {
         global $_M;
+        //cxrf_token
+        $form_token = random('5');
+        load::sys_class('session', 'new')->set("form_token_{$id}", $form_token);
+
+        $class = load::sys_class('label', 'new')->get('column')->get_column_id($id);
+        if ($class['module'] != 8) {
+            return '';
+        }
         $feedback = $this->get_module_form($id);
 
         if ($_M['form']['fdtitle']) {
@@ -47,8 +55,7 @@ class feedback_label extends base_label
         if ($_M['form']['lang']) {
             $this->lang = $_M['form']['lang'];
         }
-
-        $referer = HTTP_REFERER;
+        $referer = $_M['form']['fdtitle'] ? HTTP_REFERER : '';
         $str = '';
         $str .= <<<EOT
 		<form method='POST' class="met-form met-form-validation" enctype="multipart/form-data" action='{$feedback['config']['url']}'>
@@ -56,6 +63,7 @@ class feedback_label extends base_label
 		<input type='hidden' name='lang' value="{$this->lang}" />
 		<input type='hidden' name='fdtitle' value='{$fdtitle}' />
 		<input type='hidden' name='referer' value='{$referer}' />
+		<input type='hidden' name='form_token' value='{$form_token}' />
 EOT;
         foreach ($feedback['para'] as $key => $val) {
             $str .= <<<EOT
@@ -71,7 +79,6 @@ EOT;
 EOT;
         return $str;
     }
-
 
     /**
      * 获取单条news

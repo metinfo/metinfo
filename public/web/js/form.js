@@ -42,6 +42,8 @@ $(function(){
         src=src.indexOf('&random')>0?src.split('&random')[0]:src;
         $(this).attr({src:src+'&random='+random}).parents('form').find('input[type="hidden"][name="random"]').val(random);
     });
+    var $form_referer=$('form.met-form input[name="referer"][type="hidden"]');
+    $form_referer.length && $form_referer.val(location.search.indexOf('fdtitle=')>0?document.referrer:'');
 });
 $.fn.extend({
     // 表单验证通用

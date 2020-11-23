@@ -671,9 +671,10 @@ class index extends base_admin
             deldir(PATH_WEB . 'cache', 1);
         }
 
-        /*if(file_exists(PATH_WEB.'upload/thumb_src')){
-            deldir(PATH_WEB.'upload/thumb_src');
-        }*/
+        if ($_M['config']['met_webhtm']) {
+            //开启静态化后不清除模板缓存
+            return;
+        }
 
         $inc_file = PATH_WEB . "templates/{$this->no}/metinfo.inc.php";
         if (file_exists($inc_file)) {
@@ -682,6 +683,7 @@ class index extends base_admin
                 deldir(PATH_WEB . 'templates/' . $_M['config']['met_skin_user'] . '/cache', 1);
             }
         }
+        return;
     }
 
     /**

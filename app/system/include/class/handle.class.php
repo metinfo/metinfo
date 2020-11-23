@@ -376,7 +376,7 @@ class handle
             array('opendir', 'danger', '支持', '无法列出目录下文件',  '函数'),
             array('scandir', 'danger', '支持', '无法列出目录下文件<a href="https://www.mituo.cn/qa/2466.html" target="_blank">[帮助]</a>',  '函数'),
             array('curl_exec', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2468.html" target="_blank">[帮助]</a>',  '函数'),
-            array('woff2', 'warning', '支持', '无法进行可视化编辑<a href="https://www.mituo.cn/qa/2446.html" target="_blank">[帮助]</a>',  'woff'),
+            array('woff2', 'warning', '支持', '无法进行可视化编辑<a href="https://www.mituo.cn/qa/2446.html" target="_blank">[帮助]</a>',  'woff2'),
             array('PHP', 'danger', PHP_VERSION, 'php版本需要在5.3到7.2之间，否则无法安装使用程序', 'php'),
             array('openssl', 'warning', OPENSSL_VERSION_TEXT, OPENSSL_VERSION_TEXT.'模块未开启，无法发送邮件，且部分应用插件无法使用（如官方商城、一键导入微信文章等）<a href="https://www.mituo.cn/qa/2449.html" target="_blank">[帮助]</a>', 'openssl'),
         );
@@ -426,8 +426,8 @@ class handle
                 case 'smtp':
                     $yes = function_exists('fsockopen') || function_exists('pfsockopen') || function_exists('stream_socket_client');
                     break;
-                case 'woff':
-                    $yes = @file_get_contents($site_url.'/public/fonts/font-awesome/fontawesome-webfont.woff2');
+                case 'woff2':
+                    $yes = @file_get_contents($site_url.'/public/fonts/font-awesome/metinfo-icon1.woff2');
                     break;
                 case '类':
                     $yes = class_exists($v[0]);

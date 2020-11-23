@@ -237,19 +237,14 @@ function random($length = 1, $type = 0, $patten = '')
  *
  * @param string $var    规定 cookie 的名称
  * @param string $value  规定 cookie 的值
- * @param int    $life   规定 cookie 的有效期
+ * @param int    $expire 规定 cookie 的有效期
  * @param string $path   规定 cookie 的服务器路径
  * @param string $domain 规定 cookie 的域名
  */
-function met_setcookie($var, $value = '', $life = 0, $path = '/', $domain = '')
+function met_setcookie($var, $value = '', $expire = 0, $path = '/', $domain = '')
 {
-    $path = PHP_VERSION < '5.2.0' ? $path.'; HttpOnly' : $path;
     $secure = $_SERVER['SERVER_PORT'] == 443 ? 1 : 0;
-    if (PHP_VERSION < '5.2.0') {
-        setcookie($var, $value, $life, $path, $domain, $secure);
-    } else {
-        setcookie($var, $value, $life, $path, $domain, $secure, true);
-    }
+    setcookie($var, $value, $expire, $path, $domain, $secure, true);
 }
 
 /**
@@ -813,6 +808,7 @@ function abort()
 {
     header('HTTP/1.1 404 Not Found');
     header('Status: 404 Not Found');
+    header('location:/404.html');
     die;
 }
 

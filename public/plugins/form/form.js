@@ -364,7 +364,7 @@
             M.table_submit_data=array;
         }
         // 提交删除时没有勾选时提示
-        if(/*$(this).find('[name="submit_type"]').length && */$table.length && (not_validate_checked?$table.find('tbody tr td').length>1:1) && M.table_submit_data.allid==''){
+        if(!not_validate_checked && $table.length && ($table.find('tbody .checkall-item[name="id"]').length?!$table.find('tbody .checkall-item[name="id"]:checked').length:0) && M.table_submit_data.allid==''){
             event.preventDefault();
             metui.use('alertify',function(){alertify.error(METLANG.jslang3||'请选择至少一项')});
             var $submit=$(M.component.submit_selctor,this);
