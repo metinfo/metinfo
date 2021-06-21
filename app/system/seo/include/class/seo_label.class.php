@@ -134,6 +134,7 @@ class seo_label
             'priority' => 1
         );
 
+        //栏目URL
         $colunm = load::sys_class('label', 'new')->get('column');
         $colunm->lang = $lang;
         $colunm->column = array();
@@ -168,14 +169,33 @@ class seo_label
                 );
             }
         }
+
+        //内容URL
         $module_array = array('news', 'product', 'img', 'download', 'job');
-        foreach ($module_array as $value) {
-            if ($value == 'job' && !$job_flag) {
+        $fields = array(
+            'news' => array('id', 'title', 'class1', 'class2', 'class3', 'class1', 'lang', 'updatetime', 'addtime', 'links', 'access', 'filename', 'displaytype'),
+            'product' => array('id', 'title', 'class1', 'class2', 'class3', 'class1', 'lang', 'updatetime', 'addtime', 'links', 'access', 'filename', 'displaytype'),
+            'img' => array('id', 'title', 'class1', 'class2', 'class3', 'class1', 'lang', 'updatetime', 'addtime', 'links', 'access', 'filename'),
+            'download' => array('id', 'title', 'class1', 'class2', 'class3', 'class1', 'lang', 'updatetime', 'addtime', 'links', 'access', 'filename', 'displaytype'),
+            'job' => array('id', 'position', 'class1', 'class2', 'class3', 'class1', 'lang', 'updatetime', 'addtime', 'access', 'filename', 'displaytype'),
+        );
+
+        foreach ($module_array as $mod) {
+            if ($mod == 'job' && !$job_flag) {
                 continue;
             }
-            $content = load::sys_class('label', 'new')->get($value);
+
+            $field = implode(',', $fields[$mod]);
+            $sql = "SELECT {$field} FROM {$_M['table'][$mod]} WHERE lang = '{$lang}'";
+            if($mod != 'job'){
+                $sql .= ' AND recycle = 0 ';
+            }
+            $c = DB::get_all($sql);
+            $handle = load::mod_class('base/base_handle', 'new');
+            /*$content = load::sys_class('label', 'new')->get($mod);
             $content->database->set_lang($lang);
-            $c = $content->get_module_list('');
+            $c = $content->get_module_list();*/
+
             foreach ($c as $key => $val) {
                 if (strpos($class1list, '-' . $val['class1'] . '-') === false && $val != 'job') {
                     continue;
@@ -183,17 +203,19 @@ class seo_label
                 if (!$val['displaytype']) {
                     continue;
                 }
+
                 if ($_M['config']['met_sitemap_not2'] == 1 && $val['links']) {
                     continue;
                 }
+
+                $handle->construct($mod);
                 $sitemaplist[] = array(
                     'updatetime' => $val['updatetime'],
                     'title' => $val['title'],
-                    'url' => $content->handle->get_content_url($val, $type),
+                    'url' => $handle->get_content_url($val, $type),
+                    //'url' => $content->handle->get_content_url($val, $type),
                 );
             }
-
-
         }
 
         return $sitemaplist;
@@ -244,10 +266,10 @@ class seo_label
                 $sitemap_hz = '.html';
                 if ($_M['config']['met_sitemap_lang']) {
                     $sitemapname = PATH_WEB . 'sitemap' . $sitemap_hz;
-                }else{
+                } else {
                     if ($_M['lang'] == $_M['config']['met_index_type']) {
                         $sitemapname = PATH_WEB . 'sitemap' . $sitemap_hz;
-                    }else{
+                    } else {
                         $sitemapname = PATH_WEB . "sitemap_{$_M['lang']}" . $sitemap_hz;
                     }
                 }
@@ -322,10 +344,10 @@ class seo_label
                 $sitemap_hz = '.xml';
                 if ($_M['config']['met_sitemap_lang']) {
                     $sitemapname = PATH_WEB . 'sitemap' . $sitemap_hz;
-                }else{
+                } else {
                     if ($_M['lang'] == $_M['config']['met_index_type']) {
                         $sitemapname = PATH_WEB . 'sitemap' . $sitemap_hz;
-                    }else{
+                    } else {
                         $sitemapname = PATH_WEB . "sitemap_{$_M['lang']}" . $sitemap_hz;
                     }
                 }
@@ -371,10 +393,10 @@ class seo_label
                 $sitemap_hz = '.txt';
                 if ($_M['config']['met_sitemap_lang']) {
                     $sitemapname = PATH_WEB . 'sitemap' . $sitemap_hz;
-                }else{
+                } else {
                     if ($_M['lang'] == $_M['config']['met_index_type']) {
                         $sitemapname = PATH_WEB . 'sitemap' . $sitemap_hz;
-                    }else{
+                    } else {
                         $sitemapname = PATH_WEB . "sitemap_{$_M['lang']}" . $sitemap_hz;
                     }
                 }
@@ -449,6 +471,7 @@ class seo_label
         $param_str = implode('&', $tmp);
         $url = $_M['url']['web_site'] . "app/system/entrance.php?{$param_str}";
         buffer::clearConfig();
+        buffer::clearTemp();
         file_get_contents($url);
         return true;
 
@@ -460,7 +483,6 @@ class seo_label
         $curl->curl_post($param);
         return true;*/
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

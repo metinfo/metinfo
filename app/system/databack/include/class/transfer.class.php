@@ -355,31 +355,49 @@ class transfer
         $sqls = array();
         preg_match_all('/DROP\s+TABLE\s+IF\s+EXISTS\s+\w+;/i', $string, $matchA);
         preg_match_all('/CREATE\s+TABLE[\s\S]+?;/i', $string, $matchB);
-        $sqls = array_merge($matchA[0], $matchB[0]);
+        //$sqls = array_merge($matchA[0], $matchB[0]);
+        if (is_array($matchA)) {
+            $sqls = array_merge($sqls, $matchA[0]);
+        }
+
+        if (is_array($matchB)) {
+            $sqls = array_merge($sqls, $matchB[0]);
+        }
 
         $sqlArray = explode("');\n", $string);
 
         foreach ($sqlArray as $sql) {
+            //dumpfile / outfile 过滤
+            $matchC_res = preg_match('/into\s+(dumpfile|outfile)\s+/i', $sql, $matchC);
+            if ($matchC_res) {
+                continue;
+            }
+
             $sql = $sql."');";
             if (strstr($sql, 'CREATE') || strstr($sql, 'DROP')) {
                 foreach (explode(";\n", $sql) as $query) {
-                    $query = trim($query);
-                    if ($query) {
+                    if (trim($query)) {
                         $query = $query.';';
                         $query = str_replace(';;', ';', $query);
                         if (strstr($query, 'CREATE') || strstr($query, 'DROP')) {
                             continue;
                         }
-
-                        $sqls[] = $query;
+                        $new_sql = $query;
                     }
                 }
             } else {
-                if ($sql) {
-                    $sql = str_replace(';;', ';', $sql);
-                    $sqls[] = $sql;
+                if (trim($sql)) {
+                    $query = str_replace(';;', ';', $sql);
+                    $new_sql = $query;
                 }
             }
+
+            $matched = preg_match('/\w+/', $new_sql, $match);
+            if (!$matched) {
+                continue;
+            }
+
+            $sqls[] = str_replace("\n", '', $new_sql);
         }
 
         return $sqls;

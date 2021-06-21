@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-safe-set">
-  <form method="POST" action="{$url.own_name}c=index&a=doSaveSetup" class="info-form mt-3" data-submit-ajax="1"
+  <form method="POST" action="{$url.own_name}c=index&a=doSaveSetup" class="info-form" data-submit-ajax="1"
     id="safe-form" data-validate_order="#safe-form">
     <div class="metadmin-fmbx">
       <h3 class="example-title">{$word.safety_efficiency}</h3>

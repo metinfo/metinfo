@@ -3,6 +3,7 @@
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
 $head_tab_ajax=1;
+$no_bg=1;
 $module_class='module='.$data['module'].'&class1='.$data['class1'].'&class2='.$data['class2'].'&class3='.$data['class3'];
 $list_url=$data['module'].'/list/?'.$module_class;
 $doclass=$data['module']=='job'?'manage':'admin';

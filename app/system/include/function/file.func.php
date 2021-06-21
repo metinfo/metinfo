@@ -5,30 +5,30 @@
 defined('IN_MET') or exit('No permission');
 
 load::sys_func('str');
-load::sys_class('pclzip');
 /**
  * 新建文件夹
  * @param  string  $dir 要新建的文件夹
  * @return boolean 		文件夹存在则返回真，否侧新建文件夹，并返回是否新建文件夹成功
  */
-function makedir($dir){
-	$dir = path_absolute($dir);
-	@clearstatcache();
-	if(file_exists($dir)){
-		$result=true;
-	}else{
-		$fileUrl = '';
-		$fileArr = explode('/', $dir);
-		$result = true;
-		foreach($fileArr as $val){
-			$fileUrl .= $val . '/';
-			if(!file_exists($fileUrl)){
-				$result = mkdir($fileUrl,0777, true);
-			}
-		}
-	}
-	@clearstatcache();
-	return $result;
+function makedir($dir)
+{
+    $dir = path_absolute($dir);
+    @clearstatcache();
+    if (file_exists($dir)) {
+        $result = true;
+    } else {
+        $fileUrl = '';
+        $fileArr = explode('/', $dir);
+        $result = true;
+        foreach ($fileArr as $val) {
+            $fileUrl .= $val . '/';
+            if (!file_exists($fileUrl)) {
+                $result = mkdir($fileUrl, 0777, true);
+            }
+        }
+    }
+    @clearstatcache();
+    return $result;
 }
 
 /**
@@ -37,23 +37,23 @@ function makedir($dir){
  * @param  boolean $overWrite	如果新建的文件存在，是否删除原文件（true：删除原文件，false：不删除原文件）默认删除
  * @return boolean				是否新建文件成功
  */
-function makefile($file,$overWrite = true){
-	$file = path_absolute($file);
-	@clearstatcache();
-	if(file_exists($file) && $overWrite == false){
-		return true;
-	}else if(file_exists($file) && $overWrite == true){
-		delfile($file);
-	}
-	$fileDir = dirname($file);
-	if(makedir($fileDir)){
-		@clearstatcache();
-		return touch($file);
-	}else{
-		@clearstatcache();
-		return false;
-	}
-
+function makefile($file,$overWrite = true)
+{
+    $file = path_absolute($file);
+    @clearstatcache();
+    if (file_exists($file) && $overWrite == false) {
+        return true;
+    } else if (file_exists($file) && $overWrite == true) {
+        delfile($file);
+    }
+    $fileDir = dirname($file);
+    if (makedir($fileDir)) {
+        @clearstatcache();
+        return touch($file);
+    } else {
+        @clearstatcache();
+        return false;
+    }
 }
 
 /**
@@ -63,35 +63,36 @@ function makefile($file,$overWrite = true){
  * @param  boolean $overWrite	是否覆盖原文件夹（true：覆盖原文件夹，false：不覆盖原文件夹）默认覆盖
  * @return boolean				复制成功返回true，否则返回false
  */
-function copydir($oldDir, $targetDir, $overWrite = true){
-	$oldDir = path_absolute($oldDir);
-	$targetDir = path_absolute($targetDir);
-	@clearstatcache();
-	$targetDir = substr($targetDir, -1) == '/' ? $targetDir : $targetDir.'/';
-	$oldDir = substr($oldDir, -1) == '/' ? $oldDir : $oldDir.'/';
-	if(!is_dir($oldDir)){
-		return false;
-	}
-	if(!file_exists($targetDir)){
-		makedir($targetDir);
-	}
-	$resource = opendir($oldDir);
-	while(($file = readdir($resource))!== false){
-		if($file == '.' || $file == '..'){
-			continue;
-		}
-		if(!is_dir($oldDir.$file)){
-			copyfile($oldDir.$file, $targetDir.$file, $overWrite);
-		}else{
-			copydir($oldDir.$file, $targetDir.$file, $overWrite);
-		}
-	}
-	@clearstatcache();
-	if(is_dir($targetDir)){
-		return true;
-	}else{
-		return false;
-	}
+function copydir($oldDir, $targetDir, $overWrite = true)
+{
+    $oldDir = path_absolute($oldDir);
+    $targetDir = path_absolute($targetDir);
+    @clearstatcache();
+    $targetDir = substr($targetDir, -1) == '/' ? $targetDir : $targetDir . '/';
+    $oldDir = substr($oldDir, -1) == '/' ? $oldDir : $oldDir . '/';
+    if (!is_dir($oldDir)) {
+        return false;
+    }
+    if (!file_exists($targetDir)) {
+        makedir($targetDir);
+    }
+    $resource = opendir($oldDir);
+    while (($file = readdir($resource)) !== false) {
+        if ($file == '.' || $file == '..') {
+            continue;
+        }
+        if (!is_dir($oldDir . $file)) {
+            copyfile($oldDir . $file, $targetDir . $file, $overWrite);
+        } else {
+            copydir($oldDir . $file, $targetDir . $file, $overWrite);
+        }
+    }
+    @clearstatcache();
+    if (is_dir($targetDir)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -101,27 +102,28 @@ function copydir($oldDir, $targetDir, $overWrite = true){
  * @param  boolean $overWrite   是否覆盖原文件（true：覆盖原文件，false：不覆盖原文件）默认覆盖
  * @return boolean				复制成功返回true，否则返回false
  */
-function copyfile($oldFile, $targetFile, $overWrite = true){
-	$oldFile = path_absolute($oldFile);
-	$targetFile = path_absolute($targetFile);
-	@clearstatcache();
-	if(!file_exists($oldFile)){
-		return false;
-	}
-	@clearstatcache();
-	if(file_exists($targetFile) && $overWrite == false){
-		return false;
-	}else if(file_exists($targetFile) && $overWrite == true){
-		//delfile($targetFile);
-	}
-	$fileDir = dirname($targetFile);
-	makedir($fileDir);
-	if(copy($oldFile, $targetFile)){
-		return true;
-	}else{
-		return false;
-	}
-	@clearstatcache();
+function copyfile($oldFile, $targetFile, $overWrite = true)
+{
+    $oldFile = path_absolute($oldFile);
+    $targetFile = path_absolute($targetFile);
+    @clearstatcache();
+    if (!file_exists($oldFile)) {
+        return false;
+    }
+    @clearstatcache();
+    if (file_exists($targetFile) && $overWrite == false) {
+        return false;
+    } else if (file_exists($targetFile) && $overWrite == true) {
+        //delfile($targetFile);
+    }
+    $fileDir = dirname($targetFile);
+    makedir($fileDir);
+    if (copy($oldFile, $targetFile)) {
+        return true;
+    } else {
+        return false;
+    }
+    @clearstatcache();
 }
 
 /**
@@ -131,35 +133,36 @@ function copyfile($oldFile, $targetFile, $overWrite = true){
  * @param  boolean $overWrite	是否覆盖已有文件夹（true：覆盖已有文件夹，false：不覆盖已有文件夹）默认覆盖
  * @return boolean				移动成功返回true，否则返回false
  */
-function movedir($oldDir, $targetDir, $overWrite = true){
-	$oldDir = path_absolute($oldDir);
-	$targetDir = path_absolute($targetDir);
-	@clearstatcache();
-	$targetDir = substr($targetDir, -1) == '/' ? $targetDir : $targetDir . '/';
-	$oldDir = substr($oldDir, -1) == '/' ? $oldDir : $oldDir . '/';
-	if(!is_dir($oldDir)){
-		return false;
-	}
-	if(!file_exists($targetDir)){
-		makedir($targetDir);
-	}
-	$resource = opendir($oldDir);
-	if(!$resource){
-		return false;
-	}
-	while(($file = readdir($resource))!== false){
-		if($file == '.' || $file == '..'){
-			continue;
-		}
-		if(!is_dir($oldDir.$file)){
-			movefile($oldDir.$file, $targetDir.$file, $overWrite);
-		}else{
-			movedir($oldDir.$file, $targetDir.$file, $overWrite);
-		}
-	}
-	closedir($resource);
-	@clearstatcache();
-	return rmdir($oldDir);
+function movedir($oldDir, $targetDir, $overWrite = true)
+{
+    $oldDir = path_absolute($oldDir);
+    $targetDir = path_absolute($targetDir);
+    @clearstatcache();
+    $targetDir = substr($targetDir, -1) == '/' ? $targetDir : $targetDir . '/';
+    $oldDir = substr($oldDir, -1) == '/' ? $oldDir : $oldDir . '/';
+    if (!is_dir($oldDir)) {
+        return false;
+    }
+    if (!file_exists($targetDir)) {
+        makedir($targetDir);
+    }
+    $resource = opendir($oldDir);
+    if (!$resource) {
+        return false;
+    }
+    while (($file = readdir($resource)) !== false) {
+        if ($file == '.' || $file == '..') {
+            continue;
+        }
+        if (!is_dir($oldDir . $file)) {
+            movefile($oldDir . $file, $targetDir . $file, $overWrite);
+        } else {
+            movedir($oldDir . $file, $targetDir . $file, $overWrite);
+        }
+    }
+    closedir($resource);
+    @clearstatcache();
+    return rmdir($oldDir);
 }
 
 /**
@@ -169,25 +172,26 @@ function movedir($oldDir, $targetDir, $overWrite = true){
  * @param  boolean $overWrite   是否覆盖已有文件（true：覆盖已有文件，false：不覆盖已有文件）默认覆盖
  * @return boolean				移动成功返回true，否则返回false
  */
-function movefile($oldFile, $targetFile, $overWrite = true){
-	$oldFile = path_absolute($oldFile);
-	$targetFile = path_absolute($targetFile);
-	@clearstatcache();
-	if(!file_exists($oldFile)){
-		return false;
-	}
-	@clearstatcache();
-	if(file_exists($targetFile) && $overWrite == false){
-		//delfile($oldFile);
-		return false;
-	}else if(file_exists($targetFile) && $overWrite == true){
-		delfile($targetFile);
-	}
-	$fileDir = dirname($targetFile);
-	makedir($fileDir);
-	rename($oldFile, $targetFile);
-	@clearstatcache();
-	return true;
+function movefile($oldFile, $targetFile, $overWrite = true)
+{
+    $oldFile = path_absolute($oldFile);
+    $targetFile = path_absolute($targetFile);
+    @clearstatcache();
+    if (!file_exists($oldFile)) {
+        return false;
+    }
+    @clearstatcache();
+    if (file_exists($targetFile) && $overWrite == false) {
+        //delfile($oldFile);
+        return false;
+    } else if (file_exists($targetFile) && $overWrite == true) {
+        delfile($targetFile);
+    }
+    $fileDir = dirname($targetFile);
+    makedir($fileDir);
+    rename($oldFile, $targetFile);
+    @clearstatcache();
+    return true;
 }
 
 /**
@@ -196,29 +200,30 @@ function movefile($oldFile, $targetFile, $overWrite = true){
  * @param  int     $type  	 0：删除本文件夹及文件夹下文件，1：只删除本文件夹下的文件。默认都删除
  * @return boolean 			 删除成功返回true，否则返回false
  */
-function deldir($fileDir,$type = 0){
-	$fileDir = path_absolute($fileDir);
-	@clearstatcache();
-	$fileDir = substr($fileDir, -1) == '/' ? $fileDir : $fileDir . '/';
-	if(!is_dir($fileDir)){
-		return false;
-	}
-	$resource = opendir($fileDir);
-	@clearstatcache();
-	while(($file = readdir($resource))!== false){
-		if($file == '.' || $file == '..'){
-			continue;
-		}
-		if(!is_dir($fileDir.$file)){
-			delfile($fileDir.$file);
-		}else{
-			deldir($fileDir.$file);
-		}
-	}
-	closedir($resource);
-	@clearstatcache();
-	if($type==0)rmdir($fileDir);
-	return true;
+function deldir($fileDir,$type = 0)
+{
+    $fileDir = path_absolute($fileDir);
+    @clearstatcache();
+    $fileDir = substr($fileDir, -1) == '/' ? $fileDir : $fileDir . '/';
+    if (!is_dir($fileDir)) {
+        return false;
+    }
+    $resource = opendir($fileDir);
+    @clearstatcache();
+    while (($file = readdir($resource)) !== false) {
+        if ($file == '.' || $file == '..') {
+            continue;
+        }
+        if (!is_dir($fileDir . $file)) {
+            delfile($fileDir . $file);
+        } else {
+            deldir($fileDir . $file);
+        }
+    }
+    closedir($resource);
+    @clearstatcache();
+    if ($type == 0) rmdir($fileDir);
+    return true;
 }
 
 /**
@@ -226,19 +231,20 @@ function deldir($fileDir,$type = 0){
  * @param  string  $fileDir	要删除的文件
  * @return boolean			删除成功返回true，否则返回false
  */
-function delfile($fileUrl){
-	$fileUrl = path_absolute($fileUrl);
-	@clearstatcache();
-	if(stristr(PHP_OS,"WIN")) {
-		$fileUrl = @iconv("utf-8", "GBK", $fileUrl);
-	}
-	if(file_exists($fileUrl)){
-		unlink($fileUrl);
-		return true;
-	}else{
-		return false;
-	}
-	@clearstatcache();
+function delfile($fileUrl)
+{
+    $fileUrl = path_absolute($fileUrl);
+    @clearstatcache();
+    if (stristr(PHP_OS, "WIN")) {
+        $fileUrl = @iconv("utf-8", "GBK", $fileUrl);
+    }
+    if (file_exists($fileUrl)) {
+        unlink($fileUrl);
+        return true;
+    } else {
+        return false;
+    }
+    @clearstatcache();
 }
 
 /**
@@ -246,19 +252,20 @@ function delfile($fileUrl){
  * @param  string  $path	要转换的路径
  * @return string			返回转换好的路径
  */
-function path_absolute($path){
-	if(substr($path, 0, strlen(PATH_WEB) ) == PATH_WEB){
-		$path = $path;
-	}else{
-		$path = PATH_WEB.str_replace(array('../', './', PATH_WEB), '', $path);
-	}
-	if(is_dir($path)){
-		$last = substr($path, -1, 1);
-		if($last != '/' && $last != '\\'){
-			$path = $path.'/';
-		}
-	}
-	return $path;
+function path_absolute($path)
+{
+    if (substr($path, 0, strlen(PATH_WEB)) == PATH_WEB) {
+        $path = $path;
+    } else {
+        $path = PATH_WEB . str_replace(array('../', './', PATH_WEB), '', $path);
+    }
+    if (is_dir($path)) {
+        $last = substr($path, -1, 1);
+        if ($last != '/' && $last != '\\') {
+            $path = $path . '/';
+        }
+    }
+    return $path;
 }
 
 /**
@@ -267,8 +274,9 @@ function path_absolute($path){
  * @param  string  $relative	相对路径前缀
  * @return string				返回转换好的路径
  */
-function path_relative($path, $relative = '../'){
-	return $relative.str_replace(array('../', './', PATH_WEB), '', $path);
+function path_relative($path, $relative = '../')
+{
+    return $relative . str_replace(array('../', './', PATH_WEB), '', $path);
 }
 
 /**
@@ -276,11 +284,12 @@ function path_relative($path, $relative = '../'){
  * @param  string  $path		要转换的路径
  * @return string				返回转换好的路径
  */
-function path_standard($path){
-	if(substr($path,-1,1) != '/'){
-		$path = $path.'/';
-	}
-	return $path;
+function path_standard($path)
+{
+    if (substr($path, -1, 1) != '/') {
+        $path = $path . '/';
+    }
+    return $path;
 }
 
 /**
@@ -288,28 +297,29 @@ function path_standard($path){
  * @param  string  $filename	要获取的文件名
  * @return int					返回文件的大小
  */
-function getfilesize($filename){
-	$filename = path_absolute($filename);
-	@clearstatcache();
-	if(file_exists($filename)){
-		$filesize = filesize($filename).'B';
-		if($filesize > 1000000){
-			$filesize = $filesize/1000000;
-			$filesize = sprintf("%.2f", $filesize);
-			$filesize .= 'MB';
-		}else{
-			if($filesize > 1000){
-				$filesize = $filesize/1000;
-				$filesize = sprintf("%.2f", $filesize);
-				$filesize .= 'KB';
-			}else{
-				$filesize .= 'B';
-			}
-		}
-	}else{
-		return false;
-	}
-	return $filesize;
+function getfilesize($filename)
+{
+    $filename = path_absolute($filename);
+    @clearstatcache();
+    if (file_exists($filename)) {
+        $filesize = filesize($filename) . 'B';
+        if ($filesize > 1000000) {
+            $filesize = $filesize / 1000000;
+            $filesize = sprintf("%.2f", $filesize);
+            $filesize .= 'MB';
+        } else {
+            if ($filesize > 1000) {
+                $filesize = $filesize / 1000;
+                $filesize = sprintf("%.2f", $filesize);
+                $filesize .= 'KB';
+            } else {
+                $filesize .= 'B';
+            }
+        }
+    } else {
+        return false;
+    }
+    return $filesize;
 }
 
 /**
@@ -325,84 +335,28 @@ function getfileable($filename){
 }
 
 /**
- * zip压缩文件解压
- * @param  string  $file			要解压的zip压缩文件
- * @param  string  $destination		解压后的文件名（默认为解压前的文件名去掉zip后缀）
- * @return string  $flag			解压成功返回true，否则返回false
- */
-function unzipfile($file, $destination = ''){
-	$file = path_absolute($file);
-	if($destination == ''){
-		$destination = str_replace('.'.getfileable($file),'',$file);
-	}
-	$destination = path_absolute($destination);
-	$archive = new PclZip($file);
-	if ($archive->extract(PCLZIP_OPT_PATH, $destination) == 0) {
-		return false;
-    }else{
-		return true;
-	}
-}
-
-/**
- * 生成zip压缩文件
- * @param string  $dir			要压缩的文件
- * @param string  $destination	压缩后的文件名（必须指定zip后缀）
- * @param boolean $overwrite	是否覆盖已有的文件（true：覆盖已有文件，false：不覆盖已有文件）默认覆盖
- * @return					    压缩失败返回false
- */
-function zipfile($dir, $destination='', $overwrite = true){
-	makedir($dir);
-	$dir = path_absolute($dir);
-	if($destination == ''){
-		$destination = str_replace('.'.getfileable($dir),'',$dir).'.zip';
-	}
-	$destination = path_absolute($destination);
-	if(is_strinclude($destination,'.zip') === false){
-		return false;
-	}
-	@clearstatcache();
-	if(file_exists($destination) && $overwrite == false){
-		return false;
-	}else{
-		if(file_exists($destination)){
-			unlink($destination);
-		}
-		fclose(fopen($destination,'w'));
-		$z = new PclZip($destination);
-		$v_list = $z->create($dir);
-		if ($v_list == 0){
-			return false;
-		}else{
-			return true;
-		}
-
-	}
-
-}
-
-/**
  * 验证文件夹是否有写权限
  * @param string  $dir        要检测的文件夹
  * @return boolean $flag		有可写权限返回true，否则返回false
  */
-function getdirpower($dir){
-	$dir = path_absolute($dir);
-	@clearstatcache();
-	$dir = substr($dir, -1) == '/' ? $dir : $dir.'/';
-	if(is_dir($dir)){
-		$file_hd = @fopen($dir.'/test.txt','w');
-		if($file_hd){
-			$flag = true;
-		}else{
-			$flag = false;
-		}
-		@fclose($file_hd);
-		@unlink($dir.'/test.txt');
-	}else{
-		$flag = false;
-	}
-	return $flag;
+function getdirpower($dir)
+{
+    $dir = path_absolute($dir);
+    @clearstatcache();
+    $dir = substr($dir, -1) == '/' ? $dir : $dir . '/';
+    if (is_dir($dir)) {
+        $file_hd = @fopen($dir . '/test.txt', 'w');
+        if ($file_hd) {
+            $flag = true;
+        } else {
+            $flag = false;
+        }
+        @fclose($file_hd);
+        @unlink($dir . '/test.txt');
+    } else {
+        $flag = false;
+    }
+    return $flag;
 }
 
 /**
@@ -410,29 +364,30 @@ function getdirpower($dir){
  * @param string  $file		要检测的文件
  * @return boolean $flag	有可写权限返回true，否则返回false
  */
-function getfilepower($file){
-	$file = path_absolute($file);
-	@clearstatcache();
-	if(file_exists($file) && !is_dir($file)){
-		$power = file_get_contents($file);
-		if($power){
-			if(file_put_contents($file,$power)){
-				return true;
-			}else{
-				return false;
-			}
-		}else{
-			if(file_put_contents($file,'test')){
-				unlink($file);
-				touch($file);
-				return true;
-			}else{
-				return false;
-			}
-		}
-	}else{
-		return false;
-	}
+function getfilepower($file)
+{
+    $file = path_absolute($file);
+    @clearstatcache();
+    if (file_exists($file) && !is_dir($file)) {
+        $power = file_get_contents($file);
+        if ($power) {
+            if (file_put_contents($file, $power)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            if (file_put_contents($file, 'test')) {
+                unlink($file);
+                touch($file);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -441,34 +396,35 @@ function getfilepower($file){
  * @param  int      $power	修改后的文件权限 777/755 读写，544 只读
  * @return boolean  $flag	修改成功返回true，否则返回false
  */
-function modifydirpower($dir,$power){
-	$dir = path_absolute($dir);
-	@clearstatcache();
-	$dir = substr($dir, -1) == '/' ? $dir : $dir.'/';
-	if(is_dir($dir)){
-		$success = @chmod($dir,$power);
-		if($success === false){
-			$flagd = false;
-		}
-		$resource = opendir($dir);
-		@clearstatcache();
-		while(($file = readdir($resource)) !== false){
-			if($file == '.' || $file == '..') {
-				continue;
-			}
-			if(!is_dir($dir.$file)){
-				modifyfilepower($dir.$file,$power);
-			}else{
-				modifydirpower($dir.$file,$power);
-			}
-		}
+function modifydirpower($dir,$power)
+{
+    $dir = path_absolute($dir);
+    @clearstatcache();
+    $dir = substr($dir, -1) == '/' ? $dir : $dir . '/';
+    if (is_dir($dir)) {
+        $success = @chmod($dir, $power);
+        if ($success === false) {
+            $flagd = false;
+        }
+        $resource = opendir($dir);
+        @clearstatcache();
+        while (($file = readdir($resource)) !== false) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
+            if (!is_dir($dir . $file)) {
+                modifyfilepower($dir . $file, $power);
+            } else {
+                modifydirpower($dir . $file, $power);
+            }
+        }
         closedir($resource);
     }
-	if($flagd === false){
-		return false;
-	}else{
-		return true;
-	}
+    if ($flagd === false) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 /**
@@ -477,20 +433,21 @@ function modifydirpower($dir,$power){
  * @param  int      $power	修改后的文件权限 0777/0755 读写，0544 只读
  * @return boolean  $flag	修改成功返回true，否则返回false
  */
-function modifyfilepower($file,$power){
-	$file = path_absolute($file);
-	@clearstatcache();
-    if(file_exists($file) && !is_dir($file)){
-		$sucess = chmod($file,$power);
-		if($sucess){
-			$flag = true;
-		}else{
-			$flag = false;
-		}
-	}else{
-		$flag = false;
-	}
-	return $flag;
+function modifyfilepower($file,$power)
+{
+    $file = path_absolute($file);
+    @clearstatcache();
+    if (file_exists($file) && !is_dir($file)) {
+        $sucess = chmod($file, $power);
+        if ($sucess) {
+            $flag = true;
+        } else {
+            $flag = false;
+        }
+    } else {
+        $flag = false;
+    }
+    return $flag;
 }
 
 /*遍历文件*/
@@ -501,29 +458,30 @@ function modifyfilepower($file,$power){
  * @param  string   $jump	跳过不需要遍历的文件夹。要填写网站根目录路径，不要含有../,实质是"/^({$jump})/"中正则参数。
  * @return string   $filenamearray  返回提取的文件数组。文件路径都是绝对路径。
  */
-function traversal($jkdir, $suffix='[A-Za-z]*', $jump=null, &$filenamearray = array()) {
-	if($jkdir == '.' || $jkdir == './') $jkdir = '';
-	$jkdir = path_absolute($jkdir);
-	$hand = opendir($jkdir);
-	while ($file = readdir($hand)) {
-		$filename=$jkdir.$file;
-		if (@is_dir($filename) && $file != '.' && $file!= '..' && $file != './..') {
-			if ($jump != null) {
-				if (preg_match_all("/^({$jump})/", str_replace(PATH_WEB, '', $filename), $out)) {
-					continue;
-				}
-			}
-			traversal($filename, $suffix, $jump, $filenamearray);
-		} else {
-			if ($file != '.' && $file!= '..' && $file != './..' && preg_match_all ("/\.({$suffix})/i", $filename, $out)) {
-				if (stristr(PHP_OS,"WIN")) {
-					$filename = iconv("gbk", "utf-8", $filename);
-				}
-				$filenamearray[] = str_replace(PATH_WEB, '', $filename);
-			}
-		}
-	}
-	return $filenamearray;
+function traversal($jkdir, $suffix='[A-Za-z]*', $jump=null, &$filenamearray = array())
+{
+    if ($jkdir == '.' || $jkdir == './') $jkdir = '';
+    $jkdir = path_absolute($jkdir);
+    $hand = opendir($jkdir);
+    while ($file = readdir($hand)) {
+        $filename = $jkdir . $file;
+        if (@is_dir($filename) && $file != '.' && $file != '..' && $file != './..') {
+            if ($jump != null) {
+                if (preg_match_all("/^({$jump})/", str_replace(PATH_WEB, '', $filename), $out)) {
+                    continue;
+                }
+            }
+            traversal($filename, $suffix, $jump, $filenamearray);
+        } else {
+            if ($file != '.' && $file != '..' && $file != './..' && preg_match_all("/\.({$suffix})/i", $filename, $out)) {
+                if (stristr(PHP_OS, "WIN")) {
+                    $filename = iconv("gbk", "utf-8", $filename);
+                }
+                $filenamearray[] = str_replace(PATH_WEB, '', $filename);
+            }
+        }
+    }
+    return $filenamearray;
 }
 
 /**
@@ -561,31 +519,69 @@ function scan_dir($jkdir = '', $suffix = '[A-Za-z]*', $jump = null)
     return $filenamearray;
 }
 
+function file_size($file_path = '', $clear = 1)
+{
+    static $size_total;
+    if ($clear) {
+        $size_total = 0;
+    }
+    $file_path = path_absolute($file_path);
+    if (is_file($file_path)) {
+        $size_total += byte_format(filesize($file_path), 3);
+    } elseif (is_dir($file_path)) {
+            $handler = opendir($file_path);
+        while (($filename = readdir($handler)) !== false) {
+            if (!in_array($filename, array(".", "..", 'cache', '.idea','.git', '.gitignore'))) {
+                //dump($file_path . "/" . $filename);
+                if (is_dir($file_path . "/" . $filename)) {
+                    file_size($file_path . "/" . $filename, 0);
+                } else {
+                    $size_total += byte_format(filesize($file_path . "/" . $filename), 3);
+                }
+            }
+        }
+        @closedir($handler);
+    }
+    return $size_total;
+}
+
 /**
  * @param string $dir
  * @param string $skip
  * @param $zip
  */
-function file_zip($dir = '', $skip = '', $zip)
-    {
-    	global $_M;
-        if (!$skip) {
-            $skip = PATH_WEB.'/';
-            ##$web_path = PATH_WEB.'/';
-        }
-    	$handler = opendir($dir);
-	    while(($filename = readdir($handler))!==false){
-	        if($filename != "." && $filename != ".."){
-	            if(is_dir($dir."/".$filename)){
-	            	$zip->addEmptyDir($dir.'/'.$filename,str_replace($skip, '', $dir.'/'.$filename));
-	                file_zip($dir."/".$filename, $skip, $zip);
-	            }else{
-	                $row = $zip->addFile($dir."/".$filename,str_replace($skip, '', $dir.'/'.$filename));
-	            }
-	        }
-	    }
-	    @closedir($dir);
+function file_zip($dir = '', $skip = '', $zip ,$skip_list = array())
+{
+    global $_M;
+    if (!$skip) {
+        $skip = PATH_WEB;
     }
+
+    if (strstr(strtoupper(PHP_OS), 'WIN')) {
+        $skip = str_replace("\\", '/', $skip);
+        $dir = str_replace("\\", '/', $dir);
+    }
+
+    $handler = opendir($dir);
+    while (($filename = readdir($handler)) !== false) {
+        if ($filename != "." && $filename != "..") {
+            if (is_dir($dir . "/" . $filename)) {
+                //$zip->addEmptyDir($dir . '/' . $filename);
+                if ($skip != $dir . '/' . $filename) {
+                    $new_dir = str_replace($skip, '', $dir . '/' . $filename);
+                    $zip->addEmptyDir($new_dir);
+                }
+                file_zip($dir . "/" . $filename, $skip, $zip);
+            } else {
+                //忽略文件列表
+                if (!in_array(str_replace($skip, '', $dir . '/' . $filename), $skip_list)) {
+                    $zip->addFile($dir . "/" . $filename, str_replace($skip, '', $dir . '/' . $filename));
+                }
+            }
+        }
+    }
+    @closedir($handler);
+}
 
 /**
  * @param string $fzip      //zip文件路径
@@ -613,7 +609,7 @@ function fzip_open($fzip = '',$tagdir = '')
 function download($filePath = '')
 {
     global $_M;
-    $filePath = str_replace(array($_M['url']['web_site'] , '../', './'), PATH_WEB, $filePath);
+    $filePath = str_replace(array($_M['url']['web_site'], '../', './'), PATH_WEB, $filePath);
 
     //检测下载文件是否可读
     if (!is_readable($filePath) || !is_file($filePath)) {

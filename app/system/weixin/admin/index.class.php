@@ -5,7 +5,7 @@
 defined('IN_MET') or exit('No permission');
 defined('IN_ADMIN') or exit('No permission');
 
-load::sys_func('admin');
+load::sys_class('admin');
 
 class index extends admin
 {
@@ -13,6 +13,16 @@ class index extends admin
     {
         global $_M;
         parent::__construct();
+
+        $this->weixinapi = load::mod_class('weixin/weixinapi', 'new');
+        $this->weixinreply = load::mod_class('weixin/weixinreply', 'new');
+    }
+
+    public function doAapiCheck()
+    {
+        global $_M;
+        $res = $this->weixinapi->apiCheck();
+        dump($res);
     }
 
 }

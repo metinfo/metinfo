@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
   renderTable()
@@ -6,7 +7,7 @@
   edit()
   adminEdit()
   TEMPLOADFUNS[that.hash] = function() {
-    that.table.ajax.reload()
+    that.table && that.table.ajax.reload()
   }
   function renderTable() {
     metui.use(['table', 'alertify'], function() {
@@ -442,13 +443,26 @@
           const _next2 = data[item].next2
           Object.keys(_next2).map(val => {
             let children = []
-            if (_next2[val].column || val === 'column') {
-              const column = _next2[val].column || _next2[val]
+            if (val === 'column') {
+              const column = _next2[val]
               Object.keys(column).map(col => {
                 children.push({
                   name: column[col].name ? column[col].name : '',
                   id: col
                 })
+              })
+            }
+            if(data[item].info.field=='s1301'){
+              const column = _next2[val]
+              Object.keys(column).map(col => {
+                if(col.indexOf('column')>=0){
+                  children[col]=Object.keys(column[col]).map(col1 => {
+                    return {
+                      name: column[col][col1].name ? column[col][col1].name : '',
+                      id: col1
+                    }
+                  })
+                }
               })
             }
             next2.push({
@@ -472,8 +486,8 @@
           nextHtml = item.next
             .map(val => {
               return `<div class="custom-control custom-checkbox custom-control-inline">
-          <input type="checkbox" id="${val.id}" data-delimiter="-" name="admin_pop" class="custom-control-input role" disabled="disabled" checked="checked" value="${val.id}"/>
-          <label class="custom-control-label" for="${val.id}">${val.name}</label>
+          <input type="checkbox" id="admin-add-column-${val.id}" data-delimiter="-" name="admin_pop" class="custom-control-input role" disabled="disabled" checked="checked" value="${val.id}"/>
+          <label class="custom-control-label" for="admin-add-column-${val.id}">${val.name}</label>
         </div>`
             })
             .join('')
@@ -481,24 +495,36 @@
         if (item.next2.length > 0) {
           next2Html = item.next2
             .map(val => {
-              return `<div class="alert alert-dark mb-2">
+              return `<div class="bg-grey py-2 pr-3 pl-4 mb-2">
             ${val.name ? `<h6>${val.name}</h6>` : ``}
             <div class="x3">
-              ${val.children
-                .map(e => {
+              ${val.name?Object.keys(val.children).map((e,index)=>{
+                return `<hr class="my-2"><p class="mb-2">${index==0?METLANG.settopcolumns:METLANG['modClass'+(index+1)]}</p><div>${val.children[e].map((e1,index1) => {
                   return `<div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" id="${e.id}"
-                data-delimiter="-"
-                name="admin_pop"
-                class="custom-control-input role ${val.id !== 'column' && `column-lang column-lang-${val.id}`}"
-                data-column-lang="${val.id}"
-                disabled="disabled"
-                checked="checked"
-                value="${e.id}"/>
-                <label class="custom-control-label" for="${e.id}">${e.name}</label>
-                </div>`
-                })
-                .join('')}
+                  <input type="checkbox" id="admin-add-column-${e1.id}"
+                  data-delimiter="-"
+                  name="admin_pop"
+                  class="custom-control-input role ${val.id !== 'column' && `column-lang column-lang-${val.id}`}"
+                  data-column-lang="${val.id}"
+                  disabled="disabled"
+                  checked="checked"
+                  value="${e1.id}"/>
+                  <label class="custom-control-label" for="admin-add-column-${e1.id}">${e1.name}</label>
+                  </div>`
+                }).join('')}</div>`;
+              }).join(''):val.children.map((e,index)=>{
+                    return `<div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" id="admin-add-column-${e.id}"
+                    data-delimiter="-"
+                    name="admin_pop"
+                    class="custom-control-input role ${val.id !== 'column' && `column-lang column-lang-${val.id}`}"
+                    data-column-lang="${val.id}"
+                    disabled="disabled"
+                    checked="checked"
+                    value="${e.id}"/>
+                    <label class="custom-control-label" for="admin-add-column-${e.id}">${e.name}</label>
+                    </div>`
+              }).join('')}
             </div>
         </div>`
             })

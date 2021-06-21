@@ -29,10 +29,15 @@ class index extends web
         load::mod_class('user/user_url', 'new')->insert_m(); //首页重新给会员链接赋值
 
         $_M['config']['met_weburl'] = '';
-        $title = $_M['config']['met_hometitle'] ? $_M['config']['met_hometitle'] : $_M['config']['met_webname'] . '-' . $_M['config']['met_keywords'];
         $this->seo();
+        if ($_M['config']['met_hometitle']) {
+            $title = $_M['config']['met_hometitle'];
+        }else{
+            $title = '';
+            $title .= ($_M['config']['met_webname'] ? "{$_M['config']['met_webname']} - " : '');
+            $title .= ($_M['config']['met_keywords'] ? : '');
+        }
         $this->seo_title($title);
-
         $this->view('index', $this->input);
     }
 }

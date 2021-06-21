@@ -1,5 +1,6 @@
-/*
-表格插件调用功能（需调用datatables插件）
+/**
+ * 表格插件调用功能（需调用datatables插件）
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
     var datatable_langurl= M.url.public_plugins+'datatables/language/';
@@ -149,7 +150,8 @@
                         classname=settings._iDisplayLength>500?'hide':'',
                         pagenum = Math.ceil(json.recordsTotal / settings._iDisplayLength);
                     $wrapper.addClass('clearfix');
-                    $paginate.addClass('float-left ').parent().addClass('w-100 '+classname);
+                    $paginate.addClass('float-left').parent().addClass('w-100 '+classname);
+                    if($paginate.length && !$paginate.parent().hasClass('hide')) $(this).addClass('border-bottom').find('tfoot th').addClass('border-none');
                     $info.addClass('float-right');
                     if(pagenum>2){
                         // 跳转到某页
@@ -159,8 +161,14 @@
                         $gotopage.find('.gotopage-btn').click(function(event) {
                             var gotopage=parseInt($gotopage.find('input[name=gotopage]').val());
                             if(!isNaN(gotopage)){
-                                gotopage--;
-                                datatable[datatable_order].page(gotopage).draw(false);
+                                if(gotopage>=1&&gotopage<=pagenum){
+                                    gotopage--;
+                                    datatable[datatable_order].page(gotopage).draw(false);
+                                }else{
+                                    metui.use('alertify',function(){
+                                        alertify.error((M.synchronous=='cn'?'页码有效范围为：':'The valid range of page number is:')+'1~'+pagenum);
+                                    });
+                                }
                             }
                         });
                     }
@@ -169,6 +177,7 @@
                         var width=parseInt($(this).attr('width'))||'';
                         width && (width<$(this).width()||$(this).width()>1.3*width||!parseInt($(this).css('width'))) && $(this).width(width);
                         if($(this).width()>200) $(this).addClass('text-wrap');
+                        if($('.custom-checkbox',this).length) $(this).width(16);
                     });
                 },
                 drawCallback: function(settings){// 表格重绘后回调函数
@@ -269,7 +278,7 @@
     $(document).metDataTable();
     // 自定义搜索框
     $(document).on('change',"[data-table-search]",function(){
-        if($(this).parents('.form-group').hasClass('has-danger') || window.dataTable_search_stop) return false;
+        if($(this).parents('.form-group').hasClass('has-danger') || M.dataTable_search_stop) return false;
         var $this_datatable=$(this).parents('.dataTable').length?$(this).parents('.dataTable'):$($(this).data('table-search')),
             datatable_order=$this_datatable.attr('data-datatable_order');
         if(typeof datatable[datatable_order]!='undefined') datatable[datatable_order].ajax.reload();
@@ -376,7 +385,7 @@
         event.preventDefault();
         var $form=$(this).parents('form'),
             url=$(this).data('url')||'';
-        $form.attr({'data-submited':1}).metSubmit($(this).data('submit_type')||0);
+        $form.attr({'data-submited':1}).metSubmitBefore($(this).data('submit_type')||0);
         $(this).parents('table').attr({'data-scrolltop':0});
         if($(this).data('plugin')!='alertify'){
             if(url){

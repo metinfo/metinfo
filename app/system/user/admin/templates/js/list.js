@@ -1,10 +1,9 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
-
   renderTable()
-
   TEMPLOADFUNS[that.hash] = function() {
-    that.table.ajax.reload()
+    that.table && that.table.ajax.reload()
   }
   function renderTable(refresh) {
     metui.use(['table', 'alertify'], function() {
@@ -117,7 +116,7 @@
       dataType: 'json',
       success: function(result) {
         if (!result.data) return
-        result.data.group_data.map(item => {
+        result.data.group_data && result.data.group_data.length && result.data.group_data.map(item => {
           that.group_options = that.group_options + `<option value="${item.id}">${item.name}</option>`
         })
         that.obj.find('.select-groupid').html(`<option value="">${METLANG.cvall}</option>` + that.group_options)
@@ -139,7 +138,7 @@
         dataType: 'json',
         success: function(result) {
           if (!result.data) return
-          result.data.group_data.map(item => {
+          result.data.group_data && result.data.group_data.length && result.data.group_data.map(item => {
             that.group_options = that.group_options + `<option value="${item.id}">${item.name}</option>`
           })
           modal.find('[name="groupid"]').html(that.group_options)

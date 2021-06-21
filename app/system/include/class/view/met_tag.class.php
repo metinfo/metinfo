@@ -80,8 +80,9 @@ php;
     {
         static $instance = array();
         $info = explode('.', $attr['action']);
+        $count = is_array($info) ? count($info) : 0;
 
-        if (count($info) > 1) {
+        if ($count > 1) {
             $action = '_' . $info[1];
             $module = $info[0];
         } else {
@@ -118,26 +119,26 @@ php;
         $name = isset($attr['name']) ? $attr['name'] : '$val';
         $name = substr($name, 1);
         $num = isset($attr['num']) ? $attr['num'] : 50;
-        $php
-            = <<<php
+
+        $php =
+<<<php
         <?php
-            \$sub = count($from);
+            \$sub = is_array($from) ? count($from) : 0;
             \$num = $num;
             
             if(!is_array($from) && $from){
                 $from = explode('|',$from);
             }
 
-
             foreach ($from as \$index => \$val) {
-                if(\$index >= \$num){
+                if(is_numeric(\$index) && \$index >= \$num){
                     break;
                 }
 
                 if(is_array(\$val)){
                     \$val['_index'] = \$index;
                     \$val['_first'] = \$index == 0 ? true : false;
-                    \$val['_last']  = \$index == (count($from)-1) ? true : false;
+                    \$val['_last']  = \$index == (\$sub-1) ? true : false;
                     \$val['sub']    = \$sub;
                 }
 
@@ -178,6 +179,9 @@ php;
         $page = $attr['page'];
         $view->fetch($file);
 
+        if (!$view->compileFile) {
+            return '';
+        }
         $cache = file_get_contents($view->compileFile);
         // 每个页面头部加页面标识
         if ($page) {
@@ -197,8 +201,8 @@ php;
     //if标签
     public function _if($attr, $content, &$met)
     {
-        $php
-            = <<<php
+        $php =
+<<<php
     <?php if({$attr['value']}){ ?>$content<?php } ?>
 php;
 
@@ -226,20 +230,21 @@ php;
     public function _location($attr, $content)
     {
         $cid = isset($attr['cid']) ? $attr['cid'] : 0;
-        $php = <<<str
-<?php
-    \$cid = $cid;
-    if(!\$cid){
-        \$cid = \$data['classnow'];
-    }
-    \$location = load::sys_class('label', 'new')->get('column')->get_class123_reclass(\$cid);
-    \$location_data = array();
-    \$location_data[0] = \$location['class1'];
-    \$location_data[1] = \$location['class2'];
-    \$location_data[2] = \$location['class3'];
-    unset(\$location);
-    foreach(\$location_data as \$index=> \$v):
-?>
+        $php =
+<<<str
+        <?php
+            \$cid = $cid;
+            if(!\$cid){
+                \$cid = \$data['classnow'];
+            }
+            \$location = load::sys_class('label', 'new')->get('column')->get_class123_reclass(\$cid);
+            \$location_data = array();
+            \$location_data[0] = \$location['class1'];
+            \$location_data[1] = \$location['class2'];
+            \$location_data[2] = \$location['class3'];
+            unset(\$location);
+            foreach(\$location_data as \$index=> \$v):
+        ?>
 str;
         $php .= $content;
         $php .= '<?php endforeach;?>';
@@ -250,7 +255,8 @@ str;
     public function _pager($attr, $content)
     {
         $page_type = $attr['type'] ? $attr['type'] : 0;
-        $php = <<<str
+        $php =
+<<<str
      <?php
      \$page_type = $page_type;
      if(!\$data['classnow']){
@@ -273,25 +279,26 @@ str;
     public function _pagination($attr, $content)
     {
         global $_M;
-        $php = <<<str
+        $php =
+<<<str
         <div class='met-page p-y-30 border-top1'>
-    <div class="container p-t-30 ">
-    <ul class="pagination block blocks-2 text-xs-center text-sm-left">
-        <li class='page-item m-b-0 {\$data['preinfo']['disable']}'>
-            <a href='<?php if(\$data['preinfo']['url']){?>{\$data['preinfo']['url']}<?php }else{?>javascript:;<?php }?>' title="{\$data['preinfo']['title']}" class='page-link text-truncate'>
-                {\$word['Previous_news']}
-                <span aria-hidden="true" class='<?php if(\$data['preinfo']['url']){?>hidden-xs-down<?php }?>'>: <?php if(\$data['preinfo']['title']){?>{\$data['preinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
-            </a>
-        </li>
-        <li class='page-item m-b-0 {\$data['nextinfo']['disable']}'>
-            <a href='<?php if(\$data['nextinfo']['url']){?>{\$data['nextinfo']['url']}<?php }else{?>javascript:;<?php }?>' title="{\$data['nextinfo']['title']}" class='page-link pull-xs-right text-truncate'>
-                {\$word['Next_news']}
-                <span aria-hidden="true" class='<?php if(\$data['nextinfo']['url']){?>hidden-xs-down<?php }?>'>: <?php if(\$data['nextinfo']['title']){?>{\$data['nextinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
-            </a>
-        </li>
-    </ul>
-</div>
-</div>
+            <div class="container p-t-30 ">
+                <ul class="pagination block blocks-2 text-xs-center text-sm-left">
+                    <li class='page-item m-b-0 {\$data['preinfo']['disable']}'>
+                        <a href='<?php if(\$data['preinfo']['url']){?>{\$data['preinfo']['url']}<?php }else{?>javascript:;<?php }?>' title="{\$data['preinfo']['title']}" class='page-link text-truncate'>
+                            {\$word['Previous_news']}
+                            <span aria-hidden="true" class='<?php if(\$data['preinfo']['url']){?>hidden-xs-down<?php }?>'>: <?php if(\$data['preinfo']['title']){?>{\$data['preinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
+                        </a>
+                    </li>
+                    <li class='page-item m-b-0 {\$data['nextinfo']['disable']}'>
+                        <a href='<?php if(\$data['nextinfo']['url']){?>{\$data['nextinfo']['url']}<?php }else{?>javascript:;<?php }?>' title="{\$data['nextinfo']['title']}" class='page-link pull-xs-right text-truncate'>
+                            {\$word['Next_news']}
+                            <span aria-hidden="true" class='<?php if(\$data['nextinfo']['url']){?>hidden-xs-down<?php }?>'>: <?php if(\$data['nextinfo']['title']){?>{\$data['nextinfo']['title']}<?php }else{?>{\$word['Noinfo']}<?php }?></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 str;
 
         return $php;
@@ -300,19 +307,20 @@ str;
     public function _lang($attr, $content)
     {
         global $_M;
-        $php = <<<str
-<?php
-    \$language = load::sys_class('label', 'new')->get('language')->get_lang();
-   
-    \$sub = count(\$language);
-    \$i = 0;
-    foreach(\$language as \$index=>\$v):
-        \$v['_index']   = \$index;
-        \$v['_first']   = \$i == 0 ? true:false;
-        \$v['_last']    = \$index == (count(\$language)-1) ? true : false;
-        \$v['sub'] = \$sub;
-        \$i++;
-?>
+        $php =
+<<<str
+        <?php
+            \$language = load::sys_class('label', 'new')->get('language')->get_lang();
+           
+            \$sub = is_array(\$language) ? count(\$language) : 0;
+            \$i = 0;
+            foreach(\$language as \$index=>\$v):
+                \$v['_index']   = \$index;
+                \$v['_first']   = \$i == 0 ? true:false;
+                \$v['_last']    = \$index == (count(\$language)-1) ? true : false;
+                \$v['sub'] = \$sub;
+                \$i++;
+        ?>
 str;
         $php .= $content;
         $php .= '<?php endforeach;?>';

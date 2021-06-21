@@ -98,7 +98,7 @@ class column_label
                 $this->column['module_list1'][$list['module']][] = $list;
                 $this->column['class1_list'][$list['id']] = $list;
                 if ($list['module'] == 2 or $list['module'] == 3 or $list['module'] == 4 or $list['module'] == 5) {
-                    $this->column[nav_search][] = $list;
+                    $this->column['nav_search'][] = $list;
                 }
             }
             if ($list['classtype'] == 2) {
@@ -133,6 +133,18 @@ class column_label
         }
 
         return $this->column;
+    }
+
+    /**
+     * @param string $type
+     * @param string $mod
+     * @return mixed
+     */
+    public function get_column_list($type = '', $mod = '')
+    {
+        $data = $this->database->search_column($type ,$this->lang, $mod);
+        $column = $this->handle->para_handle($data);
+        return $column;
     }
 
     /**
@@ -288,7 +300,12 @@ class column_label
     public function get_column_by_filename($filename)
     {
         $column = $this->database->get_column_by_filename($filename);
+        return $column;
+    }
 
+    public function get_first_column_by_module($module = '', $lang = '' )
+    {
+        $column = $this->database->get_first_column_by_module($module ,$lang);
         return $column;
     }
 

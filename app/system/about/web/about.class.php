@@ -77,8 +77,6 @@ class about extends web
         load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
 
         $this->view('show', $this->input);
-
-        #require_once $this->template('tem/show');
     }
 
 }

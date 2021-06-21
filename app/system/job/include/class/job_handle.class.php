@@ -55,6 +55,9 @@ class job_handle extends base_handle
         $content['title'] = $content['position'];
         $content['count'] = $content['count'] ? $content['count'] : $_M['word']['Job1'];
         $content['url'] = $this->get_content_url($content);
+        $content['original_updatetime'] = $content['updatetime'];
+        $content['updatetime'] = date($_M['config']['met_listtime'], strtotime($content['updatetime']));
+        $content['original_addtime'] = $content['addtime'];
         $content['addtime'] = date($_M['config']['met_listtime'], strtotime($content['addtime']));
         $content['cv'] = $this->url_transform('job/cv.php?lang=' . $content['lang'] . '&selectedjob=' . $content['id']);
         if ($content['new_windows']) {

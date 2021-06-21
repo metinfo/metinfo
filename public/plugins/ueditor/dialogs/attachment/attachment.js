@@ -696,7 +696,7 @@
                         domUtils.addClass(ic, 'file-preview');
                     }
                     domUtils.addClass(icon, 'icon');
-                    item.setAttribute('data-url', urlPrefix + list[i].url);
+                    item.setAttribute('data-url', /* urlPrefix +  */list[i].url);
                     if (list[i].original) {
                         item.setAttribute('data-title', list[i].original);
                     }

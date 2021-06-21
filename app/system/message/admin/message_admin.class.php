@@ -240,7 +240,7 @@ class message_admin extends base_admin
                 $this->plist_database = load::mod_class('parameter/parameter_list_database', 'new');
                 $this->plist_database->construct($this->module);
                 $plist = $this->plist_database->select_by_listid_paraid($id, $para['id']);
-
+                $plist['info'] = htmlspecialchars($plist['info']);
                 $para_row = array(
                     'name' => $para['name'],
                     'val' => $plist['info'],
@@ -447,22 +447,29 @@ class message_admin extends base_admin
      *
      * @return mixed
      */
-    public function get_config_field($type = '', $value = '')
+    public function get_config_field($type = '', $value = '', $classnow = '')
     {
         global $_M;
-        $query = "SELECT * FROM {$_M['table']['parameter']} WHERE `lang`='{$_M['lang']}' AND `module`='{$this->module}' AND `type`={$type}";
-        $para = DB::get_all($query);
-
+        $class123 = $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($classnow);
+        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter($this->module, $class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
         $list = array();
         $unll = $_M['word']['please_choose'] ? $_M['word']['please_choose'] : '--';
         $list[] = array('name' => $unll, 'val' => '');
-        foreach ($para as $key => $val) {
-            $arr = array('name' => $val['name'], 'val' => $val['id']);
-            $list[] = $arr;
+        foreach ($paralist as $key => $val) {
+            if (is_array($type)) {
+                foreach ($type as $t) {
+                    if ($val['type'] == $t) {
+                        $list[] = array('name' => $val['name'], 'val' => $val['id']);
+                    }
+                }
+            }else{
+                if ($val['type'] == $type) {
+                    $list[] = array('name' => $val['name'], 'val' => $val['id']);
+                }
+            }
         }
         $redata['val'] = $value;
         $redata['options'] = $list;
-
         return $redata;
     }
 }

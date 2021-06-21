@@ -236,7 +236,7 @@ class config_ui
                 case 3:
                     foreach ($met_class1 as $key => $val2) {
                         $val2['cok'] = 0;
-                        if (count($met_class2[$val2['id']])) {
+                        if (is_array($met_class2[$val2['id']]) && count($met_class2[$val2['id']])) {
                             foreach ($met_class2[$val2['id']] as $key => $val6) {
                                 if ($val6['module'] > 1 && $val6['module'] < 7) {
                                     $val2['cok'] = 1;

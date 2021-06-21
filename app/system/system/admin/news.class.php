@@ -37,8 +37,11 @@ class news extends admin
             foreach ($jsons as $key => $val) {
                 obtain(0, $val['title'], '', $val['url'], '', 'metinfo', 'metinfo', $val['time']);
             }
+            $query = "SELECT * FROM {$_M['table']['infoprompt']} where type='metinfo' and see_ok='0'";
+            $news = DB::get_all($query);
         }
-        jsoncallback(array('num' => count($jsons)));
+        $count = is_array($news) ? count($news) : 0;
+        $this->success(array('num' => $count));
     }
 
     /**

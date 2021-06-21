@@ -15,9 +15,9 @@ class met_sms
         global $_M;
         $data = array(
             'user_key' => $_M['config']['met_secret_key'],
+            'sms_token' => $_M['config']['met_sms_token'],
             'url' => $_M['config']['met_weburl'],
             'type' => 'sms',
-            'sms_token' => $_M['config']['met_sms_token'],
         );
         $res = $this->curl($_M['config']['met_sms_url'], $data);
 
@@ -41,9 +41,9 @@ class met_sms
         global $_M;
         $data = array(
             'user_key' => $_M['config']['met_secret_key'],
+            'sms_token' => $_M['config']['met_sms_token'],
             'url' => $_M['config']['met_weburl'],
             'type' => 'logs',
-            'sms_token' => $_M['config']['met_sms_token'],
             'start' => $start,
             'length' => $length,
         );
@@ -65,10 +65,10 @@ class met_sms
         $data = array(
             'user_key' => $_M['config']['met_secret_key'],
             'sms_token' => $_M['config']['met_sms_token'],
-            'phone' => $phone,
-            'content' => $content,
             'url' => $_M['url']['web_site'],
             'type' => 'custom_send',
+            'phone' => $phone,
+            'content' => $content,
         );
 
         return $this->curl($_M['config']['met_sms_url'], $data);
@@ -89,12 +89,12 @@ class met_sms
             return false;
         }
         $data = array(
+            'user_key' => $_M['config']['met_secret_key'],
             'sms_token' => $_M['config']['met_sms_token'],
+            'url' => $_M['url']['web_site'],
+            'type' => 'auto_send',
             'phone' => $phone,
             'content' => $content,
-            'url' => $_M['url']['web_site'],
-            'user_key' => $_M['config']['met_secret_key'],
-            'type' => 'auto_send',
         );
 
         return $this->curl($_M['config']['met_sms_url'], $data);

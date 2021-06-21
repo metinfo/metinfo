@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <form action="{$url.own_name}c=news&a=donews_del" data-submit-ajax='1' data-submited="1">
-    <table class="table table-hover table-bordered dataTable w-100" id="sysnews-list" data-ajaxurl="{$url.own_name}c=news&a=donews_list" data-datatable_order="#sysnews-list">
+    <table class="table table-hover dataTable w-100" id="sysnews-list" data-ajaxurl="{$url.own_name}c=news&a=donews_list" data-datatable_order="#sysnews-list">
         <thead>
             <tr>
                 <th>{$word.loginmetinfo} {$word.upfiletips37}</th>

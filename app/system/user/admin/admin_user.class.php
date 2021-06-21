@@ -6,7 +6,10 @@ defined('IN_MET') or exit('No permission');
 
 load::sys_class('admin');
 
-/** 会员列表 */
+/**
+ * 会员管理
+ * Class admin_user
+ */
 class admin_user extends admin
 {
     public $module;
@@ -22,7 +25,9 @@ class admin_user extends admin
         $this->group = load::sys_class('group', 'new');
     }
 
-    //获取会员列表
+    /**
+     * 获取会员列表
+     */
     public function doGetUserList()
     {
         global $_M;
@@ -58,6 +63,12 @@ class admin_user extends admin
                 case 'qq':
                     $value['source'] = $_M['word']['qqlogin'];
                     break;
+                case 'google':
+                    $value['source'] = "Google+";
+                    break;
+                case 'facebook':
+                    $value['source'] = "Facebook";
+                    break;
                 default:
                     $value['source'] = $_M['word']['registration'];
                     break;
@@ -75,7 +86,9 @@ class admin_user extends admin
         $table->rdata($user_data);
     }
 
-    //添加会员
+    /**
+     * 添加会员
+     */
     public function doAddUser()
     {
         global $_M;
@@ -93,13 +106,14 @@ class admin_user extends admin
         $this->error($_M['word']['jsx10']);
     }
 
-    //获取会员信息
+    /**
+     * 获取会员信息
+     */
     public function doGetUserInfo()
     {
         global $_M;
 
-        $id = isset($_M['form']['id']) ? $_M['form']['id'] : '';
-        $id = intval($id);
+        $id = intval($_M['form']['id']);
         if (!$id) {
             $this->error();
         }
@@ -109,16 +123,54 @@ class admin_user extends admin
         foreach ($para_list as $key => $para) {
             $query = "SELECT info FROM {$_M['table']['user_list']} WHERE listid = '{$id}' AND paraid='{$para['id']}' AND lang = '{$_M['lang']}'";
             $user_info = DB::get_one($query);
-            $values = $user_info['info'];
-            $para_list[$key]['value'] = $values;
+            $para_list[$key]['value'] = htmlspecialchars($user_info['info']);
         }
-
         $user['user_para'] = $para_list;
+
+        $contactInfo = self::getUserContactInfo($user, $para_list);
+
+        $user['email_list'] = $contactInfo['email_list'];
+        $user['sms_list'] = $contactInfo['sms_list'];
 
         $this->success($user);
     }
 
-    //保存会员信息
+    /**
+     * @param array $user
+     * @return array
+     */
+    public function getUserContactInfo($user = array())
+    {
+        $email_list = array();
+        $sms_list = array();
+
+        if ($user['tel']) {
+            $sms_list[] = $user['tel'];
+        }
+
+        if ($user['email']) {
+            $email_list[] = $user['email'];
+        }
+
+        foreach ($user['user_para'] as $item) {
+            //8 电话
+            if ($item['type'] == 8) {
+                $sms_list[] = $user['tel'];
+
+            }
+
+            //9邮箱
+            if ($item['type'] == 9) {
+                $email_list[] = $user['email'];
+            }
+        }
+
+        return array('email_list' => $email_list, 'sms_list' => $sms_list);
+    }
+
+    /**
+     * 保存会员信息
+     */
     public function doSaveUser()
     {
         global $_M;
@@ -153,7 +205,9 @@ class admin_user extends admin
         }
     }
 
-    //删除会员
+    /**
+     * 删除会员
+     */
     public function doDelUser()
     {
         global $_M;
@@ -176,7 +230,9 @@ class admin_user extends admin
         $this->success('', $_M['word']['jsok']);
     }
 
-    //检查用户名是否可用
+    /**
+     * 检查用户名是否可用
+     */
     public function doCheckUsername()
     {
         global $_M;
@@ -192,6 +248,7 @@ class admin_user extends admin
             $res['valid'] = false;
             $this->ajaxReturn($res);
         }
+
         if (
             $this->userclass->get_user_by_username_sql($username) ||
             $this->userclass->get_admin_by_username_sql($username) ||
@@ -210,7 +267,9 @@ class admin_user extends admin
         $this->ajaxReturn($res);
     }
 
-    //检查邮箱是否可用
+    /**
+     * 检查邮箱是否可用
+     */
     public function doCheckEmail()
     {
         global $_M;
@@ -222,7 +281,9 @@ class admin_user extends admin
         $this->success();
     }
 
-    //检查电话号码是否可用
+    /**
+     * 检查电话号码是否可用
+     */
     public function doCheckTel()
     {
         global $_M;
@@ -233,6 +294,87 @@ class admin_user extends admin
         $this->success();
     }
 
+    /**
+     * 发送用户邮件通知
+     */
+    public function doUserEmail()
+    {
+        global $_M;
+        $id = intval($_M['form']['id']);
+        $to_email = intval($_M['form']['to_email']);
+        $email_title = intval($_M['form']['email_title']);
+        $email_content = intval($_M['form']['email_content']);
+
+        if (!$id || !$to_email || !$email_title || !$email_content) {
+            $this->error();
+        }
+
+        $user = $this->userclass->get_user_by_id($id);
+        if (!$user) {
+            $this->error();
+        }
+
+        $data = array(
+            'weburl' => $_M['config']['met_weburl'],
+            'webname' => $_M['config']['met_webname'],
+            'username' => $user['username'],
+        );
+        #你的网站{web}收到新用户{username}注册注册请求，请登录网站后台查看
+        $email_title = self::repalce_message($_M['word']['email_title'], $data);
+        $body = self::repalce_message($_M['word']['email_content'], $data);
+
+        //邮件通知
+        $mail = load::sys_class('jmail', 'new');
+        $res = $mail->send_email($to_email, $email_title, $body);
+        $this->success('',$_M['word']['jsok']);
+    }
+
+    /**
+     * 发送用户短信通知
+     */
+    public function doUserSms()
+    {
+        global $_M;
+        $id = intval($_M['form']['id']);
+        $to_sms = intval($_M['form']['to_sms']);
+        $sms_content = intval($_M['form']['sms_content']);
+
+        if (!$id || !$to_sms || !$sms_content ) {
+            $this->error();
+        }
+
+        $user = $this->userclass->get_user_by_id($id);
+        if (!$user) {
+            $this->error();
+        }
+
+        $data = array(
+            'weburl' => $_M['config']['met_weburl'],
+            'webname' => $_M['config']['met_webname'],
+            'username' => $user['username'],
+        );
+        #你的网站{web}收到新用户{username}注册注册请求，请登录网站后台查看
+        $message = self::repalce_message($_M['word']['sms_content'], $data);
+
+        load::sys_class('sms', 'new')->sendsms($to_sms, $message);
+
+        $this->success('',$_M['word']['jsok']);
+
+    }
+
+    /**
+     * @param $str
+     * @param array $data
+     * @return mixed
+     */
+    public function repalce_message($str, $data = array())
+    {
+        global $_M;
+        foreach ($data as $key => $val) {
+            $str = str_replace('{'.$key.'}', $val, $str);
+        }
+        return $str;
+    }
 
     //导出会员列表
     public function doExportUser()

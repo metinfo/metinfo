@@ -187,7 +187,6 @@ class language_web extends admin
             DB::query($query);
         }
 
-
         //复制基本设置
         if ($copy_config) {
             $query = "SELECT name,access FROM {$_M['table']['user_group']} WHERE lang = '{$copy_config}'";
@@ -215,7 +214,6 @@ class language_web extends admin
         $this->success('', $_M['word']['jsok']);
     }
 
-
     //删除语言
     public function doDeleteLanguage()
     {
@@ -223,10 +221,12 @@ class language_web extends admin
         if (!isset($_M['form']['id'])) {
             $this->error($_M['word']['js41']);
         }
+
         $id = $_M['form']['id'];
         if (!$id) {
             $this->error($_M['word']['js41']);
         }
+
         $query = "SELECT lang FROM {$_M['table']['lang']}  WHERE lang!='metinfo' AND id='{$id}'";
         $lang_info = DB::get_one($query);
         if (!$lang_info) {
@@ -235,6 +235,16 @@ class language_web extends admin
             $this->error($_M['word']['js41']);
         }
 
+        //唯一语言不可删除
+        $query = "SELECT id FROM {$_M['table']['lang']} order by no_order where lang!='metinfo'";
+        $lang_data = DB::get_all($query);
+        if (count($lang_data) == 1) {
+            //写日志
+            logs::addAdminLog('langwebmanage', 'delete', 'langone', 'doDeleteLanguage');
+            $this->error($_M['word']['langone']);
+        }
+
+        //默认语言不可删除
         if ($lang_info['lang'] == $_M['config']['met_index_type']) {
             //写日志
             logs::addAdminLog('langwebmanage', 'delete', 'langadderr5', 'doDeleteLanguage');
@@ -245,8 +255,16 @@ class language_web extends admin
         $excepted = array(
             "lang_admin",
         );
+        $query = "SELECT id FROM {$_M['table']['lang']} order by no_order where lang!='metinfo'";
+        $lang_data = DB::get_all($query);
+        if (count($lang_data) == 1) {
+            //写日志
+            logs::addAdminLog('langwebmanage', 'delete', 'langone', 'doDeleteLanguage');
+            $this->error($_M['word']['langone']);
+        }
+
         foreach ($_M['table'] as $key => $table_name) {
-            if (!$table_name || in_array($key,$excepted)) {
+            if (!$table_name || in_array($key, $excepted)) {
                 continue;
             }
 
@@ -255,14 +273,6 @@ class language_web extends admin
                 $query .= " AND site ='0'";
             }
             DB::query($query);
-        }
-
-        $query = "SELECT id FROM {$_M['table']['lang']} order by no_order where lang!='metinfo'";
-        $lang_data = DB::get_all($query);
-        if (count($lang_data) == 1) {
-            //写日志
-            logs::addAdminLog('langwebmanage', 'delete', 'langone', 'doDeleteLanguage');
-            $this->error($_M['word']['langone']);
         }
 
         //栏目处理

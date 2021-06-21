@@ -41,6 +41,17 @@ defined('IN_MET') or exit('No permission');
                     />
                 </div>
             </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+                    <input type="password" name="confirmpassword" required data-password="password" class="form-control" placeholder="{$word.renewpassword}"
+                    data-fv-identical="true"
+                    data-fv-identical-field="password"
+                    data-fv-identical-message="{$word.passwordsame}"
+                    data-fv-notempty-message="{$word.noempty}"
+                    >
+                </div>
+            </div>
 			<button class="btn btn-lg btn-primary btn-squared btn-block" type="submit">{$word.memberRegister}</button>
 		</form>
 	</div>

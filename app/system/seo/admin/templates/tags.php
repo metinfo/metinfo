@@ -8,13 +8,13 @@ $table_order='tags_table';
 $table_ajaxurl=$url['adminurl'].'n=tags&c=index&a=doGetTagsList';
 $form_action=$url['adminurl'].'n=tags&c=index&a=doDelTags';
 ?>
+<div class="alert alert-primary">
+    {$word.admin_tag_setting8} <a href="{$url.web_site}tags/" target="_blank">{$url.web_site}tags/</a>
+</div>
+<div class="metadmin-content-min bg-white p-4">
 <div class="d-flex justify-content-between">
     <div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".tags-edit-modal" data-modal-url="tags/edit/?c=index&a=doGetParentColumns" data-modal-title="{$word.mobiletips3}">{$word.add_tag}</button>
-        <span class="text-help ml-2">
-            {$word.admin_tag_setting8}
-            <a href="{$url.site}tags/" target="_blank">{$url.site}tags/</a>
-        </span>
     </div>
     <div>
         <!-- 筛选 -->
@@ -26,7 +26,7 @@ $form_action=$url['adminurl'].'n=tags&c=index&a=doDelTags';
         <div class="input-group w-a float-left">
             <input type="search" name="keyword" placeholder="{$word.search}" class="form-control" data-table-search="#tags_table" />
             <div class="input-group-append">
-                <div class="input-group-text btn btn-light"> <i class="input-search-icon wb-search" aria-hidden="true"></i>
+                <div class="input-group-text btn bg-none px-2"> <i class="input-search-icon fa-search" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -62,3 +62,4 @@ $form_action=$url['adminurl'].'n=tags&c=index&a=doDelTags';
         </tfoot>
     </table>
 </form>
+</div>

@@ -1,6 +1,7 @@
 <?php
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
+#根据《《中华人民共和国著作权法》第四十七条至第五十条的规定表明若用户存在侵犯著作权事实，应当根据情况，承担停止侵害、消除影响、赔礼道歉、赔偿损失等民事责任.......情节严重的，著作权行政管理部门还可以没收主要用于制作侵权复制品的材料、工具、设备等；构成犯罪的，依法追究刑事责任。因而，若用户未经许可，擅自进行修改、删除等侵犯长沙米拓信息技术有限公司著作权的侵权行为，长沙米拓信息技术有限公司有权对该行为通过法律途径追究侵权责任。
 
 defined('IN_MET') or exit('No permission');
 defined('IN_ADMIN') or exit('No permission');
@@ -27,9 +28,10 @@ class admin extends common
     {
         global $_M;
         $http = $this->checkHttps();
-        $_M['url']['site_admin'] = $http.str_replace(array('/index.php', '/Index.php'), '', HTTP_HOST . PHP_SELF) . '/';
-        $_M['url']['site'] = preg_replace('/(\/[^\/]*\/$)/', '', $_M['url']['site_admin']) . '/';
-        $_M['config']['met_weburl'] = $_M['url']['site'];
+        $_M['url']['admin_site'] = $http . str_replace(array('/index.php', '/Index.php'), '', HTTP_HOST . PHP_SELF) . '/';
+        $_M['url']['web_site'] = preg_replace('/(\/[^\/]*\/$)/', '', $_M['url']['admin_site']) . '/';
+        $_M['url']['site_admin'] = str_replace($_M['url']['web_site'], '../', $_M['url']['admin_site']);
+        $_M['config']['met_weburl'] = $_M['url']['admin_site'];
     }
 
     protected function load_url_unique()
@@ -49,10 +51,11 @@ class admin extends common
             $str .= "&metinfo_code=" . trim($code);
         }
         $_M['config']['metinfo_code'] = $code;
-        $fields = array('help', 'edu', 'kf', 'qa', 'templates', 'app', 'market','copyright');
+        $fields = array('help', 'edu', 'kf', 'qa', 'templates', 'app', 'market', 'copyright');
         foreach ($fields as $val) {
             $_M['config'][$val . '_url'] = "https://u.mituo.cn/api/metinfo?type={$val}" . $str;
         }
+        $_M['config']['license_url'] = "../upload/file/license.html" . $str;
     }
 
     protected function load_language()
@@ -93,7 +96,7 @@ class admin extends common
     {
         global $_M;
         if ($_M['form']['switch']) {
-            $url .= "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}";
+            $url = "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}";
             if ($_M['form']['a'] != 'dohome') {
                 $url .= "&switchurl=" . urlencode(HTTP_REFERER) . "#metnav_" . $_M['form']['anyid'];
             }
@@ -114,7 +117,7 @@ class admin extends common
         } else {
             if (is_mobile()) {
                 //http_response_code(401);
-                $this->error('', 401);
+                $this->error('', '', 401);
             }
 
             Header("Location: " . $_M['url']['site_admin']);
@@ -249,9 +252,9 @@ class admin extends common
         }
         $n = $m_name;
 
-//        if ($n == 'index') {
-//            $n = 'manage';
-//        }
+        //        if ($n == 'index') {
+        //            $n = 'manage';
+        //        }
 
         $field = '-';
 
@@ -334,8 +337,8 @@ class admin extends common
             );
             return $redata;
         } else {
-            if (($_SERVER["HTTP_X_REQUESTED_WITH"] && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == "xmlhttprequest") || $_SERVER["REQUEST_METHOD"]=='POST') {
-                $this->error($langinfo, 403);
+            if (($_SERVER["HTTP_X_REQUESTED_WITH"] && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == "xmlhttprequest") || $_SERVER["REQUEST_METHOD"] == 'POST') {
+                $this->error($langinfo, '', 403);
             } else {
                 if ($langinfo) {
                     $langstr = "alert('{$langinfo}');";
@@ -346,7 +349,7 @@ class admin extends common
                 } else {
                     $js = "location.href='{$url}';";
                 }
-                echo("<script type='text/javascript'>{$langstr} {$js} </script>");
+                echo ("<script type='text/javascript'>{$langstr} {$js} </script>");
                 die();
             }
         }
@@ -366,7 +369,7 @@ class admin extends common
             $referer_url = "{$http}://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
         }
 
-        if (!strstr($referer_url, "return.php")) {
+        if (is_string($referer_url) && !strstr($referer_url, "return.php")) {
             if (!$_COOKIE['re_url']) {
                 met_setcookie("re_url", $referer_url, time() + 3600);
             }
@@ -445,7 +448,7 @@ class admin extends common
             'met_atitle' => $_M['config']['met_atitle'],
             'metcms_v' => $_M['config']['metcms_v'],
             'patch' => $_M['config']['patch'],
-            'tem'=>$_M['config']['met_skin_user'],
+            'tem' => $_M['config']['met_skin_user'],
             'langprivelage' => $langprivelage,
             'url' => array(
                 'admin' => $_M['url']['site_admin'],
@@ -457,7 +460,7 @@ class admin extends common
                 'own_tem' => $_M['url']['own_tem'],
             ),
         );
-        $met_para = jsonencode($met_para);
+        $met_para = json_encode($met_para);
 
         $copyright = str_replace('$metcms_v', $_M['config']['metcms_v'], $_M['config']['met_agents_copyright_foot']);
         $copyright = str_replace('$m_now_year', date('Y', time()), $copyright);
@@ -473,7 +476,7 @@ class admin extends common
 
                     if (strstr($match[0], 'www.mituo.cn') || strstr($match[0], 'www.metinfo.cn')) {
                         return $match[0] . $type . 'metinfo_code=' . $_M['config']['metinfo_code'];
-                    }else{
+                    } else {
                         return $match[0];
                     }
                 }
@@ -513,7 +516,7 @@ class admin extends common
     public function get_auth($power = array())
     {
         global $_M;
-        $power = $power?$power:admin_information();
+        $power = $power ? $power : admin_information();
         $data = array();
         //判断是否有环境检测的权限
         if (strstr($power['admin_type'], 's1903') || strstr($power['admin_type'], 'metinfo')) {
@@ -554,7 +557,7 @@ class admin extends common
         if (strstr($power['admin_type'], 's1405') || strstr($power['admin_type'], 'metinfo')) {
             $data['site_template'] = 1;
             $query = "SELECT * FROM {$_M['table']['admin_column']} WHERE name = 'lang_appearance'";
-            $info=DB::get_one($query);
+            $info = DB::get_one($query);
             if (!$info['type'] && !$_M['config']['lang_appearance']) {
                 $data['site_template'] = 0;
             }
@@ -587,7 +590,7 @@ class admin extends common
         if (strstr($power['admin_type'], 's1505') || strstr($power['admin_type'], 'metinfo')) {
             $data['myapp'] = 1;
             $query = "SELECT * FROM {$_M['table']['admin_column']} WHERE name = 'lang_myapp'";
-            $info=DB::get_one($query);
+            $info = DB::get_one($query);
             if (!$_M['config']['lang_myapp'] && !$info['type']) {
                 $data['myapp'] = 0;
             }
@@ -610,7 +613,7 @@ class admin extends common
         if (strstr($power['admin_type'], 's1506') || strstr($power['admin_type'], 'metinfo')) {
             $data['user'] = 1;
         }
-         //判断是否有会员管理权限
+        //判断是否有会员管理权限
         if (strstr($power['admin_type'], 's1601') || strstr($power['admin_type'], 'metinfo')) {
             $data['web_user'] = 1;
         }
@@ -626,7 +629,7 @@ class admin extends common
         if (strstr($power['admin_type'], 's1508') || strstr($power['admin_type'], 'metinfo')) {
             $data['partner'] = 1;
             $query = "SELECT * FROM {$_M['table']['admin_column']} WHERE name = 'cooperation_platform'";
-            $info=DB::get_one($query);
+            $info = DB::get_one($query);
             if (!$_M['config']['met_agents_metmsg'] && !$info['type']) {
                 $data['partner'] = 0;
             }
@@ -645,6 +648,153 @@ class admin extends common
         }
 
         return $data;
+    }
+
+    // 根据《中华人民共和国著作权法》及《计算机软件保护条例》，此处为权利人的技术保护措施，切勿删除或修改！违反者须承担侵权后果！
+    public function getPackageInfo()
+    {
+        global $_M;
+        $data = array('show'=>0,'package'=>'免费版');
+        $local = array('localhost','127.0.0','192.168.');
+        foreach ($local as $url) {
+            $info = explode('/',trim(str_replace(array('https://','http://'),'',$_M['url']['web_site']),'/'));
+            if(strstr($info[0],$url)){
+                return $data;
+            }
+        }
+
+        $appno = array();
+        $applist = DB::get_all("SELECT no FROM {$_M['table']['applist']}");
+        foreach ($applist as $item) {
+            $appno[] = $item['no'];
+        }
+
+        $hasCopyright = self::checkCopyright();
+
+        $license_file = PATH_WEB . "config/metinfo.txt";
+
+        $url = "https://api.mituo.cn/license";
+        $data = array(
+            'action' => 'getPackageInfo',
+            'copyright'=>$hasCopyright,
+            'appno'=>json_encode($appno),
+            'skin_name'=>$_M['config']['met_skin_user']
+        );
+        $res = api_curl($url, $data);
+        $res = json_decode($res, true);
+        
+        if ($res['code'] == 0) {
+            $data = $res['data'];
+            if(isset($data['license'])){
+                file_put_contents($license_file,$data['license']);
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getImgList()
+    {
+        $url = 'https://api.mituo.cn/client';
+        $data = array(
+            'action' => 'getImgList'
+        );
+        $res = api_curl($url, $data);
+        $res = json_decode($res, true);
+        if($res['code'] == 0){
+            return $res['data'];
+        }
+        return array();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkCopyright()
+    {
+        global $_M;
+        //页面验证
+        $url = $_M['url']['web_site'];
+        $index_ = file_get_contents($url);
+        if (!$index_) {
+            return true;
+        }
+        $index_ = str_replace(array("\n"), '', $index_);
+
+        //basic js
+        $Document = new DOMDocument('1.0', 'UTF-8');
+        $Document->loadHTML($index_);
+        $page_js = $Document->getElementById('met-page-js');//->getAttribute('src')
+        if (!$page_js) {
+            return true;
+        }
+
+        //copyright
+        $preg = '/\<div class=[\'\"]powered_by_metinfo[\'\"]\>.*?\<\/div\>/i';  //<div>
+        preg_match($preg, $index_, $mutch);
+        if ($mutch) {
+            $preg = '/<a[^>]*href[=\"\'\s]+([^\"\']*)[\"\']?[^>]*>/i';    //<a>
+            preg_match_all($preg, $mutch[0], $mutch2);
+            foreach ($mutch2[1] as $row) {
+                $row = strtolower($row);
+                if (strpos($row, 'metinfo.cn') || strpos($row, 'mituo.cn')) {
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 获取系统插件开源许可协议
+     * @param string $dir
+     * @param int $level
+     * @return array
+     */
+    public function get_plugins_license()
+    {
+        global $_M;
+        if (!$_M['config']['met_agents_metmsg']) {//显示官方信息
+            return;
+        }
+
+        $dir = PATH_PUBLIC . 'plugins/';
+
+        $list = array();
+        $handle = scan_dir($dir);
+        foreach ($handle as $row) {
+            $path = PATH_WEB . $row;
+            if (is_dir($path)) {
+                if(file_exists($path.'/LICENSE')){
+                    $license = array();
+                    $license['name'] = $row . '/';
+                    $license['license_url'] = $row . '/LICENSE';
+                    $list[] = $license;
+                }else{
+                    $handle_2 = scan_dir($path);
+                    foreach ($handle_2 as $row2) {
+                        if (strstr($row2, 'LICENSE')) {
+                            $license = array();
+                            $license['name'] = str_replace('.LICENSE', '.js', $row2);
+                            $license['license_url'] = $row2;
+                            $list[] = $license;
+                        }
+                    }
+                }
+            } else{
+                if (strstr($row, 'LICENSE')) {
+                    $license = array();
+                    $license['name'] = str_replace('.LICENSE', '.js', $row);
+                    $license['license_url'] = $row;
+                    $list[] = $license;
+                }
+            }
+        }
+
+        return $list;
     }
 
     public function __destruct()

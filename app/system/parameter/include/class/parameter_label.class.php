@@ -95,6 +95,9 @@ class parameter_label
     {
         global $_M;
         $mod = $this->name_to_num($module);
+        if (!$mod) {
+            return array();
+        }
         $parameter_database = load::mod_class('parameter/parameter_database', 'new');
         $parameter = $parameter_database->get_parameter($mod, $class1, $class2, $class3);
         $list = $parameter_database->get_list($id, $mod);
@@ -216,16 +219,18 @@ class parameter_label
             $listid = $list = array();
             $para_num = 0;        
             foreach ($info as $key => $val) {
-                if ($val['info']) {
-                    $p_query = "SELECT id,type,name FROM {$_M['table']['parameter']} WHERE id='{$val['id']}'";
-                    $parameter = DB::get_one($p_query);
-                    if($parameter['type'] == 4){
-                        $query = "SELECT listid FROM {$_M['table']['plist']} WHERE paraid='{$val['id']}' AND (info = '{$val['info']}' OR info LIKE '%,{$val['info']}' OR info LIKE '%,{$val['info']},%' OR info LIKE '{$val['info']},%')";
-                    }else{
-                        $query = "SELECT listid FROM {$_M['table']['plist']} WHERE paraid='{$val['id']}' AND info = '{$val['info']}'";
-                    }
-                    $para_num++;
+                if (!$val['info']) {
+                    continue;
                 }
+                $p_query = "SELECT id,type,name FROM {$_M['table']['parameter']} WHERE id='{$val['id']}'";
+                $parameter = DB::get_one($p_query);
+                if ($parameter['type'] == 4) {
+                    $query = "SELECT listid FROM {$_M['table']['plist']} WHERE paraid='{$val['id']}' AND (info = '{$val['info']}' OR info LIKE '%,{$val['info']}' OR info LIKE '%,{$val['info']},%' OR info LIKE '{$val['info']},%')";
+                } else {
+                    $query = "SELECT listid FROM {$_M['table']['plist']} WHERE paraid='{$val['id']}' AND info = '{$val['info']}'";
+                }
+                $para_num++;
+
 
                 $res = DB::get_all($query);
                 foreach ($res as $v) {

@@ -31,7 +31,7 @@ class message extends web
             if ($data['access'] && $_M['form']['html_filename']) {
                 $groupid = load::sys_class('auth', 'new')->encode($data['access']);
                 $data['access_code'] = $groupid;
-            }else{
+            } else {
                 $this->check($data['access']);
             }
 
@@ -41,8 +41,6 @@ class message extends web
             $this->seo_title($data['ctitle']);
             $this->add_input('list', 1);
             $this->view('message_index', $this->input);
-
-            #require_once $this->template('tem/message_index', $this->input);
         }
     }
 
@@ -61,6 +59,8 @@ class message extends web
         if (!$met_msg_ok) {
             okinfo('javascript:history.back();', "{$_M['word']['MessageInfo5']}");
         }
+
+        //图形验证码
         if ($_M['config']['met_memberlogin_code']) {
             if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random'])) {
                 okinfo(-1, $_M['word']['membercode']);
@@ -81,7 +81,7 @@ class message extends web
             }
             $user = $this->get_login_user_info();
             $addtime = date('Y-m-d H:i:s', time());
-            $paralist =  load::mod_class('parameter/parameter_database', 'new')->get_parameter(7);
+            $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter(7);
             foreach ($paralist as $key => $value) {
                 $list[$value['id']] = $value['name'];
                 $imgname = $value['id'] . 'imgname';
@@ -92,7 +92,7 @@ class message extends web
 
                 $this->notice_by_sms($insert_id, $conlum_configs);
             }
-            load::sys_class('session', 'new')->set('submit',time());
+            load::sys_class('session', 'new')->set('submit', time());
             okinfo(HTTP_REFERER, $_M['word']['MessageInfo2']);
         }
     }
@@ -101,45 +101,30 @@ class message extends web
     public function checkword()
     {
         global $_M;
-        $pname = "para" . $_M['config']['met_message_fd_class'];
-        $pname = $_M['form'][$pname];
-        $email = "para" . $_M['config']['met_message_fd_email'];
-        $email = $_M['form'][$email];
-        $tel = "para" . $_M['config']['met_message_fd_sms'];
-        $tel = $_M['form'][$tel];
-        $info = "para" . $_M['config']['met_message_fd_content'];
-        $info = $_M['form'][$info];
-        $pname = strip_tags($pname);
-        $email = strip_tags($email);
-        $tel = strip_tags($tel);
-        $contact = '';
-        $contact = strip_tags($contact);
-        $keyword = DB::get_one("select * from {$_M['table']['config']} where lang ='{$_M['form']['lang']}' and  name= 'met_fd_word' and columnid = 0");
-        $_M['config']['met_fd_word'] = $keyword['value'];
-        $fdstr = $_M['config']['met_fd_word'];
-        $fdarray = explode("|", $fdstr);
-        $fdarrayno = count($fdarray);
-        $fdok = false;
-        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter(7);
-        $cvok = false;
+        $met_fd_word = DB::get_one("select * from {$_M['table']['config']} where lang ='{$_M['form']['lang']}' and  name= 'met_fd_word' and columnid = 0");
+        $met_fd_word_arr = explode("|", $met_fd_word['value']);
+        if ($met_fd_word['value'] == '') {
+            return true;
+        }
+
+        $para_list = load::mod_class('parameter/parameter_database', 'new')->get_parameter(7);
         $content = '';
-        foreach ($paralist as $key => $val) {
+        foreach ($para_list as $key => $val) {
             $para = "para" . $val['id'];
             $content = $content . "-" . $_M['form'][$para];
         }
-        for ($i = 0; $i < $fdarrayno; $i++) {
-            if (strstr($content, $fdarray[$i])) {
-                $fdok = true;
-                $fd_word = $fdarray[$i];
-                break;
+
+        foreach ($met_fd_word_arr as $key => $word) {
+            if ($word == '') {
+                continue;
+            }
+
+            if (strstr($content, $word)) {
+                okinfo('javascript:history.back();', $word);
+                die();
             }
         }
-        $fd_word = "{$_M['word']['Feedback3']} [" . $fd_word . "] ";
-        if ($fdok == true) {
-            okinfo('javascript:history.back();', $fd_word);
-        } else {
-            return true;
-        }
+        return true;
     }
 
     /**
@@ -178,28 +163,18 @@ class message extends web
      */
     public function checkToken($id = '')
     {
+        return true;
         global $_M;
-        $s_token = load::sys_class('session', 'new')->get("form_token_{$id}");
+        if ($_M['config']['met_webhtm']) {
+            return true;
+        }
+        $s_token = load::sys_class('session', 'new')->get("msg_form_token_{$id}");
         $form_token = $_M['form']['form_token'];
         if (!$form_token || $s_token != $form_token) {
             okinfo('javascript:history.back();', 'forbidden');
             return false;
         }
         return true;
-    }
-
-    /*获取表单提交的ip*/
-    public function getip()
-    {
-        if ($_SERVER['HTTP_X_FORWARDED_FOR']) {
-            $m_user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif ($_SERVER['HTTP_CLIENT_IP']) {
-            $m_user_ip = $_SERVER['HTTP_CLIENT_IP'];
-        } else {
-            $m_user_ip = $_SERVER['REMOTE_ADDR'];
-        }
-        $m_user_ip = preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $m_user_ip) ? $m_user_ip : 'Unknown';
-        return $m_user_ip;
     }
 
     /*通过邮箱通知*/
@@ -320,7 +295,7 @@ class message extends web
 
         //必填属性验证
         foreach (array_keys($para) as $val) {
-            if ($para[$val]['wr_ok'] == 1 && in_array($val, $paraarr)) {
+            if ($para[$val]['wr_ok'] == 1 /*&& in_array($val, $paraarr)*/) {
                 if ($para[$val]['type'] == 5) {
                     if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size']) {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
@@ -335,7 +310,6 @@ class message extends web
             }
         }
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

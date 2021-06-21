@@ -29,7 +29,17 @@ class admin_group extends admin
 
         foreach ($group_data as $key => $value) {
             $query = "SELECT price,buyok,recharge_price,rechargeok FROM  {$_M['table']['user_group_pay']} WHERE groupid='{$value['id']}' AND lang = '{$_M['lang']}'";
-            $group_data[$key]['payment'] = DB::get_one($query);
+            $payment = DB::get_one($query);
+
+            if (!$payment) {
+                $payment = array(
+                    'price' => '0',
+                    'buyok' => '0',
+                    'recharge_price' => '0',
+                    'rechargeok' => '0',
+                );
+            }
+            $group_data[$key]['payment'] = $payment;
         }
         $data['group_data'] = $group_data;
         $data['payment_open'] = isset($_M['config']['payment_open']) ? $_M['config']['payment_open'] : '';

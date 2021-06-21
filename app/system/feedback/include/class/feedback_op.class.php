@@ -22,7 +22,7 @@ class feedback_op extends base_op
         return true;
     }
 
-    public function list_move($id, $class1, $class2, $class3)
+    public function list_move($nowclass1 = '', $nowclass2 = '', $nowclass3 = '', $toclass1 ='', $toclass2 ='', $toclass3 = '')
     {
         return true;
     }

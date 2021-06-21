@@ -49,7 +49,7 @@ unset($data['handle']);
 		<h3 class="h6 mb-0 float-left">MetInfo {$word.upfiletips37}</h3>
 		<a href="https://www.metinfo.cn/" target="_blank" class="float-right">{$word.columnmore} <i class="fa fa-angle-right"></i></a>
 	</div>
-	<div class="card-body py-2 home-news-list" data-url="https://www.metinfo.cn/metv5news.php?fromurl={$c.met_weburl}&action=json&listnum=6">
+	<div class="card-body py-2 home-news-list" data-url="https://www.metinfo.cn/metv5news.php?action=json&listnum=6">
 		<include file="pub/loader"/>
 	</div>
 </div>

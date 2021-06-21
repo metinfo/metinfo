@@ -23,6 +23,7 @@ class uploadify extends web
         parent::__construct();
         global $_M;
         $this->upfile = new upfile();
+        $this->max_img_px_size = 2600;
     }
 
     /**
@@ -70,7 +71,7 @@ class uploadify extends web
                 return $back;
             } else {
                 $redata = array();
-                $redata['error'] = $_M['word']['img_px_tips'];
+                $redata['error'] = "图片尺寸超出系统限制(图片宽高不超过{$this->max_img_px_size}px)";
                 return $redata;
             }
         }
@@ -217,9 +218,13 @@ class uploadify extends web
 
         $img_paht = str_replace('../', PATH_WEB, $path);
         $imgattr = @getimagesize($img_paht);
+        $pathinfo = pathinfo($img_paht);
+        if (in_array($pathinfo['extension'],array('svg'))) {
+            return true;
+        }
+
         if ($imgattr) {
-            $max_img_px_size = 2000;
-            if ($imgattr[0] > $max_img_px_size || $imgattr[1] > $max_img_px_size) {
+            if ($imgattr[0] > $this->max_img_px_size  || $imgattr[1] > $this->max_img_px_size ) {
                 return false;
             } else {
                 return true;
@@ -228,46 +233,6 @@ class uploadify extends web
         } else {
             return false;
         }
-    }
-
-    /**
-     * 自动压缩上传图片
-     * @param string
-     */
-    private function imgCompress($data = array())
-    {
-        global $_M;
-        return;
-        if ($_M['config']['met_img_compress'] == 1) {
-            $path = $data['path'];
-            $size = $data['size'];
-
-            $img_paht = str_replace('../', PATH_WEB, $path);
-            if (file_exists($img_paht)) {
-                $check = @exif_imagetype($img_paht);
-                $allowedExts = array(IMAGETYPE_JPEG, IMAGETYPE_PNG);
-                if (in_array($check, $allowedExts)) {
-                    $imgattr = @getimagesize($img_paht);
-                    if ($imgattr) {
-                        $max_img_size = 5000;       //3000px  处理超高分辨率图片内存出错
-                        if ($imgattr[0] > $max_img_size || $imgattr[1] > $max_img_size) {
-                            return false;
-                        }
-
-                        $file_size = 500 * 1024;        //500kb
-                        $img_size = 1000;               //1000px
-                        if ($size > $file_size || $imgattr[0] > $img_size || $imgattr[1] > $img_size) {
-                            $img_compress = load::sys_class('imgCompress', 'new');
-                            $save_name = $img_paht;
-                            ##$save_name = PATH_WEB.'upload/201907/new.jpg';
-                            $img_compress->compressImg($img_paht, $save_name);
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return;
     }
 }
 

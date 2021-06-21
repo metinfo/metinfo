@@ -74,8 +74,8 @@ class login extends admin
     {
         global $_M;
         $data = $this->get_info();
-        $data['config']=$_M['config'];
-        $data['auth']= parent::get_auth();
+        $data['config'] = array('met_agents_metmsg' => $_M['config']['met_agents_metmsg']);
+        $data['auth'] = parent::get_auth();
 
         $this->success($data);
     }
@@ -87,8 +87,15 @@ class login extends admin
         if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random']) && $_M['config']['met_login_code']) {
             $this->error($_M['word']['logincodeerror']);
         }
-        $username = isset($_M['form']['login_name']) ? $_M['form']['login_name'] : '';
-        $password = isset($_M['form']['login_pass']) ? $_M['form']['login_pass'] : '';
+
+        //密文传输
+        if (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == 'xmlhttprequest'){
+            $username = isset($_M['form']['login_name']) ? daddslashes(authcode($_M['form']['login_name'], "DECODE")) : '';
+            $password = isset($_M['form']['login_pass']) ? daddslashes(authcode($_M['form']['login_pass'], "DECODE")) : '';
+        }else{
+            $username = isset($_M['form']['login_name']) ? $_M['form']['login_name'] : '';
+            $password = isset($_M['form']['login_pass']) ? $_M['form']['login_pass'] : '';
+        }
 
         if (!$username || !$password) {
             $this->error($_M['word']['loginname']);
@@ -109,6 +116,7 @@ class login extends admin
                     die;
                 }
             }
+
             //写日志
             logs::addAdminLog('logintitle', 'loginadmin', 'log_successfully', 'dologin', $username);
 
@@ -122,6 +130,7 @@ class login extends admin
     {
         global $_M;
         setcookie('met_auth', '', 0, '/');
+        setcookie('met_auths', '', 0, '/');
         setcookie('met_key', '', 0, '/');
         setcookie('page_iframe_url', '', 0, '/');
         setcookie('admin_lang', '', 0, '/');
@@ -197,7 +206,7 @@ class login extends admin
         deldir(PATH_WEB . 'cache', 1);
     }
 
-    public function check()
+    public function check($pid = '')
     {
     }
 

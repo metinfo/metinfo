@@ -25,7 +25,8 @@ class sys_tag extends tag
          * 系统UI scc js解析
          */
         // load::sys_class('view/met_compile', 'new')->parse_met_ui();
-
+        $_M['html_plugin']['head_script']=str_replace($_M['url']['web_site'],$_M['url']['site'],$_M['html_plugin']['head_script']);
+        $_M['html_plugin']['foot_script']=str_replace($_M['url']['web_site'],$_M['url']['site'],$_M['html_plugin']['foot_script']);
         $php = '
 <?php
 $metinfover_v2=$c["metinfover"]=="v2"?true:false;
@@ -145,7 +146,7 @@ h1,h2,h3,h4,h5,h6{font-family:{$g.met_font} !important;}
 <?php
     }
     if($c["shopv2_open"]){
-        $data[shop_goods]=$data[shop_goods]?$data[shop_goods]:0;
+        $data["shop_goods"]=$data["shop_goods"]?$data["shop_goods"]:0;
 ?>
 <script>
 var jsonurl="{$url.shop_cart_jsonlist}",

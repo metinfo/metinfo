@@ -20,7 +20,7 @@ class menu_tag extends tag
 <?php
     \$type = '$type';
     \$result = load::sys_class('label', 'new')->get('menu')->get_list(\$type);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
      foreach(\$result as \$index=>\$v):
         \$v['sub']      = \$sub;
         \$v['_index']   = \$index;

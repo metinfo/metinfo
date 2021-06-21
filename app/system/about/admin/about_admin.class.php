@@ -5,8 +5,6 @@
 defined('IN_MET') or exit('No permission');
 
 load::mod_class('news/admin/news_admin');
-load::mod_class('message/admin/message_admin');
-
 
 class about_admin extends news_admin
 {
@@ -17,7 +15,6 @@ class about_admin extends news_admin
     /**
      * 初始化
      */
-
     function __construct()
     {
         global $_M;
@@ -50,17 +47,7 @@ class about_admin extends news_admin
      */
     public function insert_list($list = array())
     {
-        return parent::insert_list();
-    }
-
-    /**
-     * 插入sql
-     * @param  array $list 插入的数组
-     * @return number  插入后的数据ID
-     */
-    public function insert_list_sql($list = array())
-    {
-        return parent::insert_list_sql($list);
+        return;
     }
 
     /**
@@ -103,36 +90,24 @@ class about_admin extends news_admin
      */
     public function update_list($list = array(), $id = '')
     {
-        return self::update_list_sql($list, $id);
-    }
-
-    /**
-     * 保存修改sql
-     * @param  array $list 修改的数组
-     * @return bool    修改是否成功
-     */
-    public function update_list_sql($list = array(), $id = '')
-    {
         global $_M;
-        $list['id'] = $id;
         //图片处理 缩略图 水印图
-        $list = $this->form_imglist($list, $this->module);
-        if ($list['description']) {
-            $listown = $this->database->get_list_one_by_id($id);
-            $description = $this->description($listown['content']);
-            if ($list['description'] == $description) {
-                $list['description'] = $this->description($list['content']);
-            }
-        } else {
-            $list['description'] = $this->description($list['content']);
+        if ($_M['config']['met_big_wate'] == 1) {
+            $list['content'] = $this->concentwatermark($list['content']);
         }
-        return $this->database->update_by_id($list);    //更新内容
+
+        if ($this->update_list_sql($list, $id)) {
+            return true;
+        } else {
+            $this->error[] = 'Data error';
+            return false;
+        }
     }
 
     /**
      * 栏目json
      */
-   public function docolumnjson()
+    public function docolumnjson()
     {
         global $_M;
         $redata = array();
@@ -197,53 +172,6 @@ class about_admin extends news_admin
     public function dojson_list()
     {
         return;
-        global $_M;
-        $redata = array();
-        $class1 = is_numeric($_M['form']['class1_select']) ? $_M['form']['class1_select'] : (is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '');
-        $class2 = is_numeric($_M['form']['class2_select']) ? $_M['form']['class2_select'] : (is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '');
-        $class3 = is_numeric($_M['form']['class3_select']) ? $_M['form']['class3_select'] : (is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '');
-        $classnow = $class3 ? $class3 : $class2 ? $class2 : $class1 ? $class1 : 0;
-        $keyword = $_M['form']['keyword'];
-
-        $list = self::_dojson_list($class1, $class2, $class3, $keyword);
-
-        $this->json_return($list);
-        /*$redata['data']= $list;
-        $this->ajaxReturn($redata);*/
-    }
-
-    /**
-     * @param string $class1
-     * @param string $class2
-     * @param string $class3
-     * @param string $keyword
-     * @return array|bool
-     */
-    public function _dojson_list($class1 = '', $class2 = '', $class3 = '', $keyword = '')
-    {
-        return;
-        global $_M;
-        $classnow = $class3 ? $class3 : $class2 ? $class2 : $class1 ? $class1 : 0;
-        /*$where = "lang='{$this->lang}' and module='1' and isshow='1'";
-        $table = $_M['table']['column'];
-        $data = $this->tabledata->getdata($table, '*', $where);*/
-
-        $where = " AND module='1' AND isshow='1'";
-        $data = $this->json_list($where, '');
-        if ($data && is_array($data)) {
-            $redata = array();
-            foreach ($data as $key => $val) {
-                $row = array();
-                $row['id'] = $val['id'];
-                $row['order'] = $val['list_order'];
-                $row['title'] = $val['name'];
-                $row['description'] = $val['description'];
-                $row['editor_url'] = "{$_M['url']['own_form']}a=doeditor&id={$val['id']}";
-                $redata[] = $row;
-            }
-            return $redata;
-        }
-        return false;
     }
 }
 

@@ -31,19 +31,26 @@ class column_op
         $information = load::mod_class('column/column_database', 'new')->get_all_column_by_lang($lang);
         //$power_admin = background_privilege();
         foreach ($information as $key => $val) {
-            if ($power) {
-                $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($val['id']);
+            $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($val['id']);
+
+            if ($val['classtype'] == 1) {
                 if (!is_have_power('c' . $class123['class1']['id'])) {
                     continue;
                 }
-            }
-            if ($val['classtype'] == 1) {
                 $sorting['class1'][$key] = $information[$key];
             }
+
             if ($val['classtype'] == 2) {
+                if (!is_have_power('c' . $class123['class2']['id'])) {
+                    continue;
+                }
                 $sorting['class2'][$val['bigclass']][$key] = $information[$key];
             }
+
             if ($val['classtype'] == 3) {
+                if (!is_have_power('c' . $class123['class3']['id'])) {
+                    continue;
+                }
                 $sorting['class3'][$val['bigclass']][$key] = $information[$key];
             }
         }

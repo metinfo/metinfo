@@ -369,6 +369,14 @@ class sys_column
     public function module($module)
     {
         global $_M;
+        if ($module > 1000) {//应用模块
+            $getapp = load::mod_class('myapp/getapp', 'new');
+            $app = $getapp->get_oneapp($module);
+            if ($app) {
+                return $module = $app['appname'];
+            }
+        }
+
         switch ($module) {
             case '0':
                 $module = $_M['word']['modout'];

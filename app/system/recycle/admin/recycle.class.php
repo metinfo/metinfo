@@ -18,19 +18,16 @@ class recycle extends admin
     public function dojson_list()
     {
         global $_M;
-        $table = load::sys_class('tabledata', 'new'); //加载表格数据获取类
-
         $module = $_M['form']['module'];
         $search = $_M['form']['title'];
-
-        $fields = 'id,title,class1,class2,class3,updatetime,recycle';
-        $columns = array('product', 'news', 'download', 'img');
-        $searchsql = $search ? $searchsql = "AND title LIKE '%$search%'" : $searchsql = '';
         $lang = $_M['lang'];
-        $langsql = "AND lang='$lang'"; //查询条件
 
-        $where = "recycle > 0 $langsql $searchsql";
-        $order = '';
+        $table = load::sys_class('tabledata', 'new'); //加载表格数据获取类
+        $fields = 'id,title,class1,class2,class3,updatetime,recycle';
+        $modules = array('news', 'product', 'download', 'img');
+        $searchsql = $search ? $searchsql = "AND title LIKE '%{$search}%'" : $searchsql = '';
+        $where = "recycle > 0 AND lang='{$lang}' {$searchsql}";
+        $order = 'updatetime desc,id desc';
 
         if ($module == '0') {
             $query = "SELECT {$fields} FROM {$_M['table']['news']} WHERE $where ";
@@ -38,8 +35,10 @@ class recycle extends admin
             $query .= " UNION SELECT {$fields} FROM {$_M['table']['download']} WHERE $where";
             $query .= " UNION SELECT {$fields} FROM {$_M['table']['img']} WHERE $where";
             $data = $table->getdata($_M['table'][$module], '*', $where, $order, $query); //获取数据
-        } else {
+        } elseif (in_array($module, $modules)) {
             $data = $table->getdata($_M['table'][$module], '*', $where, $order); //获取数据
+        } else {
+            die();
         }
         $query = "SELECT * FROM {$_M['table']['column']} where lang ='{$_M['lang']}'";
         $c_list = DB::get_all($query);

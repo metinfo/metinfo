@@ -27,7 +27,8 @@ class myapp
         $data['action'] = 'login';
         $result = api_curl($_M['config']['met_api'], $data);
         $res = json_decode($result, true);
-        if ($res['status'] == 200) {
+        
+        if ($res['status'] == 200 || $res['code'] == 0) {
             $user_key = $res['data']['user_key'];
             if ($user_key) {
                 $query = "UPDATE {$_M['table']['config']} SET value = '{$user_key}' WHERE name = 'met_secret_key'";
@@ -68,11 +69,13 @@ class myapp
         }
         $result = api_curl($_M['config']['met_api'], $data);
         $res = json_decode($result, true);
+        if($res['status'] == 200?$type == 'logout':1){
+            $query = "UPDATE {$_M['table']['config']} SET value = '' WHERE name = 'met_secret_key'";
+            DB::query($query);
+        }
         if ($res['status'] == 200) {
             return $res;
         } else {
-            $query = "UPDATE {$_M['table']['config']} SET value = '' WHERE name = 'met_secret_key'";
-            DB::query($query);
             error($res['msg']);
         }
     }
@@ -97,6 +100,15 @@ class myapp
                 $appname[] = $val['m_name'];
                 if (in_array($val['no'], $app)) {
                     continue;
+                }
+
+                //PHP版本验证
+                $php_ver = PHP_VERSION;
+                if (!version_compare($val['php_version'], $php_ver, '<=')) {
+                    $val['enabled'] = 0;
+                    $val['btn_text'] = "应用需要PHP{$val['php_version']}及以上版本，当前网站PHP版本为：{$php_ver},请切换您网站的PHP程序版本";
+                }else{
+                    $val['enabled'] = 1;
                 }
                 $data[] = $val;
             }
@@ -145,7 +157,7 @@ class myapp
             }
             $applist[$key]['icon'] = $_M['url']['site']."app/{$module}/{$val['m_name']}/icon.png";
             if (file_exists(PATH_WEB."app/app/{$val['m_name']}/config.json")) {
-                $applist[$key]['version'] = '7_series';
+                $applist[$key]['newapp'] = '1'; //新框架
                 $applist[$key]['url'] = $_M['url']['site_admin']."#/app/{$val['m_name']}/?c={$val['m_class']}&a={$val['m_action']}";
             } else {
                 $applist[$key]['url'] = $_M['url']['site_admin']."?n={$val['m_name']}&c={$val['m_class']}&a={$val['m_action']}";
@@ -181,12 +193,39 @@ class myapp
         return array();
     }
 
+    public function checkAppUpdate()
+    {
+        global $_M;
+        $query = "SELECT * FROM {$_M['table']['applist']} WHERE display > 0 ORDER BY id DESC";
+        $applist = DB::get_all($query);
+
+        if ($applist && $_M['config']['met_secret_key']) {
+            $data = array(
+                'action' => 'checkUpdateApp',
+                'applist' => base64_encode(json_encode($applist)),
+            );
+            $res = api_curl($_M['config']['met_api'], $data);
+            $result = json_decode($res, true);
+
+            if ($result['status'] == 200) {
+                $applist = $result['data'];
+
+                $update_list = array();
+                foreach ($applist as $app) {
+                    if ($app['new_ver']) {
+                        $update_list[] = $app;
+                    }
+                }
+            }
+            return $update_list;
+        }
+    }
+
     public function install($data)
     {
         global $_M;
         $appno = $data['appno'];
         $name = $data['name'];
-
         $file = PATH_WEB.'app/app/'.$name.'/admin/install.class.php';
         if ($appno == 10080) {
             $file = PATH_WEB.'app/system/'.$name.'/admin/install.class.php';
@@ -252,7 +291,7 @@ class myapp
         logs::addAdminLog('myapp', 'appinstall', 'jsok', 'doAction');
 
         //更改管理员应用权限
-        load::mod_class("admin/admin_op", 'new')->modify_admin_column_accsess($appno, 'a' ,'add');
+        load::mod_class("admin/admin_op", 'new')->modifyAccess($appno, 'a' ,'add');
 
         return $result;
     }
@@ -308,7 +347,7 @@ class myapp
         $uninstall->dodel();
 
         //更改管理员应用权限
-        load::mod_class("admin/admin_op", 'new')->modify_admin_column_accsess($appno, 'a', 'del');
+        load::mod_class("admin/admin_op", 'new')->modifyAccess($appno, 'a', 'del');
 
         return true;
     }
@@ -337,14 +376,19 @@ class myapp
                 if ($_M['config']['metinfo_code']) {
                     $val['show_url'] = $val['show_url'].'?metinfo_code='.$_M['config']['metinfo_code'];
                 }
+
+                //PHP版本验证
+                $php_ver = PHP_VERSION;
+                if (!version_compare($val['php_version'], $php_ver, '<=')) {
+                    $val['btn_text'] = "应用需要PHP{$val['php_version']}及以上版本，当前网站PHP版本为：{$php_ver},请切换您网站的PHP程序版本";
+                    $val['enabled'] = 0;
+                }else{
+                    $val['enabled'] = 1;
+                }
                 $list[] = $val;
             }
         }
-
-        $res['data']['data'] = $list;
-        $result = json_encode($res);
-
-        return $result;
+        return $list;
     }
 }
 

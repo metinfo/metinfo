@@ -16,7 +16,7 @@ class link_tag extends tag {
         $php    = <<<str
 <?php
     \$result = load::sys_class('label', 'new')->get('link')->get_link_list(\$data['classnow']);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
      foreach(\$result as \$index=>\$v):
          if(\$data['module'] == 10001){
              \$v['weburl']   = \str_replace(array('../',\$_M['url']['site']),'',\$v['weburl']);

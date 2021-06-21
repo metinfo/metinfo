@@ -31,7 +31,7 @@ class common
         global $_M; //全局数组$_M
         if (!file_exists(PATH_WEB . 'config/install.lock')) {
             if (file_exists(PATH_WEB . 'install/index.php')) {
-                if (strstr($_SERVER['REQUEST_URI'],'admin')) {
+                if (strstr($_SERVER['REQUEST_URI'], 'admin')) {
                     header('location:../install/index.php');
                     exit;
                 }
@@ -57,19 +57,24 @@ class common
         $_M['config']['met_api'] = 'https://u.mituo.cn/api/client';
     }
 
-    //301跳转
+    /**
+     * 301跳转
+     */
     protected function jump_url()
     {
         //是否开启301跳转
         global $_M;
+        if (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == 'xmlhttprequest'){
+            return;
+        }
         $http = $this->checkHttps();
         $jump_url = $http . HTTP_HOST . $_SERVER['REQUEST_URI'];
         if (($_M['config']['met_https'] == 1 && strpos($jump_url, 'https://') === false) || ($_M['config']['met_301jump'] == 1 && strpos($jump_url, 'www.') === false)) {
-            if ($_M['config']['met_301jump'] == 1 && strpos($jump_url, 'www.') === false){
+            if ($_M['config']['met_301jump'] == 1 && strpos($jump_url, 'www.') === false) {
                 $jump_url = str_replace('https://', 'https://www.', $jump_url);
                 $jump_url = str_replace('http://', 'http://www.', $jump_url);
             }
-            if ($_M['config']['met_https'] == 1 && strpos($jump_url, 'https://') === false){
+            if ($_M['config']['met_https'] == 1 && strpos($jump_url, 'https://') === false) {
                 $jump_url = str_replace('http://', 'https://', $jump_url);
             }
 
@@ -201,7 +206,7 @@ class common
         }
 
         if (!$_M['langlist']['web'][$_M['lang']]) {
-            if(!$_M['langlist']['web'][$_M['config']['met_index_type']]){
+            if (!$_M['langlist']['web'][$_M['config']['met_index_type']]) {
                 halt('No current language identifier');
             }
             $_M['lang'] = $_M['config']['met_index_type'];
@@ -270,7 +275,7 @@ class common
         }
 
         //非默认语言关闭社会化登录功能
-        if($_M['lang'] != $_M['config']['met_index_type']){
+        if ($_M['lang'] != $_M['config']['met_index_type']) {
             $_M['config']['met_qq_open'] = 0;
             $_M['config']['met_weixin_open'] = 0;
             $_M['config']['met_weibo_open'] = 0;
@@ -330,26 +335,6 @@ class common
     }
 
     /**
-     * 获取$_M['url']，系统URL网址数组.
-     */
-    protected function load_url()
-    {
-        global $_M;
-        //来源页面
-        define('HTTP_REFERER', sqlinsert($_SERVER['HTTP_REFERER']));
-        $this->load_url_other();
-        $this->load_url_unique();
-        // 如果是后台，路径不影响，是前台就就成相对路径
-        $_M['url']['web_site'] = $_M['url']['site'];
-        if (!defined('IN_ADMIN')) { //相对路径
-            $_M['url']['site'] = '../';
-            if (($_M['form']['search'] == 'tag' || @$_GET['search'] == 'tag') && $_M['config']['met_pseudo']) {
-                $_M['url']['site'] = '../../';
-            }
-        }
-    }
-
-    /**
      * 获取前台网址与后台网址
      */
     protected function load_url_site()
@@ -368,13 +353,13 @@ class common
         }
 
         $_M['config']['met_weburl'] = sqlinsert($_M['config']['met_weburl']);
-        $_M['url']['site'] = $_M['config']['met_weburl'];
+        $_M['url']['web_site'] = $_M['config']['met_weburl'];
 
         if ($_M['form']['lang']) {
-            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$_M['url']['site']}' AND lang = '{$_M['form']['lang']}'";
+            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$_M['url']['web_site']}' AND lang = '{$_M['form']['lang']}'";
             $lang = DB::get_one($query);
         } else {
-            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$_M['url']['site']}'";
+            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$_M['url']['web_site']}'";
             $lang = DB::get_one($query);
         }
 
@@ -389,7 +374,26 @@ class common
         } else {
             $_M['lang'] = $_M['form']['lang'];
         }
-        $_M['url']['site_admin'] = $_M['url']['site'] . $_M['config']['met_adminfile'] . '/';
+
+        //admin url
+        $_M['url']['admin_site'] = $_M['url']['web_site'] . $_M['config']['met_adminfile'] . '/';
+    }
+
+    /**
+     * 获取$_M['url']，系统URL网址数组.
+     */
+    protected function load_url()
+    {
+        global $_M;
+        //来源页面
+        define('HTTP_REFERER', sqlinsert($_SERVER['HTTP_REFERER']));
+        $this->load_url_other();
+        $this->load_url_unique();
+        // 如果是后台，路径不影响，是前台就就成相对路径
+        $_M['url']['site'] = '../';
+        if (($_M['form']['search'] == 'tag' || @$_GET['search'] == 'tag') && $_M['config']['met_pseudo']) {
+            $_M['url']['site'] = '../../';
+        }
     }
 
     /**
@@ -398,20 +402,20 @@ class common
     protected function load_url_other()
     {
         global $_M;
-        $_M['url']['entrance'] = $_M['url']['site'] . 'app/system/entrance.php';
-        $_M['url']['own'] = $_M['url']['site'] . 'app/' . M_TYPE . '/' . M_NAME . '/' . M_MODULE . '/';
+        $_M['url']['entrance'] = $_M['url']['web_site'] . 'app/system/entrance.php';
+        $_M['url']['own'] = $_M['url']['web_site'] . 'app/' . M_TYPE . '/' . M_NAME . '/' . M_MODULE . '/';
         $_M['url']['own_tem'] = $_M['url']['own'] . 'templates/';
-        $_M['url']['app'] = $_M['url']['site'] . 'app/app/';
-        $_M['url']['sys'] = $_M['url']['site'] . 'app/system/';
-        $_M['url']['sys_temp'] = $_M['url']['site'] . 'app/system/include/templates/';
-        $_M['url']['sys_templates'] = $_M['url']['site'] . 'app/system/include/templates/' . M_MODULE . '/';
-        $_M['url']['public'] = $_M['url']['site'] . 'public/';
+        $_M['url']['app'] = $_M['url']['web_site'] . 'app/app/';
+        $_M['url']['sys'] = $_M['url']['web_site'] . 'app/system/';
+        $_M['url']['sys_temp'] = $_M['url']['web_site'] . 'app/system/include/templates/';
+        $_M['url']['sys_templates'] = $_M['url']['web_site'] . 'app/system/include/templates/' . M_MODULE . '/';
+        $_M['url']['public'] = $_M['url']['web_site'] . 'public/';
         $_M['url']['public_plugins'] = $_M['url']['public'] . 'plugins/';
         $_M['url']['public_fonts'] = $_M['url']['public'] . 'fonts/';
         $_M['url']['public_images'] = $_M['url']['public'] . 'images/';
         $_M['url']['public_admin_old'] = $_M['url']['public'] . 'admin_old/';
-        $_M['url']['public_admin'] = $_M['url']['public'].'admin/';
-        $_M['url']['public_web'] = $_M['url']['public'].'web/';
+        $_M['url']['public_admin'] = $_M['url']['public'] . 'admin/';
+        $_M['url']['public_web'] = $_M['url']['public'] . 'web/';
         $_M['url']['api'] = 'https://' . $_M['config']['met_host'] . '/' . 'index.php?lang=' . $_M['lang'] . '&';
         $_M['url']['app_api'] = $_M['url']['api'] . 'n=platform&c=platform&';
     }
@@ -422,29 +426,6 @@ class common
     protected function load_url_unique()
     {
     }
-
-    // /**
-    //  * 获取网站的flash设置，存放在$_M['flashset']，flash设置数组
-    //  */
-    // protected function load_flashset_data($lang = '')
-    // {
-    //     global $_M;
-    //     $lang = $lang ? $lang : $_M['lang'];
-    //     $query = "SELECT * FROM {$_M['config']['tablepre']}config WHERE flashid!='0' and lang='{$lang}'";
-    //     $result = DB::query($query);
-    //     while ($list_config = DB::fetch_array($result)) {
-    //         $list_config['value'] = str_replace('"', '&#34;', str_replace("'", '&#39;', $list_config['value']));
-    //         $list_config['value'] = explode('|', $list_config['value']);
-    //         $falshval['type'] = $list_config['value'][0];
-    //         $falshval['x'] = $list_config['value'][1];
-    //         $falshval['y'] = $list_config['value'][2];
-    //         $falshval['imgtype'] = $list_config['value'][3];
-    //         $list_config['mobile_value'] = explode('|', $list_config['mobile_value']);
-    //         $falshval['wap_type'] = $list_config['mobile_value'][0];
-    //         $falshval['wap_y'] = $list_config['mobile_value'][1];
-    //         $_M['flashset'][$list_config['flashid']] = $falshval;
-    //     }
-    // }
 
     /**
      * 获取语言参数，存放在$_M['word']，网站设置数组.
@@ -498,7 +479,7 @@ class common
     protected function checkHttps()
     {
         global $_M;
-        if ($_SERVER['SERVER_PORT'] == 443 ||$_SERVER['HTTP_PORT'] == 443 || $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTP_SSL'] == 'on' || $_SERVER['HTTPS'] == 1 || $_SERVER['HTTP_X_CLIENT_SCHEME'] == 'https' || $_SERVER['HTTP_FROM_HTTPS'] == 'on' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTP_SCHEME'] == 'https') {
+        if ($_SERVER['SERVER_PORT'] == 443 || $_SERVER['HTTP_PORT'] == 443 || $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTP_SSL'] == 'on' || $_SERVER['HTTPS'] == 1 || $_SERVER['HTTP_X_CLIENT_SCHEME'] == 'https' || $_SERVER['HTTP_FROM_HTTPS'] == 'on' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTP_SCHEME'] == 'https') {
             $http = 'https://';
         } else {
             $http = 'http://';
@@ -516,6 +497,19 @@ class common
     protected function template($path)
     {
         global $_M;
+        //替换系统Url
+        $web_site = $_M['url']['web_site'];
+        $url = array();
+        foreach ($_M['url'] as $key => $val) {
+            if (in_array($key, array('web_site', 'admin_site'))) {
+                $url[$key] = $val;
+            }else{
+                $val = str_replace($web_site, '../', $val);
+                $url[$key] = $val;
+            }
+        }
+        $_M['url'] = $url;
+
         // 前缀、路径转换优化（新模板框架v2）
         $dir = explode('/', $path);
         $postion = $dir[0];
@@ -541,13 +535,7 @@ class common
                     return PATH_SYS . "index/admin/templates/{$file}.php";
                 }
             } else {
-                // if ($_M['config']['metinfover']) {
-                    // $tem_ver = $_M['config']['metinfover'];
-                    $tem_w = 'php';
-                // } else {
-                //     $tem_ver = 'met';
-                //     $tem_w = 'html';
-                // }
+                $tem_w = 'php';
                 if ($_M['form']['ajax'] == 1) {
                     $file_ajax = 'ajax/' . $file;
                     if (file_exists(PATH_TEM . "{$file_ajax}.php")) {
@@ -573,7 +561,7 @@ class common
                     return PATH_TEM . "{$file}.htm";
                 }
 
-                return PATH_PUBLIC_WEB."templates/{$file}.{$tem_w}";
+                return PATH_PUBLIC_WEB . "templates/{$file}.{$tem_w}";
             }
         }
     }
@@ -617,7 +605,7 @@ class common
      * @param string $data 返回数据
      * @param int $json_option json附加
      */
-    protected function error($msg = '', $status = 0, $data = '', $json_option = 0)
+    protected function error($msg = '', $data = '', $status = 0, $json_option = 0)
     {
         header('Content-Type:application/json; charset=utf-8');
         $error['msg'] = $msg;
@@ -655,7 +643,7 @@ class common
      *
      * @param string $file 模板文件
      */
-    protected function view($file, $data)
+    protected function view($file = '', $data = array())
     {
         global $_M;
         $view = load::sys_class('engine', 'new');
@@ -669,8 +657,8 @@ class common
                 }
             }
             foreach ($_M['url'] as $key => $value) {
-                if($key!='web_site' && strpos($value,$_M['url']['web_site'])===0){
-                    $_M['url'][$key]=str_replace( $_M['url']['web_site'],  $_M['url']['site'], $value);
+                if ($key != 'web_site' && strpos($value, $_M['url']['web_site']) === 0) {
+                    $_M['url'][$key] = str_replace($_M['url']['web_site'], $_M['url']['site'], $value);
                 }
             }
         }

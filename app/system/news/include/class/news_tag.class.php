@@ -26,7 +26,7 @@ class news_tag extends tag {
     \$news = load::sys_class('label', 'new')->get('news');
     \$news->page_num = \$num;
     \$result = \$news->get_list_page(\$cid, \$data['page']);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
      foreach(\$result as \$index=>\$v):
         \$v['sub']      = \$sub;
         \$v['_index']   = \$index;

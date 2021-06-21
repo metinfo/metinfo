@@ -26,6 +26,14 @@ class admin_set extends admin
         $data['met_member_idvalidate'] = isset($_M['config']['met_member_idvalidate']) ? $_M['config']['met_member_idvalidate'] : '';      //实名认证
         $data['met_member_agreement'] = isset($_M['config']['met_member_agreement']) ? $_M['config']['met_member_agreement'] : 0;      //注册协议开关
         $data['met_member_agreement_content'] = isset($_M['config']['met_member_agreement_content']) ? $_M['config']['met_member_agreement_content'] : '';      //注册协议内容
+        $data['met_login_box_position'] = isset($_M['config']['met_login_box_position']) ? $_M['config']['met_login_box_position']: 0;     //登录框位置
+        $data['met_member_bg_range'] = isset($_M['config']['met_member_bg_range']) ? $_M['config']['met_member_bg_range']: 0;     //背景生效页面
+
+        $data['met_new_registe_email_notice'] = isset($_M['config']['met_new_registe_email_notice']) ? $_M['config']['met_new_registe_email_notice'] : 0; //邮件通知
+        $data['met_to_admin_email'] = isset($_M['config']['met_to_admin_email']) ? $_M['config']['met_to_admin_email'] : ''; //邮件通知
+
+        $data['met_new_registe_sms_notice'] = isset($_M['config']['met_new_registe_sms_notice']) ? $_M['config']['met_new_registe_sms_notice'] : 0; //短信通知
+        $data['met_to_admin_sms'] = isset($_M['config']['met_to_admin_sms']) ? $_M['config']['met_to_admin_sms'] : ''; //短信通知
 
         //查询实名认证可用条数
         $idvalid = load::mod_class('user/include/class/user_idvalid.class.php', 'new');
@@ -38,7 +46,6 @@ class admin_set extends admin
                 $data['member'] = $result['msg'];
             }
         }
-
         $this->success($data);
     }
 
@@ -54,6 +61,12 @@ class admin_set extends admin
         $configlist[] = 'met_member_idvalidate';
         $configlist[] = 'met_member_agreement';
         $configlist[] = 'met_member_agreement_content';
+        $configlist[] = 'met_member_bg_range';
+        $configlist[] = 'met_new_registe_email_notice';
+        $configlist[] = 'met_to_admin_email';
+        $configlist[] = 'met_new_registe_sms_notice';
+        $configlist[] = 'met_to_admin_sms';
+        $configlist[] = 'met_login_box_position';
         configsave($configlist);
         //写日志
         logs::addAdminLog('memberfunc', 'save', 'jsok', 'doSaveSetup');
@@ -64,12 +77,11 @@ class admin_set extends admin
     public function doGetThirdParty()
     {
         global $_M;
-
         $list = array();
         $list['met_auto_register'] = isset($_M['config']['met_auto_register']) ? $_M['config']['met_auto_register'] : 0;
         //微信
-        //开放平台
         $list['met_weixin_open'] = isset($_M['config']['met_weixin_open']) ? $_M['config']['met_weixin_open'] : '';
+        //开放平台
         #$list['met_weixin_appid'] = isset($_M['config']['met_weixin_appid']) ? $_M['config']['met_weixin_appid'] : '';
         #$list['met_weixin_appsecret'] = isset($_M['config']['met_weixin_appsecret']) ? $_M['config']['met_weixin_appsecret'] : '';
         //公众平台
@@ -85,6 +97,16 @@ class admin_set extends admin
         $list['met_weibo_open'] = isset($_M['config']['met_weibo_open']) ? $_M['config']['met_weibo_open'] : '';
         $list['met_weibo_appkey'] = isset($_M['config']['met_weibo_appkey']) ? $_M['config']['met_weibo_appkey'] : '';
         $list['met_weibo_appsecret'] = isset($_M['config']['met_weibo_appsecret']) ? $_M['config']['met_weibo_appsecret'] : '';
+        //Google+
+        $list['met_google_open'] = isset($_M['config']['met_google_open']) ? $_M['config']['met_google_open'] : '';
+        $list['met_google_appid'] = isset($_M['config']['met_google_appid']) ? $_M['config']['met_google_appid'] : '';
+        $list['met_google_appsecret'] = isset($_M['config']['met_google_appsecret']) ? $_M['config']['met_google_appsecret'] : '';
+        $list['met_google_redirect_uri'] =  $_M['url']['web_site'] . "member/login.php?a=doother_login&type=google&lang={$_M['lang']}";
+        //Facebook
+        $list['met_facebook_open'] = isset($_M['config']['met_facebook_open']) ? $_M['config']['met_facebook_open'] : '';
+        $list['met_facebook_appid'] = isset($_M['config']['met_facebook_appid']) ? $_M['config']['met_facebook_appid'] : '';
+        $list['met_facebook_appsecret'] = isset($_M['config']['met_facebook_appsecret']) ? $_M['config']['met_facebook_appsecret'] : '';
+        $list['met_facebook_redirect_uri'] =  $_M['url']['web_site'] . "member/login.php?a=doother_login&type=facebook&lang={$_M['lang']}";
 
         $this->success($list);
     }
@@ -108,6 +130,13 @@ class admin_set extends admin
             $configlist[] = 'met_weixin_open';
             $configlist[] = 'met_weibo_open';
             $configlist[] = 'met_qq_open';
+            $configlist[] = 'met_google_open';
+            $configlist[] = 'met_google_appid';
+            $configlist[] = 'met_google_appsecret';
+            $configlist[] = 'met_facebook_open';
+            $configlist[] = 'met_facebook_appid';
+            $configlist[] = 'met_facebook_appsecret';
+
             configsave($configlist);
             //写日志
             logs::addAdminLog('thirdlogin', 'save', 'jsok', 'doSaveThirdParty');

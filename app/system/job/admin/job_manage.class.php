@@ -110,7 +110,6 @@ class job_manage extends message_admin
                     }
                 }
             }
-
         }
         $redata['showcol'] = $showcol;
         return $redata;
@@ -119,7 +118,6 @@ class job_manage extends message_admin
     public function dojson_list()
     {
         global $_M;
-        $redata = array();
         $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
         $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
         $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
@@ -131,14 +129,26 @@ class job_manage extends message_admin
         $jobid = $_M['form']['jobid'];
 
         $list = $this->_dojson_list($class1, $class2, $class3, $keyword, $search_type, $orderby_hits, $orderby_updatetime, $jobid);
-        $redata['data'] = $list;
-        $this->ajaxReturn($redata);
+
+        if (!$list) {
+            $redata = array();
+            $redata['data'] = '';
+            $redata['draw'] = $_M['form']['draw'];
+            $redata['recordsTotal'] = 0;
+            $redata['recordsFiltered'] = 0;
+            $this->ajaxReturn($redata);
+        }
     }
 
 
-    public function _dojson_list($class1, $class2, $class3, $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '', $jobid = '')
+    public function _dojson_list($class1 = '', $class2 = '', $class3 = '', $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '', $jobid = '')
     {
         global $_M;
+        //栏目访问权限
+        if (($class1 && !in_array($class1, $this->allow_class['class1'])) || ($class2 && !in_array($class2, $this->allow_class['class2'])) || ($class3 && !in_array($class3, $this->allow_class['class3']))) {
+            return false;
+        }
+
         $class = array();
         $class['class1'] = $class1 ? $class1 : 0;
         $class['class2'] = $class2 ? $class2 : 0;
@@ -211,7 +221,7 @@ class job_manage extends message_admin
                 $para_search_sql .= " OR info LIKE '%{$keyword}%' ";
             }
             $para_search_sql .= ') ';
-            $search_sql .= $para_search_sql."GROUP BY id ";
+            $search_sql .= $para_search_sql . "GROUP BY id ";
 
             if ($keyword) {
                 $para_num = $para_num + 1;
@@ -272,9 +282,8 @@ class job_manage extends message_admin
             $query = "SELECT * FROM {$_M['table']['plist']} WHERE listid = '{$row['id']}' AND module = '{$this->module}'";
             $plist = DB::get_all($query);
             foreach ($plist as $val) {
-                if (in_array($val['paraid'],$met_cv_showcol)) {
-                    $list['para_list']['para_' . $val['paraid']] = $val['info'];
-
+                if (in_array($val['paraid'], $met_cv_showcol)) {
+                    $list['para_list']['para_' . $val['paraid']] = htmlspecialchars($val['info']);
                 }
             }
 
@@ -284,8 +293,7 @@ class job_manage extends message_admin
 
             $rarray[] = $list;
         }
-        return  $this->tabledata->rdata($rarray);
-        #return $this->json_return($rarray);
+        return $this->tabledata->rdata($rarray);
     }
 
     /**
@@ -331,10 +339,10 @@ class job_manage extends message_admin
         if ($cv_info) {
             //栏目属性列表
             $para_list = $this->para_op->get_para_list($this->module, $class1, $class2, $class3);
-
             foreach ($para_list as $key => $para) {
                 //属性值
                 $plist = $this->plist_database->select_by_listid_paraid($id, $para['id']);
+                $plist['info'] = htmlspecialchars($plist['info']);
                 $cv_info['plist'][] = array(
                     'name' => $para['name'],
                     'val' => $plist['info'],
@@ -471,19 +479,26 @@ class job_manage extends message_admin
     {
         global $_M;
         $class123 = $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($classnow);
-        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter('6', $class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
+        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter($this->module, $class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
         $list = array();
         $unll = $_M['word']['please_choose'] ? $_M['word']['please_choose'] : '--';
         $list[] = array('name' => $unll, 'val' => '');
         foreach ($paralist as $key => $val) {
-            if ($val['type'] == $type) {
-                $list[] = array('name' => $val['name'], 'val' => $val['id']);
+            if (is_array($type)) {
+                foreach ($type as $t) {
+                    if ($val['type'] == $t) {
+                        $list[] = array('name' => $val['name'], 'val' => $val['id']);
+                    }
+                }
+            } else {
+                if ($val['type'] == $type) {
+                    $list[] = array('name' => $val['name'], 'val' => $val['id']);
+                }
             }
         }
         $redata['val'] = $value;
         $redata['options'] = $list;
         return $redata;
-
     }
 
     /**
@@ -623,7 +638,16 @@ class job_manage extends message_admin
         }
 
         if ($allid) {
-            $where .= " AND `id` in ({$allid}) ";
+            $allid = explode(',', $allid);
+            foreach ($allid as $_id) {
+                if (is_numeric($_id)) {
+                    $id_list[] = $_id;
+                }
+            }
+            if ($id_list) {
+                $id_list = implode(',', $id_list);
+                $where .= " AND `id` IN ({$id_list}) ";
+            }
         }
 
         //参数筛选
@@ -650,7 +674,7 @@ class job_manage extends message_admin
                 $para_search_sql .= " OR info LIKE '%{$keyword}%' ";
             }
             $para_search_sql .= ') ';
-            $search_sql .= $para_search_sql."GROUP BY id ";
+            $search_sql .= $para_search_sql . "GROUP BY id ";
 
             if ($keyword) {
                 $para_num = $para_num + 1;
@@ -689,7 +713,7 @@ class job_manage extends message_admin
             $query = "SELECT * FROM {$_M['table']['plist']} WHERE listid = '{$row['id']}' AND module = '{$this->module}'";
             $plist = DB::get_all($query);
             foreach ($plist as $val) {
-                if (in_array($val['paraid'],$met_cv_showcol)) {
+                if (in_array($val['paraid'], $met_cv_showcol)) {
                     if (strstr($val['info'], '../')) {
                         $val['info'] = str_replace('../', $_M['url']['web_site'], $val['info']);
                     }
@@ -788,7 +812,6 @@ class job_manage extends message_admin
 
         $this->xls->Output($excelname . ".xls");
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

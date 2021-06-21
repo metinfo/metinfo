@@ -24,7 +24,7 @@ $data['page_type']=$data['a']=='doeditor'?'details':'add';
 					!$data['list']['class2'] && $data['list']['class2']='';
 					!$data['list']['class3'] && $data['list']['class3']='';
 					?>
-					<div data-plugin='select-linkage' data-select-url="json" data-required="1" class="clearfix float-left mr-3 content-details-column">
+					<div data-plugin='select-linkage' data-select-url="json" data-required="1" data-value_key="value" class="clearfix float-left mr-3 content-details-column">
 						<textarea class="select-linkage-data" hidden>{$data.columnlist_json}</textarea>
 						<select name="class1" class="form-control mr-1 w-a prov" data-checked="{$data.list.class1}" required data-fv-notEmpty-message="{$word.selectcolumn}"></select>
 						<select name="class2" class="form-control mr-1 w-a city" data-checked="{$data.list.class2}" required data-fv-notEmpty-message="{$word.selectcolumn}"></select>
@@ -125,9 +125,9 @@ $data['page_type']=$data['a']=='doeditor'?'details':'add';
 		<if value="$c['met_member_use']">
 		<?php
 		$webaccess=array(
-			value=>$data['list']['access'],
-			access=>$data['access_option'],
-			marks=>$word['marks']
+			'value'=>$data['list']['access'],
+			'access'=>$data['access_option'],
+			'marks'=>$word['marks']
 		);
 		?>
 		<include file="pub/content_details/webaccess"/>

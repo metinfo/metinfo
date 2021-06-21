@@ -27,7 +27,7 @@ class download_database extends base_database
      * @param  string $id id
      * @return bool           删除是否成功
      */
-    public function del_by_id($id)
+    public function del_by_id($id = '')
     {
         if (parent::del_by_id($id)) {
             load::mod_class('parameter/parameter_database', 'new')->del_list($id, $this->table_to_module($this->table));

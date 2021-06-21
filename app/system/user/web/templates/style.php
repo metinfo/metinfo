@@ -5,5 +5,6 @@ defined('IN_MET') or exit('No permission');
 $loginbg = $c['met_member_bgimage']?"background:url(".$c['met_member_bgimage'].") center / cover no-repeat;":'';
 ?>
 <style>
-.met-member{background:{$c.met_member_bgcolor};{$loginbg}}
+<if value="$c['met_member_bg_range']">.login-index<else/>.met-member</if>{background:url(../app/system/user/web/templates/img/user_login_bg.jpg) center / cover no-repeat;background:{$c.met_member_bgcolor};{$loginbg}}
+</if>
 </style>

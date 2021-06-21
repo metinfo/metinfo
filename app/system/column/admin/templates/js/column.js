@@ -1,5 +1,6 @@
 /**
  * 栏目模块
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
     var that=$.extend(true,{}, admin_module),
@@ -48,15 +49,15 @@
                 if(val.subcolumn){
                     name_html='<div class="input-group">'
                         +'<div class="input-group-prepend">'
-                            +'<a href="javascript:;" class="input-group-text px-2 noshow btn-show-subcolumn"><i class="fa-angle-down h5 mb-0"></i></a>'
+                            +'<a href="javascript:;" class="input-group-text px-1 noshow bg-white btn-show-subcolumn"><i class="fa-caret-down"></i></a>'
                         +'</div>'
                         +name_html
                     +'</div>'
                 }
                 list.push('<div class="form-group '+(val.classtype>1?'pl-'+(val.classtype==2?4:5):'')+'">'+name_html+'</div>');
-                nav_option_val='<select name="nav-'+val.id+'" data-checked="'+val.nav+'" class="form-control">'+config.nav_option+'</select>';
-                list.push('<span>'+nav_option_val+'</span>');
-                list.push('<span>'+val.module_name+'</span>'+M.component.formWidget('module-'+val.id,val.module));
+                nav_option_val='<select name="nav-'+val.id+'" data-checked="'+val.nav+'" class="form-control w-a d-inline-block">'+config.nav_option+'</select>';
+                list.push(nav_option_val);
+                list.push(val.module_name+M.component.formWidget('module-'+val.id,val.module));
                 list.push('<span class="text-break">'+val.foldername+'</span>'+M.component.formWidget((val.module?'foldername':'out_url')+'-'+val.id,(val.module?val.foldername:val.out_url)));
                 var action_more='';
                 if(val.action.add_subcolumn) action_more+='<a href="javascript:;" class="dropdown-item btn-add-subcolumn" data-toggle="modal" data-target=".column-add-modal">'+METLANG.addsubcolumn+'</a>';
@@ -70,21 +71,24 @@
                         });
                     }
                     action_more+='<div class="dropdown dropdown-submenu dropleft"><a href="javascript:;" class="dropdown-item dropdown-toggle btn-move-column" data-toggle="dropdown">'+METLANG.columnmove1+'</a>'
-                    +'<div class="dropdown-menu move-column-list oya met-scrollbar">'
+                    +'<div class="dropdown-menu move-column-list">'
                         +columnmove
                     +'</div>'
                     +'</div>';
                 }
-                list.push('<button type="button" class="btn btn-sm btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="'+METLANG.columnmeditor+'" data-modal-size="lg" data-modal-url="column/edit/'+edit_dataurl+val.id+'" data-modal-fullheight="1" data-modal-tablerefresh="'+column_list+'">'+METLANG.seting+'</button>'
+                list.push('<button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="'+METLANG.columnmeditor+'" data-modal-size="lg" data-modal-url="column/edit/'+edit_dataurl+val.id+'" data-modal-fullheight="1" data-modal-tablerefresh="'+column_list+'">'+METLANG.seting+'</button>'
                     +'<div class="dropdown d-inline-block">'
-                        +'<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" data-submenu>'+METLANG.columnmore+'</button>'
+                        +'<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-submenu>'+METLANG.columnmore+'</button>'
                         +'<div class="dropdown-menu dropdown-menu-right">'
                             +action_more
                             +M.component.btn('del',{del_url:delurl+val.id,class:'dropdown-item btn-del-column',confirm_title:METLANG.delete_information+METLANG.jsx39})
                         +'</div>'
                     +'</div>');
+                $.each(list,function(index,item){
+                    list[index]='<div>'+list[index]+'</div>';
+                })
                 list['DT_RowClass']='class'+val.classtype;
-                if(val.classtype>1) list['DT_RowClass']+=' hide';
+                if(val.classtype>1) list['DT_RowClass']+=' hidden';
                 new_data[new_data.length]=list;
                 if(val.subcolumn) subcolumns[val.id]=val.subcolumn;
             });
@@ -150,10 +154,13 @@
         $column_list.find('.btn-show-subcolumn i:not(.transition500)').addClass('transition500');
         obj.find('.btn-show-allsubcolumn2').html(METLANG[($('i.rotate180',this).length?'open':'close')+'_allchildcolumn_v6']);
         if($('i.rotate180',this).length){
-            $column_list.find('tbody tr:not(.class1)').addClass('hide');
+            $column_list.find('tbody tr:not(.class1) td>div').stop().slideUp(300);
             $column_list.find('tbody tr').find('.btn-show-subcolumn i').removeClass('rotate180');
+            setTimeout(function(){
+                $column_list.find('tbody tr:not(.class1)').addClass('hide');
+            },300);
         }else{
-            $column_list.find('tbody tr').removeClass('hide').find('.btn-show-subcolumn:not(.noshow) i').addClass('rotate180');
+            $column_list.find('tbody tr').removeClass('hide').find('td>div').stop().slideDown(300).find('.btn-show-subcolumn:not(.noshow) i').addClass('rotate180');
             if(!allsubcolumn){
                 allsubcolumn=1;
                 var $noshow=$column_list.find('tbody tr .btn-show-subcolumn.noshow');
@@ -172,7 +179,7 @@
     $column_list.on('click clicks', '.btn-show-subcolumn', function(event) {
         var is_click=event.type=='click',
             toggleColumn=function(objs,hide){
-                var $icon=objs.find('i[class*="fa-angle-"]'),
+                var $icon=objs.find('i[class*="fa-caret-"]'),
                     $tr=objs.parents('tr'),
                     bigclass=parseInt($tr.find('[name*="bigclass-"]').val()),
                     $bigclass_btn_show_subcolumn=$column_list.find('[name="id"][value="'+bigclass+'"]').parents('tr').find('.btn-show-subcolumn');
@@ -195,16 +202,20 @@
                         $sub=$column_list.find('[name*="bigclass"][value="'+id+'"]').parents('tr.class'+son_classtype);
                         $sub.metCommon();
                         $sub.metFormAddField();
+                        var sub_length=$sub.length;
                         $sub.each(function(index, el) {
-                            $(this).attr({'data-bigclass':$(this).find('[name*="bigclass"]').val(),'data-classtype':$(this).find('[name*="classtype"]').val()});
+                            $(this).attr({'data-bigclass':$(this).find('[name*="bigclass"]').val(),'data-classtype':$(this).find('[name*="classtype"]').val(),'data-index':sub_length-index-1});
                         });
                     }
                     if(is_click){
-                        $sub.removeClass('hide');
-                        if(bigclass && !$bigclass_btn_show_subcolumn.find('i[class*="fa-angle-"]').hasClass('rotate180')) $bigclass_btn_show_subcolumn.click();
+                        $sub.removeClass('hide').find('td>div').stop().slideDown(300);
+                        if(bigclass && !$bigclass_btn_show_subcolumn.find('i[class*="fa-caret-"]').hasClass('rotate180')) $bigclass_btn_show_subcolumn.click();
                     }
                 }else{
-                    $sub.addClass('hide');
+                    $sub.find('td>div').stop().slideUp(300);
+                    setTimeout(function(){
+                        $sub.addClass('hide');
+                    },300);
                 }
                 if(is_click&&son_classtype==2&&!$icon.hasClass('rotate180')){
                     $sub.each(function(index, el) {
@@ -442,7 +453,11 @@
                         M.component.modal_call_status[key][validate_order]=1;
                         formSaveCallback(validate_order, {
                             true_fun: function() {
-                                $column_list.attr({'data-showcolumn':$(key+' form [name="id"]').val()});
+                                var id=$(key+' form [name="id"]').val(),
+                                    $tr=$column_list.find('tbody input[name="id"][value="'+id+'"]').parents('tr'),
+                                    classtype=parseInt($tr.data('classtype'));
+                                if(classtype==3) id=$tr.data('bigclass');
+                                $column_list.attr({'data-showcolumn':id});
                                 window.column_refresh=1;
                             }
                         });

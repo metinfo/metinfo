@@ -52,11 +52,6 @@ class job extends news
     {
         global $_M;
         $this->showpage('job');
-        //        $this->input_class();
-        //        $data = load::sys_class('label', 'new')->get('job')->get_one_list_contents($_M['form']['id']);
-        //        $this->add_array_input($data);
-        //        $this->seo($data['title'], $data['keywords'], $data['description']);
-        //        $this->seo_title($data['ctitle']);
         load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
         $this->view('showjob', $this->input);
     }
@@ -66,14 +61,6 @@ class job extends news
         global $_M;
         $this->doshowjob();
         return;
-
-        /*$classnow = $this->input_class();
-        $this->add_input('selectedjob', $_M['form']['selectedjob']);
-        $data = load::sys_class('label', 'new')->get('column')->get_column_id($classnow);
-        $this->seo($_M['word']['cvtitle'], $data['keywords'], $data['description']);
-        $this->seo_title($data['ctitle']);
-        $this->view('cv', $this->input);
-        require_once $this->template('tem/cv');*/
     }
 
     /****************************/
@@ -85,11 +72,14 @@ class job extends news
         global $_M;
         $this->check_field();
         $info = $_M['form'];
+
+        //图形验证码
         if ($_M['config']['met_memberlogin_code']) {
             if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random'])) {
                 okinfo(-1, $_M['word']['membercode']);
             }
         }
+
         if ($this->checkword() && $this->checktime() && $this->checkToken($_M['form']['jobid'])) {
             foreach ($_FILES as $key => $value) {
                 if ($value['tmp_name']) {
@@ -113,7 +103,7 @@ class job extends news
             $this->notice_by_sms($info);
         }
 
-        load::sys_class('session', 'new')->set('submit',time());
+        load::sys_class('session', 'new')->set('submit', time());
         okinfo(HTTP_REFERER, $_M['word']['success']);
     }
 
@@ -121,31 +111,30 @@ class job extends news
     public function checkword()
     {
         global $_M;
-        $keyword = DB::get_one("select * from {$_M['table']['config']} where lang ='{$_M['form']['lang']}' and  name= 'met_fd_word' and columnid = 0");
-        $_M['config']['met_fd_word'] = $keyword['value'];
-        $cvarray = explode("|", $_M['config']['met_fd_word']);
-        $cvarrayno = count($cvarray);
-        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter(6);
-        $cvok = false;
+        $met_fd_word = DB::get_one("select * from {$_M['table']['config']} where lang ='{$_M['form']['lang']}' and  name= 'met_fd_word' and columnid = 0");
+        $met_fd_word_arr = explode("|", $met_fd_word['value']);
+        if ($met_fd_word['value'] == '') {
+            return true;
+        }
+
+        $para_list = load::mod_class('parameter/parameter_database', 'new')->get_parameter(6);
         $content = '';
-        foreach ($paralist as $key => $val) {
+        foreach ($para_list as $key => $val) {
             $para = "para" . $val['id'];
             $content = $content . "-" . $_M['form'][$para];
         }
-        for ($i = 0; $i < $cvarrayno; $i++) {
-            if (strstr($content, $cvarray[$i])) {
-                $cvok = true;
-                $cv_word = $cvarray[$i];
-                break;
+
+        foreach ($met_fd_word_arr as $key => $word) {
+            if ($word == '') {
+                continue;
+            }
+
+            if (strstr($content, $word)) {
+                okinfo('javascript:history.back();', $word);
+                die();
             }
         }
-        #$cv_word="工作简历中不能包含 [{$cv_word}]";
-        $cv_word = $_M['word']['job_tips1_v6']." [{$cv_word}]";
-        if ($cvok == true) {
-            okinfo('javascript:history.back();', $cv_word);
-        } else {
-            return true;
-        }
+        return true;
     }
 
     /*表单提交时间检测*/
@@ -162,8 +151,8 @@ class job extends news
         }
         $submit = load::sys_class('session', 'new')->get('submit');
         $time2 = time();
-        $timeok = (float) ($time2 - $time1);
-        $timeok2 = (float) ($time2 - $submit);
+        $timeok = (float)($time2 - $time1);
+        $timeok2 = (float)($time2 - $submit);
         $conlum_configs = $this->getClsaaConfig($classnow);
         if ($timeok <= $conlum_configs['met_cv_time'] && $timeok2 <= $conlum_configs['met_cv_time']) {
             $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_cv_time'] . "{$_M['word']['Feedback2']}";
@@ -179,8 +168,12 @@ class job extends news
      */
     public function checkToken($id = '')
     {
+        return true;
         global $_M;
-        $s_token = load::sys_class('session', 'new')->get("form_token_{$id}");
+        if ($_M['config']['met_webhtm']) {
+            return true;
+        }
+        $s_token = load::sys_class('session', 'new')->get("job_form_token_{$id}");
         $form_token = $_M['form']['form_token'];
         if (!$form_token || $s_token != $form_token) {
             okinfo('javascript:history.back();', 'forbidden');
@@ -235,7 +228,8 @@ class job extends news
             } else {
                 $para = "";
                 $para_arr = array();
-                $para_total = count(json_decode($val['options'], true));
+                $para_total = json_decode($val['options'], true);
+                $para_total = is_array($para_total) ? count($para_total) : 0;
                 for ($i = 1; $i <= $para_total; $i++) {
 
                     $para_key = "para" . $val['id'] . '_' . $i;
@@ -341,7 +335,7 @@ class job extends news
 
         //必填属性验证
         foreach (array_keys($para) as $val) {
-            if ($para[$val]['wr_ok'] == 1 && in_array($val, $paraarr)) {
+            if ($para[$val]['wr_ok'] == 1 /*&& in_array($val, $paraarr)*/) {
                 if ($para[$val]['type'] == 5) {
                     if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size']) {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];

@@ -213,7 +213,7 @@ setTimeout(function(){
 		return x.test(email);
 	}
 	window.METLANG={};
-	$('body').append('<script src="{$url_public}plugins/alertify/alertify.js" type="text/javascript"><\/script>');
+	$('body').append('<script src="{$url_public}plugins/alertify/alertify.min.js" type="text/javascript"><\/script>');
 	$('head').append('<link rel="stylesheet" href="{$url_public}plugins/alertify/alertify.min.css">');
 	window.adminsubmit=function(){
 		var bro=broversion();

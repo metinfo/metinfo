@@ -1,11 +1,9 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
-
   renderTable()
-
   TEMPLOADFUNS[that.hash] = function() {
-    renderTable(1)
-    that.table.ajax.reload()
+    that.table && that.table.ajax.reload()
   }
   function renderTable(refresh) {
     metui.use(['table', 'alertify', 'dragsort'], function() {
@@ -17,7 +15,7 @@
             that.data = result.data
             let newData = []
             const arr = ['2', '4', '6']
-            $.each(that.data, function(index, val) {
+            that.data && that.data.length && $.each(that.data, function(index, val) {
               let list = [
                 M.component.checkall('item', val.id) + M.component.formWidget('no_order', val.no_order),
                 M.component.formWidget('name', val.name, 'text', 1),

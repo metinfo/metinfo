@@ -1,11 +1,9 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
-
   renderTable()
-
   TEMPLOADFUNS[that.hash] = function() {
-    renderTable(1)
-    that.table.ajax.reload()
+    that.table && that.table.ajax.reload()
   }
   function renderTable(refresh) {
     metui.use(['table', 'alertify'], function() {
@@ -17,7 +15,7 @@
             that.data = result.data.group_data
             that.payment_open = result.data.payment_open
             let newData = []
-            $.each(that.data, function(index, val) {
+            that.data && that.data.length && $.each(that.data, function(index, val) {
               let list = [
                 `<div class="custom-control custom-checkbox">
                   <input class="checkall-item custom-control-input" type="checkbox" name="id" value="${val.id}"/>
@@ -25,7 +23,7 @@
                 </div>`,
                 `<input name="name" value="${val.name}" class="form-control" type="text" />`,
                 `${
-                  that.payment_open
+                  that.payment_open&&val.payment
                     ? `
                 <div class="status">
                 ${METLANG.state}：
@@ -40,7 +38,7 @@
                     : METLANG.useinfopay
                 }`,
                 `${
-                  that.payment_open
+                  that.payment_open&&val.payment
                     ? `
                 <div class="status">
                 ${METLANG.state}：<input type="checkbox"
@@ -136,12 +134,11 @@
       } else {
         that.obj.find('table tbody').append(textarea.val())
       }
-
+      that.obj.find('.dataTables_empty').parents('tr').remove();
       var $new_tr = that.obj.find('table tbody tr:last-child')
       $new_tr.find('td:last-child').append(M.component.btn('cancel'))
       $new_tr.metFormAddField()
       $new_tr.metCommon()
-      inputChange(that)
     })
   }
 
@@ -230,7 +227,6 @@
               true_fun: function() {
                 that.table.ajax.reload()
                 that.obj.find('.class-add').remove()
-                inputChange(that)
               }
             })
           }
@@ -239,19 +235,13 @@
   }
   function inputChange(that) {
     setTimeout(() => {
-      that.obj
-        .find(':text')
-        .off()
-        .change(function(e) {
+      that.obj.on('change',':text',function(e) {
           $(this)
             .parents('tr')
             .find('[name="id"]')
             .attr('checked', 'checked')
         })
-      that.obj
-        .find('.status-input')
-        .off()
-        .change(function(e) {
+      that.obj.on('change','.status-input',function(e) {
           const price = $(this)
             .parents('td')
             .find('.price')

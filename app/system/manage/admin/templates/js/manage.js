@@ -1,5 +1,6 @@
-/*
-内容模块
+/**
+ * 内容模块
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	// 内容管理
@@ -34,10 +35,10 @@
 						info=module+'|'+class1+'|'+class2+'|'+class3;
 					}
 				}
-				html+='<'+tagname+' class="'+(sub==1?'py-2':'')+(sub==1?' d-block':'')+'">'
+				html+='<'+tagname+' class="'+(sub==1?'py-2 d-block':'font-size-12')+'">'
 					+'<a href="'+(!M.is_admin&&info.substr(0,2)=='#/'?info:'javascript:;')+'" '+(info?'data-info="'+info+'"':'')+' data-classtype="'+val.classtype+'" class="list-group-item d-flex align-items-center justify-content-between py-2 pr-2 pl-'+(1+sub)+'">'
-						+'<span class="pl-'+(sub==3?4:'')+' pr-1">'+val.name+'</span>'
-						+(val.classtype!=3?'<span class="btn-column-slide btn btn-default btn-xs py-0 '+(val.subcolumn?'':'invisible')+'"><i class="fa-angle-down font-size-18 transition500"></i></span>':'')
+						+'<span class="'+(sub==3?'pl-2':'')+' pr-1">'+val.name+'</span>'
+						+(val.classtype!=3?'<span class="btn-column-slide px-1 '+(val.subcolumn?'':'invisible')+'"><i class="fa-caret-down font-size-16 transition500"></i></span>':'')
 					+'</a>';
 				info && !view_type && (default_show_column_html+='<option value="'+info+'">'+(sub>1?(sub==2?'-':'--'):'')+val.name+'</option>');
 				if(val.subcolumn){
@@ -47,7 +48,7 @@
 				}
 				html+='</'+tagname+'>';
 			});
-			sub == 1 && ($default_show_column.html(view_type ? '' : default_show_column_html).find('option[value="' + (getCookie('manage_default_show_column') || '') + '"]').addClass('active bg-primary text-white'), view_type ? $default_show_column.hide() : $default_show_column.show());
+			sub == 1 && ($default_show_column.html(view_type ? '' : default_show_column_html).find('option[value="' + (getCookie('manage_default_show_column') || '') + '"]').attr({'checked':''}), view_type ? $default_show_column.addClass('hide').parents('.met-select').addClass('hide') : $default_show_column.removeClass('hide').parents('.met-select').removeClass('hide'));
 			return sub>1?{html:html,default_show_column_html:default_show_column_html}:html;
 		};
 	// 栏目/模块列表渲染
@@ -90,19 +91,22 @@
 				}
 			});
 			if(location_view_type){
-				$content_btn_group.find('a[data-view_type="'+location_view_type+'"]:not(.active)').addClass('active btn-primary').siblings().removeClass(' active btn-primary');
+				$content_btn_group.find('a[data-view_type="'+location_view_type+'"]:not(.active)').addClass('active').siblings().removeClass('active');
 				$('#content-view-'+location_view_type+':not(.active)').addClass('active show').siblings().removeClass('active show');
 			}
 		};
 	columnView();
-	var maxh=$(window).height()-$('.metadmin-head').height()-276;
+	var maxh=$(window).height()-($('.metadmin-head').height()||0)-305;
 	$column_view.find('.tab-content').css({'max-height':maxh});
 	// 默认显示栏目数据设置
 	obj.find('select[name="default_show_column"]').change(function(event) {
-		setCookie('manage_default_show_column',$(this).val());
-		$('option',this).removeClass('active bg-primary text-white');
-		$('option:checked',this).addClass('active bg-primary text-white');
+		var $self=$(this),
+			val=$(this).val();
+		setCookie('manage_default_show_column',val);
 		$(this).val('');
+		setTimeout(function(){
+			$self.next('.dropdown').find('.dropdown-menu a[data-value="'+val+'"]').addClass('active').siblings().removeClass('active');
+		},0);
 		metui.use('alertify',function(){
 			alertify.success(METLANG.jsok);
 		});
@@ -111,7 +115,6 @@
 	$content_btn_group.find('a').click(function(event) {
 		if(!M.is_admin) event.preventDefault();
 		var view_type=$(this).data('view_type');
-		$(this).addClass('btn-primary').siblings().removeClass('btn-primary');
 		if(location.hash=='#/manage'||!M.is_admin) columnView(view_type);
 		if(M.is_admin) setTimeout(function(){
 			location.hash='#/manage';
@@ -237,6 +240,9 @@
 	// 栏目列表最小化，展开
 	obj.find('.btn-column-control').click(function(event) {
 		$column_view_wrapper.toggleClass('min');
+		setTimeout(()=>{
+			$column_view_wrapper.toggleClass('oxh');
+		},$column_view_wrapper.hasClass('min')?0:500);
 		$('i',this).attr({class:$column_view_wrapper.hasClass('min')?'fa-angle-right':'fa-angle-left'});
 	});
 	// 搜索栏目

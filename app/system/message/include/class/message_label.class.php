@@ -64,7 +64,7 @@ class message_label extends base_label
      * 获取简历字段表单
      * @return array         简历表单数组
      */
-    public function get_module_form_html($id)
+    public function get_module_form_html($id = '')
     {
         global $_M;
         $class = load::sys_class('label', 'new')->get('column')->get_column_id($id);
@@ -74,7 +74,7 @@ class message_label extends base_label
 
         //cxrf_token
         $form_token = random('5');
-        load::sys_class('session', 'new')->set("form_token_{$id}", $form_token);
+        load::sys_class('session', 'new')->set("msg_form_token_{$id}", $form_token);
 
         $message = $this->get_module_form($id);
         $str = '';

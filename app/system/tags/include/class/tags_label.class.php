@@ -27,10 +27,9 @@ class tags_label extends base_label
     /**
      * 内容添加或更新时如果存在tag就处理.
      */
-    public function updateTags($tagStr, $module, $class1, $id, $add = 0)
+    public function updateTags($tagStr = '', $module = '', $class1 = '', $id = '', $add = 0)
     {
         global $_M;
-
         $pinyin = load::sys_class('pinyin', 'new');
         $table = $this->getTableName($class1);
         $query = "SELECT tag FROM {$_M['table'][$table]} WHERE id = '{$id}'";
@@ -43,7 +42,6 @@ class tags_label extends base_label
             // 如果文章或产品内容是新增的
             $old = array();
         }
-
 
         if (trim($content['tag'])) {
             $delete = array_diff($old, $new);
@@ -325,7 +323,7 @@ class tags_label extends base_label
         if ($lang_site) {
             $site = $_M['langlist']['web'][$lang]['link'];
         } else {
-            $site = $_M['url']['site'];
+            $site = $_M['url']['web_site'];
         }
         $module = $tag['module'] ? $tag['module'] : 0;
         // 如果是伪静态
@@ -452,7 +450,7 @@ class tags_label extends base_label
         return $modules[$category['module']]; //得到表名
     }
 
-    public function get_module_list()
+    public function get_module_list($id = '', $rows = '', $type = '', $order = '', $para = 0)
     {
         return;
     }

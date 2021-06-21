@@ -12,17 +12,17 @@ defined('IN_MET') or exit('No permission');
 			<div class="input-group">
 				<input type="search" name="search" placeholder="{$word.column_searchname}" data-url="{$url.own_name}c=index&a=dosearch" class="form-control column-search">
 				<div class="input-group-append">
-					<div class="input-group-text btn bg-none"><i class="input-search-icon wb-search"></i></div>
+					<div class="input-group-text btn bg-none px-2"><i class="input-search-icon fa-search"></i></div>
 				</div>
 			</div>
-			<div class="btn-group nav d-inline-flex w-100 mt-2 content-btn-group">
-				<a href="#content-view-module" title="{$word.columnarrangement2}{$word.columnarrangement3}" data-toggle="tab" data-view_type="module" class="btn btn-default btn-sm px-1 btn-content-module"><i class="fa-th-large"></i> {$word.columnarrangement3}</a>
-				<a href="#content-view-column" title="{$word.columnarrangement2}{$word.columnarrangement4}" data-toggle="tab" data-view_type="column" class="btn btn-default btn-sm px-1 active btn-primary btn-content-module"><i class="fa-th"></i> {$word.columnarrangement4}</a>
+			<div class="d-flex justify-content-between w-100 py-3 nav content-btn-group">
+				<a href="#content-view-module" title="{$word.columnarrangement2}{$word.columnarrangement3}" data-toggle="tab" data-view_type="module" class="btn-content-module"><i class="fa-th-large"></i> {$word.columnarrangement3}</a>
+				<a href="#content-view-column" title="{$word.columnarrangement2}{$word.columnarrangement4}" data-toggle="tab" data-view_type="column" class="active btn-content-module"><i class="fa-th"></i> {$word.columnarrangement4}</a>
 			</div>
-			<div class="py-2 d-flex align-items-center justify-content-between">
-				<a href="#/recycle" class="btn-content-recycle text-content"><i class="fa-recycle"></i> {$word.upfiletips25}</a>
+			<div class="py-3 d-flex align-items-center justify-content-between">
 				<select name="default_show_column" class="form-control form-control-sm" style="width: 120px;">
 				</select>
+				<a href="#/recycle" class="btn-content-recycle text-content"><i class="fa-recycle"></i> {$word.upfiletips25}</a>
 			</div>
 			<div class="tab-content met-scrollbar scrollbar-grey">
 				<div class="tab-pane fade" id="content-view-module">

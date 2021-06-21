@@ -88,7 +88,6 @@ class para
         foreach ($paralist as $value) {
             $para_array[] = $value['no_order'];
         }
-        ##array_multisort($paralist, SORT_ASC, $paralist);
 
         require PATH_SYS_TEM . 'web/paratype.php';
     }

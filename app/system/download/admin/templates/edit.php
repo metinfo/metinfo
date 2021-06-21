@@ -8,16 +8,16 @@ defined('IN_MET') or exit('No permission');
 <h3 class='example-title'>{$word.unitytxt_34}</h3>
 <?php
 $checkbox_time=time();
-$upload=array(
-	title=>$word['downloadurl'],
-	name=>'downloadurl1',
-	value=>$data['list']['downloadurl'],
-	type=>'file',
-	noimage=>1,
-	drop_zone_enabled=>1,
-	preview_class=>'hide',
-	noprogress=>1,
-	callback=>'downloadFilesize'
+$upload = array(
+    'title' => $word['downloadurl'],
+    'name' => 'downloadurl1',
+    'value' => $data['list']['downloadurl'],
+    'type' => 'file',
+    'noimage' => 1,
+    'drop_zone_enabled' => 1,
+    'preview_class' => 'hide',
+    'noprogress' => 1,
+    'callback' => 'downloadFilesize'
 );
 ?>
 <include file="pub/content_details/upload"/>

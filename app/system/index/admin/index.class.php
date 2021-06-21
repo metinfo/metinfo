@@ -27,7 +27,14 @@ class index extends admin
                     } else {
                         if ($val['bigclass'] == 3 && strstr($val['url'], 'feed_')) {
                             $module_info = explode('_', $val['url']);
-                            $sub_num = count($sub_column[$module_info[2]]);
+
+                            //子菜单
+                            if (is_array($sub_column[$module_info[2]])) {
+                                $sub_num = count($sub_column[$module_info[2]]);
+                            }else{
+                                $sub_num = 0;
+                            }
+
                             foreach ($sub_column[$module_info[2]] as $keys => $value) {
                                 if (!($module_info[2] == 6 && $keys == 'class1' && $sub_num > 1)) {
                                     foreach ($value as $keys1 => $value1) {
@@ -60,11 +67,12 @@ class index extends admin
                     }
                 }
             }
+
             if(!$_M['form']['sidebar_reload']){
                 #$data['met_admin_logo'] = "{$_M['url']['public_images']}logo.png";
                 $data['met_admin_logo'] = "{$_M['url']['site']}" . str_replace('../', '', $_M['config']['met_agents_logo_index']);
-                $auth = load::mod_class('system/class/auth', 'new');
-                $data['otherinfoauth'] = $auth->have_auth();
+                $sys_auth = load::mod_class('system/class/sys_auth', 'new');
+                $data['otherinfoauth'] = $sys_auth->have_auth();
 
                 $data['msecount'] = DB::counter($_M['table']['infoprompt'], "WHERE (lang='" . $_M['lang'] . "' or lang='metinfo') and see_ok='0'", "*");
                 $data['privilege'] = background_privilege();
@@ -163,11 +171,60 @@ class index extends admin
                 'job' => $cv
             )
         );
+
         if (is_mobile()) {
             $this->success($data);
         } else {
             return $data;
         }
+    }
+
+    /**
+     * 系统检测
+     * @return array
+     */
+    public function doSysCheck()
+    {
+        global $_M;
+        if ($_M['config']['met_secret_key']) {
+            $myapp = load::mod_class('myapp/class/myapp', 'new');
+            $new_app = $myapp->checkAppUpdate();
+
+            $data = array(
+                'action' => 'checkSystemUpdate',
+                'version' => $_M['config']['metcms_v'],
+            );
+            $result = api_curl($_M['config']['met_api'], $data);
+            $res = json_decode($result, true);
+            if ($res['status'] == 200) {
+                $sys_new_ver = $res['data'];
+            }
+        }
+
+
+        $redata = array(
+            'new_app' => $new_app,
+            'sys_new_ver' => $sys_new_ver,
+        );
+        return $redata;
+    }
+
+    /**
+     * 检测授权文件
+     */
+    public function doGetPackageInfo()
+    {
+        $package_info = $this->getPackageInfo();
+        $this->success($package_info);
+    }
+
+    /**
+     * @return bool
+     */
+    public function doGetImgList()
+    {
+        $img_list = $this->getImgList();
+        $this->success($img_list);
     }
 
     /**
@@ -178,7 +235,6 @@ class index extends admin
         $configlist = array();
         $configlist[] = 'met_safe_prompt';
         configsave($configlist, array('met_safe_prompt' => 1));
-        // die('met_safe_prompt saved ');
         $this->success();
     }
 }

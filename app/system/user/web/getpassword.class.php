@@ -15,7 +15,7 @@ class getpassword extends userweb
         parent::__construct();
     }
 
-    public function check()
+    public function check($pid = '')
     {
 
     }
@@ -66,9 +66,9 @@ class getpassword extends userweb
 
         $valid = load::mod_class('user/web/class/valid', 'new');
         if ($valid->get_tel($_M['form']['phone'])) {
-            $this->ajax_success();
+            $this->success();
         } else {
-            $this->ajax_error($_M['word']['membererror5'] . $ret);
+            $this->error($_M['word']['membererror5']);
         }
 
     }

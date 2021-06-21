@@ -5,12 +5,9 @@ defined('IN_MET') or exit('No permission');
 ?>
 
 <div class="met-seo">
-  <form method="POST" action="{$url.own_name}c=map&a=doSaveSiteMap" class="info-form mt-3" data-submit-ajax="1">
+  <form method="POST" action="{$url.own_name}c=map&a=doSaveSiteMap" class="info-form" data-submit-ajax="1">
     <div class="metadmin-fmbx">
-      <div class="clearfix">
-        <h3 class="example-title float-left">{$word.unitytxt_1}</h3>
-        <a href="https://help.metinfo.cn/faq/398.html" target="_blank" class="p-2 float-right">{$word.seotips14_1}</a>
-      </div>
+      <h3 class="example-title">{$word.unitytxt_1}</h3>
       <dl>
         <dt>
           <label class="form-control-label">{$word.setimgWater}</label>
@@ -19,6 +16,7 @@ defined('IN_MET') or exit('No permission');
           <div class="form-group clearfix">
             <input type="checkbox" data-plugin="switchery" name="met_sitemap_auto" value="0"/>
             <span class="text-help ml-2">{$word.unitytxt_77}</span>
+            <a href="https://help.metinfo.cn/faq/398.html" target="_blank" class='ml-2'>{$word.seotips14_1}</a>
           </div>
         </dd>
       </dl>

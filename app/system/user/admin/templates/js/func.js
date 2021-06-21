@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
   fetch()
@@ -29,6 +30,14 @@
 
           if (item === 'met_member_vecan') {
             $(`#met_member_vecan-${data[item]}`).attr('checked', 'checked')
+            return
+          }
+          if (item === 'met_login_box_position') {
+            $(`#met_login_box_position-${data[item]}`).attr('checked', 'checked')
+            return
+          }
+          if (item === 'met_member_bg_range') {
+            $(`#met_member_bg_range-${data[item]}`).attr('checked', 'checked')
             return
           }
 

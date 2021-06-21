@@ -137,7 +137,7 @@ class getpassword extends admin
             $outime = 3600 * 24 * 3;
             $string = authcode($admin_list['admin_id'] . "." . $x, 'ENCODE', $_M['config']['met_webkeys'], $outime);
             $string = urlencode($string);
-            $mailurl = "{$_M['url']['site_admin']}index.php?n=login&c=getpassword&a=doresetpass&langset={$langset}&abt_type=2&p={$string}";
+            $mailurl = "{$_M['url']['admin_site']}index.php?n=login&c=getpassword&a=doresetpass&langset={$langset}&abt_type=2&p={$string}";
 
 
             //拼装邮件内容
@@ -512,7 +512,7 @@ class getpassword extends admin
         $form = $_M['form'];
         $redata = array();
 
-        if ($form['password'] == '') {
+        if ($form['password'] == '' || $form['passwordsr'] == '') {
             $redata['status'] = 0;
             $redata['msg'] = $_M['word']['dataerror'];
             $this->ajaxReturn($redata);
@@ -587,7 +587,7 @@ class getpassword extends admin
                 if ($res) {
                     logs::addAdminLog('admin_getpassword', 'resetPassSave', 'ok', 'ResetSaveByMobile');
                     $redata['status'] = 1;
-                    $redata['url'] = $_M['url']['site_admin'];
+                    $redata['url'] = $_M['url']['admin_site'];
                     $redata['msg'] = $_M['word']['jsok'];
                     $this->ajaxReturn($redata);
                 } else {
@@ -654,7 +654,7 @@ class getpassword extends admin
         if ($res) {
             logs::addAdminLog('admin_getpassword', 'resetPassSave', 'ok', 'ResetSaveByEmail');
             $redata['status'] = 1;
-            $redata['url'] = $_M['url']['site_admin'];
+            $redata['url'] = $_M['url']['admin_site'];
             $redata['msg'] = $_M['word']['jsok'];
             $this->ajaxReturn($redata);
         } else {
@@ -666,7 +666,7 @@ class getpassword extends admin
     }
 
     /****/
-    public function check()
+    public function check($pid = '')
     {
         return;
     }

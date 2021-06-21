@@ -75,6 +75,7 @@ class language_admin extends admin
             $val['value'] = str_replace("'", "''", $val['value']);
             $val['value'] = str_replace("\\", "\\\\", $val['value']);
             $val['lang'] = $mark;
+            $val['site'] = 1;
             unset($val['id']);
             $sql = get_sql($val);
             $query = "INSERT INTO {$_M['table']['language']} SET {$sql}";

@@ -25,14 +25,14 @@ class index extends base_admin
         $class = $_M['form']['class'];
         $content_type = $_M['form']['content_type'];
 
-        $list = self::_getColnumList($class, $content_type);
+        $list = self::_getColnumList($content_type);
         $redata['status'] = 1;
         $redata['data']['list'] = $list;
 
         $this->ajaxReturn($redata);
     }
 
-    private function _getColnumList($class_id = '', $content_type = 0)
+    private function _getColnumList($content_type = 0)
     {
         global $_M;
         $admin = admin_information();
@@ -77,18 +77,18 @@ class index extends base_admin
         $columns = load::mod_class('column/column_database', 'new')->get_all_column_by_lang($_M['lang']);
 
         foreach ($columns as $column) {
-            if (($column['classtype'] == 1 or ($column['releclass'] > 0 and (in_array($column['module'], array(1, 2, 3, 4, 5, 6, 7, 8))))) or $column['module']==6 and $column['if_in'] == 0) {
+            if (($column['classtype'] == 1 or ($column['releclass'] > 0 and (in_array($column['module'], array(1, 2, 3, 4, 5, 6, 7, 8))))) or $column['module'] == 6 and $column['if_in'] == 0) {
                 $met_classindex[$column['module']][] = $column;
             }
         }
 
         foreach ($met_classindex as $mod => $column) {
-            if ($mod <= 8) {
+            if ($mod > 0 && $mod <= 8) {
                 $content_list[$mod]['name'] = modname($mod);
                 $content_list[$mod]['classtype'] = 1;
                 $content_list[$mod]['url'] = self::getModContentLink($column[0], 'mod');
-                if(in_array($mod, array(6,7))) {
-                    $content_list[$mod]['url'].='&class1='.$column[0]['id'];
+                if (in_array($mod, array(6, 7))) {
+                    $content_list[$mod]['url'] .= '&class1=' . $column[0]['id'];
                 }
                 if ($mod == 6) {
                     $content_list[$mod]['url'] = '';
@@ -96,8 +96,8 @@ class index extends base_admin
                         $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($row['id']);
                         $job_column = array();
                         $job_column['name'] = $row['name'];
-                        $job_column['classtype']=2;
-                        $job_column['url'].="?n=job&class1={$class123['class1']['id']}&class2={$class123['class2']['id']}&class3={$class123['class3']['id']}";
+                        $job_column['classtype'] = 2;
+                        $job_column['url'] .= "?n=job&class1={$class123['class1']['id']}&class2={$class123['class2']['id']}&class3={$class123['class3']['id']}";
                         $content_list[$mod]['subcolumn'][] = $job_column;
                     }
                 }
@@ -108,8 +108,8 @@ class index extends base_admin
                         $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($row['id']);
                         $feed_column = array();
                         $feed_column['name'] = $row['name'];
-                        $feed_column['classtype']=2;
-                        $feed_column['url'].='?n=feedback&class1='.$row['id'];
+                        $feed_column['classtype'] = 2;
+                        $feed_column['url'] .= '?n=feedback&class1=' . $row['id'];
                         $feed_column['url'] .= "?n=feedback&class1={$class123['class1']['id']}&class2={$class123['class2']['id']}&class3={$class123['class3']['id']}";
                         $content_list[$mod]['subcolumn'][] = $feed_column;
                     }
@@ -132,7 +132,9 @@ class index extends base_admin
         $sys_column = load::mod_class('column/sys_column', 'new');
 
         foreach ($array['class1'] as $key1 => $col_v1) {
-            if($col_v1['module']==0 || $col_v1['module']>8){continue;}
+            if ($col_v1['module'] == 0 || $col_v1['module'] > 8) {
+                continue;
+            }
             $col_v1['module_name'] = $sys_column->module($col_v1['module']);
             $col_v1['url'] = self::getModContentLink($col_v1);
             if ($class2 = $array['class2'][$col_v1['id']]) {
@@ -171,7 +173,7 @@ class index extends base_admin
         }
 
         //网站地图
-        if ($column['module'] == 12){
+        if ($column['module'] == 12) {
             $url = "#/seo/?head_tab_active=4";
             return $url;
         }
@@ -271,18 +273,18 @@ class index extends base_admin
     public function docolumnjson()
     {
         global $_M;
-        $list['citylist']=array();
-        $columnlist=column_sorting();
+        $list['citylist'] = array();
+        $columnlist = column_sorting();
         foreach ($columnlist['class1'] as $key => $value) {
-            if($value['module']>=2 && $value['module']<=6){
-                $column_json = parent::column_json($value['module'],1,$value['id']);
-                $list['citylist']=array_merge($list['citylist'],$column_json['citylist']);
+            if ($value['module'] >= 2 && $value['module'] <= 6) {
+                $column_json = parent::column_json($value['module'], 1, $value['id']);
+                $list['citylist'] = array_merge($list['citylist'], $column_json['citylist']);
             }
         }
-        if($_M['form']['noajax']){
-            $list=array(
-                'columnlist'=>$list['citylist'],
-                'columnlist_json'=>jsonencode($list['citylist'])
+        if ($_M['form']['noajax']) {
+            $list = array(
+                'columnlist' => $list['citylist'],
+                'columnlist_json' => jsonencode($list['citylist'])
 
             );
             return $list;
@@ -301,7 +303,7 @@ class index extends base_admin
         $module = $_M['form']['module'];
         $mod = load::sys_class('handle', 'new')->file_to_mod($module);
 
-        $column_list = self::getColumnjson($mod , $tolang);
+        $column_list = self::getColumnjson($mod, $tolang);
         #dump($column_list);
         $this->ajaxReturn($column_list);
     }
@@ -370,7 +372,7 @@ class index extends base_admin
     private function _getColumnjson($module = '', $tolang = '')
     {
         //理顺被关联的栏目
-        $array = column_sorting(2,$tolang);
+        $array = column_sorting(2, $tolang);
 
         $newarray = array();
         foreach ($array['class1'] as $key => $val) {
@@ -404,7 +406,6 @@ class index extends base_admin
 
         return $newarray;
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

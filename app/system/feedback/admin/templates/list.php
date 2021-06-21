@@ -8,10 +8,11 @@ if($data['handle']){
 }
 $head_add_none=$head_column_none=$foot_save_no=1;
 $table_order=$data['module'].'-list-'.$data['class1'].'-'.$data['class2'].'-'.$data['class3'];
+$search_right=1;
 ?>
 <include file="pub/content_list/head"/>
 				<include file="pub/content_list/checkall_all"/>
-				<th data-table-columnclass="text-center" width="30">ID</th>
+				<th>ID</th>
 				<th data-table-columnclass="text-center" width="20">
 					<select name="search_type" data-table-search class="form-control w-a d-inline-block">
 						<option value="0">{$word.smstips64}</option>

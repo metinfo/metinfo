@@ -22,7 +22,7 @@
                         <div class="card card-shadow">
                             <figure class="card-header cover">
                                 <a href="{$v.url}" title="{$v.title}" class="block" {$g.urlnew}>
-                                    <img class="cover-image lazy" data-original="{$v.imgurl|thumb:$lang[index_product_img_w],$lang[index_product_img_h]}" alt="{$v.title}" >
+                                    <img class="cover-image lazy" data-original="{$v.imgurl|thumb:$lang['index_product_img_w'],$lang['index_product_img_h']}" alt="{$v.title}" >
                                 </a>
                             </figure>
                             <a href="{$v.url}" title="{$v.title}" class="block txt-info" {$g.urlnew}>
@@ -75,7 +75,7 @@
                                 <a class="media media-lg block" href="{$v.url}" title="{$v.title}" {$g.urlnew}>
                                     <if value="$lang['home_news_img_ok']">
                                         <div class="media-left">
-                                                <img class="media-object" data-original="{$v.imgurl|thumb:$lang[home_product_img_w],$lang[home_product_img_h]}" alt="{$v.title}" >
+                                                <img class="media-object" data-original="{$v.imgurl|thumb:$lang['home_product_img_w'],$lang['home_product_img_h']}" alt="{$v.title}" >
                                         </div>
                                     </if>
                                     <div class="media-body">
@@ -113,7 +113,7 @@
                         <if value="$lang['home_case_linkok']">
                         <a href="{$v.url}" title="{$v.title}" {$g.urlnew}>
                         </if>
-                            <img src="{$v.imgurl|thumb:$lang[home_case_imgw],$lang[home_case_imgh]}" alt="{$v.title}" style="max-width: 100%;" />
+                            <img src="{$v.imgurl|thumb:$lang['home_case_imgw'],$lang['home_case_imgh']}" alt="{$v.title}" style="max-width: 100%;" />
                         <if value="$lang['home_case_linkok']">
                         </a>
                         </if>

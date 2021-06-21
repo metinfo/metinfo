@@ -1,5 +1,6 @@
-/*
-可视化设置
+/*!
+ * 可视化设置
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
     M.url.own_form=M.url.admin+'?n=ui_set&c=index&';
@@ -11,6 +12,73 @@
                 setCookie('pageset_mobile_tips_hide',1);
             });
         },100);
+    });
+    // 引导图
+    var $uiset_guide_modal=$('.uiset-guide-modal'),
+        $uiset_guide_process=$('.uiset-guide-process'),
+        uiset_guide_visible=$uiset_guide_modal.data('visible'),
+        uiset_guide_resize=function(){
+            var scale=$(window).width()/1920;
+            if(scale<1){
+                $uiset_guide_modal.find('.modal-content').css({transform:'scale('+scale+')',left:-(1920*(1-scale)/2),top:-(1080*(1-scale)/2)});
+            }else{
+                $uiset_guide_modal.find('.modal-content').css({transform:'',left:0,top:''});
+            }
+        };
+    $uiset_guide_modal.on('show.bs.modal', function(event) {
+        $uiset_guide_process.find('.item').addClass('hide').eq(0).removeClass('hide');
+        $('.uiset-guide-content img[data-src]').each(function(){
+            $(this).attr('src',$(this).data('src')).removeAttr('data-src');
+        });
+    });
+    uiset_guide_visible && $uiset_guide_modal.modal();
+    $uiset_guide_modal.find('[data-dismiss="modal"]').click(function(){
+        if(!uiset_guide_visible) return;
+        M.load('alertify',function(){
+            alertify.alert('点击可视化界面顶部导航栏->支持->操作引导，可重新查看刚才的操作引导');
+        });
+        metui.ajax({
+            url: $uiset_guide_modal.data('url')
+        },function(result){
+            metAjaxFun({result:result});
+        });
+    });
+    $uiset_guide_process.find('.btn-next').click(function(){
+        $(this).parents('.item').addClass('hide').next().removeClass('hide');
+    });
+    $uiset_guide_process.find('.btn-prev').click(function(){
+        $(this).parents('.item').addClass('hide').prev().removeClass('hide');
+    });
+    var uiset_guide_demo='',
+        load_uiset_guide_demo=function(key) {
+            $('.uiset-guide-demo-modal .modal-body').html('<div class="d-flex w-100 h-100 justify-content-center align-items-center"><img src="'+uiset_guide_demo[key]+'" class="img-fluid"></img>');
+        };
+    $uiset_guide_process.find('.btn-look-demo').click(function(){
+        var key=$(this).parents('.item').index()-1;
+        if(uiset_guide_demo){
+            load_uiset_guide_demo(key);
+        }else{
+            M.ajax({
+                url:'n=index&c=index&a=doGetImgList',
+                success:function(result) {
+                    uiset_guide_demo=result.data;
+                    load_uiset_guide_demo(key);
+                }
+            });
+        }
+    });
+    uiset_guide_resize();
+    $(window).resize(function(){
+        uiset_guide_resize();
+    });
+    // 不再提示更改后台目录名称
+    $('.no-prompt,.btn-uiset-guide-cancel').click(function(){
+        if(!checkLogin()) return;
+        metui.ajax({
+            url: $(this).data('url')
+        },function(result){
+            metAjaxFun({result:result});
+        });
     });
     // 手机端顶部导航栏下拉展开
     $('.btn-pageset-mobile-menu').click(function(event) {
@@ -74,11 +142,20 @@
             M.component.modal_options[pageset_modal.other_config]={
                 modalSize:'lg'
             };
+            M.component.modal_options['.uiset-guide-demo-modal']={
+                modalSize:'xl',
+                modalType:'centered',
+                modalFooterok:0,
+                modalRefresh:0,
+                modalBodyclass:'px-3'
+            };
         });
         // 头部导航栏弹窗、导航弹窗中的tab导航切换
-        $(document).on('click clicks', '.pageset-head-nav [data-url],'+pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab:not([data-ajaxchange]) a[href^="#"],.btn-adminfolder-change,.btn-pageset-common-page', function(event) {
+        $(document).on('click clicks', '.pageset-head-nav [data-target="'+pageset_modal.nav+'"][data-url],'+pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab:not([data-ajaxchange]) a[href^="#"],.btn-adminfolder-change,.btn-pageset-common-page', function(event) {
             if(!checkLogin()) return;
+            if(!$(this).attr('data-url')) event.preventDefault();
             var url=$(this).attr('data-url')?$(this).attr('data-url'):$(this).attr('href').substr(2),
+                hash=url.indexOf('/?')>0?url.split('/?')[0]:url,
                 data={
                     module:$(this).attr('data-module'),
                     class1:$(this).attr('data-class1'),
@@ -86,13 +163,18 @@
                     class3:$(this).attr('data-class3'),
                     head_tab_active:$(this).attr('data-head_tab_active')
                 },
-                title=$(this).attr('title')||$(this).text();
-            if(!$(this).attr('data-url')) event.preventDefault();
-            var $self=$(this),
-                hash=url.indexOf('/?')>0?url.split('/?')[0]:url,
-                $pageset_nav_modal=$loader='',
+                other_data=getQueryString(['module','class1','class2','class3','head_tab_active'],url),
+                title=$(this).attr('title')||$(this).text(),
+                $self=$(this),
+                $pageset_nav_modal='',
                 loadFun=function(){
-                    $pageset_nav_modal.find('.modal-title').html(title);
+                    var $modal_title=$pageset_nav_modal.find('.modal-title');
+                    if($modal_title.attr('data-title')){
+                        title=$modal_title.attr('data-title');
+                        $modal_title.attr('data-title','');
+                    }
+                    $modal_title.html(title);
+                    
                     if(data.module||data.class1||data.class2||data.class3||data.head_tab_active){
                         if(hash!='manage') admin_module.obj.find('.met-headtab[data-ajaxchange] a:eq('+(data.head_tab_active)+')').click();
                         setTimeout(function(){
@@ -104,14 +186,33 @@
                 };
             hash=hashHandle(hash);
             hash=url.split('/')[0]=='app'?'app/'+hash:hash;
+            $.each(other_data,function(index,val){
+                if(val) data[index]=val;
+            });
             setTimeout(function(){
                 $pageset_nav_modal=$(pageset_modal.nav);
-                $loader=$pageset_nav_modal.find('.modal-loader');
-                var $modal_body=$pageset_nav_modal.find('.modal-body').eq(0);
+                var $loader=$pageset_nav_modal.find('.modal-loader'),
+                    $modal_body=$pageset_nav_modal.find('.modal-body').eq(0);
+                if(hash=='ui_set/package' || (hash=='myapp/login' && getCookie('app_href_source').indexOf('ui_set/package')>=0)){
+                    $pageset_nav_modal.find('.modal-dialog').removeClass('modal-100 my-0 mx-auto h-100 py-2').addClass('modal-dialog-centered').find('.modal-footer').addClass('hide');
+                    $pageset_nav_modal.find('.modal-body').removeClass('pl-4');
+                }else{
+                    $pageset_nav_modal.find('.modal-dialog').addClass('modal-100 my-0 mx-auto h-100 py-2').removeClass('modal-dialog-centered').find('.modal-footer').removeClass('hide');
+                    $pageset_nav_modal.find('.modal-body').addClass('pl-4');
+                }
+                hash=='ui_set/package' && $modal_body.find('.nav-modal-item[data-path="'+hash+'"]').remove();
                 $loader.removeClass('hide');
                 $modal_body.find('.nav-modal-item').hide();
-                var $nav_modal_item=$modal_body.find('.nav-modal-item[data-path="'+hash+'"]');
+                var $nav_modal_item=$modal_body.find('.nav-modal-item[data-path="'+hash+'"]'),
+                    beforeLoadFun=function(){
+                        if($nav_modal_item.find('.metadmin-content-min').length){
+                            $modal_body.removeClass('bg-white');
+                        }else{
+                            $modal_body.addClass('bg-white');
+                        }
+                    };
                 if($nav_modal_item.length && $nav_modal_item.attr('data-loaded')){
+                    beforeLoadFun();
                     setTimeout(function(){
                         $loader.addClass('hide');
                         $nav_modal_item.show();
@@ -123,7 +224,9 @@
                     metLoadTemp(url,'',$nav_modal_item,function(html){
                         $loader.addClass('hide');
                         $modal_body.append('<div class="nav-modal-item" data-path="'+hash+'" data-loaded="1"></div>');
-                        $modal_body.find('.nav-modal-item[data-path="'+hash+'"]')[0].innerHTML=html;
+                        $nav_modal_item=$modal_body.find('.nav-modal-item[data-path="'+hash+'"]');
+                        $nav_modal_item[0].innerHTML=html;
+                        beforeLoadFun();
                     },function(){
                         loadFun();
                         typeof TEMPLOADFUNS[hash]=='function'&&TEMPLOADFUNS[hash]();
@@ -134,9 +237,14 @@
         // 导航弹框标题
         $(document).on('click', pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab[data-ajaxchange] a[href*="#"]', function(event) {
             var $pageset_nav_modal=$(pageset_modal.nav),
-                title=$pageset_nav_modal.find('.modal-title').html();
+                $modal_title=$pageset_nav_modal.find('.modal-title'),
+                title=$modal_title.html();
+            if($modal_title.attr('data-title')){
+                title=$modal_title.attr('data-title');
+                $modal_title.attr('data-title','');
+            }
             title=(title.indexOf('-')>0?title.split('-')[0]:title)+(title?'-':'')+$(this).html();
-            $pageset_nav_modal.find('.modal-title').html(title);
+            $modal_title.html(title);
         });
         // 导航弹框内锚点链接兼容
         $(document).on('click', pageset_modal.nav+' .modal-body:eq(0) a[href^="#/"]', function(event) {
@@ -196,21 +304,13 @@
         //     event.preventDefault();
         //     $nav_modal.find('.nav-iframe:visible').prop('contentWindow').location.href=$(this).attr('href');
         // });
-        // 不再提示更改后台目录名称、不在提示操作引导图
-        $('.no-prompt,.btn-uiset-guide-cancel').click(function(){
-            if(!checkLogin()) return;
-            metui.ajax({
-                url: $(this).data('url')
-            },function(result){
-                metAjaxFun({result:result});
-            });
-        });
         // 系统消息数量
         metui.ajax({
             url: M.url.admin + '?n=system&c=news&a=docurlnews'
         },function(result) {
             metAjaxFun({result:result,true_fun:function(){
-                $('.news-count').html(parseInt($('.news-count')) + parseInt(result.num));
+                var num=parseInt(result.data.num);
+                num && $('.sys-news-count').html(num);
             }});
         });
 
@@ -243,26 +343,33 @@
                 var url=$(this).attr('href').replace(/\s*/g,""),
                     $self=$(this),
                     href_control=(function(){
-                        if($self.attr('data-toggle')=='dropdown' && (typeof $self.attr('data-hover')=='undefined' || M.device_type!='d')) return false;
-                        if(url.substr(0,1)=='#' || url.indexOf('javascript')>=0 || url.indexOf('tel:')>=0 || url.indexOf('.jpg')>0 || url.indexOf('.png')>0 || url.indexOf('.gif')>0) return false;
-                        if((url.substr(0,4)=='http' && url.indexOf(M.weburl)<0) || url.substr(0,5)=='skype') return false;
+                        if(
+                            ($self.attr('data-toggle')=='dropdown' && (typeof $self.attr('data-hover')=='undefined' || M.device_type!='d'))
+                            || url.substr(0,1)=='#'
+                            || url.indexOf('javascript')>=0
+                            || url.indexOf('tel:')>=0
+                            || url.indexOf('.jpg')>0
+                            || url.indexOf('.png')>0
+                            || url.indexOf('.gif')>0
+                            || url.indexOf('mailto:')>=0
+                            || url.substr(0,5)=='skype'
+                            || (url.substr(0,4)=='http' && url.indexOf(M.weburl)<0 && url.indexOf('pageset=1')<0 && url.indexOf('lang=')<0)
+                        ) return false;
                         return true;
                     })(),
-                    href_blank=$(this).attr('target')=='_blank' && (url.indexOf(M.weburl)>=0 || (url.substr(0,4)!='http' && (url.indexOf('pageset=1')>0 || url.indexOf('lang=')>0))),
+                    href_blank=$(this).attr('target')=='_blank' && href_control,
                     href_nopageset=(function(){
-                        var nopageset=(url.indexOf('lang=')>0 && url.indexOf('pageset=1')<0)||(url.indexOf(M.weburl)>=0 && url.indexOf('pageset=1')<0);
+                        var nopageset=(url.indexOf(M.weburl)>=0||url.indexOf('lang=')>0) && url.indexOf('pageset=1')<0;
                         if(nopageset){
                             var url_after='pageset=1';
-                            if(url.indexOf(url_after)<0){
-                                if(url.indexOf('?')>=0){
-                                    url_after='&'+url_after;
-                                }else{
-                                    url_after='?'+url_after;
-                                }
-                                url+=url_after;
+                            if(url.indexOf('?')>=0){
+                                url_after='&'+url_after;
+                            }else{
+                                url_after='?'+url_after;
                             }
+                            url+=url_after;
                         }
-                        return nopageset
+                        return nopageset;
                     })();
                 if(href_control || href_blank || href_nopageset){
                     e.preventDefault();
@@ -328,7 +435,7 @@
                                 'data-head_tab_active':result.data.head_tab_active
                             }).click();
                         }else{
-                            if(result.data.indexOf('http')>=0){
+                            if(result.data.indexOf('http')>=0||result.data.substr(0,3)=='../'){
                                 $btn_common_modal.attr({'data-target':'.pageset-iframe-modal','data-modal-url':''}).data({
                                     modalTitle: METLANG.editor,
                                     modalSize: 'xl',
@@ -525,16 +632,15 @@
                                 if(text_w>width) type='textarea';
                                 // 弹出显示框
                                 metui.use('editable',function(){
+                                    $pageeditor_editor.hide();
                                     $pageeditor_remark.editable('destroy').html(result.text).editable({
                                         type: type,
                                         pk: 1,
                                         name: 'tagcontent',
                                         mode:'inline'
-                                    })
-                                    $pageeditor_remark.editableform.buttons='<button type="submit" class="btn btn-primary btn-xs editable-submit"><i class="wb-check"></i></button><button type="button" class="btn btn-default btn-xs editable-cancel"><i class="wb-close"></i></button>';
+                                    });
                                     $pageeditor_remark.editable('show');
                                     $pageeditor_btn.find('.editable-container .editable-input .form-control').width(width).val(result.text);
-                                    $pageeditor_editor.hide();
                                     // 调整显示框位置
                                     var position=$pageeditor_btn.css('position'),
                                         top=$pageeditor_btn.offset().top,
@@ -682,13 +788,9 @@
                     }
                 });
             }
-            if(val[key.name]=='met_font'){
-                options.attr+=' list="select_met_font"';
-                options.other='<datalist id="select_met_font"><option value="宋体"></option><option value="Microsoft YaHei"></option><option value="Tahoma"></option><option value="Verdana"></option><option value="Simsun"></option><option value="Segoe UI"></option><option value="Lucida Grande"></option><option value="Helvetica"></option><option value="Arial"></option><option value="FreeSans"></option><option value="Arimo"></option><option value="Droid Sans"></option><option value="wenquanyi micro hei"></option><option value="Hiragino Sans GB"></option><option value="Hiragino Sans GB W3"></option><option value="sans-serif"></option></datalist>';
-            }
             var this_html=M.component.formWidget(options);
             parseInt(val.uip_hidden)?(html_hidden?html_hidden+=this_html:
-                html_hidden=M.component.formWidget({
+                html_hidden='<hr>'+M.component.formWidget({
                     type:'collapse',
                     title:METLANG.moreSettings,
                     dl:1,
@@ -718,6 +820,24 @@
                 +'<div class="metadmin-fmbx">'+html+'</div></form>';
                 $modal_body[0].innerHTML=html;
                 $modal_body.scrollTop(0).removeAttr('data-load');
+                $modal_body.find('input[data-uip_name="met_font"]').attr({placeholder:METLANG.default_values,'data-toggle':'dropdown'}).each(function(index, el) {
+                    var list_html=(function(){
+                            var list=['宋体','Microsoft YaHei"','Tahoma','Verdana','Simsun','Segoe UI','Lucida Grande','Helvetica','Arial','FreeSans','Arimo','Droid Sans','wenquanyi micro hei','Hiragino Sans GB','Hiragino Sans GB W3','sans-serif'],
+                                html='';
+                            $.each(list,function(index, el){
+                                html+='<a class="dropdown-item px-2 py-1" href="javascript:;" data-value="'+el+'">'+el+'</a>';
+                            });
+                            html='<div class="dropdown-menu">'
+                                +'<a class="dropdown-item px-2 py-1" href="javascript:;">'+METLANG.default_values+'</a>'
+                                +html
+                            +'</div>';
+                            return html;
+                        })(),
+                        inline_block=$(this).css('display')=='inline-block'?' d-inline-block':' d-block',
+                        float=$(this).css('float')!='none'?' float-'+$(this).css('float'):'';
+                    $(this).wrap('<div class="navbar p-0'+inline_block+float+'"><div class="dropdown clearfix"></div></div>');
+                    $(this).val($(this).val()||'').after(list_html);
+                });
                 $modal_body.metCommon();
                 $pageset_config_modal.find('.modal-title').html(title);
             };
@@ -748,6 +868,10 @@
         }
         htmlHandle();
     }
+    // 网站字体选择
+    $(document).on('click', '.pageset-other-config-modal .modal-body input[data-uip_name="met_font"]+.dropdown-menu a', function(event) {
+		$(this).parent().prev('input').val($(this).data('value')||'');
+	});
     // 区块参数设置
     $.fn.pagesetModal=function(selector){
         $(this).on('click', selector, function(event) {
@@ -904,7 +1028,7 @@
             var $this=$(this),
                 blockBtnHandle=function(obj){
                     obj.addClass('set').each(function(index, el) {
-                        $(this).css('position')=='static' && $(this).css({position:'relative'});
+                        !$(this).parents('[m-id]').length && $(this).css('position')=='static' && $(this).css({position:'relative'});
                         var index=$this.find('[m-id]').index($(this)),
                             mid=$(this).attr('m-id'),
                             type=$(this).attr('m-type'),
@@ -917,12 +1041,15 @@
                     });
                 };
             $this.find('html').append('<div class="pageset-btns"></div>');
+            window.pageset_btn_hide=0;
             setTimeout(function(){
                 blockBtnHandle($this.find('[m-id][m-id!="online"]'));
-                var online_btnhandle_interval=setInterval(function(){
-                        typeof windows.met_online_load!='undefined' && windows.met_online_load && $this.find('[m-id="online"]').is(':visible') && (clearInterval(online_btnhandle_interval),blockBtnHandle($this.find('[m-id="online"]')));
-
-                    },50);
+                $(documents).on('mouseover','*',function(e){
+                    if(pageset_btn_hide) return;
+                    var html=`<div class="pageset-btn hide" data-mid="" data-index=""><button type="button" class="btn btn-xs btn-primary pageset-block-config" data-mid="" data-index="">${METLANG.seting}</button><button type="button" class="btn btn-xs btn-warning pageset-content" data-mid="" data-type="" data-index="">${METLANG.content}</button></div>`;
+                    $this.find('html>.pageset-btns').html(html);
+                    pageset_btn_hide=1;
+                });
             },500);
             // 文字内容转换可视化信息
             $('m',this).each(function() {
@@ -952,13 +1079,6 @@
             })
             // 下拉菜单新窗口打开去除新窗口打开属性
             $('a[data-toggle="dropdown"][data-hover="dropdown"][target="_blank"]',this).removeAttr('target');
-            window.pageset_btn_hide=0;
-            $(documents).on('mouseover','*',function(e){
-                if(pageset_btn_hide) return;
-                var html=`<div class="pageset-btn hide" data-mid="" data-index=""><button type="button" class="btn btn-xs btn-primary pageset-block-config" data-mid="" data-index="">${METLANG.seting}</button><button type="button" class="btn btn-xs btn-warning pageset-content" data-mid="" data-type="" data-index="">${METLANG.content}</button></div>`;
-                $this.find('html>.pageset-btns').html(html);
-                pageset_btn_hide=1;
-            });
             // 自定义链接替换
             $('a[href][href!=""]',this).filter(function(index) {
                 var href=$(this).attr('href');

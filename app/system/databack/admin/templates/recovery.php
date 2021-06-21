@@ -2,17 +2,11 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$head_tab_active=1;
-$head_tab=array(
-array(title=>$word['databackup4'],url=>'#/databack'),
-array(title=>$word['databackup2'],url=>'#/databack/recovery'),
-);
 ?>
 <div class="met-recovery">
-  <include file="pub/head_tab" />
   <div class="met-recovery-list">
     <form action="javascript:;">
-    <table class="dataTable table table-bordered table-hover w-100" id="recovery-table"
+    <table class="dataTable table table-hover w-100" id="recovery-table"
       data-ajaxurl="{$url.own_name}c=index&a=dorecovery" data-datatable_order="#recovery-table" data-table-sdom='t'>
       <thead>
         <tr>

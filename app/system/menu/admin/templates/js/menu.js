@@ -1,5 +1,6 @@
-/*
-底部菜单
+/**
+ * 底部菜单
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	var that=$.extend(true,{}, admin_module);
@@ -19,9 +20,7 @@
 									M.component.formWidget({
 										name:'icon-'+val.id,
 										type:'icon',
-										value:val.icon,
-										btn_size:'sm',
-										icon_class:'mb-1 mr-0'
+										value:val.icon
 									}),
 									M.component.formWidget('but_color-'+val.id,val.but_color,'color'),
 									M.component.formWidget('text_color-'+val.id,val.text_color,'color'),

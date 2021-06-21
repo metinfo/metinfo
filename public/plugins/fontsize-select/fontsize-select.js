@@ -1,30 +1,34 @@
-/*
-字体大小下拉选择
+/**
+ * 字体大小下拉选择
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 $.fn.fontSizeSelect=function(){
 	var id='select-font'+new Date().getTime(),
-		html='<datalist>'
-			+'<option value="'+METLANG.default_values+'"></option>'
-			+'<option value="12">12'+METLANG.setimgPixel+'</option>'
-			+'<option value="14">14'+METLANG.setimgPixel+'</option>'
-			+'<option value="16">16'+METLANG.setimgPixel+'</option>'
-			+'<option value="18">18'+METLANG.setimgPixel+'</option>'
-			+'<option value="20">20'+METLANG.setimgPixel+'</option>'
-			+'<option value="22">22'+METLANG.setimgPixel+'</option>'
-			+'<option value="24">24'+METLANG.setimgPixel+'</option>'
-			+'<option value="26">26'+METLANG.setimgPixel+'</option>'
-			+'<option value="28">28'+METLANG.setimgPixel+'</option>'
-			+'<option value="30">30'+METLANG.setimgPixel+'</option>'
-		+'</datalist>';
-	$(this).attr({placeholder:METLANG.default_values}).after(html).each(function(index, el) {
-		var this_id=id+index;
-		$(this).val(parseInt($(this).val())?$(this).val():'').attr({list:this_id}).next('datalist').attr({id:this_id});
+		list_html=(function(){
+			var list=[12,14,16,18,20,24,26,28,30,36,40],
+				html='';
+			$.each(list,function(index, el){
+				html+='<a class="dropdown-item px-2 py-1" href="javascript:;">'+el+METLANG.setimgPixel+'</a>';
+			});
+			html='<div class="dropdown-menu">'
+				+'<a class="dropdown-item px-2 py-1" href="javascript:;">'+METLANG.default_values+'</a>'
+				+html
+			+'</div>';
+			return html;
+		})();
+	$(this).attr({placeholder:METLANG.default_values,'data-toggle':'dropdown'}).each(function(index, el) {
+		var inline_block=$(this).css('display')=='inline-block'?' d-inline-block':' d-block',
+			float=$(this).css('float')!='none'?' float-'+$(this).css('float'):'';
+		$(this).wrap('<div class="navbar p-0'+inline_block+float+'"><div class="dropdown clearfix"></div></div>');
+		$(this).val(parseInt($(this).val())||'').after(list_html);
 	});
 };
 (function(){
 	// 字体大小切换
+	$(document).on('click', '[data-plugin="select-fontsize"]+.dropdown-menu a', function(event) {
+		$(this).parent().prev('input').val(parseInt($(this).html())||'');
+	});
 	$(document).on('change', '[data-plugin="select-fontsize"]', function(event) {
-		var val=parseInt($(this).val());
-		$(this).val(val?$(this).val():'');
+		$(this).val(parseInt($(this).val())||'');
 	});
 })();

@@ -76,8 +76,12 @@ final class met_view
             ##$this->vars['lang'] = $sys_compile->list_templates_config();
             ##$this->vars['lang'] = $this->vars['g'];
 
+            if (defined('IN_ADMIN')) {
+                $this->vars['url'] = $this->compile->replace_sys_url();
+            }else{
+                $this->vars['url'] = $_M['url'];
+            }
             $this->vars['word'] = $_M['word'];//语言
-            $this->vars['url'] = $_M['url'];
             $this->vars['user'] = load::sys_class('user', 'new')->get_login_user_info();
 
             /**
@@ -177,6 +181,10 @@ final class met_view
 
                         break;
                     case 'app':
+                        if (file_exists(PATH_TEM . M_NAME . '/' . end($file_info).'.php')) {
+                            $file = PATH_TEM . M_NAME . '/' . end($file_info);
+                            break;
+                        }
                         if (M_MODULE == 'web' && (M_NAME == 'shop' || M_NAME == 'product' || M_NAME == 'pay')) {
                             if (M_NAME == 'product' && $_M['config']['shopv2_open']) {
                                 $app_path = PATH_APP . 'app/shop/' . $m_module . '/';

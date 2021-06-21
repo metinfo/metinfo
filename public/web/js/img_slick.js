@@ -1,5 +1,6 @@
-/*
-详情页展示图片（需调用slick插件）
+/*!
+ * 详情页展示图片（需调用slick插件）
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function() {
 	$(function() {

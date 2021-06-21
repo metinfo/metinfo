@@ -9,6 +9,7 @@ $pageset_css_filemtime = filemtime(PATH_OWN_FILE.'templates/css/pageset.css');
 $pageset_js_filemtime = filemtime(PATH_OWN_FILE.'templates/js/pageset.js');
 $met_title=$word['veditor'].'-'.$c['met_webname'];
 $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
+// $c['met_uiset_guide']=1;
 ?>
 <include file="pub/header"/>
 <link rel="stylesheet" href="{$url.public_fonts}metinfo-specail-icon/metinfo-specail-icon.css">
@@ -25,8 +26,8 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 		<button class="btn btn-outline-light btn-sm btn-block mt-2 btn-pageset-mobile-menu">{$word.top_menu}</button>
 		</if>
 		<if value="is_mobile()"><div class="pageset-mobile-menu position-absolute bg-dark py-2"></if>
-		<div class="container h-100">
-			<div class="row h-100 navbar p-0 pageset-head-nav">
+		<div class="container h-100 pageset-head-nav">
+			<div class="row h-100 navbar p-0">
 				<div>
 	            	<a href class="btn btn-outline-light border-none pageset-view" title='{$word.uisetTips4}' target='_blank'>{$word.preview}</a>
                     <if value="$data['auth']['basic_info'] eq 1">
@@ -71,8 +72,8 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 						<button class="btn btn-outline-light border-none dropdown-toggle" type="button" data-toggle="dropdown">{$word.indexadmin}</button>
 						<ul class="dropdown-menu mt-2">
                             <if value="$data['auth']['databack'] eq 1">
-                            <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='databack'>{$word.data_processing}</a>
-                            </if>
+                            <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='databack/?head_tab_active=0'>{$word.data_processing}</a>
+							</if>
 							<if value="$data['auth']['checkupdate'] eq 1">
 							<a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='update'>{$word.checkupdate}</a>
 							</if>
@@ -105,8 +106,8 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
                             <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='safe'>{$word.safety_efficiency}</a>
                             </if>
                             <if value="$data['auth']['basic_info'] eq 1">
-                            <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='webset/email'>{$word.sysMailboxConfig}</a>
-							<a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='webset/thirdparty'>{$word.third_party_code}</a>
+                            <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='webset/?head_tab_active=1'>{$word.sysMailboxConfig}</a>
+							<a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='webset/?head_tab_active=2'>{$word.third_party_code}</a>
                             </if>
                             <if value="$data['auth']['nav_setting'] eq 1 && $data['auth']['myapp'] eq 1">
                             <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url='ui_set/pageset_nav/?c=index&a=doapplist'>{$word.navSetting}</a>
@@ -122,25 +123,30 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
                             </if>
 						</ul>
 					</div>
-					<if value="$c['met_agents_metmsg']">
 					<div class="btn-group {$headnav_ml}">
-						<button class="btn btn-outline-light border-none dropdown-toggle" type="button" data-toggle="dropdown">{$word.stand_by}</button>
+						<button class="btn btn-outline-light border-none dropdown-toggle" type="button" data-toggle="dropdown">{$word.indexbbs}</button>
 						<ul class="dropdown-menu dropdown-menu-right mt-2">
+							<if value="$c['met_agents_metmsg']">
 							<a href="{$c.help_url}" class='dropdown-item px-3 py-2' target='_blank'>{$word.help_manual}</a>
 							<a href="{$c.edu_url}" class='dropdown-item px-3 py-2' target='_blank'>{$word.extension_school}</a>
-							<a href="{$c.qa_url}" class='dropdown-item px-3 py-2' target='_blank'>{$word.online_quiz}</a>
 							<a href="{$c.kf_url}" class='dropdown-item px-3 py-2' target='_blank'>{$word.online_work_order}</a>
+							</if>
                             <if value="$data['auth']['environmental_test'] eq 1">
                             <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".pageset-nav-modal" data-url="system/envmt_check/?c=patch&a=docheckEnv">{$word.environmental_test}</a>
-                            </if>
-						</ul>
+							</if>
+							<if value="$c['met_agents_metmsg']">
+							<a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".syslicense-modal" data-modal-url="ui_set/license/?c=index&a=get_plugins_license" data-modal-title="许可协议">许可协议</a>
+                                <a href="javascript:;" class='dropdown-item px-3 py-2' data-toggle="modal" data-target=".uiset-guide-modal" data-modal-title="操作引导">操作引导</a>
+							</if>
+
+                        </ul>
 					</div>
 					</if>
 					<a href='{$url.site_admin}' class="btn btn-outline-light border-none {$headnav_ml}" target='_blank'>{$word.oldBackstage}</a>
 					<if value="$c['met_agents_metmsg']">
-					<a href='javascript:;' class="btn btn-outline-light border-none {$headnav_ml}" data-toggle="modal" data-target=".pageset-nav-modal" data-url='system/news' title='{$word.sysMessage}'>
+					<a href='javascript:;' class="btn btn-outline-light border-none position-relative {$headnav_ml}" data-toggle="modal" data-target=".pageset-nav-modal" data-url='system/news' title='{$word.sysMessage}'>
 						<i class="fa fa-bell-o"></i>
-						<span class="sys-news-count">{$data.sys_news_num}</span>
+						<span class="sys-news-count position-absolute"></span>
 					</a>
 					</if>
 					<div class="btn-group {$headnav_ml}">
@@ -152,6 +158,11 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 					</div>
 				</div>
 			</div>
+			<if value="$c['met_agents_metmsg']">
+			<div class='position-absolute d-flex align-items-center h-100' style="right:15px;top:0;">
+				<a href="javascript:;" data-toggle="modal" data-target=".pageset-nav-modal" data-url="ui_set/package" title="授权信息"><i class="fa-flag-o mr-1"></i><span>版本信息</span></a>
+			</div>
+			</if>
 		</div>
 		<if value="is_mobile()"></div></if>
 	</div>
@@ -184,18 +195,140 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
         </button>
     </li>
 </menu>
-<!-- 手机端引导图 -->
-<if value="$c['met_uiset_guide'] && !is_mobile()">
-<div class="modal fade met-scrollbar met-modal show alert p-0 mb-0 border-none rounded-0" data-keyboard="false" data-backdrop="false" style="display: block;">
-	<div class="modal-dialog modal-dialog-centered modal-xl">
-		<div class="modal-content bg-none border-none">
-			<div class="modal-body text-center">
-				<div class="d-inline-block">
-					<div class="text-right">
-						<button type='button' class="btn btn-danger" data-dismiss="alert">{$word.close_this_time}</button>
-		        		<button type='button' class="btn btn-danger btn-uiset-guide-cancel" data-url="{$url.own_form}a=dono_uisetguide" data-dismiss="alert">{$word.nohint}</button>
-	        		</div>
-					<img src="{$url.own_tem}images/uiset_guide.gif" width="100%" class="bg-white p-3">
+<!-- 引导图 -->
+<if value="!is_mobile()">
+<div class="modal fade met-scrollbar met-modal uiset-guide-modal p-0 mb-0 border-none rounded-0 bg-white h-100 cover" data-keyboard="false" data-backdrop="false" data-visible="{$c.met_uiset_guide}" data-url="{$url.own_form}a=dono_uisetguide">
+	<div class="modal-dialog modal-xl w-100 my-0">
+		<div class="modal-content border-none">
+			<div class="modal-body p-0">
+				<div class="uiset-guide-content position-relative">
+					<img data-src="{$url.own_tem}images/guide-bg.jpg" class="img-fluid">
+					<div class="uiset-guide-process position-absolute w-100 h-100">
+						<div class="item position-absolute" style="left: 50%;top: 50%;transform: translate(-50%,-50%);">
+							<div class="uiset-guide-box bg-white p-4">
+								<button type="button" class="close" aria-label="Close" data-dismiss="modal">
+									<span aria-hidden="true">×</span>
+								</button>
+								<div class="p-3">
+									<div class="text-center">
+										<img data-src="{$url.own_tem}images/guide-first.png" style="margin:-130px 0 20px;">
+									</div>
+									<div class="uiset-guide-body h6 mb-0">
+										<p>你好 <span class="text-primary">{$data.power.admin_id}</span>：</p>
+										<p>我们邀请你参与新手提示，五步上手米拓企业建站系统</p>
+									</div>
+									<div class="uiset-guide-footer text-center" style="margin:20px 0 -67px;">
+										<button class="btn btn-primary px-5 py-3 btn-next">进入新手提示</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="item hide">
+							<img data-src="{$url.own_tem}images/guide-logo.png" class="position-absolute" style="left:65px;top:65px;">
+							<img data-src="{$url.own_tem}images/guide-arrow2.png" class="position-absolute" style="left:130px;top:100px;">
+							<div class="uiset-guide-box bg-white p-4 position-absolute" style="left:300px;top:250px;">
+								<button type="button" class="close" aria-label="Close" data-dismiss="modal">
+									<span aria-hidden="true">×</span>
+								</button>
+								<div class="uiset-guide-header">
+									<h5 class="d-inline-block mb-0">新手提示</h5>
+								</div>
+								<hr class="my-2">
+								<div class="uiset-guide-body text-secondary text-nowrap">
+									鼠标移至图片上，点击“编辑”图标可替换原有图片哦！
+								</div>
+								<div class="uiset-guide-footer text-right mt-4">
+									<button class="btn btn-outline-primary btn-look-demo mr-1" data-toggle="modal" data-target=".uiset-guide-demo-modal">查看演示</button>
+									<button class="btn btn-primary btn-prev mr-1">上一步</button>
+									<button class="btn btn-primary btn-next">下一步(1/5)</button>
+								</div>
+							</div>
+						</div>
+						<div class="item hide">
+							<img data-src="{$url.own_tem}images/guide-home.png" class="position-absolute" style="left:350px;top:50px;">
+							<img data-src="{$url.own_tem}images/guide-arrow2.png" class="position-absolute" style="left:355px;top:115px;">
+							<div class="uiset-guide-box bg-white p-4 position-absolute" style="left:520px;top:280px;">
+								<button type="button" class="close" aria-label="Close" data-dismiss="modal">
+									<span aria-hidden="true">×</span>
+								</button>
+								<div class="uiset-guide-header">
+									<h5 class="d-inline-block mb-0">新手提示</h5>
+								</div>
+								<hr class="my-2">
+								<div class="uiset-guide-body text-secondary text-nowrap">
+								鼠标移至文字上，点击“编辑”图标可修改文字哦！
+								</div>
+								<div class="uiset-guide-footer text-right mt-4">
+									<button class="btn btn-outline-primary btn-look-demo mr-1" data-toggle="modal" data-target=".uiset-guide-demo-modal">查看演示</button>
+									<button class="btn btn-primary btn-prev mr-1">上一步</button>
+									<button class="btn btn-primary btn-next">下一步(2/5)</button>
+								</div>
+							</div>
+						</div>
+						<div class="item hide">
+							<img data-src="{$url.own_tem}images/guide-arrow3.png" class="position-absolute" style="left:612px;top:0;">
+							<img data-src="{$url.own_tem}images/guide-arrow1.png" class="position-absolute" style="left:717px;top:20px;transform: rotate(272deg);">
+							<div class="uiset-guide-box bg-white p-4 position-absolute" style="left:732px;top:130px;">
+								<button type="button" class="close" aria-label="Close" data-dismiss="modal">
+									<span aria-hidden="true">×</span>
+								</button>
+								<div class="uiset-guide-header">
+									<h5 class="d-inline-block mb-0">新手提示</h5>
+								</div>
+								<hr class="my-2">
+								<div class="uiset-guide-body text-secondary text-nowrap">
+								鼠标移至顶部导航栏，点击“风格->风格设置”，可设置网站的颜色哦！
+								</div>
+								<div class="uiset-guide-footer text-right mt-4">
+									<button class="btn btn-outline-primary btn-look-demo mr-1" data-toggle="modal" data-target=".uiset-guide-demo-modal">查看演示</button>
+									<button class="btn btn-primary btn-prev mr-1">上一步</button>
+									<button class="btn btn-primary btn-next">下一步(3/5)</button>
+								</div>
+							</div>
+						</div>
+						<div class="item hide">
+							<button class="btn btn-primary position-absolute p-1 font-size-12" style="left:48%;top:130px;">设置</button>
+							<img data-src="{$url.own_tem}images/guide-arrow1.png" class="position-absolute" style="left:45%;top:140px;">
+							<div class="uiset-guide-box bg-white p-4 position-absolute" style="left:550px;top:265px;">
+								<button type="button" class="close" aria-label="Close" data-dismiss="modal">
+									<span aria-hidden="true">×</span>
+								</button>
+								<div class="uiset-guide-header">
+									<h5 class="d-inline-block mb-0">新手提示</h5>
+								</div>
+								<hr class="my-2">
+								<div class="uiset-guide-body text-secondary text-nowrap">
+								鼠标移至需要修改的区块，点击“设置”按钮，可调用该网站栏目的数据哦！
+								</div>
+								<div class="uiset-guide-footer text-right mt-4">
+									<button class="btn btn-outline-primary btn-look-demo mr-1" data-toggle="modal" data-target=".uiset-guide-demo-modal">查看演示</button>
+									<button class="btn btn-primary btn-prev mr-1">上一步</button>
+									<button class="btn btn-primary btn-next">下一步(4/5)</button>
+								</div>
+							</div>
+						</div>
+						<div class="item hide">
+							<button class="btn btn-warning position-absolute p-1 font-size-12" style="left:48%;top:130px;">内容</button>
+							<img data-src="{$url.own_tem}images/guide-arrow1.png" class="position-absolute" style="left:45%;top:140px;">
+							<div class="uiset-guide-box bg-white p-4 position-absolute" style="left:550px;top:265px;">
+								<button type="button" class="close" aria-label="Close" data-dismiss="modal">
+									<span aria-hidden="true">×</span>
+								</button>
+								<div class="uiset-guide-header">
+									<h5 class="d-inline-block mb-0">新手提示</h5>
+								</div>
+								<hr class="my-2">
+								<div class="uiset-guide-body text-secondary text-nowrap">
+								鼠标移至需要修改的区块，点击“内容”按钮，可发布一篇文章哦！
+								</div>
+								<div class="uiset-guide-footer text-right mt-4">
+									<button class="btn btn-outline-primary btn-look-demo mr-1" data-toggle="modal" data-target=".uiset-guide-demo-modal">查看演示</button>
+									<button class="btn btn-primary btn-prev mr-1">上一步</button>
+									<button class="btn btn-primary" data-dismiss="modal">完成(5/5)</button>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -209,7 +342,7 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
 <!-- 系统许可协议 -->
 <if value="!$data['license']">
 <div class="modal fade show met-scrollbar met-modal alert p-0 met-agreement-modal" data-keyboard="false" data-backdrop="false" style="display: block;">
-	<div class="modal-dialog modal-dialog-centered modal-lg my-0 mx-auto h-100">
+	<div class="modal-dialog modal-dialog-centered modal-xl my-0 mx-auto h-100">
 		<div class="modal-content h-100">
 			<div class="modal-header justify-content-center">
 				<h5 class="modal-title">{$word.read_protocol}</h5>

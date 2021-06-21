@@ -6,8 +6,9 @@
 .onlinebox_three .online-item:last-child{margin-bottom: 0px;}
 .onlinebox_three .online-item:hover{background: #f8f8f8;}
 .onlinebox_three .online-item i{font-size: 16px;}
-.onlinebox_three .onlinebox-open{font-size: 22px;{display:none;cursor: pointer;padding: 0 10px; font-size: 18px; line-height: 40px;}
+.onlinebox_three .onlinebox-open{font-size: 22px;display:none;cursor: pointer;padding: 0 10px; font-size: 18px; line-height: 40px;}
 .onlinebox.min .onlinebox-open{display:block;padding:0 10px;background:#444;font-size:18px;line-height:40px;color:#fff}
+.onlinebox .onlinebox-min{position: relative;top:-4px;}
 @media (max-width: 767px){
 .onlinebox_three .online-item{font-size: 12px;padding-top: 6px;}
 .onlinebox_three .online-item i{font-size: 14px;}
@@ -17,7 +18,7 @@
     <div class="onlinebox-open" style="background:{$c.met_online_color};"><i class="fa fa-comments-o"></i></div>
     <div class="onlinebox-box">
         <div class="onlinebox-top" style="background:{$c.met_online_color};">
-            <div class="onlinebox-top-btn">
+            <div class="onlinebox-top-btn font-size-26">
                 <a href="javascript:;" class="onlinebox-close" title="">&times;</a>
                 <a href="javascript:;" class="onlinebox-min">-</a>
             </div>

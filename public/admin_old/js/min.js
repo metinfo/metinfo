@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 define(function(require, exports, module) {
 	var jQuery = $ = require('jquery');
 	require('lang_json_admin');
@@ -25,9 +26,10 @@ define(function(require, exports, module) {
 			admin:basepath,
 			public_plugins:siteurl + 'public/plugins/',
 			system:siteurl+'app/system/'
-		}
+		},
+		
 	};
-	window.met_lazyloadbg=M['weburl'] +'public/images/loading.gif';
+	M.lazyloadbg=M.weburl +'public/images/loading.gif';
 	//初始化
 	var common = require('common');   		//公用类
 	/*---------页面组件加载---------*/

@@ -29,9 +29,9 @@ class profile extends userweb
         global $_M;
         $valid = load::mod_class('user/web/class/valid', 'new');
         if ($valid->get_email($_M['user']['username'])) {
-            $this->ajax_success($_M['word']['emailsuc']);
+            $this->success('', $_M['word']['emailsuc']);
         } else {
-            $this->ajax_error($_M['word']['emailfail']);
+            $this->error($_M['word']['emailfail']);
         }
     }
 
@@ -148,9 +148,10 @@ class profile extends userweb
         } else {
             $valid = load::mod_class('user/web/class/valid', 'new');
             if ($valid->get_email($_M['user']['email'], 'emailedit')) {
-                $this->ajax_success($_M['word']['emailsuclink']);
+                $this->success('', $_M['word']['emailsuclink']);
+
             } else {
-                $this->ajax_error($_M['word']['emailfail']);
+                $this->error($_M['word']['emailfail']);
             }
         }
     }
@@ -227,23 +228,23 @@ class profile extends userweb
         if ($_M['form']['code']) {
             $session = load::sys_class('session', 'new');
             if ($_M['form']['code'] != $session->get("phonecode")) {
-                $this->ajax_error($_M['word']['membercode']);
+                $this->error($_M['word']['membercode']);
                 die;
             }
             if (time() > $session->get("phonetime")) {
-                $this->ajax_error($_M['word']['codetimeout']);
+                $this->error($_M['word']['codetimeout']);
                 die;
             }
             $session->del('phonecode');
             $session->del('phonetime');
             $session->del('phonetel');
-            $this->ajax_success();
+            $this->success();
         } else {
             $valid = load::mod_class('user/web/class/valid', 'new');
             if ($valid->get_tel($_M['user']['tel'])) {
-                $this->ajax_success();
+                $this->success();
             } else {
-                $this->ajax_error($_M['word']['Sendfrequent']);
+                $this->error($_M['word']['Sendfrequent']);
             }
         }
     }
@@ -277,19 +278,19 @@ class profile extends userweb
     {
         global $_M;
         if ($this->userclass->get_user_by_username($_M['form']['tel'])) {
-            $this->ajax_error($_M['word']['telreg']);
+            $this->error($_M['word']['telreg']);
         }
 
          $pinok = load::sys_class('pin', 'new')->check_pin($_M['form']['code'] ,$_M['form']['random']);
         if(!$pinok){
-            $this->ajax_error($_M['word']['membercode']);
+            $this->error($_M['word']['membercode']);
         }
 
         $valid = load::mod_class('user/web/class/valid', 'new');
         if ($valid->get_tel($_M['form']['tel'])) {
-            $this->ajax_success();
+            $this->success();
         } else {
-            $this->ajax_error($_M['word']['Sendfrequent']);
+            $this->error($_M['word']['Sendfrequent']);
         }
     }
 

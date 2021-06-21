@@ -26,7 +26,7 @@ class  message_database extends base_database
         return 'id|addtime|useinfo|access|customerid|lang|ip|imgname|checkok|readok';
     }
 
-    public function get_list_by_class_sql($id = '', $type = 'all')
+    public function get_list_by_class_sql($id = '', $type = '', $order = '')
     {
         $confival = $this->get_config_val('met_msg_show_type', $id);//留言审核开关
         $sql = '';
@@ -54,7 +54,7 @@ class  message_database extends base_database
         global $_M;
         $query = "select * from {$_M['table']['config']} where name = '$name' and columnid ='{$columnid}' and lang='{$_M['lang']}'";
         $config = DB::get_one($query);
-        return $config[value];
+        return $config['value'];
     }
 
     function get_message_columnid()

@@ -15,17 +15,17 @@ $data['classnow']=intval($data['list']['class3'])?$data['list']['class3']:(intva
 		$checkbox_time=time();
 		for ($i = 1; $i < 5; $i++) {
 			$product_content[]=array(
-				value=>$data['list']['content'.$i]
+				'value'=>$data['list']['content'.$i]
 			);
 		}
 		?>
-		<div class="nav nav-tabs product-details-navtab position-relative" data-url="{$url.own_name}c=product_admin&a=doGetColumnSeting">
-			<a class="nav-item nav-link active" data-toggle="tab" href="#product-content-{$checkbox_time}"></a>
+		<div class="nav nav-underline product-details-navtab position-relative" data-url="{$url.own_name}c=product_admin&a=doGetColumnSeting">
+			<a class="nav-link active" data-toggle="tab" href="#product-content-{$checkbox_time}"></a>
 			<list data="$product_content" name="$v">
 			<?php $v['sort']=$v['_index']+1; ?>
-			<a class="nav-item nav-link" data-toggle="tab" href="#product-content{$v.sort}-{$checkbox_time}"></a>
+			<a class="nav-link" data-toggle="tab" href="#product-content{$v.sort}-{$checkbox_time}"></a>
 			</list>
-			<button type="button" class="btn btn-outline-primary btn-sm ml-2 position-absolute" style="right:0;top: 0;" data-toggle="modal" data-target=".product-details-tabset-modal" data-modal-url="ui_set/page_config/?n=column&c=index&a=doGetClassExtInfo&module=3&id=0&from=admin&classnow={$data.classnow}" data-modal-title="{$word.settings_tab}" data-modal-style="z-index:1702;">{$word.settings_tab}</button>
+			<button type="button" class="btn btn-outline-primary ml-2 position-absolute" style="right:0;top: 0;" data-toggle="modal" data-target=".product-details-tabset-modal" data-modal-url="ui_set/page_config/?n=column&c=index&a=doGetClassExtInfo&module=3&id=0&from=admin&classnow={$data.classnow}" data-modal-title="{$word.settings_tab}" data-modal-style="z-index:1702;">{$word.settings_tab}</button>
 		</div>
 		<div class="tab-content mt-2 product-details-content hide">
 			<div class="tab-pane fade show active" id="product-content-{$checkbox_time}">

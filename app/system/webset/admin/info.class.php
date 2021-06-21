@@ -42,6 +42,7 @@ class info extends admin
         $info['met_footaddress'] = isset($_M['config']['met_footaddress']) ? $_M['config']['met_footaddress'] : '';
         $info['met_foottel']     = isset($_M['config']['met_foottel']) ? $_M['config']['met_foottel'] : '';
         $info['met_footother']   = isset($_M['config']['met_footother']) ? $_M['config']['met_footother'] : '';
+        $info['met_icp_info']   = isset($_M['config']['met_icp_info']) ? $_M['config']['met_icp_info'] : '';
 
         $data['info'] = $info;
 
@@ -49,7 +50,7 @@ class info extends admin
         $email = $adrry['admin_email'];
         $tel = $adrry['admin_mobile'];
 
-        $data['weburltext'] = $_M['word']['upfiletips10'].$_M['url']['site'];
+        $data['weburltext'] = $_M['word']['upfiletips10'].$_M['url']['web_site'];
         if ($_M['langlist']['web'][$_M['lang']]['link']) {
             $data['met_weburl'] = $_M['langlist']['web'][$_M['lang']]['link'];
             $data['disabled'] = 'disabled';
@@ -88,6 +89,7 @@ class info extends admin
         $configlist[] = 'met_foottel';
         $configlist[] = 'met_footother';
         $configlist[] = 'met_copyright_type';
+        $configlist[] = 'met_icp_info';
         configsave($configlist);
 
         //写日志
@@ -114,7 +116,7 @@ class info extends admin
         $get_lang = DB::get_one($query);
         $web_url = isset($get_lang['met_weburl']) ? $get_lang['met_weburl'] : '';
         if (!$web_url) {
-            $web_url = isset($_M['config']['met_weburl']) ? $_M['config']['met_weburl'] : $_M['url']['site'];
+            $web_url = isset($_M['config']['met_weburl']) ? $_M['config']['met_weburl'] : $_M['url']['web_site'];
         }
         return $web_url;
     }

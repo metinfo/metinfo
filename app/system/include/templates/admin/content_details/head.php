@@ -2,9 +2,11 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$data=array_merge($data,$data['handle']);
-unset($data['handle']);
-$data['page_type']=$data['a']=='doeditor'?'details':'add';
+if (is_array($data) && is_array($data['handle'])) {
+    $data = array_merge($data, $data['handle']);
+    unset($data['handle']);
+}
+$data['page_type'] = $data['a'] == 'doeditor' ? 'details' : 'add';
 ?>
 <form method="POST" action="{$url.own_name}c={$data.c}&a={$data.a}save&id={$data.list.id}&addtime_l={$data.list.addtime}&no_order={$data.list.no_order}" class='{$data.n}-{$data.page_type}-form' data-validate_order=".{$data.n}-{$data.page_type}-form" data-submit-ajax='1' enctype="multipart/form-data">
 	<div class="metadmin-fmbx">
@@ -28,11 +30,11 @@ $data['page_type']=$data['a']=='doeditor'?'details':'add';
 								<if value="$a['c']">
 								<list data="$a['c']" name="$b" num="500">
 								<if value="$b['n']['value']">
-								<option value="{$a.p.value}-{$b.n.value}-0" class="text-wrap">—— {$b.n.name}</option>
+								<option value="{$a.p.value}-{$b.n.value}-0" class="text-wrap sub sub2 <if value="$b['_index'] eq 1">first</if>">{$b.n.name}</option>
 									<if value="$b['a']">
 									<list data="$b['a']" name="$d" num="500">
 									<if value="$d['s']['value']">
-									<option value="{$a.p.value}-{$b.n.value}-{$d.s.value}" class="text-wrap">———— {$d.s.name}</option>
+									<option value="{$a.p.value}-{$b.n.value}-{$d.s.value}" class="text-wrap sub sub3 <if value="$d['_index'] eq 1">first</if>">{$d.s.name}</option>
 									</if>
 									</list>
 									</if>
@@ -53,7 +55,7 @@ $data['page_type']=$data['a']=='doeditor'?'details':'add';
 					!$data['list']['class2'] && $data['list']['class2']='';
 					!$data['list']['class3'] && $data['list']['class3']='';
 					?>
-					<div data-plugin='select-linkage' data-select-url="json" data-required="1" class="clearfix float-left mr-3 content-details-column">
+					<div data-plugin='select-linkage' data-select-url="json" data-required="1" data-value_key="value" class="clearfix float-left mr-3 content-details-column">
 						<textarea class="select-linkage-data" hidden>{$data.columnlist_json}</textarea>
 						<select name="class1" class="form-control mr-1 w-a prov" data-checked="{$data.list.class1}" required data-fv-notEmpty-message="{$word.selectcolumn}"></select>
 						<select name="class2" class="form-control mr-1 w-a city" data-checked="{$data.list.class2}" required data-fv-notEmpty-message="{$word.selectcolumn}"></select>

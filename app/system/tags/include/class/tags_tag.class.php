@@ -16,7 +16,7 @@ class tags_tag extends tag
         $php = <<<str
 <?php
     \$tags_list = load::sys_class('label', 'new')->get('tags')->get_tags_list(\$data);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0 ;
      foreach(\$tags_list as \$index=>\$v):
        
 ?>

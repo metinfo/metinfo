@@ -9,8 +9,6 @@ defined('IN_MET') or exit('No permission');
  */
 class logs
 {
-
-
     /** 添加后台日志记录
      * @param $username
      * @param $name
@@ -36,7 +34,7 @@ class logs
         }
 
         $brower = getbrowser();
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $user_agent = sqlinsert($_SERVER['HTTP_USER_AGENT']);
         $current_url = $_M['url']['own_form'] . "a={$method}";
         $time = time();
         $ip = getip();

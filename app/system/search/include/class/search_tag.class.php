@@ -14,9 +14,9 @@ class search_tag extends tag {
         'option'     => array( 'block' => 1, 'level' => 4 ),
     );
 
-    public function _form( $attr, $content ) {
+    public function _form( $attr, $content = '' ) {
         global $_M;
-        $type = isset( $attr['type'] ) ? $attr['type'] : "";
+        $type = isset( $attr['type'] ) ? $attr['type'] : "''";
         $cid = isset( $attr['cid'] ) ? ( $attr['cid'][0] == '$' ? $attr['cid']
             : "'{$attr['cid']}'" ) : 0;
 
@@ -30,9 +30,9 @@ str;
         return $php;
     }
 
-    public function _global( $attr, $content ) {
+    public function _global( $attr, $content = '' ) {
         global $_M;
-        $type = isset( $attr['type'] ) ? $attr['type'] : "";
+        $type = isset( $attr['type'] ) ? $attr['type'] : "''";
         $php = <<<str
         <?php
             \$result = load::sys_class('label', 'new')->get('search')->get_search_global(\$data);
@@ -42,9 +42,9 @@ str;
         return $php;
     }
 
-    public function _column( $attr, $content ) {
+    public function _column( $attr, $content = '' ) {
         global $_M;
-        $type = isset( $attr['type'] ) ? $attr['type'] : "";
+        $type = isset( $attr['type'] ) ? $attr['type'] : "''";
         $php = <<<str
         <?php
             \$result = load::sys_class('label', 'new')->get('search')->get_search_column(\$data);
@@ -54,9 +54,9 @@ str;
         return $php;
     }
 
-    public function _advanced( $attr, $content ) {
+    public function _advanced( $attr, $content = '' ) {
         global $_M;
-        $type = isset( $attr['type'] ) ? $attr['type'] : "";
+        $type = isset( $attr['type'] ) ? $attr['type'] : "''";
         $php = <<<str
         <?php
             \$result = load::sys_class('label', 'new')->get('search')->get_search_advanced(\$data);
@@ -66,13 +66,13 @@ str;
         return $php;
     }
 
-    public function _list( $attr, $content ) {
+    public function _list( $attr, $content = '' ) {
         global $_M;
-        $word    = isset($attr['word']) ? $attr['word'] : '';
+        $word    = isset($attr['word']) ? $attr['word'] : "''";
         $php    = <<<str
 <?php
     \$result = load::sys_class('label', 'new')->get('search')->get_search_list(\$data['searchword']);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
      foreach(\$result as \$index=>\$v):
         \$v['sub']      = \$sub;
         \$v['_index']   = \$index;
@@ -86,12 +86,12 @@ str;
     }
 
     //搜索数据数组type=page
-    public function _option( $attr, $content ) {
+    public function _option( $attr, $content = '' ) {
         global $_M;
         $type   = isset($attr['type']) ? $attr['type'] : 'page';
         $php    = <<<str
 <?php
-    \$search = load::sys_class('label', 'new')->get('search')->get_search_opotion($type, \$data['classnow'], \$data['page']);
+    \$search = load::sys_class('label', 'new')->get('search')->get_search_opotion('$type', \$data['classnow'], \$data['page']);
 ?>
 str;
         return $php;

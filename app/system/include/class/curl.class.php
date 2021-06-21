@@ -62,7 +62,7 @@ class curl
      * @param  string $timeout 超时时间，默认30秒
      * @return string            返回请求信息
      */
-    public function curl_post($post, $timeout = 30)
+    public function curl_post($post = array(), $timeout = 30)
     {
         global $_M;
         if (get_extension_funcs('curl') && function_exists('curl_init') && function_exists('curl_setopt') && function_exists('curl_exec') && function_exists('curl_close')) {
@@ -90,7 +90,7 @@ class curl
                 $post_data = $post;
                 $post = '';
                 @ini_set("default_socket_timeout", $timeout);
-                while (list($k, $v) = each($post_data)) {
+                foreach ($post_data as $k => $v) {
                     $post .= rawurlencode($k) . "=" . rawurlencode($v) . "&";
                 }
                 $post = substr($post, 0, -1);

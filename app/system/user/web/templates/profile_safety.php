@@ -5,7 +5,6 @@ defined('IN_MET') or exit('No permission');
 $data['page_title']=$_M['word']['accsafe'].$data['page_title'];
 ?>
 <include file="sys_web/head"/>
-<include file="app/style"/>
 <div class="page bg-pagebg1 member-profile met-member">
     <div class="container">
         <div class="page-content row">

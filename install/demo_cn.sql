@@ -210,7 +210,7 @@ INSERT INTO `met_flash` VALUES (3, ',34,39,', '', '../upload/201801/1516068919.j
 
 INSERT INTO met_flash_button VALUES(1,'1','网站模板','https://www.metinfo.cn/product/','0','','','#ffffff','#ffffe0','','0','0','1','cn');
 INSERT INTO met_flash_button VALUES(2,'1','系统下载','https://www.metinfo.cn/download/','0','','','#ffffff','#ffffe0','','1','1','1','cn');
-INSERT INTO met_flash_button VALUES(3,'2','99元建站套餐','https://www.mituo.cn/99jz/','0','#ffffff','','#ffd700','#ffffff','','0','0','1','cn');
+INSERT INTO met_flash_button VALUES(3,'2','建站套餐','https://www.mituo.cn/eweb/','0','#ffffff','','#ffd700','#ffffff','','0','0','1','cn');
 INSERT INTO met_flash_button VALUES(4,'1','10合1建站','https://www.mituo.cn/10he1/','0','','','#ffffff','#ffffe0','','0','2','1','cn');
 
 

@@ -4,12 +4,10 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-seo">
-  <form method="POST" action="{$url.site_admin}?n=html&c=html&a=doSaveSetup" class="static-form mt-3"
+  <form method="POST" action="{$url.site_admin}?n=html&c=html&a=doSaveSetup" class="static-form"
     data-submit-ajax="1" data-validate_order="#static-form">
     <div class="metadmin-fmbx">
-      <div class="flex justify-content-between">
-        <h3 class="example-title">{$word.unitytxt_1}</h3>
-      </div>
+      <h3 class="example-title">{$word.unitytxt_1}</h3>
       <dl>
         <dt>
           <label class="form-control-label">{$word.sethtmok}</label>

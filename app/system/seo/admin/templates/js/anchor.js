@@ -1,10 +1,11 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
   renderTable()
   del()
   delAll()
   TEMPLOADFUNS[that.hash] = function() {
-    that.table.ajax.reload()
+    that.table && that.table.ajax.reload()
   }
   function renderTable() {
     metui.use(['table', 'alertify'], function() {
@@ -26,7 +27,7 @@
                   `<input name="newwords" value="${val.newwords}" class="form-control" type="text"/>`,
                   `<input name="newtitle" value="${val.newtitle}" class="form-control" type="text"/>`,
                   `<input name="url" value="${val.url}" class="form-control" type="text"/>`,
-                  `<input name="num" value="${val.num}" class="form-control" type="text"/>`,
+                  `<input name="num" value="${val.num}" class="form-control text-center" type="text"/>`,
                   `<button class="btn btn-delete" data-id="${val.id}">${METLANG.delete}</button>`
                 ]
 
@@ -50,10 +51,10 @@
   }
   function add() {
     const btn_add = that.obj.find('.btn-add')
-    const tr_add = that.obj.find('.tr-add')
+    const tr_add = that.obj.find('#anchor-table tbody')
     btn_add.click(function() {
-      tr_add.before(that.obj.find('textarea[table-addlist-data]').val())
-      var $new_tr = tr_add.prev('tr')
+      tr_add.append(that.obj.find('textarea[table-addlist-data]').val())
+      var $new_tr = tr_add.find('tr:last-child')
       that.obj.find('#anchor-table tbody .dataTables_empty').hide()
       $new_tr.find('td:last-child').append(M.component.btn('cancel'))
     })

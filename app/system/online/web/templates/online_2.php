@@ -14,8 +14,8 @@
 }
 @media (max-width: 767px){
 .onlinebox_two .onlinebox_two_list{display: none;position: relative;}
-.onlinebox_two .onlineclose{font-style: initial;color: #fff;opacity: 1;position: absolute; right: -7px; top: -7px; border-radius: 50%; width: 15px;
-    height: 15px; display: block;font-size: 14px !important; font-family: arial;text-align: center; z-index: 10;}
+.onlinebox_two .onlineclose{font-style: initial;color: #fff;opacity: .8;position: absolute; right: -5px; top: -15px; border-radius: 50%; width: 25px;
+    height: 25px;line-height:25px; display: block;font-family: arial;z-index: 10;}
 }
 </style>
 <div id='onlinebox'  class="onlinebox onlinebox_two hide" m-type='online' m-id='online'>
@@ -23,7 +23,7 @@
 	</div>
 	<list data="$data['online_list']"></list>
 	<if value="$sub">
-		<div class="onlinebox_two_list"> <i class="onlineclose" style="background:{$c.met_online_color};">x</i>
+		<div class="onlinebox_two_list"> <i class="onlineclose font-size-20 text-xs-center" style="background:{$c.met_online_color};">x</i>
 			<list data="$data['online_list']" name="$v">
 				<if value="$v['type'] eq 4">
 					<div class="met-online-box">

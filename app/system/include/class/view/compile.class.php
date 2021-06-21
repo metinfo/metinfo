@@ -181,11 +181,34 @@ class compile
         $http_path = str_replace(PATH_WEB, '', $path);
         $info = pathinfo($http_path);
         $http_dir = $info['dirname'];
+        if (!$path) {
+            return '';
+        }
         $content = file_get_contents($path);
         $content = preg_replace_callback('/url\(["\']*([\.\/]*)([^:]*?)["\']*\)/', function ($match) use ($http_dir) {
             return "url('../../../" . $http_dir . '/' . $match[1] . $match[2] . "')";
         }, $content);
         return $content;
+    }
+
+    /**
+     * 替换系统url
+     * @return array
+     */
+    public function replace_sys_url()
+    {
+        global $_M;
+        $url = array();
+        $web_site = $_M['url']['web_site'];
+        foreach ($_M['url'] as $key => $val) {
+            if (in_array($key, array('web_site', 'admin_site'))) {
+                $url[$key] = $val;
+            }else{
+                $val = str_replace($web_site, '../', $val);
+                $url[$key] = $val;
+            }
+        }
+        return $url;
     }
 
     /**
@@ -198,6 +221,9 @@ class compile
         $config = $_M['config'];
 
         $config['met_footother'] = str_replace(array('../'), $_M['url']['site'], $config['met_footother']);
+        if ($config['met_icp_info']) {
+            $config['met_footother'] .= "<p><a href=\"https://beian.miit.gov.cn\" target=\"_blank\" title=\"工信部\" textvalue=\"{$config['met_icp_info']}\">{$config['met_icp_info']}</a></p>";
+        }
 
         $config['met_logo'] = str_replace(array('../', './'), '', $config['met_logo']);
         if (!strstr($config['met_logo'], 'http')) {
@@ -242,15 +268,46 @@ class compile
             $config['met_agents_copyright_foot'] = str_replace("<a ", "<a rel=nofollow ", $config['met_agents_copyright_foot']);
         }
 
-        if ($_M['config']['met_index_type'] == $_M['lang'] && (!$_M['config']['met_pseudo'] && !$_M['config']['met_defult_lang'])) {
-            $config['index_url'] = $config['met_weburl'];
-        } else {
-            if ($_M['config']['met_pseudo'] && !$_M['form']['pageset']) {
-                $config['index_url'] = $config['met_weburl'] . 'index-' . $_M['lang'] . '.html';
-            } else {
+        if ($_M['config']['met_pseudo']) {//开启伪静态
+            if ($_M['form']['pageset']) {//可视化试
+                $config['index_url'] = $config['met_weburl'] . 'index.php?lang=' . $_M['lang'];
+            }else{//开启伪静态前提访问
+                if ($_M['config']['met_defult_lang']) {//伪静态开启语言标识
+                    $config['index_url'] = $config['met_weburl'] . 'index-' . $_M['lang'] . '.html';
+                }else{//伪静态未开启语言标识
+                    if ($_M['config']['met_index_type'] == $_M['lang']) {
+                        $config['index_url'] = $config['met_weburl']; //伪静态默认语言
+                    }else{
+                        $config['index_url'] = $config['met_weburl'] . 'index-' . $_M['lang'] . '.html';//伪静态非默认语言
+                    }
+                }
+            }
+        }else{//动态url
+            if ($_M['config']['met_index_type'] == $_M['lang']) {
+                $config['index_url'] = $config['met_weburl'];
+            }else{
                 $config['index_url'] = $config['met_weburl'] . 'index.php?lang=' . $_M['lang'];
             }
         }
+
+//        if ($_M['config']['met_index_type'] == $_M['lang'] && !$_M['config']['met_pseudo']) {
+//            $config['index_url'] = $config['met_weburl'];
+//        } else {
+//            if ($_M['config']['met_pseudo'] && !$_M['form']['pageset']) {
+//                if ($_M['config']['met_defult_lang']) {
+//                    $config['index_url'] = $config['met_weburl'] . 'index-' . $_M['lang'] . '.html';//伪静态开启语言表示
+//                }else{
+//                    if ($_M['config']['met_index_type'] == $_M['lang']) {
+//                        $config['index_url'] = $config['met_weburl']; //伪静态默认语言
+//                    }else{
+//                        $config['index_url'] = $config['met_weburl'] . 'index-' . $_M['lang'] . '.html';//伪静态非默认语言
+//
+//                    }
+//                }
+//            } else {
+//                $config['index_url'] = $config['met_weburl'] . 'index.php?lang=' . $_M['lang'];
+//            }
+//        }
 
         if (($_M['form']['pageset'] && !strstr($config['index_url'], '?'))) {
             $config['index_url'] .= 'index.php?lang=' . $_M['lang'];
@@ -332,8 +389,8 @@ class compile
     public function replace_m($value)
     {
         global $_M;
-        return preg_replace_callback("/<m[\s_a-zA-Z=\d->]+<\/m>/", function ($match) {
-            return;
+        return preg_replace_callback("/<m[\s_a-zA-Z=\d\->]+<\/m>/", function ($match) {
+            return ;
         }, $value);
     }
 
@@ -343,7 +400,7 @@ class compile
         global $_M;
         $that = $this;
 
-        $new_output = preg_replace_callback("/(src|alt|value|title|placeholder|poster|data-name|data-title|data-fv-message|data-sub-html)=['\"]?([^\s\>]+)?(<m[\s_a-zA-Z=\d>-]+<\/m>)['\"]?/isu", function ($match) use ($that) {
+        $new_output = preg_replace_callback("/(src|alt|value|title|placeholder|poster|data\-name|data\-title|data\-fv\-message|data\-sub\-html)=['\"]?([^\s\>]+)?(<m[\s_a-zA-Z=\d>\-]+<\/m>)['\"]?/isu", function ($match) use ($that) {
             return $that->replace_m(trim($match[0]));
         }, $output);
         if ($new_output) {
@@ -394,10 +451,10 @@ class compile
         return $this->response;
     }
 
-    public function save_img_field($table = '', $field = '', $mid = '', $path = '')
+    public function save_img_field($table = '', $field = '', $id = '', $path = '')
     {
         global $_M;
-        $query = "UPDATE {$_M['table'][$table]} SET {$field} = '{$path}' WHERE id = {$mid} AND lang = '{$_M['lang']}'";
+        $query = "UPDATE {$_M['table'][$table]} SET {$field} = '{$path}' WHERE id = '{$id}' AND lang = '{$_M['lang']}'";
         return DB::query($query);
     }
 

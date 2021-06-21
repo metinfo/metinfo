@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 
 	var $ = require('jquery');
 	var common = require('common');
-		require('epl/select-linkage/jquery.cityselect');
+		require('plugins/select-linkage/jquery.cityselect');
 	exports.func = function(d){
 		d = d.find('.ftype_select-linkage .fbox');
 		d.each(function(){
@@ -12,9 +12,8 @@ define(function(require, exports, module) {
 				p = p?p:'';
 				c = c?c:undefined;
 				s = s?s:undefined;
-			var url = $(this).attr('data-selectdburl')?$(this).attr('data-selectdburl'):pubjspath+"plugins/select-linkage/city.min.php";
+			var url = $(this).attr('data-selectdburl')?$(this).attr('data-selectdburl'):siteurl+"public/plugins/select-linkage/citydata.min.json";
 			$(this).citySelect({url:url,prov:p, city:c, dist:s, nodata:"none"});
 		});
 	}
-
 });

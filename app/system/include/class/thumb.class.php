@@ -6,7 +6,7 @@ defined('IN_MET') or exit('No permission');
 
 load::sys_func('file.func.php');
 
-/** 
+/**
  * 缩略图类
  * @param string $thumb_width 	缩略图宽
  * @param string $thumb_height 	缩略图高
@@ -22,6 +22,7 @@ class thumb
     public $thumb_width = 400;
     public $thumb_height = 400;
     public $thumb_savepath = "";
+    public $thumb_savename = "";
     public $thumb_save_type = 1;
     public $thumb_bgcolor = '#FFFFFF';
     public $thumb_kind = 1;
@@ -68,6 +69,9 @@ class thumb
                 break;
             case 'thumb_kind';
                 $this->thumb_kind = $value;
+                break;
+            case '$thumb_savename';
+                $this->thumb_savename = $value;
                 break;
         }
     }
@@ -217,7 +221,7 @@ class thumb
 
         //检查原始是否文件存在并且得到原图信息
         $org_info = @getimagesize($thumb_src_image);//返回图片大小
-        if ($org_info[mime] == 'image/bmp') {//bmp图无法压缩
+        if ($org_info['mime'] == 'image/bmp') {//bmp图无法压缩
             return $this->error($_M['word']['upfileFail5']);
         }
         if (!$this->check_img_function($org_info[2])) {
@@ -304,9 +308,10 @@ class thumb
             return $this->error($_M['word']['upfileFail4']);
         }
 
-        $thumbname = $thumb_savepath . basename($thumb_src_image);
+        $thumb_savename = $this->thumb_savename ? $this->thumb_savename : end(explode('/', $thumb_src_image));
+        $thumbname = $thumb_savepath . $thumb_savename;
         //Create
-        switch ($org_info[mime]) {
+        switch ($org_info['mime']) {
             case 'image/gif':
                 if (function_exists('imagegif')) {
                     $re = imagegif($img_thumb, $thumbname);
@@ -391,30 +396,15 @@ class thumb
             $version = 0;
         } else {
             // 使用 gd_info() 函数取得当前安装的 GD 库的信息
-            if (PHP_VERSION >= '4.3') {
-                if (function_exists('gd_info')) {
-                    $ver_info = gd_info();
-                    preg_match('/\d/', $ver_info['GD Version'], $match);
-                    $version = $match[0];
-                } else {
-                    if (function_exists('imagecreatetruecolor')) {
-                        $version = 2;
-                    } else if (function_exists('imagecreate')) {
-                        $version = 1;
-                    }
-                }
+            if (function_exists('gd_info')) {
+                $ver_info = gd_info();
+                preg_match('/\d/', $ver_info['GD Version'], $match);
+                $version = $match[0];
             } else {
-                if (preg_match('/phpinfo/', ini_get('disable_functions'))) {
+                if (function_exists('imagecreatetruecolor')) {
+                    $version = 2;
+                } else if (function_exists('imagecreate')) {
                     $version = 1;
-                } else {
-                    // 使用 phpinfo() 函数
-                    ob_start();
-                    phpinfo(8);
-                    $info = ob_get_contents();
-                    ob_end_clean();
-                    $info = stristr($info, 'gd version');
-                    preg_match('/\d/', $info, $match);
-                    $version = $match[0];
                 }
             }
         }
@@ -430,35 +420,23 @@ class thumb
         switch ($img) {
             case 'image/gif':
             case 1:
-                if (PHP_VERSION >= '4.3') {
-                    return function_exists('imagecreatefromgif');
-                } else {
-                    return (imagetypes() & IMG_GIF) > 0;
-                }
+                return function_exists('imagecreatefromgif');
                 break;
 
             case 'image/pjpeg':
             case 'image/jpeg':
             case 2:
-                if (PHP_VERSION >= '4.3') {
-                    return function_exists('imagecreatefromjpeg');
-                } else {
-                    return (imagetypes() & IMG_JPG) > 0;
-                }
+                return function_exists('imagecreatefromjpeg');
                 break;
 
             case 'image/x-png':
             case 'image/png':
             case 3:
-                if (PHP_VERSION >= '4.3') {
-                    return function_exists('imagecreatefrompng');
-                } else {
-                    return (imagetypes() & IMG_PNG) > 0;
-                }
+                return function_exists('imagecreatefrompng');
                 break;
-
             default:
                 return false;
+                break;
         }
     }
 

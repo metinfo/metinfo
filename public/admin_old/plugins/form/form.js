@@ -37,7 +37,7 @@ define(function(require, exports, module) {
 
 				/*不为空*/
 				if(d.attr('data-required')){
-					if(t=='input'||t=='text'||t=='password'||d[0].tagName=='TEXTAREA'){
+					if(t=='input'||t=='text'||t=='password'||t=='number'||d[0].tagName=='TEXTAREA'){
 						if(l==''){ j=1;e+=err[1]+'|$|'; }
 					}
 					if(d[0].tagName=='SELECT'){

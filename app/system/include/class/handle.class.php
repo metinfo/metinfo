@@ -28,17 +28,21 @@ class handle
         }
 
         $website = $_M['langlist']['web'][$lang]['link'];
-        if ($website) {
-            $url = $website.str_replace(array($_M['url']['web_site'], '../'), '', $url);
-        }else{
-            $url = $_M['url']['site'].str_replace(array($_M['url']['web_site'], '../'), '', $url);
+        if ($website && !$_M['form']['pageset']) {//非可视化 使用独立域名
+            $url = $website . str_replace(array($_M['url']['web_site'], '../'), '', $url);
+        } else {
+            $site = $_M['url']['site'];
+            if (defined('IN_ADMIN')) {
+                $site = $_M['url']['web_site'];
+            }
+            $url = $site . str_replace(array($_M['url']['web_site'], '../'), '', $url);
         }
         if ($_M['form']['pageset']) {
             if (strstr($url, '?')) {
                 $url .= '&pageset=1';
             } else {
                 if (substr($url, -1) == '/') {
-                    $url .= 'index.php?lang='.$_M['lang'].'&pageset=1';
+                    $url .= 'index.php?lang=' . $_M['lang'] . '&pageset=1';
                 }
             }
         }
@@ -223,51 +227,52 @@ class handle
     /**
      * url类型.
      *
-     * @param string $type      链接类型（1:动态，2:伪静态，3:静态）
+     * @param string $type 链接类型（1:动态，2:伪静态，3:静态）
      * @param string $page_type 页面类型（2:分页，1:列表页面，0:内容页面）
-     * @param string $pseudo    伪静态
-     * @param string $webhtm    静态
+     * @param string $pseudo 伪静态  0关闭|1开启
+     * @param string $webhtm 静态  0关闭静态|1首页、内容页面静态化|2全站静态
      *
      * @return int|string 链接类型（1:动态，2:伪静态，3:静态）
      */
     public function url_type($type = '', $page_type = '', $pseudo = '', $webhtm = '')
     {
         global $_M;
-        if ($pseudo === '') {//伪静态配置
-            $pseudo = $_M['config']['met_pseudo'];
-        }
-        if ($webhtm === '') {//静态配置
-            $webhtm = $_M['config']['met_webhtm'];
-        }
         if ($_M['form']['pageset']) { //可视化前置动态
             return 1;
         }
+
         if ($_M['form']['search'] && $page_type == 2) {//搜索状态下，列表页强制动态
             return 1;
         }
+
         if ($type) {
             return $type;
-        } else {
-            if ($page_type) {
-                if ($pseudo) {
-                    $type = 2;
-                } else {
-                    if ($webhtm == '2') {
-                        $type = 3;
-                    } else {
-                        $type = 1;
-                    }
-                }
+        }
+
+        //伪静态
+        if (!$pseudo) {//伪静态配置
+            $pseudo = $_M['config']['met_pseudo'];
+        }
+        if ($pseudo) {
+            return 2;
+        }
+
+        if (!$webhtm) {//静态配置
+            $webhtm = $_M['config']['met_webhtm'];  //0关闭静态|1首页、内容页面静态化|2全站静态
+        }
+
+        //页面类型（2:分页，1:列表页面，0:内容页面）
+        if ($page_type) {//列表页
+            if ($webhtm == '2') {//2全站静态
+                $type = 3;
             } else {
-                if ($pseudo) {
-                    $type = 2;
-                } else {
-                    if ($webhtm != 0) {
-                        $type = 3;
-                    } else {
-                        $type = 1;
-                    }
-                }
+                $type = 1;
+            }
+        } else {//内容页
+            if (!$webhtm) {
+                $type = 1;
+            } else {
+                $type = 3;
             }
         }
 
@@ -322,9 +327,13 @@ class handle
         return $new_content;
     }
 
-    public function redirectUrl($data)
+    public function redirectUrl($data = array())
     {
         global $_M;
+        if ($_M['form']['mituo'] == 1) {
+            return;
+        }
+
         if ($_M['form']['search'] == 'tag' && strstr(REQUEST_URI, '.php') && $_M['config']['met_pseudo']) {
             if ($data['module'] == 11) {
                 // 如果是标签的全站搜索，伪静态时跳转
@@ -357,35 +366,35 @@ class handle
         }
 
         $items = array(
-            array('mysqli_connect', 'danger', '支持', '函数未开启，网站程序无法使用mysql数据库',  '函数'),
-            array('zip', 'danger', '支持', '无法在线解压ZIP文件。（无法通过后台上传模板和数据备份文件）',  '模块'),
-            array('curl', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2450.html" target="_blank">帮助</a>',  '模块'),
-            array('file_get_contents', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2461.html" target="_blank">帮助</a>',  '函数'),
-            array('file_put_contents', 'danger', '支持', '系统无法写文件<a href="https://www.mituo.cn/qa/2462.html" target="_blank">帮助</a>',  '函数'),
-            array('file_uploads', 'danger', '支持', '无法上传文件<a href="https://www.mituo.cn/qa/2456.html" target="_blank">帮助</a>',  '配置'),
-            array('parse_ini_file', 'danger', '支持', '无法连接数据库<a href="https://www.mituo.cn/qa/2463.html" target="_blank">帮助</a>',  '函数'),
-            array('fopen', 'danger', '支持', '系统无法打开操作文件<a href="https://www.mituo.cn/qa/2460.html" target="_blank">帮助</a>',  '函数'),
-            array('mb_strlen', 'danger', '支持', '函数未开启，会导致前台显示不完整',  '函数'),
-            array('bccomp', 'danger', '支持', '函数未开启，会导致支付回调失效',  '函数'),
-            array('bcmath', 'danger', '支持', '会导致支付回调失效',  '模块'),
-            array('gd', 'danger', '支持', '图片打水印和缩略生成功能无法使用<a href="https://www.mituo.cn/qa/2453.html" target="_blank">帮助</a>',  '模块'),
-            array('copy', 'danger', '支持', '无法上传或复制文件<a href="https://www.mituo.cn/qa/2465.html" target="_blank">帮助</a>',  '函数'),
-            array('smtp', 'warning', '支持', '系统邮件功能无法使用<a href="https://www.mituo.cn/qa/2469.html" target="_blank">帮助</a>',  'smtp'),
-            array('rename', 'danger', '支持', '无法重命名文件<a href="https://www.mituo.cn/qa/2464.html" target="_blank">帮助</a>',  '函数'),
-            array('unlink', 'danger', '支持', '函数未开启，无法清除缓存<a href="https://www.mituo.cn/qa/2467.html" target="_blank">帮助</a>',  '函数'),
-            array('opendir', 'danger', '支持', '无法列出目录下文件',  '函数'),
-            array('scandir', 'danger', '支持', '无法列出目录下文件<a href="https://www.mituo.cn/qa/2466.html" target="_blank">[帮助]</a>',  '函数'),
-            array('curl_exec', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2468.html" target="_blank">[帮助]</a>',  '函数'),
-            array('woff2', 'warning', '支持', '无法进行可视化编辑<a href="https://www.mituo.cn/qa/2446.html" target="_blank">[帮助]</a>',  'woff2'),
-            array('PHP', 'danger', PHP_VERSION, 'php版本需要在5.3到7.2之间，否则无法安装使用程序', 'php'),
-            array('openssl', 'warning', OPENSSL_VERSION_TEXT, OPENSSL_VERSION_TEXT.'模块未开启，无法发送邮件，且部分应用插件无法使用（如官方商城、一键导入微信文章等）<a href="https://www.mituo.cn/qa/2449.html" target="_blank">[帮助]</a>', 'openssl'),
+            array('mysqli_connect', 'danger', '支持', '函数未开启，网站程序无法使用mysql数据库', '函数'),
+            array('zip', 'danger', '支持', '无法在线解压ZIP文件。（无法通过后台上传模板和数据备份文件）<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '模块'),
+            array('curl', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2450.html" target="_blank">帮助</a>', '模块'),
+            array('file_get_contents', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2461.html" target="_blank">帮助</a>', '函数'),
+            array('file_put_contents', 'danger', '支持', '系统无法写文件<a href="https://www.mituo.cn/qa/2462.html" target="_blank">帮助</a>', '函数'),
+            array('file_uploads', 'danger', '支持', '无法上传文件<a href="https://www.mituo.cn/qa/2456.html" target="_blank">帮助</a>', '配置'),
+            array('parse_ini_file', 'danger', '支持', '无法连接数据库<a href="https://www.mituo.cn/qa/2463.html" target="_blank">帮助</a>', '函数'),
+            array('fopen', 'danger', '支持', '系统无法打开操作文件<a href="https://www.mituo.cn/qa/2460.html" target="_blank">帮助</a>', '函数'),
+            array('mb_strlen', 'danger', '支持', '函数未开启，会导致前台显示不完整<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '函数'),
+            array('bccomp', 'danger', '支持', '函数未开启，会导致支付回调失效<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '函数'),
+            array('bcmath', 'danger', '支持', '会导致支付回调失效<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '模块'),
+            array('gd', 'danger', '支持', '图片打水印和缩略生成功能无法使用<a href="https://www.mituo.cn/qa/2453.html" target="_blank">帮助</a>', '模块'),
+            array('copy', 'danger', '支持', '无法上传或复制文件<a href="https://www.mituo.cn/qa/2465.html" target="_blank">帮助</a>', '函数'),
+            array('smtp', 'warning', '支持', '系统邮件功能无法使用<a href="https://www.mituo.cn/qa/2469.html" target="_blank">帮助</a>', 'smtp'),
+            array('rename', 'danger', '支持', '无法重命名文件<a href="https://www.mituo.cn/qa/2464.html" target="_blank">帮助</a>', '函数'),
+            array('unlink', 'danger', '支持', '函数未开启，无法清除缓存<a href="https://www.mituo.cn/qa/2467.html" target="_blank">帮助</a>', '函数'),
+            array('opendir', 'danger', '支持', '无法列出目录下文件', '函数'),
+            array('scandir', 'danger', '支持', '无法列出目录下文件<a href="https://www.mituo.cn/qa/2466.html" target="_blank">[帮助]</a>', '函数'),
+            array('curl_exec', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2468.html" target="_blank">[帮助]</a>', '函数'),
+            array('woff2', 'warning', '支持', '不支持该文件类型<a href="https://www.mituo.cn/qa/2446.html" target="_blank">[帮助]</a>', 'woff2'),
+            array('PHP', 'danger', PHP_VERSION, 'php版本需要在5.3到8.0之间，否则无法安装使用程序', 'php'),
+            array('openssl', 'warning', OPENSSL_VERSION_TEXT, OPENSSL_VERSION_TEXT . '模块未开启，无法发送邮件，且部分应用插件无法使用（如官方商城、一键导入微信文章等）<a href="https://www.mituo.cn/qa/2449.html" target="_blank">[帮助]</a>', 'openssl'),
         );
 
         if (stristr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
             $items[] = array('伪静态', 'warning', '支持', '伪静态无法生效', 'apache');
         }
         if (!defined('IN_ADMIN')) {
-            $items[] = array('session', 'danger', '支持', '无法登录',  'session');
+            $items[] = array('session', 'danger', '支持', '无法登录', 'session');
         } else {
             $items[] = array('SQLite3', 'warning', '支持', '无法使用sqlite数据库，请到php.ini中开启', '类');
         }
@@ -403,7 +412,7 @@ class handle
                     $yes = strstr(OPENSSL_VERSION_TEXT, '1.');
                     break;
                 case 'php':
-                    $yes = version_compare(PHP_VERSION, '5.3.0', '>') && version_compare(PHP_VERSION, '7.3.0', '<');
+                    $yes = version_compare(PHP_VERSION, '5.3.0', '>') && version_compare(PHP_VERSION, '8.1.0', '<');
                     break;
                 case 'session':
                     $yes = session_id();
@@ -427,7 +436,7 @@ class handle
                     $yes = function_exists('fsockopen') || function_exists('pfsockopen') || function_exists('stream_socket_client');
                     break;
                 case 'woff2':
-                    $yes = @file_get_contents($site_url.'/public/fonts/font-awesome/metinfo-icon1.woff2');
+                    $yes = @file_get_contents('../public/fonts/font-awesome/metinfo-icon1.woff2');
                     break;
                 case '类':
                     $yes = class_exists($v[0]);

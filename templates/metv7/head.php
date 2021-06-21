@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div class='met-nav-btn'>
-                    <if value="$data[classnow] eq 10001">
+                    <if value="$data['classnow'] eq 10001">
                     <h1 hidden>{$c.met_webname}</h1>
                     <else/>
                     <if value="!$data['id'] || $data['module'] eq 1">
@@ -182,7 +182,7 @@
                                 <ul class="dropdown-menu dropdown-menu-left animate animate-reverse" id="met-langlist-dropdown" role="menu">
                                     <lang>
                                     <if value="$data['lang'] neq $v['mark']">
-                                    <a href="{$v.met_weburl}" title="{$v.name}" <if value="$v[newwindows] eq 1">target="_blank"</if> class='dropdown-item'>
+                                    <a href="{$v.met_weburl}" title="{$v.name}" <if value="$v['newwindows'] eq 1">target="_blank"</if> class='dropdown-item'>
                                         <if value="$lang['langlist1_icon_ok']">
                                         <img src="{$v.flag}" alt="{$v.name}" width="20">
                                         </if>
@@ -246,7 +246,7 @@
                                     <p class="animation-slide-bottom animation-delay-600" style='color:{$v.img_des_color};font-size: {$v.img_des_fontsize}px;'>{$v.img_des}</p>
                                     </if>
                                     <list data="$v['button']" name="$btn">
-                                        <a href="{$btn.but_url}" title="{$btn.but_text}" <if value="$btn['target']">target="_blank"</if> class="btn slick-btn <if value='$btn[is_mobile] eq 1'>pc<elseif value='$btn[is_mobile] eq 2'/>mobile</if>" infoset="{$btn.but_text_size}|{$btn.but_text_color}|{$btn.but_text_hover_color}|{$btn.but_color}|{$btn.but_hover_color}|{$btn.but_x}|{$btn.but_y}">{$btn.but_text}</a>
+                                        <a href="{$btn.but_url}" title="{$btn.but_text}" <if value="$btn['target']">target="_blank"</if> class="btn slick-btn <if value="$btn['is_mobile'] eq 1">pc<elseif value="$btn['is_mobile'] eq 2"/>mobile</if>" infoset="{$btn.but_text_size}|{$btn.but_text_color}|{$btn.but_text_hover_color}|{$btn.but_color}|{$btn.but_hover_color}|{$btn.but_x}|{$btn.but_y}">{$btn.but_text}</a>
                                     </list>
                                     </div>
                                 </div>
@@ -270,7 +270,7 @@
                                     <p class="animation-slide-bottom animation-delay-600" style='color:{$v.img_des_color_mobile};font-size: {$v.img_des_fontsize_mobile}px;'>{$v.img_des_mobile}</p>
                                     </if>
                                     <list data="$v['button']" name="$btn">
-                                        <a href="{$btn.but_url}" title="{$btn.but_text}" <if value="$btn['target']">target="_blank"</if> class="btn slick-btn <if value='$btn[is_mobile] eq 1'>pc<elseif value='$btn[is_mobile] eq 2'/>mobile</if>" infoset="{$btn.but_text_size}|{$btn.but_text_color}|{$btn.but_text_hover_color}|{$btn.but_color}|{$btn.but_hover_color}|{$btn.but_x}|{$btn.but_y}">{$btn.but_text}</a>
+                                        <a href="{$btn.but_url}" title="{$btn.but_text}" <if value="$btn['target']">target="_blank"</if> class="btn slick-btn <if value="$btn['is_mobile'] eq 1">pc<elseif value="$btn['is_mobile'] eq 2"/>mobile</if>" infoset="{$btn.but_text_size}|{$btn.but_text_color}|{$btn.but_text_hover_color}|{$btn.but_color}|{$btn.but_hover_color}|{$btn.but_x}|{$btn.but_y}">{$btn.but_text}</a>
                                     </list>
                                     </div>
                                 </div>

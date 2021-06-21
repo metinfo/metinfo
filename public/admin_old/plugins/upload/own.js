@@ -10,7 +10,7 @@ define(function(require, exports, module) {
 				server: basepath + 'index.php?c=uploadify&m=include&a=doupimg&lang='+lang,
 				pick: '#filePicker',
 				compress:{
-					width: 2000,
+					width: 2600,
 					height: 2000,
 					noCompressIfLarger: true
 				},
@@ -280,7 +280,7 @@ define(function(require, exports, module) {
 						multiple :dom.data('upload-many')?true:false,
 						},
 						compress:{
-							width: 2000,
+							width: 2600,
 							height: 2000,
 							noCompressIfLarger: true
 						},
@@ -324,7 +324,7 @@ define(function(require, exports, module) {
 		}
 		if(ik){
 			/*拖曳排序*/
-			require.async('epl/dragsort/jquery.dragsort-0.5.2.min',function(){
+			require.async('plugins/dragsort/jquery.dragsort',function(){
 				$('.ftype_upload ul.app-image-list').dragsort({
 					dragSelector: "li.sort a",
 					dragBetween: false ,

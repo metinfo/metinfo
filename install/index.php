@@ -48,8 +48,6 @@ class install
     {
         $action = $_GET['action'];
         if ($action == 'guide') {
-            $string = @file_get_contents('https://u.mituo.cn/api/metinfo/license');
-            file_put_contents('../upload/file/license.html', $string);
             if (!class_exists('SQLite3')) {
                 header('location:index.php?action=inspect');
                 die;
@@ -68,13 +66,12 @@ class install
                 }
                 break;
             case 'skipInstall':
-
                 if (!class_exists('SQLite3')) {
                     header('location:index.php?action=inspect');
                     die;
                 }
                 $data = array(
-                    'version' => '7.0.0',
+                    'version' => '7.3.0',
                     'db_type' => 'sqlite',
                     'info' => json_encode(array('php_ver' => PHP_VERSION)),
                 );
@@ -91,7 +88,6 @@ class install
                 header('location:../index.php');
                 break;
             default:
-
                 $_SESSION['install'] = 'metinfo';
                 $m_now_time = time();
                 $m_now_date = date('Y-m-d H:i:s', $m_now_time);
@@ -166,8 +162,8 @@ class install
                 $post_data = $post;
                 $post = '';
                 @ini_set('default_socket_timeout', $timeout);
-                while (list($k, $v) = each($post_data)) {
-                    $post .= rawurlencode($k) . '=' . rawurlencode($v) . '&';
+                foreach ($post_data as $k => $v) {
+                    $post .= rawurlencode($k) . "=" . rawurlencode($v) . "&";
                 }
                 $post = substr($post, 0, -1);
                 $len = strlen($post);
@@ -234,6 +230,13 @@ class install
 
         if ($setup == 1) {
             $db_prefix = trim($db_prefix);
+            $pattern = "/^\w+_$/is";
+            $res = preg_match($pattern, $db_prefix);
+            if (!$res) {
+                $this->error[] = '数据表前缀仅支持数字字母和下划线且使用“_”结尾';
+                $this->error();
+            }
+
             $this->db_prefix = $db_prefix;
             if (strstr($db_host, ':')) {
                 $arr = explode(':', $db_host);
@@ -467,14 +470,6 @@ class install
                 echo "<script type='text/javascript'> alert('请填写管理员信息！'); history.go(-1); </script>";
             }
 
-            if ($email_scribe == 1) {
-                $post = array(
-                    'id' => '67d6b20a0ee8352affc40bd275b55299df2e04aded66c4e4',
-                    't' => 'qf_booked_feedback',
-                    'to' => "$email",
-                );
-                $yj = curl_post1($post, 45);
-            }
             $regname = trim($regname);
             $regpwd = md5(trim($regpwd));
             $email = trim($email);
@@ -593,10 +588,8 @@ class install
 
             $data = array();
             $data['info'] = json_encode(array(
-                'email' => $email,
                 'webname' => $webname,
                 'keywords' => $webkeywords,
-                'tel' => $tel,
                 'php_ver' => PHP_VERSION,
                 'mysql_ver' => mysqli_get_server_info($link),
             ));
@@ -643,17 +636,19 @@ class install
     private function getFormData()
     {
         global $_M;
-        $_M['form'];
-        define('MAGIC_QUOTES_GPC', get_magic_quotes_gpc());
         isset($_REQUEST['GLOBALS']) && exit('Access Error');
         foreach ($_COOKIE as $key => $val) {
-            $_M['form'][$key] = $val;
+//            $_M['form'][$key] = $val;
+            $_M['form'][$key] = self::daddslashes($val);
         }
         foreach ($_GET as $key => $val) {
-            $_M['form'][$key] = $val;
+//            $_M['form'][$key] = $val;
+            $_M['form'][$key] = self::daddslashes($val);
         }
         foreach ($_POST as $key => $val) {
-            $_M['form'][$key] = $val;
+//            $_M['form'][$key] = $val;
+            $_M['form'][$key] = self::daddslashes($val);
+
         }
     }
 
@@ -690,54 +685,6 @@ class install
         }
     }
 
-    /**
-     * 初始化系统UI配置.
-     */
-    private function doInitialize($lang = '', $link = '')
-    {
-        echo '-->';
-        $style_list = $this->db_prefix . 'style_list';
-        $style_config = $this->db_prefix . 'style_config';
-        $metui_dir = '';
-        define('PATH_WEB', substr(dirname(__FILE__), 0, -7));
-        define('IN_MET', 1);
-
-        $query = "DELETE FROM {$style_list} WHERE lang='{$lang}'";
-        mysqli_query($link, $query);
-        $query = "DELETE FROM {$style_config} WHERE lang='{$lang}'";
-        mysqli_query($link, $query);
-
-        require_once '../app/system/style/include/class/style_op.class.php';
-        $style_op = new style_op();
-
-        $block_list = $list = array(
-            'head_nav',
-            'banner',
-            'online',
-            'head_nav',
-            'mobile_menu',
-            'page_list',
-            'page_detail',
-            'product_list_page',
-            'news_list_page',
-        );
-        foreach ($block_list as $key => $block) {
-            $ui_block = "$metui_dir/{$block}";
-            $type_list = scandir($ui_block);
-            foreach ($type_list as $k => $type) {
-                if ($type != '.' && $type != '..' && is_numeric($type)) {
-                    $install_res = $style_op->installMetui($block, $type, $lang);
-                }
-            }
-        }
-
-        $query = "UPDATE {$style_list} SET `effect` = 0 ";
-        DB::query($query);
-        $query = "UPDATE {$style_list} SET `effect` = 1 WHERE pid = 1";
-        DB::query($query);
-        die('OK');
-    }
-
     /***************/
 
     /**
@@ -765,17 +712,49 @@ class install
      *
      * @return array|string
      */
-    public function daddslashes($string, $force = 0)
+    public function daddslashes($string)
     {
-        !defined('MAGIC_QUOTES_GPC') && define('MAGIC_QUOTES_GPC', get_magic_quotes_gpc());
-        if (!MAGIC_QUOTES_GPC || $force) {
-            if (is_array($string)) {
-                foreach ($string as $key => $val) {
-                    $string[$key] = daddslashes($val, $force);
-                }
-            } else {
-                $string = addslashes($string);
+        if (is_array($string)) {
+            foreach ($string as $key => $val) {
+                $string[$key] = daddslashes($val);
             }
+        } else {
+            $string = self::sqlinsert($string);
+            $string = addslashes($string);
+        }
+
+        return $string;
+    }
+
+    private function sqlinsert($string)
+    {
+        if (is_array($string)) {
+            foreach ($string as $key => $val) {
+                $string[$key] = self::sqlinsert($val);
+            }
+        } else {
+            $string_old = $string;
+            $string = str_ireplace('*', '/', $string);
+            $string = str_ireplace('%5C', '/', $string);
+            $string = str_ireplace('%22', '/', $string);
+            $string = str_ireplace('%27', '/', $string);
+            $string = str_ireplace('%2A', '/', $string);
+            $string = str_ireplace('~', '/', $string);
+            $string = str_ireplace('select', "\sel\ect", $string);
+            $string = str_ireplace('insert', "\ins\ert", $string);
+            $string = str_ireplace('update', "\up\date", $string);
+            $string = str_ireplace('delete', "\de\lete", $string);
+            $string = str_ireplace('union', "\un\ion", $string);
+            $string = str_ireplace('into', "\in\to", $string);
+            $string = str_ireplace('load_file', "\load\_\file", $string);
+            $string = str_ireplace('outfile', "\out\file", $string);
+            $string = str_ireplace('sleep', "\sle\ep", $string);
+            $string = strip_tags($string);
+            if ($string_old != $string) {
+                $string = '';
+            }
+            $string = str_ireplace('\\', '/', $string);
+            $string = trim($string);
         }
 
         return $string;

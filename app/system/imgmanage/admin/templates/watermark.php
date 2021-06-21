@@ -1,4 +1,4 @@
-<form method="POST" action="{$url.own_name}c=imgmanager&a=doSaveWaterMark" class='watermark-form mt-3'
+<form method="POST" action="{$url.own_name}c=imgmanager&a=doSaveWaterMark" class='watermark-form'
   data-submit-ajax='1' id="watermark-form" data-validate_order="#watermark-form">
   <div class="metadmin-fmbx">
     <dl>

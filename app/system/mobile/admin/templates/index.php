@@ -45,8 +45,8 @@
         w()
       })(window)
     </script>
-  <link href="../app/system/mobile/admin/templates/css/app.2bf11a824fbb663c2339.css" rel="stylesheet"></head>
+  <link href="../app/system/mobile/admin/templates/css/app.66e9d3b136b0e165ad33.css" rel="stylesheet"></head>
   <body>
     <div id="app"></div>
-  <script type="text/javascript" src="../app/system/mobile/admin/templates/js/app.2bf11a82.js"></script></body>
+  <script type="text/javascript" src="../app/system/mobile/admin/templates/js/app.66e9d3b1.js"></script></body>
 </html>

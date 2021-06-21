@@ -23,7 +23,7 @@ class qq extends other {
 		global $_M;
 
 		$redirect_uri = $_M['url']['web_site'].'member/login.php?a=doother_login&type=qq';
-		$url .= "https://graph.qq.com/oauth2.0/authorize?";
+		$url = "https://graph.qq.com/oauth2.0/authorize?";
 		$url .= "client_id={$this->appid}";
 		$url .= "&redirect_uri=".urlencode($redirect_uri);
 		$url .= "&response_type=code";	
@@ -49,7 +49,7 @@ class qq extends other {
 				$data[$k] = $v;
 			}
 		}else{
-			$data = jsondecode($result);	
+            $data = json_decode($result, true);
 		}
 		if($this->error_curl($data)){
 			return false;
@@ -57,7 +57,7 @@ class qq extends other {
 		$url = "https://graph.qq.com/oauth2.0/me";
 		$send = array();
 		$send['access_token'] = $data['access_token'];
-		$result = jsondecode(str_replace('callback' , '',load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send)));
+		$result = json_decode(str_replace('callback' , '',load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send)),true);
 		if($this->error_curl($result)){
 			return false;
 		}
@@ -72,7 +72,7 @@ class qq extends other {
 		$send['access_token'] = $data['access_token'];
 		$send['oauth_consumer_key'] = $this->appid;
 		$send['openid'] = $data['openid'];
-		$data = jsondecode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send, 'get'));
+		$data = json_decode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send, 'get'),true);
 		$data['username'] = $data['nickname'];
 		if($this->error_curl($data)){
 			return false;

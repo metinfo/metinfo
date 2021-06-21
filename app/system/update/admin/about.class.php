@@ -137,6 +137,10 @@ class about extends admin
     {
         global $_M;
         $cms_version = $_M['form']['cms_version'];
+        $pattern = "/^[0-9\.]+$/";
+        if (!preg_match($pattern, $cms_version)) {
+            return false;
+        }
         $zipname = PATH_WEB.'cache/update/'.$cms_version.'.zip';
         if (!file_exists($zipname)) {
             echo json_encode(array('status' => 0, 'msg' => $_M['word']['updatenofile']));

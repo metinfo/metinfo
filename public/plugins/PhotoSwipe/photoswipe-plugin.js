@@ -1,3 +1,6 @@
+/*! PhotoSwipe plugin - v4.1.2 - 2017-04-05
+* http://photoswipe.com
+* Copyright (c) 2017 Dmitry Semenov; */
 $.initPhotoSwipeFromDOM = function(gallerySelector,medDom) {
     var parseThumbnailElements = function(el) {
         var thumbElements = $(medDom,el),

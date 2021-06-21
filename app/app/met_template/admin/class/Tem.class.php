@@ -47,7 +47,7 @@ class Tem
         return $temlist;
     }
 
-    public function updateUiList($skin_name)
+    public function updateUiList($skin_name = '')
     {
         global $_M;
         $tem_path = PATH_WEB.'templates/'.$skin_name;
@@ -93,7 +93,7 @@ class Tem
      *
      * @return array
      */
-    public function import($skin_name)
+    public function import($skin_name = '')
     {
         global $_M;
 
@@ -143,7 +143,7 @@ class Tem
      *
      * @param $skin_name
      */
-    public function importUi($skin_name)
+    public function importUi($skin_name = '')
     {
         global $_M;
         $json = PATH_WEB.'templates/'.$skin_name.'/ui.json';
@@ -165,7 +165,7 @@ class Tem
      *
      * @return string
      */
-    public function updateUi($skin_name, $ui)
+    public function updateUi($skin_name = '', $ui = array())
     {
         global $_M;
 
@@ -219,7 +219,7 @@ class Tem
      *
      * @return array
      */
-    public function downloadUI($skin_name, $ui_name, $update = 0)
+    public function downloadUI($skin_name = '', $ui_name = '', $update = 0)
     {
         global $_M;
         $ui_path = PATH_WEB.'templates/'.$skin_name.'/ui/'.$ui_name;
@@ -278,7 +278,7 @@ class Tem
     /**
      * 从线上下载安装模板
      */
-    public function install($skin_name)
+    public function install($skin_name = '')
     {
         global $_M;
 
@@ -293,7 +293,7 @@ class Tem
         return $local_ui;
     }
 
-    public function enable($skin_name, $status = 1)
+    public function enable($skin_name = '', $status = 1)
     {
         global $_M;
         // $this->update($skin_name);
@@ -311,7 +311,7 @@ class Tem
     /**
      * 切换到新语言启用模板，复制一份uiconfig配置到当前语言
      */
-    public function copyUiConfig($skin_name)
+    public function copyUiConfig($skin_name = '')
     {
         global $_M;
         $query = "SELECT * FROM {$_M['table']['ui_config']} WHERE skin_name = '{$skin_name}' AND lang = '{$_M['lang']}'";
@@ -336,7 +336,7 @@ class Tem
         }
     }
 
-    public function delete($skin_name)
+    public function delete($skin_name = '')
     {
         global $_M;
         $this->deleteSkin($skin_name);
@@ -347,7 +347,7 @@ class Tem
     /**
      * 检测模板和UI是否需要升级.
      */
-    public function check($skin_name)
+    public function check($skin_name = '')
     {
         global $_M;
 
@@ -363,7 +363,7 @@ class Tem
         return $uilist;
     }
 
-    public function update($skin_name)
+    public function update($skin_name = '')
     {
         global $_M;
 
@@ -391,7 +391,7 @@ class Tem
      *
      * @return bool|mixed
      */
-    public function checkUiUpdate($skin_name)
+    public function checkUiUpdate($skin_name = '')
     {
         global $_M;
         $uilist = $this->listSkinUi($skin_name);
@@ -443,7 +443,7 @@ class Tem
      *
      * @return array
      */
-    public function listSkinUi($skin_name)
+    public function listSkinUi($skin_name = '')
     {
         global $_M;
         $query = "SELECT * FROM {$_M['table']['ui_list']} WHERE skin_name = '{$skin_name}'";
@@ -458,7 +458,7 @@ class Tem
      *
      * @return mixed
      */
-    public function uiList($skin_name)
+    public function uiList($skin_name = '')
     {
         global $_M;
         $data = array(
@@ -482,7 +482,7 @@ class Tem
      *
      * @return mixed
      */
-    public function downloadData($skin_name, $piece)
+    public function downloadData($skin_name = '', $piece = '')
     {
         global $_M;
         // return array('status'=>200,'total'=>3,'piece'=>2);
@@ -508,7 +508,7 @@ class Tem
         }
     }
 
-    public function executeSql($query, $tablepre)
+    public function executeSql($query = '', $tablepre = '')
     {
         global $_M;
         $transfer = load::mod_class('databack/transfer', 'new');
@@ -556,7 +556,7 @@ class Tem
      *
      * @return array
      */
-    public function importData($skin_name, $piece)
+    public function importData($skin_name = '', $piece = '')
     {
         global $_M;
 
@@ -622,7 +622,7 @@ class Tem
         }
     }
 
-    private function createSkin($skin_name)
+    private function createSkin($skin_name = '')
     {
         global $_M;
         $query = "SELECT * FROM {$_M['table']['skin_table']} WHERE skin_name = '{$skin_name}'";
@@ -642,7 +642,7 @@ class Tem
         return DB::insert($_M['table']['skin_table'], $data);
     }
 
-    private function clearUI($skin_name)
+    private function clearUI($skin_name = '')
     {
         global $_M;
         $query = "DELETE FROM {$_M['table']['ui_list']} WHERE skin_name = '{$skin_name}'";
@@ -652,7 +652,7 @@ class Tem
         DB::query($query);
     }
 
-    public function updateSkinVersion($skin_name, $version)
+    public function updateSkinVersion($skin_name = '', $version = '')
     {
         global $_M;
         $query = "UPDATE {$_M['table']['skin_table']} SET ver='{$version}' WHERE skin_name = '{$skin_name}'";
@@ -761,7 +761,7 @@ class Tem
         return true;
     }
 
-    private function downloadTemplate($skin_name)
+    private function downloadTemplate($skin_name = '')
     {
         global $_M;
         $data = array(
@@ -788,7 +788,7 @@ class Tem
         return true;
     }
 
-    private function checkTemplateUpdate($skin_name)
+    private function checkTemplateUpdate($skin_name = '')
     {
         global $_M;
         self::downloadParse();
@@ -807,7 +807,7 @@ class Tem
         return $res['data'];
     }
 
-    private function getSkin($skin_name)
+    private function getSkin($skin_name = '')
     {
         global $_M;
         $query = "SELECT * FROM {$_M['table']['skin_table']} WHERE skin_name = '{$skin_name}'";
@@ -815,7 +815,7 @@ class Tem
         return DB::get_one($query);
     }
 
-    private function deleteSkin($skin_name)
+    private function deleteSkin($skin_name = '')
     {
         global $_M;
 
@@ -836,7 +836,7 @@ class Tem
         return DB::query($query);
     }
 
-    private function setCurrentSkin($skin_name)
+    private function setCurrentSkin($skin_name = '')
     {
         global $_M;
         if (!$this->checkUiParse() && strstr($skin_name, 'ui')) {

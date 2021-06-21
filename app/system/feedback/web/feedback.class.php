@@ -37,7 +37,7 @@ class feedback extends web
             if ($data['access'] && $_M['form']['html_filename']) {
                 $groupid = load::sys_class('auth', 'new')->encode($data['access']);
                 $data['access_code'] = $groupid;
-            }else{
+            } else {
                 $this->check($data['access']);
             }
 
@@ -50,10 +50,11 @@ class feedback extends web
             $this->seo_title($data['ctitle']);
             // $this->seo_title($_M['config']['met_fdtable']);
             $this->add_input('fdtitle', $data['name']);
-            if ($_M['form']['fdtitle']) {
+            if ($_M['form']['fdtitle']) {//产品询价
                 $this->input['url'] = $this->input['url'] . "?fdtitle={$_M['form']['fdtitle']}";
+            }else{
+                load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
             }
-            load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
 
             $this->template('tem/feedback');
         }
@@ -70,10 +71,11 @@ class feedback extends web
         $conlum_configs = $this->getClsaaConfig($classnow);
         $config_op = load::mod_class('config/config_op', 'new');
 
-        //验证码
         if (!$conlum_configs['met_fd_ok']) {
             okinfo(-1, $_M['word']['Feedback5']);
         }
+
+        //图形验证码
         if ($_M['config']['met_memberlogin_code']) {
             if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random'])) {
                 okinfo(-1, $_M['word']['membercode']);
@@ -109,7 +111,7 @@ class feedback extends web
 
                 $this->notice_by_sms($title);
             }
-            load::sys_class('session', 'new')->set('submit',time());
+            load::sys_class('session', 'new')->set('submit', time());
             okinfo(HTTP_REFERER, $_M['word']['Feedback4']);
         }
     }
@@ -136,28 +138,30 @@ class feedback extends web
     public function checkword()
     {
         global $_M;
-        $cvarray = explode("|", $_M['config']['met_fd_word']);  //系统关键词过滤
-        $cvarrayno = count($cvarray);
-        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter(8);
-        $cvok = false;
+        $met_fd_word = DB::get_one("select * from {$_M['table']['config']} where lang ='{$_M['form']['lang']}' and  name= 'met_fd_word' and columnid = 0");
+        $met_fd_word_arr = explode("|", $met_fd_word['value']);
+        if ($met_fd_word['value'] == '') {
+            return true;
+        }
+
+        $para_list = load::mod_class('parameter/parameter_database', 'new')->get_parameter(8);
         $content = '';
-        foreach ($paralist as $key => $val) {
+        foreach ($para_list as $key => $val) {
             $para = "para" . $val['id'];
             $content = $content . "-" . $_M['form'][$para];
         }
-        for ($i = 0; $i < $cvarrayno; $i++) {
-            if (strstr($content, $cvarray[$i])) {
-                $cvok = true;
-                $cv_word = $cvarray[$i];
-                break;
+
+        foreach ($met_fd_word_arr as $key => $word) {
+            if ($word == '') {
+                continue;
+            }
+
+            if (strstr($content, $word)) {
+                okinfo('javascript:history.back();', $word);
+                die();
             }
         }
-        $cv_word = "{$_M['word']['Feedback3']} [" . $cv_word . "] ";
-        if ($cvok == true) {
-            okinfo('javascript:history.back();', $cv_word);
-        } else {
-            return true;
-        }
+        return true;
     }
 
     /**
@@ -178,8 +182,8 @@ class feedback extends web
 
         $submit = load::sys_class('session', 'new')->get('submit');
         $time2 = time();
-        $timeok = (float) ($time2 - $time1);
-        $timeok2 = (float) ($time2 - $submit);
+        $timeok = (float)($time2 - $time1);
+        $timeok2 = (float)($time2 - $submit);
         $config_op = load::mod_class('config/config_op', 'new');
         $conlum_configs = $config_op->getColumnConfArry($classnow);
 
@@ -197,8 +201,12 @@ class feedback extends web
      */
     public function checkToken($id = '')
     {
+        return true;
         global $_M;
-        $s_token = load::sys_class('session', 'new')->get("form_token_{$id}");
+        if ($_M['config']['met_webhtm']) {
+            return true;
+        }
+        $s_token = load::sys_class('session', 'new')->get("fd_form_token_{$id}");
         $form_token = $_M['form']['form_token'];
         if (!$form_token || $s_token != $form_token) {
             okinfo('javascript:history.back();', 'forbidden');
@@ -236,7 +244,8 @@ class feedback extends web
             }
             $para = strip_tags($para);
             if ($val['type'] == 4) {
-                for ($i = 1; $i <= count($val['para_list']); $i++) {
+                $count = is_array($val['para_list']) ? count($val['para_list']) : 0;
+                for ($i = 1; $i <= $count; $i++) {
                     if ($info['para' . $val['id'] . '_' . $i]) {
                         $info['para' . $val['id']] = $info['para' . $val['id'] . '_' . $i];
                     }
@@ -334,19 +343,19 @@ class feedback extends web
 
         //必填属性验证
         foreach (array_keys($para) as $val) {
-            if ($para[$val]['wr_ok'] == 1 && in_array($val, $paraarr)) {
+            if ($para[$val]['wr_ok'] == 1 /*&& in_array($val, $paraarr)*/) {
                 if ($para[$val]['type'] == 5) {
-                    if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size'] ) {
+                    if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size']) {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
                         okinfo('javascript:history.back();', $info);
                     }
-                }else{
+                } else {
                     if ($_M['form']['para' . $val] == '') {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
                         okinfo('javascript:history.back();', $info);
                     }
                 }
-            
+
             }
         }
     }

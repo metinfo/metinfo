@@ -17,7 +17,6 @@ class job_tag extends tag
         $id = isset($attr['cid']) ? ($attr['cid'][0] == '$' ? $attr['cid']
             : "'{$attr['cid']}'") : 0;
         $php = <<<str
-
 <?php
     \$id = $id;
     \$result = load::sys_class('label', 'new')->get('job')->get_module_form_html(\$id);
@@ -47,7 +46,7 @@ str;
     \$num = $num;
     \$order = "$order";
     \$result = load::sys_class('label', 'new')->get('job')->get_list_page(\$cid, \$data['page']);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
 
      foreach(\$result as \$index=>\$v):
         \$v['sub']      = \$sub;

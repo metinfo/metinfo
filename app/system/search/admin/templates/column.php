@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 $checkbox_time = time();
 $data = $data['handle'];
 ?>
-<form method="POST" action="{$url.own_name}c=index&a=doSaveColumnSearch" class="info-form mt-3" data-submit-ajax="1">
+<form method="POST" action="{$url.own_name}c=index&a=doSaveColumnSearch" class="info-form" data-submit-ajax="1">
     <div class="metadmin-fmbx">
         <dl>
             <dt>

@@ -7,6 +7,7 @@ $_M['config']['own_active']=array(
     '0_2'=>$_M['config']['app_no']==0&&$_M['config']['own_order']==2?'active':''
 );
 ?>
+<include file="sys/user/web/templates/style"/>
 <div class="col-lg-3">
     <div class='dropdown m-b-15 hidden-lg-up met-sidebar-nav-mobile'>
         <button type="button" class="btn btn-primary btn-block dropdown-toggle met-sidebar-nav-active-name" data-toggle="dropdown"></button>

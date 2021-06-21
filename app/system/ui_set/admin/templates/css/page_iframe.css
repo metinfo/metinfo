@@ -1,5 +1,8 @@
 @charset "utf-8";
-/* 兼容样式 */
+/*
+兼容样式
+米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
+*/
 [hidden]{display: none !important;}
 /* 页面设置的按妞 */
 [m-id].set{border: 1px dashed #ccc !important;}

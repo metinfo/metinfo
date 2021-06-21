@@ -24,7 +24,7 @@ class feedback_handle extends base_handle
      * @param  string $feedback_list 反馈列表数组
      * @return array                 处理过后的反馈列表
      */
-    public function para_handle($feedback_list)
+    public function para_handle($feedback_lis = array())
     {
         global $_M;
         foreach ($feedback_list as $key => $val) {
@@ -38,7 +38,7 @@ class feedback_handle extends base_handle
      * @param  string $feedback 设置数组
      * @return array           处理过后的栏目图片数组
      */
-    public function one_para_handle($feedback)
+    public function one_para_handle($feedback = array())
     {
         global $_M;
         return $feedback;
@@ -49,7 +49,7 @@ class feedback_handle extends base_handle
      * @param  string $id 反馈栏目id
      * @return array           提交表单地址
      */
-    public function module_form_url($id)
+    public function module_form_url($id = '')
     {
         global $_M;
         $column = load::sys_class('label', 'new')->get('column')->get_column_id($id);

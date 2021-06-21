@@ -9,7 +9,8 @@ if($data['handle']){
 $table_order='bottommenu-list';
 $colspan=8;
 ?>
-<p class="text-danger">{$word.admin_menu1}</p>
+<div class='alert alert-primary'>{$word.admin_menu1}</div>
+<div class="metadmin-content-min bg-white p-4">
 <form method="POST" action="{$url.own_name}c=menu_admin&a=doSaveMenu" data-submit-ajax='1'>
 	<table class="table table-hover dataTable w-100 {$table_order}" id="{$table_order}" data-ajaxurl="{$url.own_name}c=menu_admin&a=doGetList" data-table-pageLength="1000" data-plugin="checkAll" data-datatable_order="#{$table_order}">
 		<thead>
@@ -17,7 +18,7 @@ $colspan=8;
 				<include file="pub/content_list/checkall_all"/>
 				<th width="150">{$word.button_text}</th>
 				<th>{$word.parameter10}</th>
-				<th data-table-columnclass="text-center">{$word.onlineimg}</th>
+				<th width="150" data-table-columnclass="text-center">{$word.onlineimg}</th>
 				<th width="100" data-table-columnclass="text-center" class="text-wrap">{$word.button_color}</th>
 				<th width="100" data-table-columnclass="text-center" class="text-wrap">{$word.text_color}</th>
 				<th width="50" data-table-columnclass="text-center">{$word.skinusenow}</th>
@@ -73,3 +74,4 @@ $colspan=8;
 		</tfoot>
 	</table>
 </form>
+</div>

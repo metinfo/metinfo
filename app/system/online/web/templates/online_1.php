@@ -2,21 +2,20 @@
 <style type="text/css">
 .onlinebox_one{background-color: transparent;box-shadow: none;}
 .onlinebox_one .online-item{width: 68px;height: 60px;margin-bottom: 2px; padding-top: 12px; position: relative;display: block;color: #ffffff;}
-.onlinebox_one .online-item:first-child{height: 20px;padding-top: 0px;}
 .onlinebox_one .online-item:nth-child(2){border-radius: 5px 5px 0px 0px;}
 .onlinebox_one .online-item:last-child{border-radius: 0px 0px 5px 5px;}
 .onlinebox_one .online-item i{font-size: 18px;}
 .onlinebox_one .onlinebox-open{border-radius: 5px;font-size: 22px;}
-.onlinebox_one .close{font-style: initial;color: #fff;opacity: 1;position: absolute; right: -7px; top: -7px; border-radius: 50%; width: 15px;
-    height: 15px; display: block;font-size: 14px !important; font-family: arial; }
+.onlinebox_one .close{font-style: initial;color: #fff;opacity: 1;position: absolute; right: -5px; top: -15px;z-index:1; border-radius: 50%; width: 25px;
+    height: 25px;line-height:25px; display: none;font-size: 20px !important; font-family: arial; }
 .onlinebox .onlinebox-open {display: block; cursor: pointer; padding: 0 10px; font-size: 18px; line-height: 40px; color: #fff; }
 @media (min-width: 768px){
 .onlinebox_one .onlinebox-open{display: none;}
-.onlinebox_one .online-item:first-child{display: none;}
 }
 @media (max-width: 767px){
 .onlinebox_one .online-item:first-child{border-radius: 5px 5px 0px 0px;}
 .onlinebox_one .onlinebox_one_list{display: none;}
+.onlinebox_one .close{display:block;}
 .onlinebox_one .online-item{width: 54px;height: 50px;font-size: 12px;padding-top: 6px;}
 .onlinebox_one .online-item i{font-size: 14px;}
 }
@@ -28,8 +27,8 @@
     <list data="$data['online_list']"></list>
     <if value="$sub">
     <div class="onlinebox_one_list">
-        <a class="online-item text-xs-center" style="background:{$c.met_online_color};" href="javascript:void(0)">
-            {$word.Online} <i class="close" style="background:{$c.met_online_color};">x</i>
+        <a href="javascript:void(0)" class="text-xs-center">
+            <i class="close" style="background:{$c.met_online_color};">x</i>
         </a>
         <list data="$data['online_list']" name="$v">
             <if value="$v['type'] eq 4">

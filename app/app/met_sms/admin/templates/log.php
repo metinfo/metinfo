@@ -4,9 +4,9 @@
 defined('IN_MET') or exit('No permission');
 $head_tab_active=2;
 $head_tab=array(
-	array(title=>"短信配置",url=>'#/app/met_sms'),
-	array(title=>"短信群发",url=>'#/app/met_sms/mass'),
-	array(title=>"发送记录",url=>'#/app/met_sms/log'),
+	array('title'=>"短信配置",'url'=>'#/app/met_sms'),
+	array('title'=>"短信群发",'url'=>'#/app/met_sms/mass'),
+	array('title'=>"发送记录",'url'=>'#/app/met_sms/log'),
 );
 ?>
 <div class="met_sms">
@@ -20,7 +20,7 @@ $head_tab=array(
   <div class="content">
     <div class="met_sms-list">
       <div class="met_sms-container hide">
-        <table class="dataTable table table-bordered table-hover w-100 mt-2" id="sms-table"
+        <table class="dataTable table table-hover w-100 mt-2" id="sms-table"
           data-ajaxurl="{$url.own_name}c=index&a=doLogs" data-table-pagelength="20"
           data-datatable_order="#sms-table">
           <thead>

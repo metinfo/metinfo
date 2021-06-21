@@ -154,11 +154,12 @@ class feedback_admin extends message_admin
         $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
 
         $keyword = $_M['form']['keyword'];
+        $checkok = $_M['form']['checkok'];
         $search_type = $_M['form']['search_type'];
         $orderby_hits = $_M['form']['orderby_hits'];
         $orderby_updatetime = $_M['form']['orderby_updatetime'];
 
-        $list = $this->_dojson_list($class1, $class2, $class3, $keyword, $search_type, $orderby_hits, $orderby_updatetime);
+        $list = $this->_dojson_list($class1, $class2, $class3, $keyword, $search_type, $checkok ,$orderby_hits, $orderby_updatetime);
         $redata['data'] = $list;
         $this->ajaxReturn($redata);
     }
@@ -166,7 +167,7 @@ class feedback_admin extends message_admin
     /**
      * 反馈分页数据
      */
-    public function _dojson_list($class1 = 0, $class2 = 0, $class3 = 0, $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '')
+    public function _dojson_list($class1 = '', $class2 = '', $class3 = '', $keyword = '', $search_type = '', $checkok = '', $orderby_hits = '', $orderby_updatetime = '')
     {
         global $_M;
         if ($class3) {
@@ -205,6 +206,10 @@ class feedback_admin extends message_admin
             case 2:
                 $where .= "and readok = '1'";
                 break;
+        }
+
+        if ($checkok) {
+            $where .= " AND checkok = '1' ";
         }
 
         //参数筛选
@@ -265,7 +270,7 @@ class feedback_admin extends message_admin
             foreach ($met_fd_showcol as $paraid) {
                 //$info_list = DB::get_one("select * from {$_M['table']['flist']} where listid='{$val['id']}' and paraid='{$paraid}' and lang='{$this->lang}'");
                 $info_list = $this->plist_database->select_by_listid_paraid($val['id'], $paraid);
-                $list['para_list']['para_' . $paraid] = $info_list['info'];
+                $list['para_list']['para_' . $paraid] = htmlspecialchars($info_list['info']);
             }
 
             $list['addtime'] = $val['addtime'];
@@ -340,6 +345,7 @@ class feedback_admin extends message_admin
                 $this->plist_database = load::mod_class('parameter/parameter_list_database', 'new');
                 $this->plist_database->construct($this->module);
                 $plist = $this->plist_database->select_by_listid_paraid($id, $para['id']);
+                $plist['info'] = htmlspecialchars($plist['info']);
                 if ($para['type'] == 5) {
                     $tag_a = str_replace('../', $_M['url']['web_site'], $plist['info']);
                     $plist['info'] = "<a href='$tag_a'  target='_blank'>$tag_a</a>";
@@ -533,25 +539,26 @@ class feedback_admin extends message_admin
      * @param string $value 值
      * @return mixed
      */
-    public function get_config_field($type = '', $value = '' ,$classmow = 0)
+    public function get_config_field($type = '', $value = '', $classnow = '')
     {
         global $_M;
-        $query = "SELECT * FROM {$_M['table']['parameter']} WHERE `lang`='{$_M['lang']}' AND `module`='{$this->module}' AND class1 = '{$classmow}' ";
-
-        if ($type && is_array($type)) {
-            $in = implode(',', $type);
-            $query .= " AND type IN ({$in}) ";
-        } else {
-            $query .= " AND `type`={$type} ";
-        }
-        $para = DB::get_all($query);
-
+        $class123 = $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($classnow);
+        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter($this->module, $class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
         $list = array();
         $unll = $_M['word']['please_choose'] ? $_M['word']['please_choose'] : '--';
         $list[] = array('name' => $unll, 'val' => '');
-        foreach ($para as $key => $val) {
-            $arr = array('name' => $val['name'], 'val' => $val['id']);
-            $list[] = $arr;
+        foreach ($paralist as $key => $val) {
+            if (is_array($type)) {
+                foreach ($type as $t) {
+                    if ($val['type'] == $t) {
+                        $list[] = array('name' => $val['name'], 'val' => $val['id']);
+                    }
+                }
+            }else{
+                if ($val['type'] == $type) {
+                    $list[] = array('name' => $val['name'], 'val' => $val['id']);
+                }
+            }
         }
         $redata['val'] = $value;
         $redata['options'] = $list;
@@ -596,10 +603,19 @@ class feedback_admin extends message_admin
                 $where .= " AND readok = '1' ";
                 break;
         }
-        if ($allid) {
-            $where .= " AND `id` in ({$allid}) ";
-        }
 
+        if ($allid) {
+            $allid = explode(',', $allid);
+            foreach ($allid as $_id) {
+                if (is_numeric($_id)) {
+                    $id_list[] = $_id;
+                }
+            }
+            if ($id_list) {
+                $id_list = implode(',', $id_list);
+                $where .= " AND `id` IN ({$id_list}) ";
+            }
+        }
 
         //参数筛选
         $para_fields = array();

@@ -1,5 +1,6 @@
-/*
-招聘模块
+/**
+ * 招聘模块
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	var that=$.extend(true,{}, admin_module);
@@ -12,8 +13,8 @@
 								edit_dataurl=thats.module+'/position_edit/?c='+thats.module+'_admin&a=doeditor&class1='+thats.data.class1+'&class2='+(thats.data.class2||'')+'&class3='+(thats.data.class3||'')+'&id=';
 							result.data && $.each(result.data, function(index, val) {
 								var status='';
-								if(parseInt(val.top_ok)) status+='<span class="badge font-weight-normal py-1 mx-1 badge-success">'+METLANG.top+'</span>';
-								if(!parseInt(val.displaytype)) status+='<span class="badge font-weight-normal py-1 mx-1 badge-secondary">'+METLANG.displaytype2+'</span>';
+								if(parseInt(val.top_ok)) status+='<span class="badge font-weight-normal mx-1 badge-success">'+METLANG.top+'</span>';
+								if(!parseInt(val.displaytype)) status+='<span class="badge font-weight-normal mx-1 badge-secondary">'+METLANG.displaytype2+'</span>';
 								val.count=parseInt(val.count);
 								!val.count && (val.count=METLANG.josAlways);
 								var item=[
@@ -121,7 +122,7 @@
 	});
 	// 简历列表下方导出按钮链接更新
     $(document).on('change','.select-job-export',function(event) {
-    	var $btn_job_export=$(this).next('.btn-job-export'),
+    	var $btn_job_export=$(this).parents('table').find('.btn-job-export'),
     		val=parseInt($(this).val()),
 			url='';
     	if(val){
@@ -135,7 +136,7 @@
     		}).each(function(index, el) {
     			url+='&'+$(this).attr('name')+'='+$(this).val();
     		});
-    	}
+		}
     	$btn_job_export.attr({href:$btn_job_export.attr('data-href')+url});
     });
     // 简历列表下方导出按钮点击判断

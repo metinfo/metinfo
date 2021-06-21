@@ -94,6 +94,7 @@ class index extends base_admin
         if (!file_exists(PATH_WEB . 'upload/file/license.html')) {
             $data['license'] = 0;
         }
+        
         $sys_json = parent::sys_json();
         $data = array_merge($data, $sys_json);
 
@@ -366,16 +367,16 @@ class index extends base_admin
         //列表页设置
         $m_now_time = time();
         $met_timetype = array(
-            array(value => 'Y-m-d H:i:s', name => date('Y-m-d H:i:s', $m_now_time)),
-            array(value => 'Y-m-d', name => date('Y-m-d', $m_now_time)),
-            array(value => 'Y/m/d', name => date('Y/m/d', $m_now_time)),
-            array(value => 'Ymd', name => date('Ymd', $m_now_time)),
-            array(value => 'Y-m', name => date('Y-m', $m_now_time)),
-            array(value => 'Y/m', name => date('Y/m', $m_now_time)),
-            array(value => 'Ym', name => date('Ym', $m_now_time)),
-            array(value => 'm-d', name => date('m-d', $m_now_time)),
-            array(value => 'm/d', name => date('m/d', $m_now_time)),
-            array(value => 'md', name => date('md', $m_now_time))
+            array('value' => 'Y-m-d H:i:s', 'name' => date('Y-m-d H:i:s', $m_now_time)),
+            array('value' => 'Y-m-d', 'name' => date('Y-m-d', $m_now_time)),
+            array('value' => 'Y/m/d', 'name' => date('Y/m/d', $m_now_time)),
+            array('value' => 'Ymd', 'name' => date('Ymd', $m_now_time)),
+            array('value' => 'Y-m', 'name' => date('Y-m', $m_now_time)),
+            array('value' => 'Y/m', 'name' => date('Y/m', $m_now_time)),
+            array('value' => 'Ym', 'name' => date('Ym', $m_now_time)),
+            array('value' => 'm-d', 'name' => date('m-d', $m_now_time)),
+            array('value' => 'm/d', 'name' => date('m/d', $m_now_time)),
+            array('value' => 'md', 'name' => date('md', $m_now_time))
         );
         return $met_timetype;
     }
@@ -425,14 +426,14 @@ class index extends base_admin
     public function dosave_img()
     {
         global $_M;
-        $mid = $_M['form']['id'];
+        $id = $_M['form']['id'];
         $table = $_M['form']['table'];
         $field = $_M['form']['field'];
         $new_img = $_M['form']['new_img'];
 
         if (strpos($new_img, PATH_WEB) === false) {
             $sys_compile = load::sys_class('view/sys_compile', 'new');
-            $update = $sys_compile->save_img_field($table, $field, $mid, $new_img);
+            $update = $sys_compile->save_img_field($table, $field, $id, $new_img);
 
             if ($_M['config']['met_big_wate'] && ($table == 'product' || $table == 'news' || $table == 'img')) {
                 $new_img = str_replace($_M['url']['site'], '', $new_img);
@@ -444,15 +445,12 @@ class index extends base_admin
                     if (!$mark_res['path']) {
                         $mark_res['path'] = $new_img;
                     }
-                    $sys_compile->save_img_field($table, $field, $mid, $mark_res['path']);
+                    $sys_compile->save_img_field($table, $field, $id, $mark_res['path']);
                 }
             }
-            $this->ajaxReturn(array('status' => intval($update)));
         }
-
         buffer::clearColumn();
-
-        $this->ajaxReturn(array('status' => 1));
+        $this->success(intval($update), $_M['word']['jsok']);
     }
 
     /**
@@ -705,7 +703,7 @@ class index extends base_admin
     public function doapplist()
     {
         global $_M;
-        $query = "select * from {$_M[table][applist]}";
+        $query = "select * from {$_M['table']['applist']}";
         $list = DB::get_all($query);
         $apphandle = load::mod_class('ui_set/class/config_app.class.php', 'new');
         $exception = array('0','50002');
@@ -728,7 +726,7 @@ class index extends base_admin
     public function dosave_pageset_nav()
     {
         global $_M;
-        $applist_show = explode(',', $_M[form][applist]);
+        $applist_show = explode(',', $_M['form']['applist']);
         $applist = $this->doapplist();
         foreach ($applist['applist'] as $key => $value) {
             $display = in_array($value[id], $applist_show) ? 2 : 1;
@@ -750,6 +748,9 @@ class index extends base_admin
         die('met_uiset_guide saved');
     }
 
+    /**
+     * 同意用户许可协议
+     */
     public function doagreement()
     {
         global $_M;
@@ -759,6 +760,16 @@ class index extends base_admin
             file_put_contents(PATH_WEB . 'upload/file/license.html', $string);
         }
         $this->success('');
+    }
+
+    /**
+     * 手机端获取系统插件开源许可协议
+     */
+    public function do_plugins_license()
+    {
+        global $_M;
+        $data = $this->get_plugins_license();
+        $this->success($data);
     }
 }
 

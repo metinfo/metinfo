@@ -2,16 +2,9 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$head_tab_active=2;
-$head_tab=array(
-	array(title=>$word['website_information'],url=>'#/webset'),
-	array(title=>$word['email_Settings'],url=>'#/webset/email'),
-	array(title=>$word['third_party_code'],url=>'#/webset/thirdparty')
-);
 ?>
 <div class="met-web-set">
-	<include file="pub/head_tab"/>
-	<form method="POST" action="{$url.own_name}c=thirdparty&a=doSaveThirdparty"  class='third-form mt-3' data-submit-ajax='1'>
+	<form method="POST" action="{$url.own_name}c=thirdparty&a=doSaveThirdparty"  class='third-form' data-submit-ajax='1'>
 		<div class="metadmin-fmbx">
 			<h3 class='example-title'>{$word.unitytxt_36}</h3>
 			<dl>

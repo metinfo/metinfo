@@ -1,13 +1,12 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
-  init()
-  getUserInfo()
   TEMPLOADFUNS[that.hash] = function() {
     init()
     getUserInfo()
   }
   function init() {
-    const row = that.obj.find('.met-myapp-list-row')
+    const row = that.obj.find('.met-myapp-list')
     that.obj.find('.tab-pane').removeClass('p-4')
     row.html(M.component.loader({ height: '300px', class_name: 'w-100' }))
     $.ajax({
@@ -15,7 +14,7 @@
       type: 'GET',
       dataType: 'json',
       success: function(result) {
-        let data = (that.data = result.data.data)
+        let data = (that.data = result.data)
         renderList(data)
         installApp()
         search()
@@ -23,31 +22,32 @@
     })
   }
   function renderList(data) {
-    const row = that.obj.find('.met-myapp-list-row')
+    const row = that.obj.find('.met-myapp-list')
     let html = ''
     data.length > 0
       ? data.map(item => {
-          const card = `<div class="col col-6 col-xl-4" >
-    <div class="media" data-no="${item.product_code}" data-m_name="${item.m_name}">
-    <div class="body">
-    <a href="${item.show_url}" class="link w-100" target="_blank">
-    <img class="mr-3" src="${item.product_image}">
-    <div class="media-body ">
-      <h5 class="mt-0 mb-1">
-        ${item.product_name}
-      </h5>
-      <div class="card-text">${item.product_desc}</div>
-    </div>
-    </a>
-    </div>
-    <ul class="actions">
-    <li class="btn-install"><i class="fa fa-cloud-download"><span class="ml-2">${METLANG.appinstall}</span></i>
-  </ul>
-  </div>
-  </div>`
-          html = html + card
+          const card = `<div class="col col-6 col-xl-4 col-xxl-3 mb-3 px-2" >
+            <div class="media bg-white h-100  flex-column transition500" data-no="${item.product_code}" data-m_name="${item.m_name}">
+              <div class="body media-body w-100">
+                <a href="${item.show_url}" class="link w-100 d-flex"  title="${METLANG.fliptext1}" target="_blank">
+                  <img class="mr-3" width="70" height="70" src="${item.product_image}">
+                  <div class="media-body cover">
+                    <h5 class="h6 mt-1">
+                      ${item.product_name}
+                    </h5>
+                    <div class="card-text text-truncate">${item.product_desc}</div>
+                    <div class="card-text">运行环境：PHP ${item.php_version} 及以上版本</div>
+                  </div>
+                </a>
+              </div>
+              <ul class="actions w-100 d-flex ${item.enabled?'':'bg-grey'}">
+                <li class="${item.enabled?'btn-install':'text-help'}">${item.enabled?`<a href="javascript:;" class='d-block'><i class="fa fa-cloud-download"></i>`:''}<span class="${item.enabled?`ml-2`:'font-size-12'}">${item.btn_text}</span>${item.enabled?'</a>':''}</li>
+              </ul>
+            </div>
+          </div>`
+          html+=card;
         })
-      : (html = `<div class="text-center w-100">${METLANG.no_data}</div>`)
+      : (html = `<div class="text-center w-100">${METLANG.no_data}</div>`);
 
     row.html(html)
   }
@@ -71,10 +71,10 @@
             result: result,
             true_fun: function() {
               if (M.is_admin) {
-                window.location.href = M.url.admin + '#/myapp'
+                window.location.href = M.url.admin + '#/myapp/?head_tab_active=0'
                 return
               }
-              $('.pageset-nav-modal .nav-modal-item .met-headtab a[href="#/myapp"]').click()
+              $('.pageset-nav-modal .nav-modal-item[data-path="myapp"] .met-headtab a[data-url="myapp/myapp"]').click()
 
             },
             false_fun: function() {
@@ -114,7 +114,7 @@
       success: function(result) {
         if (result.status) {
           const user = $('.met-myapp-right')
-          const userHtml = `<div class="flex user">
+          const userHtml = `<div class="d-flex user">
             <div class="user-name">${result.data.username}</div>
             <a href="https://u.mituo.cn/#/user/login" target="_blank">${METLANG.account_Settings}</a>
             <button class="btn btn-logout">${METLANG.indexloginout}</button>
@@ -137,7 +137,7 @@
           })
         } else {
           const user = that.obj.find('.met-myapp-right')
-          const userHtml = `<a href="#/myapp/login" onClick="setCookie('app_href_source','${that.hash}')" class="mr-2">
+          const userHtml = `<a href="#/myapp/login" onClick="setCookie('app_href_source','myapp/?head_tab_active=1')" class="mr-2">
           <button class="btn btn-default" >
           ${METLANG.loginconfirm}
           </button>

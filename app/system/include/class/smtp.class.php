@@ -120,13 +120,13 @@ class smtp
     }
 
     #connect to the smtp server
-	if(function_exists(fsockopen)){
+	if(function_exists('fsockopen')){
 		$this->smtp_conn = fsockopen($host,    # the host of the server
 									$port,    # the port to use
 									$errno,   # error number if any
 									$errstr,  # error message if any
 									$tval);   # give up after ? secs
-	}elseif(function_exists(pfsockopen)){
+	}elseif(function_exists('pfsockopen')){
 	    $this->smtp_conn = pfsockopen($host,    # the host of the server
                                  $port,    # the port to use
                                  $errno,   # error number if any
@@ -357,43 +357,43 @@ class smtp
 
     $max_line_length = 998; # used below; set here for ease in change
 
-    while(list(,$line) = @each($lines)) {
-      $lines_out = null;
-      if($line == "" && $in_headers) {
-        $in_headers = false;
-      }
-      # ok we need to break this line up into several
-      # smaller lines
-      while(strlen($line) > $max_line_length) {
-        $pos = strrpos(substr($line,0,$max_line_length)," ");
-
-        # Patch to fix DOS attack
-        if(!$pos) {
-          $pos = $max_line_length - 1;
-        }
-
-        $lines_out[] = substr($line,0,$pos);
-        $line = substr($line,$pos + 1);
-        # if we are processing headers we need to
-        # add a LWSP-char to the front of the new line
-        # rfc 822 on long msg headers
-        if($in_headers) {
-          $line = "\t" . $line;
-        }
-      }
-      $lines_out[] = $line;
-
-      # now send the lines to the server
-      while(list(,$line_out) = @each($lines_out)) {
-        if(strlen($line_out) > 0)
-        {
-          if(substr($line_out, 0, 1) == ".") {
-            $line_out = "." . $line_out;
+      foreach ($lines as $key => $line) {
+          $lines_out = null;
+          if($line == "" && $in_headers) {
+              $in_headers = false;
           }
-        }
-        fputs($this->smtp_conn,$line_out . $this->CRLF);
+          # ok we need to break this line up into several
+          # smaller lines
+          while(strlen($line) > $max_line_length) {
+              $pos = strrpos(substr($line,0,$max_line_length)," ");
+
+              # Patch to fix DOS attack
+              if(!$pos) {
+                  $pos = $max_line_length - 1;
+              }
+
+              $lines_out[] = substr($line,0,$pos);
+              $line = substr($line,$pos + 1);
+              # if we are processing headers we need to
+              # add a LWSP-char to the front of the new line
+              # rfc 822 on long msg headers
+              if($in_headers) {
+                  $line = "\t" . $line;
+              }
+          }
+          $lines_out[] = $line;
+
+          # now send the lines to the server
+          foreach ($lines_out as $k => $line_out) {
+              if(strlen($line_out) > 0)
+              {
+                  if(substr($line_out, 0, 1) == ".") {
+                      $line_out = "." . $line_out;
+                  }
+              }
+              fputs($this->smtp_conn,$line_out . $this->CRLF);
+          }
       }
-    }
 
     # ok all the message data has been sent so lets get this
     # over with aleady
@@ -468,10 +468,9 @@ class smtp
 
     # parse the reply and place in our array to return to user
     $entries = explode($this->CRLF,$rply);
-    while(list(,$l) = @each($entries)) {
-      $list[] = substr($l,4);
-    }
-
+      foreach ($entries as $key => $l) {
+          $list[] = substr($l,4);
+      }
     return $list;
   }
 

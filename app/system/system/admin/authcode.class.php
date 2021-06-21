@@ -13,14 +13,14 @@ class authcode extends admin
     function __construct()
     {
         parent::__construct();
+        $this->sys_auth = load::mod_class('system/class/sys_auth', 'new');
     }
 
     public function doindex()
     {
         global $_M;
-        $auth = load::mod_class('system/class/auth', 'new');
-        if ($auth->have_auth()) {
-            $info = $auth->authinfo();
+        if ($this->sys_auth->have_auth()) {
+            $info = $this->sys_auth->authinfo();
         }
         return $info;
     }
@@ -28,10 +28,9 @@ class authcode extends admin
     public function doauth()
     {
         global $_M;
-        $auth = load::mod_class('system/class/auth', 'new');
         $redata['status'] = 1;
         $redata['msg'] = $_M['word']['jsok'];
-        if (!$auth->dl_auth($_M['form']['authpass'], $_M['form']['authcode'])) {
+        if (!$this->sys_auth->dl_auth($_M['form']['authpass'], $_M['form']['authcode'])) {
             $redata['status'] = 0;
             $redata['msg'] = $_M['word']['authTip2'];
         }

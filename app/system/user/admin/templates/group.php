@@ -9,12 +9,11 @@ defined('IN_MET') or exit('No permission');
     type="button"
     class="btn btn-primary btn-add"
   >
-  <i class="fa fa-plus mr-1"></i>
     {$word.added}
   </button>
 </div>
 <table
-	class="dataTable table table-bordered table-hover table-striped w-100 mt-2"
+	class="dataTable table table-hover w-100 mt-2"
 	id="group-table"
 	data-ajaxurl="{$url.own_name}c=admin_group&a=doGetUserGroup"
 	data-table-pagelength="1000"
@@ -29,7 +28,7 @@ defined('IN_MET') or exit('No permission');
               <label class="custom-control-label"></label>
             </div>
         </th>
-			<th width="150" data-table-columnclass="text-center">{$word.memberarayname}</th>
+			<th width="150">{$word.memberarayname}</th>
 			<th width="300" data-table-columnclass="text-center">{$word.usegroupauto1}</th>
 			<th width="300" data-table-columnclass="text-center">{$word.usegroupbuy}</th>
       <th width="300">

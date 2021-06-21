@@ -1,10 +1,11 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
 
     renderTable()
     delAll()
   TEMPLOADFUNS[that.hash] = function() {
-      renderTable()
+    that.table && that.table.ajax.reload();
   }
   function renderTable() {
     metui.use(['table', 'alertify'], function() {
@@ -61,6 +62,27 @@
         .cancelBtn(METLANG.cancel)
         .confirm(METLANG.delete_information, function(ev) {
           handleDel(ids)
+        })
+    })
+    $(document).on('click', '#logs-table .btn-clear-all', function() {
+      alertify
+        .okBtn(METLANG.confirm)
+        .cancelBtn(METLANG.cancel)
+        .confirm(METLANG.confirm+METLANG.delete+METLANG.operation_log+'？', function(ev) {
+          $.ajax({
+            url: M.url.admin + '?n=logs&c=index&a=doLogClean',
+            type: 'POST',
+            dataType: 'json',
+            success: function(result) {
+              metAjaxFun({
+                result: result,
+                true_fun: function() {
+                  that.obj.find('.checkall-all').removeAttr('checked')
+                  that.table.ajax.reload()
+                }
+              })
+            }
+          })
         })
     })
   }

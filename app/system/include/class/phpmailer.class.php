@@ -1391,38 +1391,40 @@ class phpmailer {
     $eol = "\r\n";
     $escape = '=';
     $output = '';
-    while( list(, $line) = each($lines) ) {
-      $linlen = strlen($line);
-      $newline = '';
-      for($i = 0; $i < $linlen; $i++) {
-        $c = substr( $line, $i, 1 );
-        $dec = ord( $c );
-        if ( ( $i == 0 ) && ( $dec == 46 ) ) { // convert first point in the line into =2E
-          $c = '=2E';
-        }
-        if ( $dec == 32 ) {
-          if ( $i == ( $linlen - 1 ) ) { // convert space at eol only
-            $c = '=20';
-          } else if ( $space_conv ) {
-            $c = '=20';
-          }
-        } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) { // always encode "\t", which is *not* required
-          $h2 = floor($dec/16);
-          $h1 = floor($dec%16);
-          $c = $escape.$hex[$h2].$hex[$h1];
-        }
-        if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
-          $output .= $newline.$escape.$eol; //  soft line break; " =\r\n" is okay
+
+      foreach ($lines as $key => $line) {
+
+          $linlen = strlen($line);
           $newline = '';
-          // check if newline first character will be point or not
-          if ( $dec == 46 ) {
-            $c = '=2E';
-          }
-        }
-        $newline .= $c;
-      } // end of for
-      $output .= $newline.$eol;
-    } // end of while
+          for($i = 0; $i < $linlen; $i++) {
+              $c = substr( $line, $i, 1 );
+              $dec = ord( $c );
+              if ( ( $i == 0 ) && ( $dec == 46 ) ) { // convert first point in the line into =2E
+                  $c = '=2E';
+              }
+              if ( $dec == 32 ) {
+                  if ( $i == ( $linlen - 1 ) ) { // convert space at eol only
+                      $c = '=20';
+                  } else if ( $space_conv ) {
+                      $c = '=20';
+                  }
+              } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) { // always encode "\t", which is *not* required
+                  $h2 = floor($dec/16);
+                  $h1 = floor($dec%16);
+                  $c = $escape.$hex[$h2].$hex[$h1];
+              }
+              if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
+                  $output .= $newline.$escape.$eol; //  soft line break; " =\r\n" is okay
+                  $newline = '';
+                  // check if newline first character will be point or not
+                  if ( $dec == 46 ) {
+                      $c = '=2E';
+                  }
+              }
+              $newline .= $c;
+          } // end of for
+          $output .= $newline.$eol;
+      }
     return $output;
   }
 

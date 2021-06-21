@@ -6,7 +6,6 @@ $data['page_title']=$_M['word']['memberIndex9'].$data['page_title'];
 $set_user_head=str_replace($_M['url']['site'], '../', $_M['user']['head']);
 ?>
 <include file="sys_web/head"/>
-<include file="app/style"/>
 <div class="page bg-pagebg1 met-member member-profile">
 	<div class="container">
 		<div class="page-content row">

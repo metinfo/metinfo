@@ -120,7 +120,7 @@
 #online li.clearFloat{float:none;clear:both;display:block;width:0;height:0;margin:0;padding:0;}
 #online li img{cursor:pointer;max-width: 100%;max-height: 100%;}
 #online li a{color:#555;text-decoration:none;}
-#online li a:hover{color:#4e97d9;}
+#online li a:hover{color:#26B1E7;}
 #online li h4{font-size:14px;line-height:1.8;}
 #online li .icon{cursor:pointer;width:107px;height:107px;border:3px solid transparent;position:absolute;top:0;left:0;z-index:2;background-repeat:no-repeat;}
 #online li:hover .icon,
@@ -132,3 +132,10 @@
 .online-top{overflow: hidden;margin-bottom: 10px;padding: 0 10px;font-size: 14px;}
 .online-tips{color: #f00;float: left;}
 .online-breadcrumb{float: right;}
+.alignBar-online{float: right;line-height: 20px;margin-top: 5px;}
+.alignBar-online>*{float: left;}
+.alignBar-online a{padding:0 5px;text-align: center;color: #555555;font-size: 18px;display: inline-block;height: 20px;}
+.alignBar-online a.sort-time{font-size: 12px;line-height: 8px;margin-top: 2px;}
+.alignBar-online a.sort-time i{line-height: 8px;}
+.alignBar-online a.active,
+.alignBar-online a:hover{color: #26b1e7;}

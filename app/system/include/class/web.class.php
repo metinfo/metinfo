@@ -27,7 +27,7 @@ class web extends common
         parent::__construct();
         global $_M;
         // 可视化窗口语言栏跳转后，整个可视化页面跳转到新语言
-        if (strstr($_SERVER['HTTP_REFERER'], $_M['url']['site_admin']) && strstr($_SERVER['HTTP_REFERER'], 'n=ui_set')) {
+        if (strstr($_SERVER['HTTP_REFERER'], $_M['url']['admin_site']) && strstr($_SERVER['HTTP_REFERER'], 'n=ui_set')) {
             preg_match('/lang=(\w+)/', $_COOKIE['page_iframe_url'], $prev_lang);
             if ($prev_lang && $prev_lang[1] != $_M['lang']) {
                 echo "<script>
@@ -41,7 +41,7 @@ class web extends common
         if (!strstr($_SERVER['HTTP_REFERER'], $_M['url']['web_site']) && strstr($_SERVER['QUERY_STRING'], 'pageset=1')) {
             $http = $this->checkHttps();
             $location = $http . $_SERVER['HTTP_HOST'] . str_replace(array('&pageset=1', '?pageset=1'), '', $_SERVER['REQUEST_URI']);
-            header('location:'.$location);
+            header('location:' . $location);
             die;
         }
 
@@ -52,6 +52,7 @@ class web extends common
         $this->sys_input();
 
         load::sys_class('user', 'new')->get_login_user_info(); //会员登录
+
         load::plugin('doweb'); //加载插件
         load::mod_class('user/user_url', 'new')->insert_m(); //会员模块url
 
@@ -74,9 +75,6 @@ class web extends common
     {
         global $_M;
         parent::load_form();
-        foreach ($_M['form'] as $key => $val) {
-            $_M['form'][$key] = sqlinsert($val);
-        }
         if ($_M['form']['id'] != '' && !is_numeric($_M['form']['id'])) {
             $_M['form']['id'] = '';
         }
@@ -100,10 +98,10 @@ class web extends common
     protected function load_url_unique()
     {
         global $_M;
-        $_M['url']['own_name'] = "{$_M['url']['site']}app/index.php?lang={$_M['lang']}&n=" . M_NAME . '&';
+        $_M['url']['own_name'] = "{$_M['url']['web_site']}app/index.php?lang={$_M['lang']}&n=" . M_NAME . '&';
         $_M['url']['own_form'] = $_M['url']['own_name'] . 'c=' . M_CLASS . '&';
-        if((M_NAME=='pay'||M_NAME=='shop') && !strstr($_M['url']['own_tem'], '/met/')){
-            $_M['url']['own_tem'].='met/';
+        if ((M_NAME == 'pay' || M_NAME == 'shop') && !strstr($_M['url']['own_tem'], '/met/')) {
+            $_M['url']['own_tem'] .= 'met/';
         }
     }
 
@@ -195,7 +193,7 @@ class web extends common
      * @param string $file
      * @param $data
      */
-    public function view($file, $data)
+    public function view($file = '', $data = array())
     {
         global $_M;
         if ($_M['config']['met_skin_user']) {
@@ -311,22 +309,6 @@ class web extends common
                 okinfo($_M['url']['site'] . 'index.php?lang=' . $_M['lang'], $_M['word']['systips2']);
             }
         }
-        // if($groupid != 0 && !get_met_cookie('metinfo_admin_name')){
-        // 	$user = $this->get_login_user_info();
-        // 	$gourl = $_M['gourl'] ? urlencode($_M['gourl']) : urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-        // 	$gourl = $gourl == -1 ? "":$gourl;
-        // 	if($_M['lang'] != $_M['config']['met_index_type']){
-        // 		$lang = "&lang={$_M['lang']}";
-        // 	}
-        // 	if($groupid == 0 && !$user){
-        // 		okinfo($_M['url']['site'].'member/login.php?gourl='.$gourl.$lang, '您没有权限访问这个内容！请登录后访问！');
-        // 	}
-
-        // 	$group = load::sys_class('group', 'new')->get_group($groupid);
-        // 	if($user['access'] < $group['access']){
-        // 		okinfo($_M['url']['site'].'index.php?gourl='.$gourl.$lang, '您没有权限访问这个内容！');
-        // 	}
-        // }
     }
 
     /**
@@ -344,7 +326,8 @@ class web extends common
     /**
      * 检测会员登陆状态 没登陆则跳转到用户登陆页面
      */
-    public function checkUserLogin(){
+    public function checkUserLogin()
+    {
         global $_M;
         $user = $this->get_login_user_info();
         if (!$user) {
@@ -378,12 +361,16 @@ class web extends common
             }
 
             $c = $column_lable->get_column_folder($folder);
-            $id = $c['id'];
+            if ($c) {
+                $id = $c['id'];
+            }else{
+                $mod = load::sys_class('handle', 'new')->file_to_mod($folder);
+                if (in_array($mod, array(2, 3, 4, 5))) {
+                    $c = $column_lable->get_first_column_by_module($mod, $_M['lang']);
+                    $id = $c['id'];
+                }
+            }
         }
-
-        /*if (!$column_lable->get_column_id($id) && $folder != 'search') {
-            abort();
-        }*/
 
         //获取三级栏目信息
         $c123_releclass = $column_lable->get_class123_reclass($id);
@@ -427,7 +414,7 @@ class web extends common
     protected function classExt($c = array())
     {
         global $_M;
-        $class_ext = load::mod_class('column_handle.class.php','new')->classExt($c);
+        $class_ext = load::mod_class('column_handle.class.php', 'new')->classExt($c);
 
         //分页条数
         $list_length = $class_ext['list_length'] ? $class_ext['list_length'] : 8;
@@ -460,7 +447,7 @@ class web extends common
     public function showpage($module)
     {
         global $_M;
-        define('SHOW_PAGE',true); //标记为详情页数据
+        define('SHOW_PAGE', true); //标记为详情页数据
         if ($_M['form']['pseudo_jump']) {
             if (!is_numeric($_M['form']['metid'])) {//根据静态页名称获取内容详情
                 $custom = load::sys_class('label', 'new')->get($module)->database->get_list_by_filename($_M['form']['metid']);
@@ -470,10 +457,15 @@ class web extends common
         }
 
         $data = load::sys_class('label', 'new')->get($module)->get_one_list_contents($_M['form']['id']);
-        $classnow = $data['class3'] ? $data['class3'] : ($data['class2'] ? $data['class2'] : $data['class1']);
-        $this->input_class($classnow);
         $data['updatetime'] = date($_M['config']['met_contenttime'], strtotime($data['original_updatetime']));
         $data['addtime'] = date($_M['config']['met_contenttime'], strtotime($data['original_addtime']));
+        $classnow = $data['class3'] ? $data['class3'] : ($data['class2'] ? $data['class2'] : $data['class1']);
+        $this->input_class($classnow);
+        $class_info = load::sys_class('label', 'new')->get('column')->get_column_id($classnow);
+        if ($class_info) {
+            $this->add_input('bigclass', $class_info['bigclass']);
+            $this->add_input('index_num', $class_info['index_num']);
+        }
 
         //产品模块数据处理
         if ($module == 'product') {
@@ -492,19 +484,18 @@ class web extends common
                 foreach ($data['contents'] as $key => $value) {
                     $data['contents'][$key]['content'] .= $comment_data;
                 }
-            } elseif (in_array($module,array('news','img','download'))) {
+            } elseif (in_array($module, array('news', 'img', 'download'))) {
                 $data['content'] .= $comment_data;
             }
         }
-
         //静态页权限验证
         if ($data['access'] && $_M['form']['html_filename']) {
             $groupid = load::sys_class('auth', 'new')->encode($data['access']);
             $data['access_code'] = $groupid;
-        }else{
+        } else {
             if ($_M['config']['met_access_open']) {
                 load::app_class('met_access/include/WebAccess', 'new')->check($data['id'], 2, $module);
-            }else{
+            } else {
                 $this->check($data['access']);
             }
         }
@@ -522,7 +513,7 @@ class web extends common
     public function listpage($module)
     {
         global $_M;
-        define('LIST_PAGE',true); //标记为列表页数据
+        define('LIST_PAGE', true); //标记为列表页数据
         if ($_M['form']['pseudo_jump']) {//详情页
             if ($_M['form']['list'] != 1) {
                 return 'show';
@@ -548,10 +539,10 @@ class web extends common
         if ($data['access'] && $_M['form']['html_filename']) {
             $groupid = load::sys_class('auth', 'new')->encode($data['access']);
             $data['access_code'] = $groupid;
-        }else{
+        } else {
             if ($_M['config']['met_access_open']) {
-                load::app_class('met_access/include/WebAccess', 'new')->check($data['id'], 2, $module);
-            }else{
+                load::app_class('met_access/include/WebAccess', 'new')->check($data['id'], 1, $module);
+            } else {
                 $this->check($data['access']);
             }
         }
@@ -563,7 +554,7 @@ class web extends common
         if ($_M['form']['search'] != 'tag') {
             $this->seo_title($data['ctitle']);
         }
-        if(isset($_M['form']['search'])){
+        if (isset($_M['form']['search'])) {
             $_M['config']['met_product_page'] = 0;
         }
         $this->add_input('page', $_M['form']['page']);
@@ -707,7 +698,7 @@ class web extends common
             if ($filename == '404.html') {//404页面生成
                 $output = str_replace('../', $_M['url']['web_site'], $output);
                 $output = str_replace(array('href=""', "href=''"), "href='{$_M['url']['web_site']}'", $output);
-            }else{
+            } else {
                 if (!$_M['config']['met_webhtm']) {//普通静态页面生成
                     jsoncallback(array('suc' => 0));
                 }

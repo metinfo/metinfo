@@ -221,25 +221,25 @@ $data['list']['thumb_detail_default']=explode('|', $data['list']['thumb_detail_d
 		</dl>
 		<?php
 		$upload=array(
-			title=>$word['columnImg1'],
-			name=>'indeximg',
-			value=>$data['list']['indeximg']
+			'title'=>$word['columnImg1'],
+			'name'=>'indeximg',
+			'value'=>$data['list']['indeximg']
 		);
 		?>
 		<include file="pub/content_details/upload"/>
 		<?php
 		$upload=array(
-			title=>$word['columnImg2'],
-			name=>'columnimg',
-			value=>$data['list']['columnimg']
+			'title'=>$word['columnImg2'],
+			'name'=>'columnimg',
+			'value'=>$data['list']['columnimg']
 		);
 		?>
 		<include file="pub/content_details/upload"/>
 		<?php
 		$iconset=array(
-			title=>$word['column_littleicon_v6'],
-			name=>'icon',
-			value=>$data['list']['icon']
+			'title'=>$word['column_littleicon_v6'],
+			'name'=>'icon',
+			'value'=>$data['list']['icon']
 		);
 		?>
 		<include file="pub/content_details/iconset"/>
@@ -285,8 +285,8 @@ $data['list']['thumb_detail_default']=explode('|', $data['list']['thumb_detail_d
 		<if value="$data['list']['module'] egt 2 && $data['list']['module'] elt 5">
 		<?php
 		$editor=array(
-			title=>$word['columnmappend'],
-			height=>150
+			'title'=>$word['columnmappend'],
+			'height'=>150
 		);
 		?>
 		<include file="pub/content_details/editor"/>

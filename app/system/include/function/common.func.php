@@ -32,28 +32,37 @@ function dump($vars, $label = '', $return = false)
     return null;
 }
 
+/**
+ * @param $vars
+ */
+function dd($vars = '')
+{
+    dump($vars);
+    die();
+}
+
 function getip()
 {
-    $IPaddress = '';
     if (isset($_SERVER)) {
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $IPaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $IPaddress = $_SERVER['HTTP_CLIENT_IP'];
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
         } else {
-            $IPaddress = $_SERVER['REMOTE_ADDR'];
+            $ip = $_SERVER['REMOTE_ADDR'];
         }
     } else {
         if (getenv('HTTP_X_FORWARDED_FOR')) {
-            $IPaddress = getenv('HTTP_X_FORWARDED_FOR');
+            $ip = getenv('HTTP_X_FORWARDED_FOR');
         } elseif (getenv('HTTP_CLIENT_IP')) {
-            $IPaddress = getenv('HTTP_CLIENT_IP');
+            $ip = getenv('HTTP_CLIENT_IP');
         } else {
-            $IPaddress = getenv('REMOTE_ADDR');
+            $ip = getenv('REMOTE_ADDR');
         }
     }
 
-    return daddslashes($IPaddress);
+    $ip = daddslashes($ip, 1) ?: '';
+    return $ip;
 }
 
 /**
@@ -84,10 +93,9 @@ function copykey($roc, $keyarray)
  *
  * @return array 返回处理好的字符串或数组
  */
-function daddslashes($string, $force = 0)
+function daddslashes($string, $force = 1)
 {
-    !defined('MAGIC_QUOTES_GPC') && define('MAGIC_QUOTES_GPC', get_magic_quotes_gpc());
-    if (!MAGIC_QUOTES_GPC || $force) {
+    if ($force) {
         if (is_array($string)) {
             foreach ($string as $key => $val) {
                 $string[$key] = daddslashes($val, $force);
@@ -119,9 +127,6 @@ function sqlinsert($string)
         }
     } else {
         $string_old = $string;
-        $string = str_ireplace('\\', '/', $string);
-        $string = str_ireplace('"', '/', $string);
-        $string = str_ireplace("'", '/', $string);
         $string = str_ireplace('*', '/', $string);
         $string = str_ireplace('%5C', '/', $string);
         $string = str_ireplace('%22', '/', $string);
@@ -141,6 +146,7 @@ function sqlinsert($string)
         if ($string_old != $string) {
             $string = '';
         }
+        $string = str_ireplace('\\', '/', $string);
         $string = trim($string);
     }
 
@@ -448,7 +454,10 @@ function met_substr($string, $start = 0, $len = 20, $end = '')
         $m = '';
     }
 
-    $string = preg_replace("/<m[\s_a-zA-Z=\d->]+<\/m>/", '', $string);
+    $res = preg_replace("/<m[\s_a-zA-Z=\d->]+<\/m>/", '', $string);
+    if ($res || is_string($res)) {
+        $string = $res;
+    }
     $con = mb_substr($string, $start, $len, 'utf-8');
     $con = $con.$m;
     if ($con != $string) {
@@ -487,6 +496,9 @@ function modname($module = '')
     global $_M;
     $metmodname = $module;
     switch ($module) {
+        case 0:
+            $metmodname = $_M['word']['modout'];
+            break;
         case 1:
             $metmodname = $_M['word']['mod1'];
             break;
@@ -533,12 +545,10 @@ function modname($module = '')
             $metmodname = $_M['word']['mod101'];
             break;
         default:
-            $query = "SELECT * FROM {$_M['table']['applist']}";
-            $app = DB::get_all($query);
-            foreach ($app as $key => $val) {
-                if ($module == $val['no']) {
-                    $metmodname=get_word($val['appname']);
-                }
+            $query = "SELECT * FROM {$_M['table']['applist']} WHERE no = '{$module}'";
+            $app = DB::get_one($query);
+            if ($app) {
+                $metmodname = get_word($app['appname']) ?: $app['appname'];
             }
             break;
     }
@@ -713,8 +723,9 @@ function api_curl($url, $data = array(), $timeout = 60)
     global $_M;
     $ch = curl_init();
     $data['user_key'] = $_M['config']['met_secret_key'];
-    $data['domain'] = $_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+    $data['domain'] = $_M['url']['web_site'];
     $data['cms_version'] = $_M['config']['metcms_v'];
+    
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -737,7 +748,7 @@ function down_curl($url, $data = array(), $path, $timeout = 20)
     global $_M;
     $ch = curl_init();
     $data['user_key'] = $_M['config']['met_secret_key'];
-    $data['domain'] = $_M['url']['site'];
+    $data['domain'] = $_M['url']['web_site'];
     $data['cms_version'] = $_M['config']['metcms_v'];
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -822,48 +833,10 @@ function abort()
  *
  * @return string 加密或解密后的字符串
  */
-function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0)
+function authcode($string = '', $operation = 'DECODE', $key = '', $expiry = 0)
 {
-    $ckey_length = 4;
-    $key = md5($key ? $key : UC_KEY);
-    $keya = md5(substr($key, 0, 16));
-    $keyb = md5(substr($key, 16, 16));
-    $keyc = $ckey_length ? ($operation == 'DECODE' ? substr($string, 0, $ckey_length) : substr(md5(microtime()), -$ckey_length)) : '';
-    $cryptkey = $keya.md5($keya.$keyc);
-    $key_length = strlen($cryptkey);
-    $string = $operation == 'DECODE' ? base64_decode(substr($string, $ckey_length)) : sprintf('%010d', $expiry ? $expiry + time() : 0).substr(md5($string.$keyb), 0, 16).$string;
-    $string_length = strlen($string);
-    $result = '';
-    $box = range(0, 255);
-    $rndkey = array();
-    for ($i = 0; $i <= 255; ++$i) {
-        $rndkey[$i] = ord($cryptkey[$i % $key_length]);
-    }
-    for ($j = $i = 0; $i < 256; ++$i) {
-        $j = ($j + $box[$i] + $rndkey[$i]) % 256;
-        $tmp = $box[$i];
-        $box[$i] = $box[$j];
-        $box[$j] = $tmp;
-    }
-
-    for ($a = $j = $i = 0; $i < $string_length; ++$i) {
-        $a = ($a + 1) % 256;
-        $j = ($j + $box[$a]) % 256;
-        $tmp = $box[$a];
-        $box[$a] = $box[$j];
-        $box[$j] = $tmp;
-        $result .= chr(ord($string[$i]) ^ ($box[($box[$a] + $box[$j]) % 256]));
-    }
-
-    if ($operation == 'DECODE') {
-        if ((substr($result, 0, 10) == 0 || substr($result, 0, 10) - time() > 0) && substr($result, 10, 16) == substr(md5(substr($result, 26).$keyb), 0, 16)) {
-            return substr($result, 26);
-        } else {
-            return '';
-        }
-    } else {
-        return $keyc.str_replace('=', '', base64_encode($result));
-    }
+    $result = load::sys_class('auth', 'new')->authcode($string, $operation, $key, $expiry);
+    return $result;
 }
 
 load::sys_func('compatible');

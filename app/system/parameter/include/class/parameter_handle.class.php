@@ -31,14 +31,15 @@ class parameter_handle extends handle
                 $val['para'] = "para{$val['id']}";// 兼容v5模板
                 $val['dataname'] = "para{$val['id']}";
                 $val['placeholder'] = $val['description']?$val['description']:$val['name'];
-                // $val['simplify'] = 0;
                 $val['type_html'] = '';
+                // $val['simplify'] = 0;
 
-                if ($simplify && ($val['type'] < 4 || $val['type'] == 8 || $val['type'] == 9)) {
+                if ($simplify && in_array($val['type'],array(1,2,3,5,8,9))) {
                     // $val['simplify'] = 1;
-                } else {
+                } else {//下拉|单选|多选|附件
                     $val['type_html'] = "<label class='control-label'>{$val['placeholder']}</label>";
                 }
+
                 $fv_type = '';
                 $wr_ok = $val['wr_ok'] ? "data-fv-notempty=\"true\" data-fv-message=\"{$_M['word']['Empty']}\"{$fv_type}" : '';
 
@@ -70,7 +71,7 @@ class parameter_handle extends handle
                             $val['type_html'] .= "</select>";
                         } else {
                             $val['type_html'] .= "<select name='{$val['dataname']}' class='form-control' {$wr_ok}>";
-                            $val['type_html'] .= "<option value=''>{$val['name']}</option>";
+                            $val['type_html'] .= "<option value=''>{$val['placeholder']}</option>";
                             foreach ($val['para_list'] as $key => $pv) {
                                 if (is_array($pv)) {
                                     if ($_M['form']['fdtitle'] == urldecode($pv['value'])) {
@@ -87,7 +88,7 @@ class parameter_handle extends handle
                         }
                         break;
                     case 3:
-                        $val['type_html'] .= "<textarea name='{$val[dataname]}' class='form-control' {$wr_ok} placeholder='{$val['placeholder']}' rows='5'></textarea>";
+                        $val['type_html'] .= "<textarea name='{$val['dataname']}' class='form-control' {$wr_ok} placeholder='{$val['placeholder']}' rows='5'></textarea>";
                         break;
                     case 4:
                         if ($val['related']) {
@@ -130,9 +131,6 @@ class parameter_handle extends handle
                             }
 
                         }
-                        if ($val['description']) {
-                            $val['type_html'] .= "<span class=\"help-block\">{$val['description']}</span>";
-                        }
                         break;
                     case 5:
                         $val['type_html'] .= "
@@ -140,10 +138,10 @@ class parameter_handle extends handle
  							<label class='input-group-btn'>
  								<span class='btn btn-primary btn-file'>
  									<i class='icon wb-upload'></i>
- 									<input type='file' name='{$val[dataname]}' {$wr_ok} multiple class='invisible'>
+ 									<input type='file' name='{$val['dataname']}' {$wr_ok} multiple class='invisible'>
  								</span>
  							</label>
- 							<input type='text' class='form-control' readonly=''>
+ 							<input type='text' class='form-control' placeholder='{$val['placeholder']}' readonly=''>
  						</div>";
                         break;
                     case 6:
@@ -186,14 +184,11 @@ class parameter_handle extends handle
                             }
 
                         }
-                        if ($val['description']) {
-                            $val['type_html'] .= "<span class=\"help-block\">{$val['description']}</span>";
-                        }
                         break;
                     case 8;
                         //电话
                         $fv_tel = " data-fv-phone='true' data-fv-phone-message='{$val['name']}{$_M['word']['formaterror']}'";
-                        $val['type_html'] .= "<input name='{$val[dataname]}' class='form-control' type='tel' placeholder='{$val['placeholder']}' {$fv_tel} {$wr_ok} />";
+                        $val['type_html'] .= "<input name='{$val['dataname']}' class='form-control' type='tel' placeholder='{$val['placeholder']}' {$fv_tel} {$wr_ok} />";
                         break;
                     case 9;
                         //邮箱

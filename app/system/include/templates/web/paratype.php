@@ -147,7 +147,7 @@ echo <<<EOT
 <!--
 EOT;
 		}else{
-			$val_list_length=count($val['list']);
+            $val_list_length = is_array($val['list']) ? count($val['list']) : 0;
 			$val['value']=array();
 			for ($i=0; $i < $val_list_length; $i++) {
 				$val['value'][]=$para['info_'.$val['id'].'_'.$i];

@@ -83,8 +83,8 @@ class base_handle extends handle
                 $src = 'src';
             }
 
-            if ($_M['config']['met_webhtm'] && $_M['form']['html_filename'] && $_M['form']['metinfonow'] == $_M['config']['met_member_force']) {//生成静态页
-                $content['hits'] = "<script type='text/javascript' class='met_hits' {$src}=\"{$_M['url']['site']}hits/?lang={$_M['lang']}&type={$this->contents_page_name}&vid={$content['id']}&list={$list}{$ajax}\"></script>";
+            if (($_M['config']['met_webhtm'] && $_M['form']['html_filename'] && $_M['form']['metinfonow'] == $_M['config']['met_member_force']) || $_M['config']['met_pseudo'] == 1) {//生成静态页
+                $content['hits'] = "<script type='text/javascript' class='met_hits' data-hits='{$content['hits']}' {$src}=\"{$_M['url']['site']}hits/?lang={$_M['lang']}&type={$this->contents_page_name}&vid={$content['id']}&list={$list}{$ajax}\"></script>";
             }
             //发布人 老模板兼容
             $content['issue'] = $content['publisher'];

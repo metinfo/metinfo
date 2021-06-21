@@ -56,7 +56,7 @@ class weixin extends other {
 		$send['secret'] = $this->appkey;
 		$send['grant_type'] = 'authorization_code';
 
-		$data = jsondecode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send));
+        $data = json_decode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send), true);
         //$data['unionid'] = $data['openid'];
 
 		if($this->error_curl($data)){
@@ -72,7 +72,7 @@ class weixin extends other {
 		$url = "https://api.weixin.qq.com/sns/userinfo";
 		$send['access_token'] = $data['access_token'];
 		$send['openid'] = $data['openid'];
-		$data = jsondecode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send, 'get'));
+        $data = json_decode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send, 'get'), true);
 		$data['username'] = $data['nickname'];
 		if($this->error_curl($data)){
 			return false;

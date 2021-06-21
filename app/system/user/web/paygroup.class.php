@@ -51,7 +51,7 @@ class paygroup extends web
         if ($data['no'] != $this->no) {
             return false;
         }
-        $paygroup = jsondecode(base64_decode($data['attach']));
+        $paygroup = json_decode(base64_decode($data['attach']), true);
 
         if (bccomp((float)$data['total_fee'], (float)$paygroup['price']) !== 0) {
             return false;

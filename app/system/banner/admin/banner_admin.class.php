@@ -29,14 +29,30 @@ class banner_admin extends base_admin
         $class2 = $array['class2'];
         $class3 = $array['class3'];
 
+        $sys_module = array();//系统模块
+        for ($i = 1; $i <= 20; $i++) {
+            $sys_module[] = $i;
+        }
+        $out_module = array(10104);//应用模块
+        $allow_module = array_merge($sys_module, $out_module);
+
         $columnlist = array();
         foreach ($class1 as $key => $col1) {
+            if (!in_array($col1['module'], $allow_module)) {
+                continue;
+            }
             if ($class2[$col1['id']]) {
                 $i = 0;
                 foreach ($class2[$col1['id']] as $key2 => $col2) {
+                    if (!in_array($col2['module'], $allow_module)) {
+                        continue;
+                    }
                     if ($class3[$col2['id']]) {
                         $j = 0;
                         foreach ($class3[$col2['id']] as $key3 => $col3) {
+                            if (!in_array($col3['module'], $allow_module) ) {
+                                continue;
+                            }
                             $col2['subcolumn'][$j] = $col3;
                             $j++;
                         }

@@ -139,7 +139,7 @@ INSERT INTO met_language VALUES (null, 'indexhtm', 'Static page generation', 1, 
 INSERT INTO met_language VALUES (null, 'indexhtmset', 'Static pages', 1, 73, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'indexcv', 'Resume parameter configuration', 1, 70, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'indexflash', 'Banner management', 1, 67, 4, 0, 'en');
-INSERT INTO met_language VALUES (null, 'indexbbs', 'Technical Support', 1, 63, 8, 0, 'en');
+INSERT INTO met_language VALUES (null, 'indexbbs', 'About', 1, 63, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'indexcode', 'Commercial authorization', 1, 61, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'indexlang', 'language settings', 1, 54, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'indexloginout', 'drop out', 1, 51, 8, 0, 'en');
@@ -256,7 +256,7 @@ INSERT INTO met_language VALUES (null, 'user_auto_register', 'Automatic registra
 INSERT INTO met_language VALUES (null, 'user_auto_register_tips', 'With this configuration enabled, users log in for the first time with social account, and the website member account is automatically generated and bound with social account information by the system.', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_QQinterconnect_v6', 'QQ interconnection', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips9_v6', 'Application (Management Center - login - create application - Web site)', 1, 0, 38, 0, 'en');
-INSERT INTO met_language VALUES (null, 'user_backurl_v6', 'token url', 1, 0, 38, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_backurl_v6', 'Authorization callback address', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips10_v6', 'WeChat open platform', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_Apply_v6', 'Apply', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips11_v6', 'Member logon for PC side', 1, 0, 38, 0, 'en');
@@ -274,6 +274,17 @@ INSERT INTO met_language VALUES (null, 'user_emailuse_v6','Mailbox has been boun
 INSERT INTO met_language VALUES (null, 'user_Accountstatus_v6','Account status', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_must_v6','Required', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_tips21_v6','The higher the value, the higher the reading authority', 1, 0, 38, 0, 'en');
+INSERT INTO met_language VALUES (NULL, 'member_agreement', 'User protocol function', '1', '0', '0', '0', 'en');
+INSERT INTO met_language VALUES (null, 'new_regist_admin_notice', 'Administrator notification', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_regist_mail_open', 'Email notification', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_regist_mail', 'Administrator mailbox', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_regist_sms_open', 'SMS notification', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_regist_sms', 'SMS notification number', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_login_box_position', 'Login box location', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_login_box_tips', 'The position of mobile phone is in the center', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_login_bg_range_set', 'Background validation page', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_login_bg_range_all_page', 'All pages of Member Center', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'user_login_bg_range_login_page', 'Login page only', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_Exportmember_v6','Export membership', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_Registratset_v6','Registration settings', 1, 0, 38, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_Regverificat_v6','Registration verification', 1, 0, 38, 0, 'en');
@@ -464,6 +475,7 @@ INSERT INTO met_language VALUES (null, 'setfootstat', 'Bottom code', 1, 11, 39, 
 INSERT INTO met_language VALUES (null, 'setfootOther', 'other information', 1, 10, 39, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setfootAddressCode', 'Address Postcode', 1, 8, 39, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setfootVersion', 'Copyright Information', 1, 7, 39, 0, 'en');
+INSERT INTO met_language VALUES (null, 'seticpinfo', '', 1, 10, 39, 0, 'en');
 INSERT INTO met_language VALUES (null, 'article6', 'parameter settings', 1, 6, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'article4', 'Sort the larger the value of the more front', 1, 4, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'article1', 'Optional attributes', 1, 1, 0, 0, 'en');
@@ -752,6 +764,8 @@ INSERT INTO met_language VALUES (null, 'setdbNotExist', 'file does not exist', 1
 INSERT INTO met_language VALUES (null, 'setdbArchiveOK', 'Compression successful', 1, 115, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setdbImportOK', 'Import successful', 1, 111, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setdbBackupOK', 'Database backup is completed!', 1, 109, 8, 0, 'en');
+INSERT INTO met_language VALUES (null, 'setBackuoNo', 'Database error', 1, 109, 8, 0, 'en');
+INSERT INTO met_language VALUES (null, 'setBackuoDiskFull', 'Disk full', 1, 109, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setdbTip2', 'Data can not be backed up to the server! Please check', 1, 104, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setdbTip3', 'Whether the directory is writable', 1, 105, 8, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setdbImportData', 'Import', 1, 101, 8, 0, 'en');
@@ -916,7 +930,7 @@ INSERT INTO met_language VALUES (null, 'success_payment', 'After payment is succ
 INSERT INTO met_language VALUES (null, 'latest_version', 'It is the latest version', 1, 0, 3, 0, 'en');
 INSERT INTO met_language VALUES (null, 'pay_success', 'payment successful', 1, 0, 3, 0, 'en');
 INSERT INTO met_language VALUES (null, 'be_updated', 'Can be updated to', 1, 0, 1, 0, 'en');
-INSERT INTO met_language VALUES (null, 'update_log', 'Update log', 1, 0, 1, 0, 'en');
+INSERT INTO met_language VALUES (null, 'update_log', 'About the system', 1, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'current_version', 'current version', 1, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'program_information', 'Program information', 1, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'system_maintenance', 'System maintenance', 1, 0, 0, 0, 'en');
@@ -1351,7 +1365,7 @@ INSERT INTO met_language VALUES (null, 'columnselect1', 'Select Category', 1, 0,
 INSERT INTO met_language VALUES (null, 'columnnofollow', 'Nofollow attribute', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'columnnofollowinfo', 'After checking, the website does not pass weights to the link URL.', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'feedbackinquiry', 'Online Inquiry', 1, 0, 0, 0, 'en');
-INSERT INTO met_language VALUES (null, 'feedbackinquiryinfo', 'A Feedback column has already opened this function. If you want to enable it in the current column, please close it in the open Feedback column first.', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'feedbackinquiryinfo', 'This option can only be turned on in one feedback column', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'feedbackinquiryinfo1', 'After opening the online inquiry, the product details page will automatically display the inquiry button.', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'webupate1', 'Website backup', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'webupate3', 'Decompression succeeded', 1, 0, 0, 0, 'en');
@@ -1439,7 +1453,6 @@ INSERT INTO `met_language` VALUES (NULL, 'buyCondition', 'Can be installed and u
 INSERT INTO met_language VALUES (null, 'thumb_size_list', 'List page thumbnail size', 1, 440, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'thumb_size_showpage', 'Details page thumbnail size', 1, 440, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'thumb_seting_tips', 'Details page thumbnail size and tabs should be set in Visual Editing Current Page Settings for corresponding columns', 1, 440, 0, 0, 'en');
-INSERT INTO `met_language` VALUES (NULL, 'member_agreement', 'User protocol function', '1', '0', '0', '0', 'en');
 INSERT INTO `met_language` VALUES (NULL, 'top_menu', 'Top menu', '1', '0', '0', '0', 'en');
 INSERT INTO `met_language` VALUES (NULL, 'admin_name_repeat', ' Administrator name cannot be repeated', '1', '0', '0', '0', 'en');
 INSERT INTO `met_language` VALUES (NULL, 'settings_tab', 'Settings tab', '1', '0', '0', '0', 'en');
@@ -1530,6 +1543,8 @@ INSERT INTO `met_language` VALUES (NULL, 'admin_manage1', 'Click on the left col
 INSERT INTO `met_language` VALUES (NULL, 'admin_menu1', 'This feature requires template support. Some templates come with a mobile phone menu at the bottom. Please set it in the visual interface.', '1', '0', '0', '0', 'en');
 /** 搜索模块 */
 INSERT INTO met_language VALUES (null, 'search_range', 'Search range', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'search_weight', 'Module sequencing', 1, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'search_weight_tips', 'Drag left and right to adjust the module sorting. The global search results will be displayed according to the order of modules', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'admin_search1', 'Specify a level column', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'admin_search2', 'Whether to open the search method', 1, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'admin_search3', 'Whether to link', 1, 0, 0, 0, 'en');

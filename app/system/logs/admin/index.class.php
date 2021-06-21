@@ -50,6 +50,14 @@ class index extends admin {
         $this->success('',$_M['word']['jsok']);
     }
 
+    public function doLogClean()
+    {
+        global $_M;
+        $sql = "DELETE FROM {$_M['table']['admin_logs']}";
+        DB::query($sql);
+        $this->success('',$_M['word']['jsok']);
+    }
+
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

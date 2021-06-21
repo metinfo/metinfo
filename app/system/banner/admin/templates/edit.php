@@ -48,20 +48,20 @@ if(!$data['banner']['height_m']){
 		</dl>
 		<?php
 		$upload=array(
-			title=>$word['setflashImgUrl'],
-			name=>'img_path',
-			value=>$data['banner']['img_path'],
-			required=>1,
-			tips=>$word['indexflashexplain4']
+			'title'=>$word['setflashImgUrl'],
+			'name'=>'img_path',
+			'value'=>$data['banner']['img_path'],
+			'required'=>1,
+			'tips'=>$word['indexflashexplain4']
 		);
 		?>
 		<include file="pub/content_details/upload"/>
 		<?php
 		$upload=array(
-			title=>$word['banner_setmobileImgUrl_v6'],
-			name=>'mobile_img_path',
-			value=>$data['banner']['mobile_img_path'],
-			tips=>$word['indexflashexplain4'].' '.$word['mobile_banner_tips1']
+			'title'=>$word['banner_setmobileImgUrl_v6'],
+			'name'=>'mobile_img_path',
+			'value'=>$data['banner']['mobile_img_path'],
+			'tips'=>$word['indexflashexplain4'].' '.$word['mobile_banner_tips1']
 		);
 		?>
 		<include file="pub/content_details/upload"/>
@@ -148,7 +148,7 @@ if(!$data['banner']['height_m']){
 				<span class="text-help ml-2">{$word.banner_needtempsupport_v6}</span>
 			</dd>
 		</dl>
-		<h3 class='example-title clearfix'><button type='button' data-toggle="collapse" data-target=".banner-details-other" class='btn btn-outline-primary btn-sm'>{$word.mobile_terminal_settings}<i class="icon fa-angle-right ml-2"></i></button></h3>
+		<h3 class='example-title clearfix'><button type='button' data-toggle="collapse" data-target=".banner-details-other" class='btn btn-outline-primary btn-sm'>{$word.mobile_terminal_settings}<i class="icon fa-caret-right ml-2"></i></button></h3>
 		<div class="collapse banner-details-other">
 			<dl>
 				<dt>

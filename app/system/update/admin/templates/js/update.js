@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
   getSystemInfo()
@@ -80,21 +81,28 @@
                   modalSize:'lg',
                   modalFullheight:1,
                   modal_class: '.update-warning-modal',
-                  modalBody: `<strong style="color:red;">${modalHTML}</strong>`,
+                  modalBody: `<div class="update-warning-modal-body font-weight-bold" style="color:red;">${modalHTML}</div>`,
                   modalNotext:'',
-                  modalOktext:METLANG.confirm,
+                  modalOktext:install?METLANG.appinstall:METLANG.databackup3,
                   modalFooterclass:'text-right',
-                  modalFooter: `<button type="button" class="btn btn-default mr-2" data-dismiss="modal">${METLANG.cancel}</button>
-                  ${install ? `<button type="button" class="btn btn-primary mr-2 btn-backup" >${METLANG.databackup4}</button>` : ''}`
+                  modalFooter: `<div class='text-danger tips'>请先仔细阅读安装提示，<span class="tips-scroll">将滚动条滚至底部，</span><span class="tips-other">并等待<span class="update-warning-modal-countdown"></span>秒后</span>方可点击${METLANG.databackup3}、${METLANG.databackup4}或${METLANG.appinstall}</div><button type="button" class="btn btn-default mr-2" data-dismiss="modal">${METLANG.cancel}</button>
+                  ${install ? `<button type="button" class="btn btn-primary mr-2 btn-backup">${METLANG.databackup4}</button>` : ''}`,
                 })
               )
               modal = $('.update-warning-modal')
               modal.modal()
+              var body_h=modal.find('.modal-body').height(),
+                content_h=$('.update-warning-modal-body').height();
+              modal.find('.modal-body').scroll(function(){
+                if($(this).scrollTop()+body_h>=content_h){
+                  !parseInt(modal.find('.modal-footer .update-warning-modal-countdown').html()) && modal.find('.modal-footer [data-ok],.btn-backup').removeAttr('disabled');
+                }
+              })
             } else {
               modal.modal()
             }
-            const btn_ok = $('.update-warning-modal [data-ok]')
-            const btn_backup = $('.update-warning-modal .btn-backup')
+            const btn_ok = modal.find('[data-ok]')
+            const btn_backup = modal.find('.btn-backup')
             btn_ok.off().on('click', function(event) {
               btn_ok.attr('disabled', true)
               if (install) {
@@ -245,6 +253,28 @@
       </div>
     `
       body.html(html)
+    }
+  }
+  M.component.modal_options['.update-warning-modal']={
+		callback:function(key){
+      var $tips_scroll=$(key+' .modal-footer .tips-scroll'),
+        $tips_other=$(key+' .modal-footer .tips-other'),
+        $countdown=$(key+' .modal-footer .update-warning-modal-countdown'),
+        $ok=$(key+' .modal-footer').find('[data-ok],.btn-backup'),
+        countdown=15,
+        interval=setInterval(() => {
+          countdown--;
+          $countdown.html(countdown);
+          if(countdown==0){
+            $tips_other.hide();
+            if($(key+' .modal-body').scrollTop()+$(key+' .modal-body').height()>=$('.update-warning-modal-body').height()) $ok.removeAttr('disabled');
+            clearInterval(interval);
+          }
+        }, 1000);
+      if($(key+' .modal-body').height()>=$('.update-warning-modal-body').height()) $tips_scroll.addClass('hide');
+      $tips_other.show();
+      $countdown.html(countdown);
+      $ok.attr({disabled:''});
     }
   }
 })()

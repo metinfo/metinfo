@@ -44,7 +44,7 @@ class index extends admin
         }
         $list['install'] = 0;
 
-        if (is_dir(PATH_WEB.'install')) {
+        if (is_dir(PATH_WEB . 'install')) {
             $list['install'] = 1;
         }
         $this->success($list);
@@ -54,7 +54,7 @@ class index extends admin
     public function doDelInstallFile()
     {
         global $_M;
-        $dir = PATH_WEB.'install';
+        $dir = PATH_WEB . 'install';
         if (is_dir($dir)) {
             deldir($dir);
             //写日志
@@ -70,15 +70,15 @@ class index extends admin
     public function clear_cache()
     {
         global $_M;
-        if (file_exists(PATH_WEB.'cache')) {
-            deldir(PATH_WEB.'cache', 1);
+        if (file_exists(PATH_WEB . 'cache')) {
+            deldir(PATH_WEB . 'cache', 1);
         }
         $no = $_M['config']['met_skin_user'];
-        $inc_file = PATH_WEB."templates/{$no}/metinfo.inc.php";
+        $inc_file = PATH_WEB . "templates/{$no}/metinfo.inc.php";
         if (file_exists($inc_file)) {
             require $inc_file;
             if (isset($template_type) && $template_type) {
-                deldir(PATH_WEB.'templates/'.$no.'/cache', 1);
+                deldir(PATH_WEB . 'templates/' . $no . '/cache', 1);
             }
         }
     }
@@ -120,8 +120,8 @@ class index extends admin
         //创始人才有权限修改后台目录名称
         $admin = admin_information();
         if ($admin['admin_group'] == 10000) {
-            if (is_string($new_admin) && $new_admin!='' && $new_admin != $old_admin && $current_admin == $old_admin) {
-                $new_admin_url = $_M['url']['site'] . $_M['form']['met_adminfile'];
+            if (is_string($new_admin) && $new_admin != '' && $new_admin != $old_admin && $current_admin == $old_admin) {
+                $new_admin_url = $_M['url']['web_site'] . $_M['form']['met_adminfile'];
                 //中文和特殊字符判断
                 if (preg_match("/[\x{4e00}-\x{9fa5}]+/u", $new_admin)) {
                     //写日志
@@ -169,55 +169,68 @@ class index extends admin
         $this->success($return_data, $_M['word']['jsok']);
     }
 
+    /**
+     * 切换数据库
+     */
     public function doSaveDatabase()
     {
         global $_M;
+        if (!in_array($_M['form']['db_type'], array('mysql', 'sqlite'))) {
+            $this->error('参数错误');
+        }
 
         $config = array();
         if ($_M['form']['db_type'] == $_M['config']['db_type']) {
             $this->success('', $_M['word']['jsok']);
         }
 
-        if ($_M['form']['db_type'] == 'sqlite') {
-            if (!class_exists('SQLite3')) {
-                $this->error('Class SQLite3 not found');
-            }
-            if (!file_exists(PATH_WEB.$_M['config']['db_name'])) {
-                $fp = fopen(PATH_WEB.$_M['config']['db_name'], 'w');
-                if (!$fp) {
-                    $this->error(PATH_WEB.$_M['config']['db_name'].' File creation failed');
+        switch ($_M['form']['db_type']) {
+            case 'sqlite':
+                if (!class_exists('SQLite3')) {
+                    $this->error('Class SQLite3 not found');
                 }
-                fclose($fp);
-            }
-            load::mod_class('databack/transfer', 'new')->mysqlExportSqlite();
-        }
-        if ($_M['form']['db_type'] == 'mysql') {
-            $config['con_db_host'] = $_M['form']['db_host'];
-            $config['con_db_port'] = $_M['form']['db_port'] ? $_M['form']['db_port'] : 3306;
-            $config['con_db_id'] = $_M['form']['db_username'];
-            $config['con_db_pass'] = $_M['form']['db_pass'];
-            $config['con_db_name'] = $_M['form']['db_name'];
-            $config['tablepre'] = $_M['form']['db_prefix'];
-
-            $db = mysqli_connect($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], '', $config['con_db_port']);
-            if (!$db) {
-                $this->error(mysqli_connect_error());
-            }
-
-            if (!@mysqli_select_db($db, $config['con_db_name'])) {
-                $res = mysqli_query($db, "CREATE DATABASE {$config['con_db_name']} ");
-                if (!$res) {
-                    $this->error('创建数据库失败: '.mysqli_error($db));
+                if (!file_exists(PATH_WEB . $_M['config']['db_name'])) {
+                    $fp = fopen(PATH_WEB . $_M['config']['db_name'], 'w');
+                    if (!$fp) {
+                        $this->error(PATH_WEB . $_M['config']['db_name'] . ' File creation failed');
+                    }
+                    fclose($fp);
                 }
-            }
-            $mysqli = @new mysqli($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], $config['con_db_name'], $config['con_db_port']);
-            if ($mysqli->connect_errno) {
-                $this->error($mysqli->connect_error);
-            }
+                load::mod_class('databack/transfer', 'new')->mysqlExportSqlite();
+                break;
+            case 'mysql':
+                $config['con_db_host'] = $_M['form']['db_host'];
+                $config['con_db_port'] = $_M['form']['db_port'] ? $_M['form']['db_port'] : 3306;
+                $config['con_db_id'] = $_M['form']['db_username'];
+                $config['con_db_pass'] = $_M['form']['db_pass'];
+                $config['con_db_name'] = $_M['form']['db_name'];
+                $config['tablepre'] = $_M['form']['db_prefix'];
 
-            mysqli_select_db($db, $config['con_db_name']);
-            load::mod_class('databack/transfer', 'new')->sqliteExportMysql($config);
+                $db = mysqli_connect($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], '', $config['con_db_port']);
+                if (!$db) {
+                    $this->error(mysqli_connect_error());
+                }
+
+                if (!@mysqli_select_db($db, $config['con_db_name'])) {
+                    $res = mysqli_query($db, "CREATE DATABASE {$config['con_db_name']} ");
+                    if (!$res) {
+                        $this->error('创建数据库失败: ' . mysqli_error($db));
+                    }
+                }
+                $mysqli = @new mysqli($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], $config['con_db_name'], $config['con_db_port']);
+                if ($mysqli->connect_errno) {
+                    $this->error($mysqli->connect_error);
+                }
+
+                mysqli_select_db($db, $config['con_db_name']);
+                load::mod_class('databack/transfer', 'new')->sqliteExportMysql($config);
+                break;
+            default:
+                $this->error('参数错误');
+                die();
+                break;
         }
+
         $config['db_type'] = $_M['form']['db_type'];
         setDbConfig($config);
         $this->success('', $_M['word']['jsok']);

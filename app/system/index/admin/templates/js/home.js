@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 (function(){
 	var that=$.extend(true,{}, admin_module);
 	// 后台文件夹安全提示
@@ -37,17 +38,15 @@
 			var html='';
 			$.each(result, function(index, val) {
 				var url='https://www.metinfo.cn/appstore/app'+val.id+'.html';
-				html+='<div class="col-12 col-sm-6 col-md-4 py-2 list-group-item-action">'
-					+'<div class="media">'
-						+'<a href="'+url+'" target="_blank" class="mr-3">'
-							+'<img class="media-object" src="'+val.icon+'" width="80">'
-						+'</a>'
-						+'<div class="media-body">'
-							+'<a href="'+url+'" target="_blank">'
-								+'<h4 class="mt-0 text-dark h6">'+val.appname+'</h4>'
+				html+='<div class="col-12 col-sm-6 col-md-4 py-2 px-2">'
+					+'<div class="media p-3 h-100 transition500">'
+						+'<a href="'+url+'" target="_blank" class="d-flex">'
+							+'<div><img class="mr-3" src="'+val.icon+'" width="80"></div>'
+							+'<div class="media-body">'
+								+'<h4 class="mt-0 h6">'+val.appname+'</h4>'
 								+'<div class="text-grey">'+val.info+'</div>'
-							+'</a>'
-						+'</div>'
+							+'</div>'
+						+'</a>'
 					+'</div>'
 				+'</div>';
 			});
@@ -57,7 +56,7 @@
 	// MetInfo 新闻
 	if($home_news_list.length){
 		metui.ajax({
-			url:$home_news_list.data('url'),
+			url:$home_news_list.data('url')+'&fromurl='+M.weburl,
 			type:'GET',
 			dataType:'jsonp',
 			jsonp: 'jsoncallback'

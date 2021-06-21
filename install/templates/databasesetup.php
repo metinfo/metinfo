@@ -3,6 +3,7 @@
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 echo <<<EOT
 -->
+<link href="../public/fonts/font-awesome/font-awesome.min.css" rel='stylesheet' type='text/css'>
 <div class="p-4 border">
 	<p>检查你的数据库设置情况，请在相应栏目仔细输入配置内容。</p>
 	<form method="post">
@@ -88,9 +89,13 @@ setTimeout(function(){
 	$('form input.form-control').on('change input',function(){
 		formValidate()?$('.btn-nextprocess').removeClass('disabled'):$('.btn-nextprocess').addClass('disabled');
 	});
-	window.formSubmit=function(){
+	window.formSubmit=function(e){
 		if($('.btn-nextprocess').hasClass('disabled')) return false;
-		formValidate()?$('.btn-nextprocess').addClass('disabled'):$('.btn-nextprocess').removeClass('disabled');
+		if(formValidate()){
+			$('.btn-nextprocess').addClass('disabled').append(' <i class="fa fa-circle-o-notch fa-spin"></i>');
+		}else{
+			$('.btn-nextprocess').removeClass('disabled');
+		}
 	};
 },500);
 </script>

@@ -4,22 +4,21 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-user-list">
-  <div>
+  <div class="clearfix">
     <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-modal-url="user/user_add"
       data-modal-loading="1" data-modal-title="{$word.memberAdd}" data-target=".user-add-modal"
       data-modal-tablerefresh="#user-table">
-      <i class="fa fa-plus mr-1"></i>
       {$word.memberAdd}
     </button>
     <div class="input-group w-a float-right">
       <input type="search" name="keyword" placeholder="{$word.search}" class="form-control"
         data-table-search="#user-table" />
       <div class="input-group-append">
-        <div class="input-group-text"><i class="input-search-icon wb-search" aria-hidden="true"></i></div>
+        <div class="input-group-text btn bg-none px-2"><i class="input-search-icon fa-search" aria-hidden="true"></i></div>
       </div>
     </div>
   </div>
-  <table class="dataTable table table-bordered table-hover table-striped w-100 mt-2" id="user-table"
+  <table class="dataTable table table-hover w-100 mt-2" id="user-table"
     data-ajaxurl="{$url.own_name}c=admin_user&a=doGetUserList" data-table-pagelength="20" data-plugin="checkAll"
     data-datatable_order="#user-table">
     <thead>
@@ -30,7 +29,7 @@ defined('IN_MET') or exit('No permission');
             <label class="custom-control-label"></label>
           </div>
         </th>
-        <th width="150" data-table-columnclass="text-center">{$word.adminusername}</th>
+        <th width="150">{$word.adminusername}</th>
         <th width="100" data-table-columnclass="text-center">
           {$word.membergroup}
           <select name="groupid" data-table-search="" class="form-control d-inline-block w-a ml-2 select-groupid">

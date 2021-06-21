@@ -14,11 +14,11 @@ class banner_tag extends tag
         $php = <<<str
 <?php 
     \$banner = load::sys_class('label', 'new')->get('banner')->get_column_banner(\$data['classnow']);
-    \$sub = count(\$banner['img']);
+    \$sub = is_array(\$banner['img']) ? count(\$banner['img']) : 0;
     foreach(\$banner['img'] as \$index=>\$v):
         \$v['_index']   = \$index;
         \$v['_first']   = \$index == 0 ? true:false;
-        \$v['_last']    = \$index == (count(\$result)-1) ? true : false;
+        \$v['_last']    = \$index == (\$sub-1) ? true : false;
         \$v['type'] = \$banner['config']['type'];
         \$v['y'] = \$banner['config']['y'];
         \$v['sub'] = \$sub;

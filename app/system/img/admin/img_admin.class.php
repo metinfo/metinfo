@@ -41,12 +41,6 @@ class img_admin extends news_admin
         return parent::insert_list($list);
     }
 
-    public function insert_list_sql($list = array())
-    {
-        global $_M;
-        return parent::insert_list_sql($list);
-    }
-
     /**
      *系统属性
      */
@@ -90,51 +84,8 @@ class img_admin extends news_admin
     public function update_list($list = array(), $id = '')
     {
         global $_M;
-        return parent::update_list($list, $id);
-    }
-
-    public function update_list_sql($list = array(), $id = '')
-    {
-        if (!$list['title']) {
-            $this->error[] = 'no title';
-            return false;
-        }
-        if (!$this->check_filename($list['filename'], $id, $this->module)) {
-            return false;
-        }
-        if ($list['links']) {
-            $list['links'] = url_standard($list['links']);
-        }
-        if ($list['description']) {
-            $listown = $this->database->get_list_one_by_id($id);
-            $description = $this->description($listown['content']);
-            if ($list['description'] == $description) {
-                $list['description'] = $this->description($list['content']);
-            }
-        } else {
-            $list['description'] = $this->description($list['content']);
-        }
         $list['displayimg'] = $this->displayimg_check($list['displayimg']);
-        $list['id'] = $id;
-        return $this->database->update_by_id($list);
-    }
-
-    /**
-     * 去除多余的displayimg里面的图片数据
-     * @param $img
-     * @return string
-     */
-    public function displayimg_check($img = '')
-    {
-        $imgs = stringto_array($img, '*', '|');
-        $str = '';
-        foreach ($imgs as $val) {
-            if ($val[1]) {
-                $str .= "{$val[0]}*{$val[1]}*{$val[2]}|";//增加展示图片尺寸值{$val[2]}（新模板框架v2）
-            }
-        }
-        $str = trim($str, '|');
-        return $str;
+        return parent::update_list($list, $id);
     }
 
     /**

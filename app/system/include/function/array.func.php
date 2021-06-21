@@ -11,12 +11,13 @@ load::sys_func('str');
  * @param  array    $arr	要检测的数组
  * @return boolean  $flag   数组为空返回false，否则返回true
  */
-function is_arrempty($arr){
-	$flag = true;
-	if(empty($arr)){
-		$flag = false;
-	}
-	return $flag;
+function is_arrempty($arr = array())
+{
+    $flag = true;
+    if (empty($arr)) {
+        $flag = false;
+    }
+    return $flag;
 }
 
 /**
@@ -27,78 +28,89 @@ function is_arrempty($arr){
  * @param  string  $delimiter3  三维数组分割符
  * @return string  $str		  	返回由数组转换后的字符串，输入的数组不正确（数组为混合数组）返回false
  */
-function arrayto_string($arr,$decollator1=',',$decollator2='|',$decollator3='&'){
-	if(array_level($arr) == 1){
-		$str = implode($decollator1,$arr);
-	}else if(array_level($arr) == 2){
-		$i = 0;
-		foreach($arr as $val){
-			if(!is_array($val)){
-				return false;
-			}
-			if($i == 0){
-				$str = implode($decollator1,$val);
-			}else{
-				$str .= $decollator2.implode($decollator1,$val);
-			}
-			$i++;
-		}
-	}else if(array_level($arr) == 3){
-		$i = 0;
-		foreach($arr as $val){
-			if(!is_array($val)){
-				return false;
-			}
-			if($i == 0){
+function arrayto_string($arr = array(),$decollator1=',',$decollator2='|',$decollator3='&')
+{
+    $str = '';
+    if (array_level($arr) == 1) {
+        $str = implode($decollator1, $arr);
+    } else if (array_level($arr) == 2) {
+        $i = 0;
+        foreach ($arr as $val) {
+            if (!is_array($val)) {
+                return false;
+            }
+            if ($i == 0) {
+                $str = implode($decollator1, $val);
+            } else {
+                $str .= $decollator2 . implode($decollator1, $val);
+            }
+            $i++;
+        }
+    } else if (array_level($arr) == 3) {
+        $i = 0;
+        foreach ($arr as $val) {
+            if (!is_array($val)) {
+                return false;
+            }
+            if ($i == 0) {
 
-			}else{
-				$str = $str.$decollator3;
-			}
-			foreach($val as $value){
-				if(!is_array($value)){
-					return false;
-				}
-				if($i == 0){
-					$str = implode($decollator1,$value);
-				}else{
-					$str .= $decollator2.implode($decollator1,$value);
-				}
-				$i++;
-			}
-		}
-	}else{
-		return false;
-	}
-	return $str;
+            } else {
+                $str = $str . $decollator3;
+            }
+            foreach ($val as $value) {
+                if (!is_array($value)) {
+                    return false;
+                }
+                if ($i == 0) {
+                    $str = implode($decollator1, $value);
+                } else {
+                    $str .= $decollator2 . implode($decollator1, $value);
+                }
+                $i++;
+            }
+        }
+    } else {
+        return false;
+    }
+    return $str;
 }
 
-function stringto_array($str, $decollator1 = '', $decollator2 = '', $decollator3 = ''){
-	$stop = '<met>';
-	if(!$decollator1)$decollator1 = $stop;
-	if(!$decollator2)$decollator2 = $stop;
-	if(!$decollator3)$decollator3 = $stop;
-	if(is_string($str)){
-		$str1 = $decollator3 == $stop? $str : trim($str,$decollator3);
-		$arr1 = explode($decollator3, $str1);
-		foreach($arr1 as $key=>$val){
-			$str2 = $decollator2 == $stop ? $val : trim($val, $decollator2);
-			$arr2 = explode($decollator2, $str2);
-			foreach($arr2 as $value){
-				$str3 = $decollator1 == $stop ? $value : trim($value, $decollator1);
-				if($decollator3 == $stop && $decollator2 == $stop){
-					$arr = explode($decollator1, $str3);
-				}else if($decollator3 == $stop && $decollator2 != $stop){
-					$arr[] = explode($decollator1, $str3);
-				}else{
-					$arr[$key][] = explode($decollator1, $str3);
-				}
-			}
-		}
-	}else{
-		return false;
-	}
-	return $arr;
+/**
+ * @param $str
+ * @param string $decollator1
+ * @param string $decollator2
+ * @param string $decollator3
+ * @return array|bool
+ */
+function stringto_array($str, $decollator1 = '', $decollator2 = '', $decollator3 = '')
+{
+    $stop = '<met>';
+    if (!$decollator1) $decollator1 = $stop;
+    if (!$decollator2) $decollator2 = $stop;
+    if (!$decollator3) $decollator3 = $stop;
+    if (is_string($str)) {
+        $str1 = $decollator3 == $stop ? $str : trim($str, $decollator3);
+        $arr1 = explode($decollator3, $str1);
+        foreach ($arr1 as $key => $val) {
+            $str2 = $decollator2 == $stop ? $val : trim($val, $decollator2);
+            $arr2 = explode($decollator2, $str2);
+            foreach ($arr2 as $value) {
+                $str3 = $decollator1 == $stop ? $value : trim($value, $decollator1);
+                if ($decollator3 == $stop && $decollator2 == $stop) {
+                    $arr = explode($decollator1, $str3);
+                } else if ($decollator3 == $stop && $decollator2 != $stop) {
+                    $arr[] = explode($decollator1, $str3);
+                } else {
+                    $arr[$key][] = explode($decollator1, $str3);
+                }
+            }
+        }
+    } else {
+        return false;
+    }
+    return $arr;
 }
+
 /**
  * 判断数组的维数
  * @param  array    $arr    要判断的数组
@@ -106,17 +118,18 @@ function stringto_array($str, $decollator1 = '', $decollator2 = '', $decollator3
  * @param  array    $level  当前层数
  * @return int              返回数组的维数
  */
-function array_level($arr, &$arr1 = array(), $level = 0){
-	if(is_array($arr)){
-		$level++;
-		$arr1[] = $level;
-		foreach($arr as $val){
-			array_level($val, $arr1, $level);
-		}
-	}else{
-		$arr1[] = 0;
-	}
-	return max($arr1);
+function array_level($arr = array(), &$arr1 = array(), $level = 0)
+{
+    if (is_array($arr)) {
+        $level++;
+        $arr1[] = $level;
+        foreach ($arr as $val) {
+            array_level($val, $arr1, $level);
+        }
+    } else {
+        $arr1[] = 0;
+    }
+    return max($arr1);
 }
 
 /**
@@ -126,35 +139,36 @@ function array_level($arr, &$arr1 = array(), $level = 0){
  * @param  string		$sort		SORT_ASC - 按照上升顺序排序    SORT_DESC - 按照下降顺序排序（默认升序）
  * @return array		$arr		返回排序后的数组，输入的数组不正确时返回false
  */
-function arr_sort($arr, $sort_key = 0, $sort = SORT_ASC){
-	if(array_level($arr) == 2){
-		foreach ($arr as $key=>$val){
-			if(is_array($val)){
-				$key_arr[] = $val[$sort_key];
-			}else{
-				return false;
-			}
-		}
-		array_multisort($key_arr, $sort, $arr);
-		return $arr;
-	}else if(array_level($arr) == 1){
-		if($sort_key == 0){
-			if($sort == SORT_ASC){
-				asort($arr);
-			}else{
-				arsort($arr);
-			}
-		}else if($sort_key==1){
-			if($sort == SORT_ASC){
-				ksort($arr);
-			}else{
-				krsort($arr);
-			}
-		}
-		return $arr;
-	}else{
-		return false;
-	}
+function arr_sort($arr = array(), $sort_key = 0, $sort = SORT_ASC)
+{
+    if (array_level($arr) == 2) {
+        foreach ($arr as $key => $val) {
+            if (is_array($val)) {
+                $key_arr[] = $val[$sort_key];
+            } else {
+                return false;
+            }
+        }
+        array_multisort($key_arr, $sort, $arr);
+        return $arr;
+    } else if (array_level($arr) == 1) {
+        if ($sort_key == 0) {
+            if ($sort == SORT_ASC) {
+                asort($arr);
+            } else {
+                arsort($arr);
+            }
+        } else if ($sort_key == 1) {
+            if ($sort == SORT_ASC) {
+                ksort($arr);
+            } else {
+                krsort($arr);
+            }
+        }
+        return $arr;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -162,45 +176,66 @@ function arr_sort($arr, $sort_key = 0, $sort = SORT_ASC){
  * @param  array	$arr	要转换的数组
  * @return json				返回转换成的json
  */
-function jsonencode($arr){
+function jsonencode($arr = array())
+{
+    if (!is_array($arr)) {
+        return '';
+    }
+
+    if (version_compare(PHP_VERSION, '5.4', '<')) {
+        return _jsonencode($arr);
+    }
+    return json_encode($arr, JSON_UNESCAPED_UNICODE);
+}
+
+/**
+ * 兼容php5.3
+ * @param array $arr
+ * @return string
+ */
+function _jsonencode($arr = array())
+{
+    if (!is_array($arr)) {
+        return '';
+    }
     $parts = array();
     $is_type = false;         //false 关联数组         true 索引数组
     $keys = array_keys($arr);
-    $length = count($arr)-1;
-    if($keys[0] === 0 && $keys[$length] == $length){//判断是索引数组还是关联数组
+    $length = count($arr) - 1;
+    if ($keys[0] === 0 && $keys[$length] == $length) {//判断是索引数组还是关联数组
         $is_type = true;
-        for($i=0; $i<count($keys); $i++){
-            if($i != $keys[$i]){
+        for ($i = 0; $i < count($keys); $i++) {
+            if ($i != $keys[$i]) {
                 $is_type = false;
                 break;
             }
         }
     }
-    foreach($arr as $key=>$val){
-        if(is_array($val)){
-            if($is_type){
-				$parts[] = jsonencode($val);
-			}else{
-				$parts[] = '"' . $key . '":' . jsonencode($val);
-			}
-        }else{
+    foreach ($arr as $key => $val) {
+        if (is_array($val)) {
+            if ($is_type) {
+                $parts[] = _jsonencode($val);
+            } else {
+                $parts[] = '"' . $key . '":' . _jsonencode($val);
+            }
+        } else {
             $str = '';
-            if(!$is_type){
-				$str = '"' . $key . '":';
-			}
-            if($val === false){
-				$str .= 'false';
-			}else if($val === true){
-				$str .= 'true';
-			}else{
-				$str .= '"' . str_replace(array('\\' ,'/', '"') , array('\\\\' ,'\\/', '\"'),$val) . '"';
-			}
+            if (!$is_type) {
+                $str = '"' . $key . '":';
+            }
+            if ($val === false) {
+                $str .= 'false';
+            } else if ($val === true) {
+                $str .= 'true';
+            } else {
+                $str .= '"' . str_replace(array('\\', '/', '"'), array('\\\\', '\\/', '\"'), $val) . '"';
+            }
             $parts[] = $str;
         }
     }
     $json = implode(',', $parts);
-	$json = str_replace(array("\r", "\n", "\t"), '', $json);
-    if($is_type)return '[' . $json . ']';
+    $json = str_replace(array("\r", "\n", "\t"), '', $json);
+    if ($is_type) return '[' . $json . ']';
     return '{' . $json . '}';
 }
 
@@ -209,34 +244,9 @@ function jsonencode($arr){
  * @param  json		$json	要转换的json（只能是json格式）
  * @return array	$arr	返回转换成的数组
  */
-function jsondecode($json){
-	if($json){
-		$convert = false;
-		$str = '$arr=';
-		for ($i=0; $i<strlen($json); $i++){
-			if (!$convert){
-				if (($json[$i] == '{') || ($json[$i] == '[')){
-					$str .= ' array(';
-				}else if (($json[$i] == '}') || ($json[$i] == ']')){
-					$str .= ')';
-				}else if ($json[$i] == ':'){
-					$str .= '=>';
-				}else{
-					$str .= $json[$i];
-				}
-			}else{
-				$str .= $json[$i];
-			}
-			if ($json[$i] == '"' && $json[($i-1)]!="\\"){
-				$convert = !$convert;
-			}
-		}
-		$str = str_replace(array('\\\\' ,'\\/'), array('\\' ,'/'), $str);
-		@eval($str . ';');
-	}else{
-		$arr = array();
-	}
-    return $arr;
+function jsondecode($json = '')
+{
+    return json_decode($json, true);
 }
 
 /*
@@ -244,15 +254,16 @@ function jsondecode($json){
  * @param array  $back      输出字符串或数组
  * @param string $callback  ajax的回调函数的名称
  */
-function jsoncallback($back ,$callback = 'callback'){
-	global $_M;
+function jsoncallback($back ,$callback = 'callback')
+{
+    global $_M;
     header('Content-Type:application/json; charset=utf-8');
-	$callback =	$_M['form'][$callback];
-	if ($callback) {
-		echo $callback.'('.jsonencode($back).')';
-	}else{
-		echo jsonencode($back);
-	}
+    $call_back = $_M['form'][$callback];
+    if ($call_back) {
+        echo $call_back . '(' . json_encode($back) . ')';
+    } else {
+        echo json_encode($back);
+    }
     exit();
 }
 

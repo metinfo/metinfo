@@ -44,9 +44,9 @@ $checkbox_time=time();
 		<if value="$c['met_member_use']">
 		<?php
 		$webaccess=array(
-			value=>$data['list']['access'],
-			access=>$data['access_option'],
-			marks=>$word['marks']
+			'value'=>$data['list']['access'],
+			'access'=>$data['access_option'],
+			'marks'=>$word['marks']
 		);
 		?>
 		<include file="pub/content_details/webaccess"/>

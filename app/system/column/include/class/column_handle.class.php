@@ -55,7 +55,7 @@ class column_handle extends handle
      * @param  array $content 单个栏目数据
      * @return array            处理过后的栏目数组
      */
-    public function one_para_handle($content)
+    public function one_para_handle($content = array())
     {
         global $_M;
         $content['url'] = $this->get_content_url($content);
@@ -340,7 +340,9 @@ class column_handle extends handle
     public function url_full($content, $type = '')
     {
         global $_M;
-        $page_type = $content['module'] == 1 ? 0 : 1;
+        $page_type = $content['module'] == 1 ? 0: 1;//内容页面
+        //$type = $content['isshow'] == 0 ? 1: $type;
+
         $type = $this->url_type($type, $page_type);
         if ($type == 2) {
             return $this->url_pseudo($content);
@@ -401,7 +403,9 @@ class column_handle extends handle
         if ($_M['config']['met_index_type'] != $content['lang']) {
             $url .= '&lang=' . $content['lang'];
         }
-        $url = $this->url_transform($content['foldername'] . '/' . $this->mod_to_name($content['module']) . '.php' . $url, $content['lang']);
+        $mod_name = $this->mod_to_name($content['module']) ? $this->mod_to_name($content['module']) : 'index';
+        $url = "{$content['foldername']}/{$mod_name}.php{$url}";
+        $url = $this->url_transform($url, $content['lang']);
         $url = str_replace('.php&', '.php?', $url);
         return $url;
     }
@@ -446,10 +450,19 @@ class column_handle extends handle
                     $url .= '_1';
                 }
             }
+
             if ($content['module'] == 1) {
                 $classnum = $this->get_no_releclass($content);
                 if ($classnum == 1) {
-                    $url .= 'index';
+                    if ($content['isshow'] == 1) {
+                        $url .= 'index';
+                    }else{//显示次级栏目
+                        if ($_M['config']['met_index_type'] != $content['lang']) {
+                            $url .= '_' . $content['lang'];
+                        }
+                        $res = $this->url_transform($content['foldername'] . '/' . $url, $content['lang']);
+                        return $res;
+                    }
                 } else {
                     switch ($_M['config']['met_htmpagename']) {
                         case 0:
@@ -488,31 +501,48 @@ class column_handle extends handle
         global $_M;
         $url = '';
         if ($content['filename']) {
-            if ($content['module'] == 1) {
-                $url .= $content['filename'];
-            } else {
+            if (in_array($content['module'],array(2,3,4,5,6))) {
                 $url .= 'list-' . $content['filename'];
+            }else{
+                $url .= $content['filename'];
             }
         } else {
-            if ($content['module'] >= 2 && $content['module'] <= 6) {
+            if (in_array($content['module'],array(2,3,4,5,6))) {
                 $url .= 'list-' . $content['id'];
             }
             if ($content['module'] == 1) {
                 $classnum = $this->get_no_releclass($content);
                 if ($classnum != 1) {
                     $url .= $content['id'];
+                }else{
+                    $url .= 'index';
                 }
             }
         }
-        if (!$url) $url .= 'index';
-        if ($_M['config']['met_index_type'] != $content['lang']) {
-            $url .= '-' . $content['lang'];
-        } else {
-            if ($_M['config']['met_defult_lang']) {
-                $url .= '-' . $content['lang'];
-            }
+
+        if (!$url && ($_M['config']['met_index_type'] != $content['lang'] || $_M['config']['met_defult_lang'])){
+            $url .= 'index';
         }
-        return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
+
+        if ($_M['config']['met_defult_lang']) {
+            $url .= '-' . $content['lang'];
+            return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
+        }else{
+            if ($_M['config']['met_index_type'] != $content['lang']) {
+                $url .= '-' . $content['lang'];
+                return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
+            }
+
+            if ($content['filename']) {
+                return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
+            }
+
+            if ($content['classtype'] == 1) {
+                return $this->url_transform($content['foldername'] . '/', $content['lang']);
+            }
+
+            return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
+        }
     }
 
     /**

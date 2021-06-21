@@ -1,13 +1,14 @@
-/*
-表单验证功能（需调用formvalidation插件）
+/*!
+ * 表单验证功能（需调用formvalidation插件）
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 $(function(){
     // 表单提交前处理
-    $(document).on('click', 'form [type="submit"]:not(.fv-hidden-submit)', function() {
-        $(this).formSubmitSet($(this).parents('form'));
-    });
+    // $(document).on('click', 'form [type="submit"]:not(.fv-hidden-submit)', function() {
+    //     $(this).parents('form').formSubmitSet();
+    // });
     $(document).on('submit', 'form', function() {
-        $(this).formSubmitSet();
+        if(!$('.has-danger',this).length && $(this).formSubmitSet(1)==1) return false;
     });
     // 上传文件
     $(document).on('change keyup','.input-group-file input[type="file"]',function(){
@@ -50,11 +51,15 @@ $.fn.extend({
     validation:function(){
         var $self=$(this),
             self_validation=$(this).formValidation({
-            locale:M['validation_locale'],
-            framework:'bootstrap4'
-        });
+                locale:M['validation_locale'],
+                framework:'bootstrap4'
+            }),
+            order=$(this).attr('data-validate_order');
         $('[name][data-fv-notempty],[name][required],[name][data-required]',this).parents('.form-group:not(.required)').addClass('required');
         function success(fun,afterajax_ok){
+            setTimeout(function(){
+                validate[order].ajax_submit=1;
+            },0);
             self_validation.on('success.form.fv', function(e) {
                 e.preventDefault();
                 if($self.find('[name="submit_type"]').length && $self.find('[name="submit_type"]').val()=='delet' && $self.find('[name="all_id"]').val()=='') return false;
@@ -76,43 +81,117 @@ $.fn.extend({
                 type=($form.attr('method')||'POST').toUpperCase(),
                 url=$form.attr('action');
             if(type!='POST') url+=(url.indexOf('?')>0?'&':'?')+$form.serialize(e.target);
-            if(M['is_lteie9']){
+            if(M.is_ie){
                 var formData = $form.serializeArray(e.target),
                     contentType='application/x-www-form-urlencoded',
-                    processData=true;
+                    processData=true,
+                    new_params={};
+                $.each(formData, function(i, val) {
+                    new_params[val.name]=val.value;
+                });
+                formData=new_params;
             }else{
                 var formData = new FormData(e.target),
-                    params   = $form.serializeArray(),
+                    params   = $form.serializeArray(e.target),
                     contentType=false,
-                    processData=false;
-                // $.each(params, function(i, val) {
-                //     formData.append(val.name, val.value);
-                // });
+                    processData=false,
+                    new_params={};
+                $.each(params, function(i, val) {
+                    new_params[val.name]=val.value;
+                });
             }
-            $.ajax({
-                url: url,
-                data: formData,
-                cache: false,
-                contentType: contentType,
-                processData: processData,
-                type: type,
-                dataType:'json',
-                success: function(result) {
-                    $form.data('formValidation').resetForm();
-                    if (typeof fun==="function") return fun(result,$form);
-                }
+            var handle_name=[],
+                this_ajax=function(){
+                    $.ajax({
+                        url: url,
+                        data: formData,
+                        cache: false,
+                        contentType: contentType,
+                        processData: processData,
+                        type: type,
+                        dataType:'json',
+                        success: function(result) {
+                            $form.data('formValidation').resetForm();
+                            if (typeof fun==="function") return fun(result,$form);
+                        }
+                    });
+                };
+            $form.find('[name][data-safety]').each(function(){
+                handle_name.push($(this).attr('name'));
             });
+            if(handle_name.length){
+                $.ajax({
+                    url: M.weburl+'app/system/entrance.php?m=include&c=sysinfo&a=doGetinfo',
+                    type: 'GET',
+                    success: function(result) {
+                        $.each(handle_name, function(i, val) {
+                            if(M.is_ie){
+                                formData[val]=authcode(formData[val],1,'',0,result.data.time,result.data.microtime);
+                            }else{
+                                formData.set(val, authcode(new_params[val],1,'',5,result.data.time,result.data.microtime));
+                            }
+                        });
+                        this_ajax();
+                    }
+                });
+            }else{
+                this_ajax();
+            }
         }
         if($(this).data('submit-jump')) success('',false);
         if($(this).data('submit-ajax')) success(function(result,form){metAjaxFun(result)});
+        $('[name][data-safety]',this).length && $.include([M.weburl+'public/plugins/blueimp-md5/blueimp-md5.min.js',M.weburl+'public/plugins/string-handle/string-handle.js']);
         return {success:success,formDataAjax:formDataAjax};
     },
     // 表单提交前处理
-    formSubmitSet:function(form){
+    formSubmitSet:function(form_submit){
         // 多选值组合
         var checkbox_val={},
-            $form=form||$(this);
-        $form.find('input[type="checkbox"][name]').each(function(index, el) {
+            $form=$(this);
+        if(typeof validate[$(this).attr('data-validate_order')]!='undefined' && typeof validate[$(this).attr('data-validate_order')].ajax_submit=='undefined'){
+            var $safety=$form.find('[name][data-safety]');
+            if($safety.length){
+                if(!$form.attr('data-getinfoed')){
+                    $form.attr('data-getinfoed',1);
+                    setTimeout(function(){
+                        $form.removeAttr('data-getinfoed');
+                    },1000);
+                    $.ajax({
+                        url: M.weburl+'app/system/entrance.php?m=include&c=sysinfo&a=doGetinfo',
+                        type: 'GET',
+                        success: function(result) {
+                            $safety.each(function(){
+                                var val=$(this).val(),
+                                    name=$(this).attr('name');
+                                if(val!=''){
+                                    if(!$form.find('[name="'+name+'"][type="hidden"]').length) $form.append('<input type="hidden" name="'+name+'"/>');
+                                    $form.find('[name="' + name + '"][type="hidden"]').val(authcode(val, 1, '', M.is_ie ? 0 : 5, result.data.time, result.data.microtime));
+                                }
+                            });
+                            setTimeout(function(){
+                                $form.submit();
+                            },10)
+                        }
+                    });
+                    return 1;
+                }
+                var has_safe=0;
+                $safety.each(function(){
+                    if($(this).val()!='' && $form.find('[name="'+$(this).attr('name')+'"][type="hidden"]').length){
+                        has_safe=1;
+                        return false;
+                    }
+                });
+                if(!has_safe) return 1;
+            }
+        }
+        if($form.attr('data-submited')){
+            setTimeout(function(){
+                $form.removeAttr('data-submited');
+            },1000);
+            return;
+        }
+        $form.attr('data-submited',1).find('input[type="checkbox"][name]').each(function(index, el) {
             var name=$(this).attr('name'),
                 val=$(this).val(),
                 delimiter=$(this).data('delimiter')||'#@met@#';
@@ -190,9 +269,12 @@ if("undefined" != typeof M){
 }
 // 表单验证初始化
 $.fn.metValidate=function(){
-    $('form',this).addClass('met-form-validation');
+    var $form=$('form',this).filter(function(){
+        return !$(this).parents('ins').length;
+    });
     if(typeof validate =='undefined') window.validate=[];
-    $('form',this).each(function(index, el) {
+    $form.addClass('met-form-validation');
+    $form.each(function(index, el) {
         var order=$(this).index('form');
         $(this).attr({'data-validate_order':order});
         validate[order]=$(this).validation();

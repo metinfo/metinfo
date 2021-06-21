@@ -1,4 +1,5 @@
 @charset "UTF-8";
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 /* 全局样式 */
 .met-member form{max-width:400px;background-color:rgba(255,255,255,.8);}
 .met-member input.form-control,
@@ -10,7 +11,6 @@
 .met-form-tips{padding: 10px 0;line-height: 1.8;}
 .met-form .met-upfile .dropify-wrapper{border-width:1px;}
 /*登录界面*/
-.met-member{background:url(../img/user_login_bg.jpg) center / cover no-repeat;}
 @media (min-width: 479px) {
     .login-index form{width: 400px;padding: 30px;}
 }
@@ -33,7 +33,7 @@
 .valid-email-content{margin:0px auto;max-width:800px;background-color:#fff;padding:100px 20px;color:#555;}
 .valid-email .breadcrumb{margin:0px auto;max-width:800px;text-align:center;}
 .valid-email .send-email{margin-right:20px;}
-.valid-email .loading{background:url(../img/loading.gif) no-repeat right center;}
+.valid-email .loading{background:url(../../../../../../public/images/loading1.gif) no-repeat right center;}
 /*短信验证*/
 .phone-code{height:41px;}
 .phone-code .badge{font-weight:normal;color:#fff;}

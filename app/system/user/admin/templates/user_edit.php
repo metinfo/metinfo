@@ -95,6 +95,8 @@
       {$word.memberattribute}
     </h3>
     <div class="user-attr"></div>
+      <!-- 会员通知 -->
+      <!-- //会员通知 -->
     <dl>
       <input name="id" hidden/>
       <button type="submit" hidden class="btn"></button>

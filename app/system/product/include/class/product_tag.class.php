@@ -16,6 +16,7 @@ class product_tag extends tag {
             : "'{$attr['cid']}'" ) : 0;
         $order  = isset($attr['order']) ? $attr['order'] : 'no_order';
         $num    = isset($attr['num']) ? $attr['num'] : 8;
+        $para    = isset($attr['para']) ? $attr['para'] : 0;
 
         $php    = <<<str
 <?php
@@ -24,9 +25,10 @@ class product_tag extends tag {
         \$cid = \$data['classnow'];
     }
     \$num = $num;
+    \$para = $para;
     \$order = "$order";
     \$result = load::sys_class('label', 'new')->get('product')->get_list_page(\$cid, \$data['page']);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
      foreach(\$result as \$index=>\$v):
         \$v['sub']      = \$sub;
         \$v['_index']   = \$index;

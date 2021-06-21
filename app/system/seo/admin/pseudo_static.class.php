@@ -27,7 +27,9 @@ class pseudo_static extends admin
         $this->success($list);
     }
 
-    //保存伪静态设置
+    /**
+     * 保存伪静态设置
+     */
     public function doSavePseudoStatic()
     {
         global $_M;
@@ -91,7 +93,7 @@ class pseudo_static extends admin
                 $web = self::createApacheHttpdurl($metbase);
                 $httpdurl = '.htaccess';
                 $httpd = $web;
-                $fp = fopen(PATH_WEB . $httpdurl, w);
+                $fp = fopen(PATH_WEB . $httpdurl, 'w');
                 fputs($fp, $httpd);
                 fclose($fp);
                 $web = self::createIISHttpdurl();
@@ -106,7 +108,7 @@ class pseudo_static extends admin
                 //查看伪静态规则
                 $this->success($httpd);
             } else {
-                $fp = fopen(PATH_WEB . $httpdurl, w);
+                $fp = fopen(PATH_WEB . $httpdurl, 'w');
                 fputs($fp, $httpd);
                 fclose($fp);
             }
@@ -140,9 +142,7 @@ class pseudo_static extends admin
 
     /**
      * Apache伪静态规则.
-     *
      * @param string $metbase
-     *
      * @return string
      */
     private function createApacheHttpdurl($metbase = '')
@@ -186,7 +186,11 @@ class pseudo_static extends admin
         return $httpd;
     }
 
-    //Nginx伪静态规则
+    /**
+     * Nginx伪静态规则
+     * @param string $metbase
+     * @return string
+     */
     private function createNginxHttpdurl($metbase = '')
     {
         $htaccess = 'rewrite ^'.$metbase.'index-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'index.php?lang=$1&pseudo_jump=1;' . "\n";
@@ -221,7 +225,11 @@ class pseudo_static extends admin
         return $httpd;
     }
 
-    //IIS伪静态规则
+    /**
+     * IIS伪静态规则
+     * @param string $metbase
+     * @return string
+     */
     private function createIISHttpdurl($metbase = '')
     {
         $web = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
@@ -330,6 +338,10 @@ class pseudo_static extends admin
         return $web;
     }
 
+    /**
+     * @param string $metbase
+     * @return string
+     */
     private function createHttpdurl($metbase = '')
     {
         $httpd = '[ISAPI_Rewrite]' . "\n";

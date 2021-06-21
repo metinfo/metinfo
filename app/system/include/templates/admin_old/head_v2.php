@@ -53,38 +53,40 @@ if(file_exists(PATH_OWN_FILE.'templates/css/metinfo.css')){
 <!['endif']-->
 <body class="{$_M['body_class']}">
 <?php
-if(!$head_no && !$_M['head_no']){
+if(!$head_no && !$_M['head_no']) {
     $privilege = background_privilege();
-    if(!$_M['form']['pageset']){
-        $met_agents_metmsg=$c['met_agents_metmsg']?'':'hidden';
-        $msecount = DB::counter($_M['table']['infoprompt'], "WHERE (lang='".$_M['lang']."' or lang='metinfo') and see_ok='0'", "*");
-        $navigation=$privilege['navigation'];
-        $arrlanguage=explode('|', $navigation);
-        if(in_array('metinfo',$arrlanguage) || in_array('1002',$arrlanguage)){
-            $langprivelage=1;
-        }else{
-            $langprivelage=0;
+    if (!$_M['form']['pageset']) {
+        $met_agents_metmsg = $c['met_agents_metmsg'] ? '' : 'hidden';
+        $msecount = DB::counter($_M['table']['infoprompt'], "WHERE (lang='" . $_M['lang'] . "' or lang='metinfo') and see_ok='0'", "*");
+        $navigation = $privilege['navigation'];
+        $arrlanguage = explode('|', $navigation);
+        if (in_array('metinfo', $arrlanguage) || in_array('1002', $arrlanguage)) {
+            $langprivelage = 1;
+        } else {
+            $langprivelage = 0;
         }
-        if($_M['form']['iframeurl']){
-            function get($str){
+        if ($_M['form']['iframeurl']) {
+            function get($str)
+            {
                 $data = array();
-                $parameter = explode('&',end(explode('?',$str)));
-                foreach($parameter as $val){
-                    $tmp = explode('=',$val);
+                $parameter = explode('&', end(explode('?', $str)));
+                foreach ($parameter as $val) {
+                    $tmp = explode('=', $val);
                     $data[$tmp['0']] = $tmp['1'];
                 }
                 return $data;
             }
+
             $str = $_M['form']['iframeurl'];
             $data = get($str);
             $_M['form']['anyid'] = $data['anyid'];
             $_M['form']['n'] = $data['n'];
         }
-        $lang_name=$_M['langlist']['web'][$_M['lang']]['name'];
+        $lang_name = $_M['langlist']['web'][$_M['lang']]['name'];
         $adminnav = get_adminnav();
         $adminapp = load::mod_class('myapp/class/getapp', 'new');
         $adminapplist = $adminapp->get_app();
-        if($_M['form']['anyid'] == '44'){
+        if ($_M['form']['anyid'] == '44') {
             foreach ($adminapplist as $key => $val) {
                 if ($val['m_name'] == $_M['form']['n']) {
                     $nav_3 = $val;
@@ -92,145 +94,157 @@ if(!$head_no && !$_M['head_no']){
                     break;
                 }
             }
-            if(!$nav_3) $nav_3 = $adminnav[$_M['form']['anyid']];
+            if (!$nav_3) $nav_3 = $adminnav[$_M['form']['anyid']];
         } else {
             $nav_3 = $adminnav[$_M['form']['anyid']];
         }
-        if(!$_M['form']['anyid']) $weizhi = '<li class="breadcrumb-item">'.$_M['word']['background_page'].'</li>';
-        if($adminnav[$adminnav[$_M['form']['anyid']]['bigclass']]['name']){
-            if($_M['form']['anyid'] == 44 && M_NAME!='myapp') $adminnav[$adminnav[$_M['form']['anyid']]['bigclass']]['name'] = '<a href="'.$adminnav['44']['url'].'">'.$adminnav['44']['name'].'</a>';
-            $fenlei='<li class="breadcrumb-item">'.$adminnav[$adminnav[$_M['form']['anyid']]['bigclass']]['name'].'</li>';
+        if (!$_M['form']['anyid']) $weizhi = '<li class="breadcrumb-item">' . $_M['word']['background_page'] . '</li>';
+        if ($adminnav[$adminnav[$_M['form']['anyid']]['bigclass']]['name']) {
+            if ($_M['form']['anyid'] == 44 && M_NAME != 'myapp') $adminnav[$adminnav[$_M['form']['anyid']]['bigclass']]['name'] = '<a href="' . $adminnav['44']['url'] . '">' . $adminnav['44']['name'] . '</a>';
+            $fenlei = '<li class="breadcrumb-item">' . $adminnav[$adminnav[$_M['form']['anyid']]['bigclass']]['name'] . '</li>';
         }
-        $weizhi = '<li class="breadcrumb-item"><a href="'.$nav_3['url'].'">'.$nav_3['name'].'</a></li>';
-?>
-<header class="metadmin-head navbar h-50">
-    <div class="container-fluid h-100p">
-        <div class="h-100p vertical-align pull-xs-left hidden-md-down">
-            <div class="breadcrumb m-b-0 p-0 vertical-align-middle">
-                <li class='breadcrumb-item'>{$lang_name}</li>
-                {$fenlei}
-                {$weizhi}
-            </div>
-        </div>
-        <div class="metadmin-head-right pull-xs-right h-100p vertical-align">
-            <div class="vertical-align-middle">
-                <?php
-                $power = admin_information();
-                if($power['admin_group'] == '10000' || $power['admin_group'] == '3'){
-                ?>
-                <div class="btn-group" {$met_agents_metmsg}>
-                    <button class="btn btn-default" data-toggle="modal" data-target="#functionEncy">
-                        <i class="fa fa-pie-chart"></i>
-                        <span class="hidden-sm-down">{$word.funcCollection}</span>
-                    </button>
+        $weizhi = '<li class="breadcrumb-item"><a href="' . $nav_3['url'] . '">' . $nav_3['name'] . '</a></li>';
+        ?>
+        <header class="metadmin-head navbar h-50">
+            <div class="container-fluid h-100p">
+                <div class="h-100p vertical-align pull-xs-left hidden-md-down">
+                    <div class="breadcrumb m-b-0 p-0 vertical-align-middle">
+                        <li class='breadcrumb-item'>{$lang_name}</li>
+                        {$fenlei}
+                        {$weizhi}
+                    </div>
                 </div>
-                <?php } ?>
-                <div class="btn-group" {$met_agents_metmsg}>
-                    <a href="https://www.metinfo.cn/bangzhu/index.php?ver=metcms" class="btn btn-default" target="_blank">
-                        <i class="fa fa-life-ring"></i>
-                        <span class="hidden-sm-down">{$word.indexbbs}</span>
-                    </a>
-                </div>
-                <div class="btn-group" {$met_agents_metmsg}>
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                        <i class="fa fa-bookmark"></i>
-                        <span class="hidden-sm-down">{$word.indexcode}</span>
-                    </button>
-                    <ul class="dropdown-menu animate animate-reverse dropdown-menu-right text-xs-center">
+                <div class="metadmin-head-right pull-xs-right h-100p vertical-align">
+                    <div class="vertical-align-middle">
                         <?php
-                        if($c['met_agents_metmsg'] == 1) {
-                        $auth = load::mod_class('system/class/auth', 'new');
-                        $otherinfoauth = $auth->have_auth();
-                            if(!$otherinfoauth) {
-                        ?>
-                        <li class="dropdown-item">
-                            <a href="https://www.metinfo.cn/web/product.htm" target="_blank" class='block'>{$word.sys_authorization2}</a>
-                        </li>
-                        <li class="dropdown-item">
-                            <a class="btn btn-primary" href='{$url.adminurl}&n=system&c=authcode&a=doindex'>{$word.sys_authorization1}</a>
-                        </li>
-                        <?php }else{ ?>
-                        <li class="dropdown-item">
-                            <button class="btn btn-info" type="submit">{$otherinfoauth['info1']}</button>
-                        </li>
-                        <li class="dropdown-item">
-                            <a class="nobo block" href="{$url.adminurl}&n=system&c=authcode&a=doindex">{$word.entry_authorization}</a>
-                        </li>
-                        <?php
-                            }
-                        }
-                        ?>
-                    </ul>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                        <i class="fa fa-globe"></i>
-                        <span class="hidden-sm-down">{$lang_name}</span>
-                    </button>
-                    <ul class="dropdown-menu animate animate-reverse dropdown-menu-right">
-                        <?php
-                        foreach($_M['user']['langok'] as $key=>$val){
-                        	$url_now ='http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
-                        	if(!strstr($url_now, "lang=")) {
-                        	    $val['url'] = $_M['url']['site_admin']."index.php?lang=".$val['mark'];
-                        	} else {
-                        	    $val['url'] = str_replace(array("lang=".$_M['lang'], "lang%3D".$_M['lang']), array("lang=".$val['mark'], "lang%3D".$val['mark']), $url_now);
-                        	}
-                        	if(strstr($c['met_weburl'],'https')){
-                        	    $val['url']=str_replace('http','https',$val['url']);
-                        	}
-                        ?>
-                        <li class="dropdown-item"><a href="{$val.url}&switch=1" class='block'>{$val.name}</a></li>
+                        $power = admin_information();
+                        if ($power['admin_group'] == '10000' || $power['admin_group'] == '3') {
+                            ?>
+                            <div class="btn-group" {$met_agents_metmsg}>
+                                <button class="btn btn-default" data-toggle="modal" data-target="#functionEncy">
+                                    <i class="fa fa-pie-chart"></i>
+                                    <span class="hidden-sm-down">{$word.funcCollection}</span>
+                                </button>
+                            </div>
                         <?php } ?>
-                        <li class="dropdown-item">
-                            <a href='{$url.adminurl}anyid=10&n=language&c=language_admin&a=dolangadd' class="btn btn-primary"><i class="fa fa-plus"></i>{$word.added}{$word.langweb}</a>
-                        </li>
-                    </ul>
+                        <div class="btn-group" {$met_agents_metmsg}>
+                            <a href="https://www.metinfo.cn/bangzhu/index.php?ver=metcms" class="btn btn-default"
+                               target="_blank">
+                                <i class="fa fa-life-ring"></i>
+                                <span class="hidden-sm-down">{$word.indexbbs}</span>
+                            </a>
+                        </div>
+                        <div class="btn-group" {$met_agents_metmsg}>
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fa fa-bookmark"></i>
+                                <span class="hidden-sm-down">{$word.indexcode}</span>
+                            </button>
+                            <ul class="dropdown-menu animate animate-reverse dropdown-menu-right text-xs-center">
+                                <?php
+                                if ($c['met_agents_metmsg'] == 1) {
+                                    $auth = load::mod_class('system/class/sys_auth', 'new');
+                                    $otherinfoauth = $auth->have_auth();
+                                    if (!$otherinfoauth) {
+                                        ?>
+                                        <li class="dropdown-item">
+                                            <a href="https://www.metinfo.cn/web/product.htm" target="_blank"
+                                               class='block'>{$word.sys_authorization2}</a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <a class="btn btn-primary"
+                                               href='{$url.adminurl}&n=system&c=authcode&a=doindex'>{$word.sys_authorization1}</a>
+                                        </li>
+                                    <?php } else { ?>
+                                        <li class="dropdown-item">
+                                            <button class="btn btn-info" type="submit">{$otherinfoauth['info1']}
+                                            </button>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <a class="nobo block" href="{$url.adminurl}&n=system&c=authcode&a=doindex">{$word.entry_authorization}</a>
+                                        </li>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fa fa-globe"></i>
+                                <span class="hidden-sm-down">{$lang_name}</span>
+                            </button>
+                            <ul class="dropdown-menu animate animate-reverse dropdown-menu-right">
+                                <?php
+                                foreach ($_M['user']['langok'] as $key => $val) {
+                                    $url_now = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
+                                    if (!strstr($url_now, "lang=")) {
+                                        $val['url'] = $_M['url']['site_admin'] . "index.php?lang=" . $val['mark'];
+                                    } else {
+                                        $val['url'] = str_replace(array("lang=" . $_M['lang'], "lang%3D" . $_M['lang']), array("lang=" . $val['mark'], "lang%3D" . $val['mark']), $url_now);
+                                    }
+                                    if (strstr($c['met_weburl'], 'https')) {
+                                        $val['url'] = str_replace('http', 'https', $val['url']);
+                                    }
+                                    ?>
+                                    <li class="dropdown-item"><a href="{$val.url}&switch=1"
+                                                                 class='block'>{$val.name}</a></li>
+                                <?php } ?>
+                                <li class="dropdown-item">
+                                    <a href='{$url.adminurl}anyid=10&n=language&c=language_admin&a=dolangadd'
+                                       class="btn btn-primary"><i
+                                                class="fa fa-plus"></i>{$word.added}{$word.langweb}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <?php if (!$c['met_agents_switch']) { ?>
+                            <div class="btn-group">
+                                <a class="btn btn-default" href='{$url.adminurl}n=system&c=news&a=doindex'>
+                                    <i class="fa fa-bell-o"></i>
+                                    <span class="tag tag-pill up tag-danger bg-red-600">{$msecount}</span>
+                                </a>
+                            </div>
+                        <?php } ?>
+                        <div class="btn-group">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="adminuser"
+                                    data-toggle="dropdown">
+                                {$_M['user']['admin_name']}
+                            </button>
+                            <ul class="dropdown-menu animate animate-reverse dropdown-menu-right">
+                                <li class="dropdown-item"><a
+                                            href="{$url.adminurl}n=admin&c=admin_admin&a=doeditor_info">{$word.modify_information}</a>
+                                </li>
+                                <li class="dropdown-item"><a target="_top"
+                                                             href="{$url.adminurl}n=login&c=login&a=dologinout">{$word.indexloginout}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <?php if(!$c['met_agents_switch']){ ?>
-                <div class="btn-group">
-                    <a class="btn btn-default" href='{$url.adminurl}n=system&c=news&a=doindex'>
-                        <i class="fa fa-bell-o"></i>
-                        <span class="tag tag-pill up tag-danger bg-red-600">{$msecount}</span>
-                    </a>
-                </div>
-                <?php } ?>
-                <div class="btn-group">
-                    <button class="btn btn-default dropdown-toggle" type="button" id="adminuser" data-toggle="dropdown">
-                        {$_M['user']['admin_name']}
-                    </button>
-                    <ul class="dropdown-menu animate animate-reverse dropdown-menu-right">
-                        <li class="dropdown-item"><a href="{$url.adminurl}n=admin&c=admin_admin&a=doeditor_info">{$word.modify_information}</a></li>
-                        <li class="dropdown-item"><a target="_top" href="{$url.adminurl}n=login&c=login&a=dologinout">{$word.indexloginout}</a></li>
-                    </ul>
+            </div>
+        </header>
+        <div class="modal fade" id="functionEncy">
+            <div class="modal-dialog modal-lg modal-primary">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">{$word.funcCollection}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <include file='sys_admin/function_ency'/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{$word.close}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
-<div class="modal fade" id="functionEncy">
-    <div class="modal-dialog modal-lg modal-primary">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">{$word.funcCollection}</h4>
-            </div>
-            <div class="modal-body">
-				<include file='sys_admin/function_ency'/>
-			</div>
-        	<div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{$word.close}</button>
-            </div>
-    	</div>
-	</div>
-</div>
-<?php }else if(M_ACTION=='dofunction_ency'){ ?>
-<include file='sys_admin/function_ency'/>
-<?php
+    <?php } else if (M_ACTION == 'dofunction_ency') { ?>
+        <include file='sys_admin/function_ency'/>
+        <?php
     }
-    if(M_ACTION!='dofunction_ency'){
+    if (M_ACTION != 'dofunction_ency') {
 ?>
 <div class="metadmin-main container-fluid m-y-10">
     <?php

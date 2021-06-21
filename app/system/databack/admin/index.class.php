@@ -4,18 +4,20 @@
 
 defined('IN_MET') or exit('No permission');
 load::sys_class('admin');
-load::sys_class('pclzip');
 load::sys_func('file');
 
 //load::module()
 class index extends admin
 {
+    protected $ver_allow;
+
     public function __construct()
     {
         global $_M, $adminurl;
         parent::__construct();
         $adminfile = $_M['config']['met_adminfile'];
-        define(ADMIN_FILE, $adminfile);
+        define('ADMIN_FILE', $adminfile);
+        $this->ver_allow = '7.0.0';
     }
 
     public function doindex()
@@ -40,6 +42,7 @@ class index extends admin
         $fileid = isset($_M['form']['fileid']) ? $_M['form']['fileid'] : 1;
         $allfile = isset($_M['form']['allfile']) ? $_M['form']['allfile'] : 0;
         $random = isset($_M['form']['random']) ? $_M['form']['random'] : random(6);
+        $piece = isset($_M['form']['piece']) ? $_M['form']['piece'] : 0;
         //$tables     = isset($_M['form']['tables']) ? $_M['form']['tables'] : '';
         $localurl = $_M['config']['met_weburl'];
         $tablepre = $_M['config']['tablepre'];
@@ -81,18 +84,15 @@ class index extends admin
             if (!file_exists(PATH_WEB . ADMIN_FILE . 'databack/sql')) {
                 @mkdir(PATH_WEB . ADMIN_FILE . '/databack/sql', 0777);
             }
-
-            //$zipname = $con_db_name . '_' . date('Ymd') . '_' . $random . '_' . $fileid;
-            //$sqlzip = PATH_WEB . ADMIN_FILE . '/databack/sql/' . $_M['config']['met_agents_backup'] . '_' . $zipname . '.zip';
-            //$archive = new PclZip($sqlzip);
-            //$zip_list = $archive->create($backup . $filename, PCLZIP_OPT_REMOVE_PATH, $backup);
         }
 
         if (trim($sqldump)) {//数据分卷
+            $piece++;
             $redata = array();
-            $url = "n=databack&c=index&a=dogetsql&lang={$_M['lang']}&tableid={$tableid}&fileid={$fileid}&startfrom={$this->startrow}&random={$random}&allfile={$allfile}";
+            $url = "n=databack&c=index&a=dogetsql&lang={$_M['lang']}&tableid={$tableid}&fileid={$fileid}&startfrom={$this->startrow}&random={$random}&allfile={$allfile}&piece={$piece}";
             $redata['status'] = 2;
             $redata['call_back'] = $url;
+            $redata['piece'] = $piece;
             $this->ajaxReturn($redata);
         }
         if ($allfile == 1) {//整站备份跳转
@@ -103,9 +103,10 @@ class index extends admin
             $this->ajaxReturn($redata);
         }
         //写日志
-        logs::addAdminLog('dataexplain10', 'databackup1', 'setdbBackupOK', 'dopackdata');
+        logs::addAdminLog('dataexplain10', 'dataexplain10', 'setdbBackupOK', 'dopackdata');
         $redata = array();
         $redata['status'] = 1;
+        $redata['piece'] = $piece;
         $redata['msg'] = $_M['word']['setdbBackupOK'];
         $this->ajaxReturn($redata);
     }
@@ -238,33 +239,41 @@ class index extends admin
     {
         global $_M;
         $redata = array();
-        $upload_path = PATH_WEB . '/upload';
+        $upload_path = PATH_WEB . 'upload';
         $upload_back_path = PATH_WEB . ADMIN_FILE . '/databack/upload/';
         $zipname = $upload_back_path . $_M['config']['met_agents_backup'] . '_upload_' . date('YmdHis', time()) . '.zip';
 
         makedir($upload_back_path);
+
+        //磁盘空间检测
+        $file_total = file_size($upload_path);      //文件总大小
+        $res = self::checkDisk($file_total);         //磁盘可用空间
+        if (!$res) {
+            //写日志
+            logs::addAdminLog('databackup6', 'databackup1', 'setBackuoDiskFull', 'dopackupload');
+            $this->error('磁盘空间不足');
+        }
+
         $zip = new ZipArchive();
-        $status = $zip->open($zipname, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
-        file_zip($upload_path, '', $zip);
+        $zip->open($zipname, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+        self::file_zip($zip, $upload_path, '');
         $zip->close();
 
         if (file_exists($zipname)) {
             //写日志
-            logs::addAdminLog('databackup6', 'databackup1', 'setdbArchiveOK', 'dopackupload');
+            logs::addAdminLog('databackup6', 'databackup6', 'setdbArchiveOK', 'dopackupload');
 
             $redata['status'] = 1;
             $redata['msg'] = $_M['word']['setdbArchiveOK'];
             $this->ajaxReturn($redata);
-            //turnover("{$_M['url']['own_form']}a=dorecovery", $_M['word']['setdbArchiveOK']);
         } else {
             //写日志
-            logs::addAdminLog('databackup6', 'databackup1', 'setdbArchiveNo', 'dopackupload');
+            logs::addAdminLog('databackup6', 'databackup6', 'setBackuoNo', 'dopackupload');
 
             $redata['status'] = 0;
             $redata['msg'] = $_M['word']['setdbArchiveNo'];
             $redata['error'] = 'error';
             $this->ajaxReturn($redata);
-            //turnover("{$_M['url']['own_form']}a=doindex", $_M['word']['setdbArchiveNo']);
         }
     }
 
@@ -272,8 +281,6 @@ class index extends admin
     public function doallfile()
     {
         global $_M;
-        $web_path = PATH_WEB;
-
         if (!isset($_M['form']['sqldata'])) {
             //数据备份
             $_M['form']['allfile'] = 1;
@@ -286,29 +293,98 @@ class index extends admin
         $web_zip = $web_back_path . '/' . $_M['config']['met_agents_backup'] . '_web_' . $con_db_name . '_' . date('YmdHis', time()) . '_' . random(6) . '.zip';
         makedir($web_back_path);
 
+        //磁盘空间检测
+        $file_total = file_size(PATH_WEB); //文件总大小
+        $res = self::checkDisk($file_total);   //磁盘可用空间
+        if (!$res) {
+            //写日志
+            logs::addAdminLog('databackup7', 'databackup7', 'setBackuoDiskFull', 'doallfile');
+            $this->error('磁盘空间不足');
+        }
+
+        //创建整站压缩包
+        $skip_list = scan_dir($web_back_path);
+        //dd($skip_list);
+
+        //$web_path = PATH_WEB;
+        $web_path = substr(PATH_WEB, 0, -1);
         $zip = new ZipArchive();
-        $status = $zip->open($web_zip, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
-        file_zip($web_path, '', $zip);
+        $zip->open($web_zip, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
+        self:: file_zip($zip, $web_path, '', $skip_list);
         $zip->close();
 
         if (file_exists($web_zip)) {
             //写日志
-            logs::addAdminLog('databackup6', 'databackup7', 'setdbArchiveOK', 'dopackupload');
+            logs::addAdminLog('databackup7', 'databackup7', 'setdbArchiveOK', 'doallfile');
 
             $redata['status'] = 1;
             $redata['msg'] = $_M['word']['setdbArchiveOK'];
             $this->ajaxReturn($redata);
-            //turnover("{$_M['url']['own_form']}a=dorecovery", $_M['word']['setdbArchiveOK']);
         } else {
             //写日志
-            logs::addAdminLog('databackup7', 'databackup1', 'setdbArchiveNo', 'dopackupload');
+            logs::addAdminLog('databackup7', 'databackup7', 'setBackuoNo', 'doallfile');
 
             $redata['status'] = 0;
             $redata['msg'] = $_M['word']['setdbArchiveNo'];
             $redata['error'] = 'error';
             $this->ajaxReturn($redata);
-            //turnover("{$_M['url']['own_form']}a=doindex", $_M['word']['setdbArchiveNo']);
         }
+    }
+
+    /**
+     * @param $zip
+     * @param string $dir
+     * @param string $skip_path
+     * @param array $skip_list
+     */
+    public function file_zip($zip , $dir = '', $skip = '' , $skip_list = array())
+    {
+        global $_M;
+        if (!$skip) {
+            $skip = PATH_WEB;
+        }
+
+        if (strstr(strtoupper(PHP_OS), 'WIN')) {
+            $skip = str_replace("\\", '/', $skip);
+            $dir = str_replace("\\", '/', $dir);
+        }
+
+        $handler = opendir($dir);
+        while (($filename = readdir($handler)) !== false) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($dir . "/" . $filename)) {
+                    //$zip->addEmptyDir($dir . '/' . $filename);
+                    if ($skip != $dir . '/' . $filename) {
+                        $new_dir = str_replace($skip, '', $dir . '/' . $filename);
+                        $zip->addEmptyDir($new_dir);
+                    }
+                    self::file_zip($zip, $dir . "/" . $filename, $skip, $skip_list);
+                } else {
+                    //忽略文件列表
+                    if (!in_array(str_replace($skip, '', $dir . '/' . $filename), $skip_list)) {
+                        $zip->addFile($dir . "/" . $filename, str_replace($skip, '', $dir . '/' . $filename));
+                    }
+                }
+            }
+        }
+        @closedir($handler);
+    }
+
+    /**
+     * 获取磁盘信息
+     * @return int
+     */
+    public function checkDisk($file_total = 0)
+    {
+        if (!function_exists('disk_free_space')) {
+            return true;
+        }
+        $disk_total = byte_format(disk_free_space('.'), 2, "mb");
+        if (ceil($file_total) < ceil($disk_total)) {
+            return true;
+        }
+        return false;
+
     }
 
     /*******************备份操作********************/
@@ -396,10 +472,9 @@ class index extends admin
             @fclose($fp);
             $import_version = trim(str_replace('#MetInfo.cn Created version:', '', $str));
             $infos[$key]['ver'] = $import_version;
-            //#$ver_make = $_M['config']['metcms_v'];
-            $ver_make = '6.1';          //支持6.1.0~6.2.0版本数据导入
-            $res = version_compare($import_version, $ver_make, '>=');
-            if ($res == false) {
+
+            //检测导入数据版本
+            if (version_compare($import_version, $this->ver_allow, '<')) {
                 $infos[$key]['error'] = '2';
                 $infos[$key]['error_info'] = $_M['word']['unitytxt_6'];
             }
@@ -523,11 +598,9 @@ class index extends admin
                 $infos = explode('#', $info);
                 $import_version = trim(str_replace('MetInfo.cn Created version:', '', $infos[1]));
 
-                $ver_make = '6.1';          //支持6.1.0~6.2.0版本数据导入
-                if (version_compare($import_version, $ver_make, '<')) {
-                    $result['msg'] = $_M['word']['recoveryisntallinfo'];
-                    $result['status'] = 0;
-                    $this->ajaxReturn($result);
+                //检测导入数据版本
+                if (version_compare($import_version, $this->ver_allow, '<')) {
+                    $this->error($_M['word']['recoveryisntallinfo']);
                 }
 
                 // 用户临时数据 applist 语言 生成数据缓存
@@ -543,9 +616,7 @@ class index extends admin
             }
         }
 
-        $result['msg'] = $_M['word']['dataerror'];
-        $result['status'] = 0;
-        $this->ajaxReturn($result);
+        $this->error($_M['word']['dataerror']);
     }
 
     public function dosql_execute()
@@ -582,7 +653,6 @@ class index extends admin
             $sql = file_get_contents($filepath);
             $split = $this->dosql_split($sql);
             $info = $split['info'];
-            #$sqls = $split['sql'];
             $sqls = $transfer->getQuery($sql);
             $infos = explode('#', $info);
             if ($infos[1] && !$old_version) {
@@ -643,6 +713,26 @@ class index extends admin
                         continue;
                     }
 
+
+                    $pattern = '/^insert\s+into\s(\w+)\svalues(.*)/i';
+                    if (preg_match($pattern, $sql)) {
+                        $sql = preg_replace_callback($pattern, function ($match) {
+                            if ($match) {
+                                $string = $match[2];
+                                $string = str_ireplace('select', "\sel\ect", $string);
+                                $string = str_ireplace('insert', "\ins\ert", $string);
+                                $string = str_ireplace('update', "\up\date", $string);
+                                $string = str_ireplace('delete', "\de\lete", $string);
+                                $string = str_ireplace('union', "\un\ion", $string);
+                                $string = str_ireplace('into', "\in\to", $string);
+                                $string = str_ireplace('load_file', "\load\_\file", $string);
+                                $string = str_ireplace('outfile', "\out\file", $string);
+                                $string = str_ireplace('sleep', "\sle\ep", $string);
+                            }
+                            return str_replace($match[2], $string, $match[0]);
+                        }, $sql);
+                    }
+
                     if ($_M['config']['db_type'] == 'sqlite') {
                         $sql = DB::escapeSqlite($sql);
                         $rs = DB::$link->exec($sql);
@@ -663,10 +753,7 @@ class index extends admin
             logs::addAdminLog('databackup2', 'setdbImportData', 'jsok', 'dosql_execute');
             $redata['status'] = 2;
             $redata['call_url'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&admin_rewrite={$admin_rewrite}&fileid={$fileid}&version={$version}&old_version={$old_version}";
-            //#file_put_contents(__DIR__ . '/res.txt', var_export($redata, true)."\n", FILE_APPEND);
             $this->ajaxReturn($redata);
-
-            //#header("location:{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&admin_rewrite={$admin_rewrite}&fileid={$fileid}&version={$version}&old_version={$_M['form']['old_version']}");
         } else {
             //更新系统版本信息
             $query = "UPDATE {$_M['table']['config']} SET value = '{$version}' WHERE name = 'metcms_v'";
@@ -713,7 +800,7 @@ class index extends admin
                     //更新语言
                     $update_database->update_language($version);
                 }
-                if (version_compare($old_version, '7.1.0', '<')) {//7.0.0beta->7.1.0
+                if (version_compare($old_version, '7.3.0', '<')) {//7.0.0beta->7.1.0
                     //更新语言
                     $update_database->update_language($version);
                 }
@@ -1007,17 +1094,19 @@ class index extends admin
     public function dodelete_zip()
     {
         global $_M;
-        $redata = array();
-        $file = str_replace('/', '', $_M['form']['file']);
+        $file = $_M['form']['file'];
         $type = $_M['form']['type'] == 'upload' ? 'upload' : 'web';
 
-        $zipname = PATH_WEB . ADMIN_FILE . '/databack/' . $type . '/' . $file;
+        $file_name = basename($file,'.zip');
+        $zipname = PATH_WEB . ADMIN_FILE . "/databack/{$type}/{$file_name}.zip";
         if (file_exists($zipname)) {
             @unlink($zipname);
             $redata['status'] = 1;
             $redata['msg'] = $_M['word']['physicaldelok'];
             $this->ajaxReturn($redata);
         }
+
+        $redata = array();
         $redata['status'] = 0;
         $redata['msg'] = $_M['word']['setdbNotExist'];
         $this->ajaxReturn($redata);
@@ -1239,15 +1328,13 @@ class index extends admin
 
     public function doTry()
     {
-        die();
         global $_M;
         $ver = $_M['form']['ver'];
-
-        $version = $_M['config']['metcms_v'];
+        $sys_ver = $_M['config']['metcms_v'];
 
         $update_database = load::mod_class('update/update_database', 'new');
 
-        $update_database->update_language($ver);
+        $update_database->diff_fields($sys_ver);
     }
 }
 

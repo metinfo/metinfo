@@ -1,5 +1,6 @@
-/*
-反馈、招聘系统设置
+/**
+ * 反馈、招聘系统设置
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	M.component.modal_call_status.form_sys_set=[];

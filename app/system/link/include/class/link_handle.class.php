@@ -32,7 +32,7 @@ class link_handle extends handle
      * @param  string $link 设置数组
      * @return array   处理过后的友情链接数组
      */
-    public function one_para_handle($link)
+    public function one_para_handle($link = array())
     {
         global $_M;
         $link['weblogo'] = $this->url_transform(str_replace('../', '', $link['weblogo']));

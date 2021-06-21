@@ -8,13 +8,13 @@ defined('IN_MET') or exit('No permission');
 <if value="$data['displayimgs']"></div></if>
 <?php
 $upload=array(
-	title=>$word['displayimg'],
-	name=>'imgurl',
-	value=>$data['list']['imgurl_all'],
-	multiple=>1,
-	tips=>$word['tips11_v6'],
-	size=>1,
-	delimiter=>'|'
+	'title'=>$word['displayimg'],
+	'name'=>'imgurl',
+	'value'=>$data['list']['imgurl_all'],
+	'multiple'=>1,
+	'tips'=>$word['tips11_v6'],
+	'size'=>1,
+	'delimiter'=>'|'
 );
 ?>
 <include file="pub/content_details/upload"/>

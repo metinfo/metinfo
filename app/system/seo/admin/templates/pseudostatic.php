@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-seo">
-  <form method="POST" action="{$url.own_name}c=pseudo_static&a=doSavePseudoStatic" class="info-form mt-3" data-submit-ajax="1">
+  <form method="POST" action="{$url.own_name}c=pseudo_static&a=doSavePseudoStatic" class="info-form" data-submit-ajax="1">
     <div class="metadmin-fmbx">
       <h3 class="example-title">{$word.unitytxt_1}</h3>
       <div class="alert dark alert-primary radius0">{$word.seotips3}</div>

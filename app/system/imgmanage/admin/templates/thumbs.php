@@ -6,7 +6,7 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-imgmanage-thumbs">
 <include file="pub/head_tab"/>
-<form    method="POST" action="{$url.own_name}c=imgmanager&a=doSaveThumbs"  class='imgmanager-form mt-3' data-submit-ajax='1'>
+<form    method="POST" action="{$url.own_name}c=imgmanager&a=doSaveThumbs"  class='imgmanager-form' data-submit-ajax='1'>
   	<div class="metadmin-fmbx">
     <dl>
 			<dt>

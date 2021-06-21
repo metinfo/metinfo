@@ -24,8 +24,6 @@ class sitemap extends web
         $this->seo($data['name'], $data['keywords'], $data['description']);
         $this->seo_title($data['ctitle']);
         $this->view('sitemap', $this->input);
-
-        #require_once $this->template('tem/sitemap', $this->input);
     }
 
 }

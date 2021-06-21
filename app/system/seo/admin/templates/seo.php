@@ -1,4 +1,4 @@
-<form method="POST" action="{$url.own_name}c=seo&a=doSaveParameter" class='info-form mt-3' data-submit-ajax='1'>
+<form method="POST" action="{$url.own_name}c=seo&a=doSaveParameter" class='info-form' data-submit-ajax='1'>
   <div class="metadmin-fmbx">
     <h3 class='example-title'>{$word.columnmtitle}{$word.seting}</h3>
     <dl>

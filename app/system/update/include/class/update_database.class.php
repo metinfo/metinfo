@@ -22,8 +22,9 @@ class update_database extends database
     public function __construct()
     {
         global $_M;
-        $this->version = '7.2.0';
+        $this->version = '7.3.0';
         $this->colum_label = load::sys_class('label', 'new')->get('column');
+        $this->tables = load::mod_class('databack/tables', 'new');
     }
 
     public function update_system($version)
@@ -74,10 +75,8 @@ class update_database extends database
 
             //更新语言
             $this->update_language($version);
-        } elseif (version_compare($version, '7.0.0', '<')) {//7.0.0beta->7.0.0
+        } elseif (version_compare($version, '7.3.0', '<')) {//7.0.0beta->7.3.0
             //更新语言
-            $this->update_language($version);
-        } elseif (version_compare($version, '7.1.0', '<')) {
             $this->update_language($version);
         }
     }
@@ -89,9 +88,8 @@ class update_database extends database
     public function diff_fields($version)
     {
         global $_M;
-        $app = load::sys_class('app', 'new');
-        $app->version = $version;
-        $diffs = $app->get_diff_tables();
+        $this->tables->version = $version;
+        $diffs = $this->tables->get_diff_tables();
         if (isset($diffs['table'])) {
             foreach ($diffs['table'] as $table => $detail) {
                 $sql = "CREATE TABLE IF NOT EXISTS `{$table}` (";
@@ -139,9 +137,8 @@ class update_database extends database
     public function alter_table($version)
     {
         global $_M;
-        $app = load::sys_class('app', 'new');
-        $app->version = $version;
-        $base = $app->get_base_table();
+        $this->tables->version = $version;
+        $base = $this->tables->get_base_table();
         if (!$base) {
             return;
         }
@@ -638,8 +635,8 @@ class update_database extends database
     {
         global $_M;
         //本地指纹
-        $path_cn = __DIR__ . "/update_7.2.0/v{$version}lang_web_cn.json";
-        $path_en = __DIR__ . "/update_7.2.0/v{$version}lang_web_en.json";
+        $path_cn = __DIR__ . "/update_7.3.0/v{$version}lang_web_cn.json";
+        $path_en = __DIR__ . "/update_7.3.0/v{$version}lang_web_en.json";
 
         $sql = "SELECT * FROM {$_M['table']['lang']} ";
         $web_lang_list = DB::get_all($sql);
@@ -1167,6 +1164,7 @@ class update_database extends database
             self::update_config('global_search_type', '0', 0, $lang);
             self::update_config('global_search_module', '2', 0, $lang);
             self::update_config('global_search_column', '3', 0, $lang);
+            self::update_config('global_search_weight', '1|2|3|4|5|6', 0, $lang);
             self::update_config('column_search_range', 'parent', 0, $lang);
             self::update_config('column_search_type', '0', 0, $lang);
             self::update_config('advanced_search_range', 'all', 0, $lang);
@@ -1186,10 +1184,25 @@ class update_database extends database
             self::update_config('met_auto_play_pc', '0', 0, $lang);
             self::update_config('met_auto_play_mobile', '0', 0, $lang);
             //member
+            self::update_config('met_login_box_position', '', 0, $lang);
             self::update_config('met_weixin_gz_token', '', 0, $lang);
             self::update_config('met_auto_register', '', 0, $lang);
             self::update_config('met_member_agreement', '', 0, $lang);
             self::update_config('met_member_agreement_content', '', 0, $lang);
+            self::update_config('met_member_bg_range', '', 0, $lang);
+            self::update_config('met_login_box_position', '', 0, $lang);
+            self::update_config('met_new_registe_email_notice', '', 0, $lang);
+            self::update_config('met_to_admin_email', '', 0, $lang);
+            self::update_config('met_new_registe_sms_notice', '', 0, $lang);
+            self::update_config('met_to_admin_sms', '', 0, $lang);
+            self::update_config('met_google_open', '', 0, $lang);
+            self::update_config('met_google_appid', '', 0, $lang);
+            self::update_config('met_google_appsecret', '', 0, $lang);
+            self::update_config('met_facebook_open', '', 0, $lang);
+            self::update_config('met_facebook_appid', '', 0, $lang);
+            self::update_config('met_facebook_appsecret', '', 0, $lang);
+            //webset
+            self::update_config('met_icp_info', '', 0, $lang);
 
             if ($lang == 'cn') {
                 self::update_config('met_data_null', '没有找到数据', 0, $lang);
@@ -1286,7 +1299,7 @@ class update_database extends database
     public function check_shop()
     {
         global $_M;
-        if (!file_exists(PATH_WEB . 'shop')) {
+        if (!file_exists(PATH_WEB . 'app/app/shop')) {
             $query = "DELETE FROM {$_M['table']['applist']} WHERE no = 10043";
             DB::query($query);
 
@@ -1300,13 +1313,13 @@ class update_database extends database
             if (file_exists($file)) {
                 include $file;
                 $install = new install();
-                if (method_exists($install, 'appupdate')) {
+                if (method_exists($install, 'appcheke')) {
                     $install->appcheke();
                 }
             }
         }
 
-        if (!file_exists(PATH_WEB . 'pay')) {
+        /*if (!file_exists(PATH_WEB . 'app/system/pay')) {
             $query = "DELETE FROM {$_M['table']['applist']} WHERE no = 10080";
             DB::query($query);
             $query = "DELETE FROM {$_M['table']['app_config']} WHERE appno = 10080";
@@ -1314,15 +1327,15 @@ class update_database extends database
             $query = "DELETE FROM {$_M['table']['pay_config']}";
             DB::query($query);
         } else {
-            $file = PATH_WEB . 'app/app/pay/admin/install.class.php';
+            $file = PATH_WEB . 'app/system/pay/admin/install.class.php';
             if (file_exists($file)) {
                 include $file;
                 $install = new install();
-                if (method_exists($install, 'appupdate')) {
+                if (method_exists($install, 'appcheke')) {
                     $install->appcheke();
                 }
             }
-        }
+        }*/
     }
 
     /*****************************工具方法******************************/

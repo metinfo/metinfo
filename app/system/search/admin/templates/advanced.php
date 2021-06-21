@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 $checkbox_time = time();
 $data = $data['handle'];
 ?>
-<form method="POST" action="{$url.own_name}c=index&a=doSaveAdvancedSearch" class="mt-3" data-submit-ajax="1">
+<form method="POST" action="{$url.own_name}c=index&a=doSaveAdvancedSearch" data-submit-ajax="1">
   <div class="metadmin-fmbx">
     <dl>
       <dt><label class='form-control-label'>{$word.search_range}</label></dt>

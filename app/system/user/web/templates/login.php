@@ -3,20 +3,21 @@
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
 $data['page_title']=$_M['word']['memberLogin'].$data['page_title'];
+$login_position=$c['met_login_box_position']==1?'m-x-auto':($c['met_login_box_position']==2?'pull-xs-right':'');
 ?>
 <include file="sys_web/head"/>
 <include file="app/style"/>
 <div class="met-member login-index page p-y-50">
 	<div class="container">
-		<form method="post" action="{$url.login_check}" class='met-form met-form-validation'>
+		<form method="post" action="{$url.login_check}" class='met-form met-form-validation {$login_position}'>
 			<input type="hidden" name="gourl" value="{$_M['form']['gourl']}" />
 			<div class="form-group">
-				<input type="text" name="username" class="form-control" placeholder="{$word.logintips}" required
+				<input type="text" name="username" class="form-control" placeholder="{$word.logintips}" data-safety required
 				data-fv-notempty-message="{$word.noempty}"
 				>
 			</div>
 			<div class="form-group">
-				<input type="password" name="password" class="form-control" placeholder="{$word.password}" required
+				<input type="password" name="password" class="form-control" placeholder="{$word.password}" data-safety required
 				data-fv-notempty-message="{$word.noempty}"
 				>
 			</div>
@@ -36,23 +37,42 @@ $data['page_title']=$_M['word']['memberLogin'].$data['page_title'];
 			<?php } ?>
 			<div class="login_link text-xs-right m-b-15"><a href="{$url.getpassword}">{$word.memberForget}</a></div>
 			<button type="submit" class="btn btn-lg btn-primary btn-squared btn-block">{$word.memberGo}</button>
-			<?php if($c['met_qq_open']||$c['met_weixin_open']||$c['met_weibo_open']){ ?>
+			<?php if($c['met_qq_open']||$c['met_weixin_open']||$c['met_weibo_open']||$c['met_google_open']||$c['met_facebook_open']){ ?>
 			<div class="login_type text-xs-center m-t-20">
 				<p>{$word.otherlogin}</p>
 				<ul class="blocks-3 m-0">
+                    <!--QQ登录-->
 					<?php if($c['met_qq_open']){ ?>
                     <li class='m-b-0'><a title="QQ{$word.login}" href="{$url.login_other}&type=qq"><i class="fa fa-qq font-size-30"></i></a></li>
-					<?php
-				    }
+					<?php }?>
+
+                    <!--微信登录-->
+                    <?php
 				    if($c['met_weixin_open'] && !(!is_weixin_client() && is_mobile_client())){
 					?>
                     <li class='m-b-0'><a <if value="is_weixin_client()">href="{$url.login_other}&type=weixin"<else/>href="javascript:;" data-toggle="modal" data-target=".met-user-login-weixin-modal"</if> class="met-user-login-weixin"><i class="fa fa-weixin light-green-600 font-size-30"></i></a></li>
-					<?php
-				    }
+					<?php }?>
+
+                    <!--微博登录-->
+                    <?php
 				    if($c['met_weibo_open']){
 					?>
                     <li class='m-b-0'><a href="{$url.login_other}&type=weibo"><i class="fa fa-weibo red-600 font-size-30"></i></a></li>
 					<?php } ?>
+
+                    <!--Google-->
+                    <?php
+                    if($c['met_google_open']){
+                    ?>
+                        <li class='m-b-0'><a href="{$url.login_other}&type=google"><i class="fa fa-google-plus-official red-600 font-size-30"></i></a></li>
+                    <?php } ?>
+
+                    <!--Google-->
+                    <?php
+                    if($c['met_facebook_open']){
+                        ?>
+                        <li class='m-b-0'><a href="{$url.login_other}&type=facebook"><i class="fa fa-facebook-official blue-600 font-size-30"></i></a></li>
+                    <?php } ?>
 				</ul>
 			</div>
 			<?php } ?>

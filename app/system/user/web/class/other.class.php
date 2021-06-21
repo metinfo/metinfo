@@ -77,7 +77,7 @@ class other
     }
 
     /**
-     * @param $info
+     * @param $code
      * @return array|bool|void
      */
     public function get_access_token($code)
@@ -99,17 +99,18 @@ class other
     }
 
     /**
-     * 获取系统用户信息
-     * @param $code
-     * @return mixed
+     * openid获取系统用户信息
+     * @param string $openid
+     * @return array
      */
     public function get_user_by_openid($openid = '')
     {
         $other_user = $this->get_other_user($openid);
         if ($other_user['met_uid']) {
             $user = load::sys_class('user', 'new')->get_user_by_id($other_user['met_uid']);
+            return $user;
         }
-        return $user;
+        return array();
     }
 
     /**
@@ -131,7 +132,7 @@ class other
     public function getOtherUserByUid($uid = '', $type = '')
     {
         global $_M;
-        $sql = "SELECT * FROM {$_M['table']['user_other']} WHERE type = '{$type}' AND met_uid = '{$uid}'";
+        $sql = "SELECT * FROM {$this->table} WHERE type = '{$type}' AND met_uid = '{$uid}'";
         $user = DB::get_one($sql);
         return $user;
     }

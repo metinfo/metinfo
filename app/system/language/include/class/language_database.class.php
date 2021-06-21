@@ -19,7 +19,7 @@ class language_database
      * @param $theme_style string 网站主题风格
      * @param $content string 复制基本内容的语言种类（cn）
      */
-    public function copyconfig($mark, $autor, $local_lang, $copy_config, $theme_style, $content)
+    public function copyconfig($mark = '', $autor = '', $local_lang = '', $copy_config = '', $theme_style = '', $content = '')
     {
         global $_M;
         $result = 0;

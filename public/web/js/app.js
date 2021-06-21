@@ -1,5 +1,6 @@
-/*
-应用通用功能
+/*!
+ * 应用通用功能
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 // 判断地址栏是否有lang参数，没有则跳转到带lang参数的地址
 if(typeof MET !='undefined' && MET['url']['basepath'] !='undefined'){
@@ -23,20 +24,49 @@ function getQueryString(name) {
     return null;
 }
 // 修改、添加、删除地址栏参数
-function replaceParamVal(paramName,replaceWith) {
-    var newUrl=oldUrl=window.location.href,
-        paramNames='&' + paramName + '=';
-        re = eval('/('+paramNames+')([^&]*)/gi');
-    if(replaceWith){
-        if(oldUrl.indexOf(paramNames)>=0){
-            newUrl = oldUrl.replace(re, paramNames + replaceWith);
-        }else{
-            newUrl = oldUrl+ paramNames + replaceWith;
+function replaceParamVal(param,value) {
+    var url=location.href,
+        match_url=window.location.search.substr(1) || window.location.hash.split('?')[1]||'',
+        param=$.isArray(param)?param:[param],
+        value=$.isArray(value)?value:[value];
+    $.each(param, function(index, val) {
+        var param1='&' + val + '=',
+        param2='?' + val + '=',
+        re = match_url.match(new RegExp("(^|&)"+val+"=([^&]*)(&|$)", "i"));
+        if(!re && (url.indexOf(param1)>0 || url.indexOf(param2)>0)) re=[val + '='];
+        re && (re[0]=re[0].replace(/&/g,''));
+        value[index]=String(value[index]);
+        if(value[index]){
+            if(re){
+                if(url.indexOf(param1)>0){
+                    url = url.replace('&'+re[0], param1 + value[index]);
+                }else if(url.indexOf(param2)>0){
+                    url = url.replace('?'+re[0], param2 + value[index]);
+                }
+            }else{
+                if(url.indexOf('?')>0){
+                    var laststr=url.substr(-1),
+                        urls=url.split('?');
+                    if(urls[urls.length-1].indexOf('#')>0 && laststr!='/'){
+                        url+='/?';
+                        laststr=url.substr(-1);
+                    }
+                    url = url+((laststr=='?'||laststr=='&')?(val + '='):param1) + value[index];
+                }else{
+                    if((url+'/')==M.weburl) url+='/';
+                    var laststr=url.substr(url.lastIndexOf('/')+1);
+                    if(laststr.length?laststr.indexOf('.')>0:1){
+                        url=url+param2 + value[index];
+                    }else{
+                        url=url+'/'+param2 + value[index];
+                    }
+                }
+            }
+        }else if(re){
+            url = url.replace('&'+re[0], '').replace(re[0], '');
         }
-    }else if(oldUrl.indexOf(paramNames)>=0){
-        newUrl = oldUrl.replace(re, '');
-    }
-    history.pushState('','',newUrl);
+    })
+    history.pushState('','',url);
 }
 // 可视化弹框中页面隐藏头部
 if (parent.window.location.search.indexOf('pageset=1') >= 0) $('.metadmin-head').hide();
@@ -137,7 +167,7 @@ M['plugin']['tokenfield']=[
     M['url']['public_web_register']+'bootstrap-tokenfield.min.js'
 ];
 M['plugin']['ionrangeslider']=[
-    M['url']['public_plugins']+'ionrangeslider/ionrangeslider.min.css',
+    M['url']['public_plugins']+'ionrangeslider/ion.rangeslider.min.css',
     M['url']['public_plugins']+'ionrangeslider/ion.rangeSlider.min.js'
 ];
 M['plugin']['datetimepicker']=[
@@ -868,9 +898,9 @@ $(function(){
         if($icon.length){
             if(!$icon.hasClass('transition500')) $icon.addClass('transition500');
             if($($(this).data('target')).height()){
-                $icon.removeClass('rotate90');
+                $icon.removeClass('fa-rotate-90');
             }else{
-                $icon.addClass('rotate90');
+                $icon.addClass('fa-rotate-90');
             }
         }
     });

@@ -22,7 +22,7 @@ class job_label  extends base_label
     {
         global $_M;
         if ($id && is_numeric($id)) {
-            $data = $this->get_one_list_contents($id);    //获取职位信息
+            $data = $this->get_one_list_contents($id, 1, 0);    //获取职位信息
             $classnow = $data['class3'] ? $data['class3'] : ($data['class2'] ? $data['class2'] : $data['class1']);
             $return['para'] = load::mod_class('parameter/parameter_label', 'new')->get_parameter_form('job', $data['class1'], $data['class2'], $data['class3']);
             $return['config']['url'] = load::mod_class('job/job_handle', 'new')->module_form_url($classnow);
@@ -46,7 +46,7 @@ class job_label  extends base_label
         global $_M;
         //cxrf_token
         $form_token = random('5');
-        load::sys_class('session', 'new')->set("form_token_{$id}", $form_token);
+        load::sys_class('session', 'new')->set("job_form_token_{$id}", $form_token);
 
         $job = $this->get_module_form($id);
         $str = '';

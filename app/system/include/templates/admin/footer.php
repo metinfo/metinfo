@@ -7,6 +7,6 @@ $lang_json_admin_js_time = filemtime(PATH_WEB.'cache/lang_json_admin_'.$_M['lang
 ?>
 </body>
 <script>window.MET={$data.met_para};</script>
-<script src="{$url.public_admin}js/basic_admin.js?{$basic_admin_js_time}"></script>
 <script src="{$url.site}cache/lang_json_admin_{$_M['langset']}.js?{$lang_json_admin_js_time}"></script>
+<script src="{$url.public_admin}js/basic_admin.js?{$basic_admin_js_time}"></script>
 </html>

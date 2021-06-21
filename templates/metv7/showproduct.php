@@ -81,7 +81,7 @@
                                 </article>
                                 <div class="detail_tag font-size-14">
                                     <span>{$data.tagname}</span>
-                                    <list data="$data[taglist]" name="$tag">
+                                    <list data="$data['taglist']" name="$tag">
                                         <a href="{$tag.url}" {$g.urlnew} title="{$tag.name}">{$tag.name}</a>
                                     </list>
                                 </div>
@@ -105,7 +105,7 @@
                                         </li>
                                         </tag>
                                     <else/>
-                                        <list data="$data[tag_relations]" name="$v">
+                                        <list data="$data['tag_relations']" name="$v">
                                             <li class='masonry-child'>
                                                 <a href='{$v.url}' title='{$v.title}' class='block m-b-0' {$g.urlnew}>
                                                     <img data-original="{$v.imgurl|thumb:$c['met_productdetail_x'],$c['met_productdetail_y']}" class='cover-image' alt='{$v.title}' />

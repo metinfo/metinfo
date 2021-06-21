@@ -98,7 +98,7 @@ EOT;
             $search['form']['input_name_all'] = "all";
             $search['form']['content'] = load::sys_class('label', 'new')->get('tags')->getTagName($_M['form']['content']);
 
-            //排序
+            //排序选项
             $order_url = $url;
             if ($_M['form']['content']) {
                 $order_url .= "&content={$_M['form']['content']}";
@@ -107,17 +107,18 @@ EOT;
                 $para = urlencode($_M['form']['para']);
                 $order_url .= "&para=" . $para;
             }
-            $search['order']['com']['name'] = $_M[word][listcom];
+            $search['order']['title']['name'] = $_M['word']['Title'];
+            $search['order']['title']['url'] = $order_url . '&order=title';
+            $search['order']['com']['name'] = $_M['word']['listcom'];
             $search['order']['com']['url'] = $order_url . '&order=com';
-            $search['order']['hit']['name'] = $_M[word][listhot];
+            $search['order']['hit']['name'] = $_M['word']['listhot'];
             $search['order']['hit']['url'] = $order_url . '&order=hit';
-            $search['order']['new']['name'] = $_M[word][listnew];
+            $search['order']['new']['name'] = $_M['word']['listnew'];
             $search['order']['new']['url'] = $order_url . '&order=new';
             $order_para['order'] = $search['order'];
             $search['order'] = load::plugin('search_order', 1, $order_para);//加载插件
+
             //字段搜索选项
-            #dump($_M['form']);
-            #dump($_M['form']['para']);
             $para_url = $url;
             if ($_M['form']['order']) {
                 $para_url = $url . "&order={$_M['form']['order']}";
@@ -125,21 +126,23 @@ EOT;
             $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($classnow);
             $paras = load::sys_class('label', 'new')->get('parameter')->get_para($class123['class1']['module'], $class123['class1']['id'], $class123['class2']['id']);
 
-            $paraurl = json_decode(load::sys_class('auth', 'new')->decode($_M['form']['para']), true);
+            //$paraurl = json_decode(load::sys_class('auth', 'new')->decode($_M['form']['para']), true);
+            $paraurl = json_decode(base64_decode($_M['form']['para']), true);
 
             if (!$_M['config']['shopv2_para']) {
                 $parameter_database = load::mod_class('parameter_database', 'new');
                 foreach ($paras as $key => $val) {
-                    if ($val['type'] != 2 && $val['type'] != 4 && $val['type'] != 6) {
+                    if(!in_array($val['type'] ,array(2,4,6))) {
                         continue;
                     }
+
                     $id = $val['id'];
                     $urlnow = $paraurl;
                     $urlnow[$id] = '';
                     $search['para'][$key]['name'] = $val['name'];
                     $search['para'][$key]['id'] = $id;
                     $p['name'] = $_M['word']['weball'];
-                    $p['url'] = $para_url . "&para=" . urlencode(load::sys_class('auth', 'new')->encode(json_encode($urlnow)));
+                    $p['url'] = $para_url . "&para=" . urlencode(base64_encode(json_encode($urlnow)));
                     $p['id'] = 0;
                     $search['para'][$key]['list'][] = $p;
 
@@ -149,7 +152,7 @@ EOT;
                         $urlnow[$id] = $v['id'];
                         $p['name'] = $v['value'];
                         $p['id'] = $v['id'];
-                        $p['url'] = $para_url . "&para=" . urlencode(load::sys_class('auth', 'new')->encode(json_encode($urlnow)));
+                        $p['url'] = $para_url . "&para=" . urlencode(base64_encode(json_encode($urlnow)));
                         $search['para'][$key]['list'][] = $p;
                     }
                 }
@@ -424,7 +427,7 @@ EOT;
         $id = $_M['form']['class3'] ? $_M['form']['class3'] : ($_M['form']['class2'] ? $_M['form']['class2'] : $_M['form']['class1']);
         if ($_M['form']['search'] == 'tag') {
             $type = $this->tag_search();
-        }else{
+        } else {
             $type = $this->get_search_type($_M['form']['stype'], $str);
         }
         $order = array(
@@ -439,23 +442,36 @@ EOT;
                     $content = load::sys_class('label', 'new')->get($table)->get_module_list($id, '', $type, $order);
                     $all = $content;
                 } else {
-                    $about = load::sys_class('label', 'new')->get('about')->search_about($str);
+                    $about = load::sys_class('label', 'new')->get('about')->column_list($type);
                     foreach ($about as $key => $val) {
                         $about[$key]['title'] = $val['name'];
                     }
                     $all = $about;
                 }
             } else {
-                $about = load::sys_class('label', 'new')->get('about')->search_about($str);
+                $arr = array();
+                $about = load::sys_class('label', 'new')->get('about')->column_list($type);
                 foreach ($about as $key => $val) {
                     $about[$key]['title'] = $val['name'];
                 }
-                $news = load::sys_class('label', 'new')->get('news')->get_module_list($id, '', $type, $order);
-                $product = load::sys_class('label', 'new')->get('product')->get_module_list($id, '', $type, $order);
-                $img = load::sys_class('label', 'new')->get('img')->get_module_list($id, '', $type, $order);
-                $download = load::sys_class('label', 'new')->get('download')->get_module_list($id, '', $type, $order);
-                $job = load::sys_class('label', 'new')->get('job')->get_module_list($id, '', $type, $order);
-                $all = array_merge((array)$about, (array)$news, (array)$product, (array)$img, (array)$download, (array)$job );
+                $arr[1] = $about;
+                $arr[2] = $news = load::sys_class('label', 'new')->get('news')->get_module_list($id, '', $type, $order);
+                $arr[3] = $product = load::sys_class('label', 'new')->get('product')->get_module_list($id, '', $type, $order);
+                $arr[4] = $download = load::sys_class('label', 'new')->get('download')->get_module_list($id, '', $type, $order);
+                $arr[5] = $img = load::sys_class('label', 'new')->get('img')->get_module_list($id, '', $type, $order);
+                $arr[6] = $job = load::sys_class('label', 'new')->get('job')->get_module_list($id, '', $type, $order);
+
+                if ($_M['config']['global_search_weight']) {//全局搜索模块排序
+                    $global_search_weight = explode('|', $_M['config']['global_search_weight']);
+                    $all = array();
+                    foreach ($global_search_weight as $mod) {
+                        if (is_array($arr[$mod]) && isset($arr[$mod]) && $arr[$mod]) {
+                            $all = array_merge((array)$all, (array)$arr[$mod]);
+                        }
+                    }
+                } else {
+                    $all = array_merge((array)$about, (array)$news, (array)$product, (array)$img, (array)$download, (array)$job);
+                }
             }
 
             $this->search_page = count($all);
@@ -465,18 +481,25 @@ EOT;
                 }
             }
         }
+
         foreach ($search as $key => $val) {
             $list = array();
             $list['title'] = $this->handle->get_keyword_str($val['title'], $str, 50, 0, 1);
             $list['ctitle'] = $val['title'];
             $list['content'] = $this->handle->get_keyword_str(html_entity_decode(strip_tags($val['content']), ENT_QUOTES, 'UTF-8'), $str, 75, 0);
-            $list['url'] = $val['url'];
+            if (strstr($val['url'], '../')) {
+                $url = $_M['url']['web_site'] . str_replace('../', '', $val['url']);
+            } else {
+                $url = $val['url'];
+            }
+            $list['url'] = $url;
             $list['updatetime'] = $val['updatetime'];
             $list['imgurl'] = $val['imgurl'];
             $return[] = $list;
         }
 
-        if (count($return) == 0 && $str) {
+        $count = is_array($return) ? count($return) : 0;
+        if ($count == 0 && $str) {
             $list = array();
             $list['title'] = "{$_M['word']['SearchInfo3']}[<em style='font-style:normal;'>$str</em>]{$_M['word']['SearchInfo4']}";
             $list['content'] = '';
@@ -526,7 +549,7 @@ EOT;
      * 收索列表分页信息
      * @return mixed
      */
-    public function get_page_info_by_class()
+    public function get_page_info_by_class($id = '', $type = '')
     {
         global $_M;
         // 搜索列表分页
@@ -570,6 +593,9 @@ EOT;
             case 'sales':
                 $order['status'] = '8'; //商品销量
                 break;
+            case 'title':
+                $order['status'] = '9';
+                break;
             default:
                 $order['status'] = '';
                 break;
@@ -582,7 +608,6 @@ EOT;
         global $_M;
 
         if ($_M['form']['search']) {
-
             if ($_M['form']['title'] || $_M['form']['content'] || $_M['form']['searchword']) {
                 if ($_M['form']['content']) {
                     $word = $_M['form']['content'];
@@ -592,46 +617,47 @@ EOT;
                 $type = $this->get_search_type(0, $word);
                 return $type;
             } elseif ($_M['form']['para']) {
-                $paratmp = json_decode(load::sys_class('auth', 'new')->decode($_M['form']['para']), true);
+                //$paratmp = json_decode(load::sys_class('auth', 'new')->decode($_M['form']['para']), true);
+                $paratmp = json_decode(base64_decode($_M['form']['para']), true);
                 foreach ($paratmp as $key => $val) {
                     $para[] = array(
                         'id' => $key,
                         'info' => $val,
                     );
                 }
-                return $type = array(
+                $type = array(
                     'type' => 'array',
                     'title' => array(
-                        'status' => 0,//开启搜索
+                        'status' => 0,//title搜索
                     ),
                     'content' => array(
-                        'status' => 0,//开启搜索
+                        'status' => 0,//内容搜索
                     ),
                     'tag' => array(
-                        'status' => 0,//开启搜索
+                        'status' => 0,//tag搜索
                     ),
                     'specv' => array(
-                        'status' => 0,//开启搜索
+                        'status' => 0,//规格搜索
                     ),
                     'para' => array(
-                        'status' => 1,//开启搜索
+                        'status' => 1,//系统属性搜索
                         'precision' => 0,
                         'info' => $para,
                     ),
                 );
+                return $type;
             } elseif ($_M['form']['specv'] || $_M['form']['price_low'] || $_M['form']['price_top']) {
-                $paratmp = json_decode(load::sys_class('auth', 'new')->decode($_M['form']['specv']), true);
-                foreach ($paratmp as $key => $val) {
-                    /*$specv[] = array(
-                        #'spec_id' => $key,
-                        'info' => $val,
-                    );*/
-                    $specv[$key] = $val;
+                $shop_search = load::app_class('shop/include/class/shop_search', 'new');
+                if (method_exists($shop_search,'getSearchType')) {
+                    $specv = $shop_search->getSearchType($_M['form']['specv']);    //new
+                }else{
+                    $specv = json_decode(load::sys_class('auth', 'new')->decode($_M['form']['specv']), true); //old
                 }
-                return $type = array(
+
+                 $type = array(
                     'type' => 'array',
                     'title' => array(
-                        'status' => 1,//开启搜索
+                        'status' => 0,//开启搜索
                     ),
                     'content' => array(
                         'status' => 0,//开启搜索
@@ -648,21 +674,9 @@ EOT;
                         'info' => $specv
                     )
                 );
+                return $type;
             }
         }
-        // else{
-        //  foreach ($_M['form'] as $key => $val) {
-        //      preg_match('/^para([0-9]+)/', $key, $out);
-        //      if ($out[1]) {
-
-        //          $str .= "paras LIKE '%[-S-]{$out}[1][-M-]{$val}[-S-]%'";
-        //      }
-        //  }
-        // }
-
-        // if($_M['form']['para']) {
-
-        // }
     }
 
     //添加搜索选项，当前只能向动态页面添加
@@ -711,7 +725,7 @@ EOT;
         return $str;
     }
 
-    public function get_module_list()
+    public function get_module_list($id = '', $rows = '', $type = '', $order = '', $para = 0)
     {
         return;
     }

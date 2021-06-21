@@ -64,15 +64,39 @@ required:必选项
 				}
 			},
 			// 遍历赋值省份下拉列表
-			provStart=function(country_key){
+			provStart=function(){
+				if(country_obj.length){
+					var country_id=country_obj.get(0).selectedIndex;
+					if(!settings.required && settings.prehtml){
+						country_id--;
+					};
+					prov_obj.empty().attr("disabled",true);
+					city_obj.empty().attr("disabled",true);
+					dist_obj.empty().attr("disabled",true);
+					if(country_id<0||typeof(jsondata[country_id].children)=="undefined"){
+						if(settings.nodata=="none"){
+							prov_obj.css("display","none");
+							city_obj.css("display","none");
+							dist_obj.css("display","none");
+						}else if(settings.nodata=="hidden"){
+							prov_obj.css("visibility","hidden");
+							city_obj.css("visibility","hidden");
+							dist_obj.css("visibility","hidden");
+                        };
+                        prov_obj.trigger('changes');
+                        city_obj.trigger('changes');
+					    dist_obj.trigger('changes');
+						return;
+					};
+				}
 				var temp_html=select_prehtml;
-				if(typeof country_key != 'undefined') cityJson(country_key);
+				if(typeof country_id != 'undefined') cityJson(country_id);
 				$.each(city_json,function(i,prov){
 					var tn = prov[settings.p_name_key].name?prov[settings.p_name_key].name:prov[settings.p_name_key];
 					var tv = prov[settings.value_key]||prov[settings.value_key]==''?prov[settings.value_key]:(prov[settings.p_name_key][settings.value_key]||prov[settings.p_name_key][settings.value_key]==''?prov[settings.p_name_key][settings.value_key]:prov[settings.p_name_key]);
 					temp_html+=prov[settings.p_name_key]==settings.required_title?"<option value=''>"+tn+"</option>":"<option value='"+tv+"' data-val='"+(prov[settings.data_val_key]||tn)+"'>"+tn+"</option>";
 				});
-				prov_obj.html(temp_html);
+				prov_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""}).trigger('changes');
 				cityStart();
 			},
 			// 赋值市级函数
@@ -93,6 +117,8 @@ required:必选项
 						city_obj.css("visibility","hidden");
 						dist_obj.css("visibility","hidden");
 					};
+					city_obj.trigger('changes');
+					dist_obj.trigger('changes');
 					return;
 				};
 				// 遍历赋值市级下拉列表
@@ -102,7 +128,7 @@ required:必选项
 					var tv = city[settings.value_key]||city[settings.value_key]==''?city[settings.value_key]:(city[settings.n_name_key][settings.value_key]||city[settings.n_name_key][settings.value_key]==''?city[settings.n_name_key][settings.value_key]:city[settings.n_name_key]);
 					temp_html+="<option value='"+tv+"' data-val='"+(city[settings.data_val_key]||tn)+"'>"+tn+"</option>";
 				});
-				city_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""});
+				city_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""}).trigger('changes');
 				distStart();
 			},
 			// 赋值地区（县）函数
@@ -122,6 +148,7 @@ required:必选项
 					}else if(settings.nodata=="hidden"){
 						dist_obj.css("visibility","hidden");
 					};
+					dist_obj.trigger('changes');
 					return;
 				};
 
@@ -133,21 +160,21 @@ required:必选项
 						var tv = dist[settings.value_key]||dist[settings.value_key]==''?dist[settings.value_key]:(dist[settings.s_name_key][settings.value_key]||dist[settings.s_name_key][settings.value_key]==''?dist[settings.s_name_key][settings.value_key]:dist[settings.s_name_key]);
 						temp_html+="<option value='"+tv+"' data-val='"+(dist[settings.data_val_key]||tn)+"'>"+tn+"</option>";
 					});
-					dist_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""});
+					dist_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""}).trigger('changes');
 				// }
 			},
 			init=function(){
 				if(country_obj.length && settings.country_name_key!=''){
-					var temp_html='';
+					var temp_html=select_prehtml;;
 					$.each(jsondata, function(index, val) {
 						temp_html+='<option value="'+val[settings.value_key]+'" data-val="'+val[settings.country_name_key]+'">'+val[settings.country_name_key]+'</option>';
 					});
 					country_obj.html(temp_html);
 					setTimeout(function(){
 						if(settings.country){
-							country_obj.val(settings.country);
+							country_obj.val(settings.country).change();
 						}else{
-							country_obj.val(country_obj.find("option:eq(0)").attr("value"));
+							country_obj.val(country_obj.find("option:eq(0)").attr("value")).change();
 						}
 					},1)
 				}
@@ -179,7 +206,7 @@ required:必选项
 				}
 				// 选择国家时发生事件
 				country_obj.bind("change",function(){
-					provStart(country_obj.find('option:selected').index());
+					provStart();
 				});
 				// 选择省份时发生事件
 				prov_obj.bind("change",function(){
@@ -203,6 +230,7 @@ required:必选项
 				init();
 			});
 		}else{
+			jsondata=settings.url;
 			city_json=settings.url;
 			init();
 		};

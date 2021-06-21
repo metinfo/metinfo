@@ -38,6 +38,8 @@ class user
         $userid = $this->insert_uesr($username, $password, $email, $tel, $valid, $groupid, $source);
         if ($userid) {
             $this->paraclass->insert_para($userid, $info, 10);
+            //管理员通知
+                        
             return $userid;
         } else {
             return false;
@@ -54,10 +56,24 @@ class user
         return $this->insert_uesr_sql($username, $password, $email, $tel, $valid, $groupid, $source);
     }
 
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $email
+     * @param string $tel
+     * @param string $valid
+     * @param string $groupid
+     * @param string $source
+     * @param string $register_time
+     * @param string $register_ip
+     * @param string $login_time
+     * @param string $login_ip
+     * @param string $login_count
+     * @return bool|int
+     */
     public function insert_uesr_sql($username = '', $password = '', $email = '', $tel = '', $valid = '', $groupid = '', $source = '', $register_time = '', $register_ip = '', $login_time = '', $login_ip = '', $login_count = '')
     {
         global $_M;
-
         if (!$this->check_username($username)) {
             return false;
         }
@@ -65,9 +81,7 @@ class user
             return false;
         }
         #判断插件是否存在
-
         $isplugin = load::is_plugin_exist('doregister');
-
 
         if ($isplugin) {
             # 系统账号注册接口
@@ -76,14 +90,14 @@ class user
             $registerres = NULL;
         }
 
-
         # $registerres = NULL    说明插件不存在
         # $registerres = false   说明注册失败
         # $registerres = ture    说明注册成功
-        if ($registerres === false) return false;
+        if ($registerres === false) {
+            return false;
+        }
 
         # 系统账号注册
-
         if (!$groupid) {
             $group = $this->get_default_group();
             $groupid = $group['id'];
@@ -93,18 +107,19 @@ class user
         if (!$register_ip) $register_ip = get_userip();
 
         $query = "INSERT INTO {$_M['table']['user']} SET 
-                        username = '{$username}',
-                        password = '{$password}',
-                        email    = '{$email}',
-                        tel      = '{$tel}',
-                        groupid  = '{$groupid}',
-                        register_time = '{$register_time}',
-                        register_ip = '{$register_ip}',
-                        login_time  = '{$login_time}',
-                        valid       = '{$valid}',
-                        source      = '{$source}',
-                        lang        = '{$this->lang}'
-        ";
+                    username = '{$username}',
+                    password = '{$password}',
+                    email    = '{$email}',
+                    tel      = '{$tel}',
+                    groupid  = '{$groupid}',
+                    register_time = '{$register_time}',
+                    register_ip = '{$register_ip}',
+                    login_time  = '{$login_time}',
+                    valid       = '{$valid}',
+                    source      = '{$source}',
+                    lang        = '{$this->lang}'
+                    ";
+
         if (DB::query($query)) {
             $id = DB::insert_id();
             load::plugin('doregistert', 0, array($id, $username, $this->password, $email));
@@ -126,7 +141,15 @@ class user
         }
     }
 
-    /* 编辑信息 */
+    /**
+     * 编辑信息
+     * @param string $userid
+     * @param string $email
+     * @param string $tel
+     * @param string $valid
+     * @param string $groupid
+     * @return bool
+     */
     public function editor_uesr($userid = '', $email = '', $tel = '', $valid = '', $groupid = '')
     {
         global $_M;
@@ -300,18 +323,11 @@ class user
         return true;
     }
 
-    /* 获取实名信息 */
-    /*public function getRealIdInfo($user) {
-        global $_M;
-        $info = explode('|',authcode($user['reidinfo'], 'DECODE', "met_info"));
-        $realidinfo = array();
-        mb_internal_encoding("UTF-8");
-        $realidinfo['realname']   = "*".mb_substr($info[0],-1);
-        $realidinfo['idcode']     = substr($info[1],0,2)."****".substr($info[1],-4);
-        $realidinfo['phone']      = substr($info[2],0,3)."****".substr($info[2],-4);
-        return $realidinfo;
-    }*/
-
+    /**
+     * 实名信息
+     * @param array $user
+     * @return array
+     */
     public function getRealIdInfo($user = array())
     {
         global $_M;
@@ -343,7 +359,7 @@ class user
                 //将帐号和密码的加密字符串以及加密密钥写入cookie
                 $this->setauth($user['username'], $user['password']);
                 //完善会员信息的头像地址
-                if (file_exists(PATH_WEB . str_replace('../', '' ,$user['head'])) && $user['head']) {
+                if (file_exists(PATH_WEB . str_replace('../', '', $user['head'])) && $user['head']) {
                     $user['head'] = $_M['url']['site'] . str_replace('../', '', $user['head']);
                 } else {
                     $user['head'] = $_M['url']['public_images'] . 'user.jpg';
@@ -390,14 +406,6 @@ class user
         } else {
             return false;
         }
-    }
-
-    public function login_out()
-    {
-        global $_M;
-        $_M['user'] = array();
-        met_setcookie("met_auth", '', -3600);
-        met_setcookie("met_key", '', -3600);
     }
 
     //返回所有的会员信息
@@ -541,7 +549,6 @@ class user
     public function get_user_para_info()
     {
         $para = load::sys_class('para', 'new');
-        //$para->set_lang($this->lang);
         $paralist = $para->get_para_list(10);
         return $paralist;
     }
@@ -559,14 +566,15 @@ class user
     public function setauth($username = '', $password = '')
     {
         global $_M;
-        $private_key = random(7);
         $password = md5($password);
-        //  \t 是跳格符号
-        $private_auth = load::sys_class('auth', 'new')->encode("{$username}\t{$password}", $private_key, 31536000);
+        $expire = 604800;   //登录有效期 7天
+
         //$private_auth 帐号和密码的字符字符串
         //$private_key 加密密钥字符串
-        met_setcookie("acc_auth", $private_auth, 0);
-        met_setcookie("acc_key", $private_key, 0);
+        $private_key = random(7);
+        $private_auth = load::sys_class('auth', 'new')->encode("{$username}\t{$password}", $private_key, $expire);  //\t 是跳格符号
+        met_setcookie("acc_auth", $private_auth, time() + $expire);
+        met_setcookie("acc_key", $private_key, time() + $expire);
     }
 
     public function getauth($auth = '', $key = '')
@@ -663,9 +671,10 @@ class user
             $this->errorno = 'error_username_cha';
             return false;
         }
+
         $arr = (explode('|', $_M['config']['met_fd_word']));
         foreach ($arr as $val) {
-            if (strstr($username, $val)) {
+            if ($val != '' && strstr($username, $val)) {
                 $this->errorcode = "含有非法字符";
                 $this->errorno = 'error_username_cha';
                 return false;
@@ -684,9 +693,8 @@ class user
     protected function get_m()
     {
         global $_M;
-        $re = $_M['user'];
-        //$re['cookie'] = array();
-        return $re;
+        $user = $_M['user'];
+        return $user;
     }
 
     public function get_login_user_info($met_auth = '', $met_key = '')
@@ -696,7 +704,6 @@ class user
         if (!$m) {
             $met_auth = $met_auth ? $met_auth : $_M['form']['acc_auth'];
             $met_key = $met_key ? $met_key : $_M['form']['acc_key'];
-            $userclass = load::sys_class('user', 'new');
             if ($met_auth && $met_key) {
                 $this->login_by_auth($met_auth, $met_key);
             }
@@ -774,8 +781,8 @@ class user
     {
         global $_M;
         //met_cooike_unset('metinfo_member_name');
-        met_setcookie("acc_auth", '');
-        met_setcookie("acc_key", '');
+        met_setcookie("acc_auth", '', -1);
+        met_setcookie("acc_key", '', -1);
         $this->set_m('');
         # 系统登录退出接口
         load::plugin('dologout');

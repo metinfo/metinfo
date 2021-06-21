@@ -12,12 +12,12 @@ class base_admin extends admin
     public $module;
     public $lang;
     public $met_admin;
-
+    public $allow_class;
 
     /**
      * 初始化
      */
-    function __construct()
+    public function __construct()
     {
         global $_M;
         parent::__construct();
@@ -25,6 +25,7 @@ class base_admin extends admin
         $this->module = 0;
         $this->table = '';
         $this->getMetAdmin();
+        $this->getAllowClass();
     }
 
     /**
@@ -45,10 +46,36 @@ class base_admin extends admin
     }
 
     /**
+     * ajax检测静态文件是否重名//base
+     */
+    public function docheck_filename()
+    {
+        global $_M;
+        $redata = array();
+        if (is_numeric($_M['form']['filename'])) {
+            $errorno = $this->errorno == 'error_filename_cha' ? $_M['word']['js74'] : $_M['word']['admin_tag_setting10'];
+            $redata['valid'] = false;
+            $redata['message'] = $errorno;
+            $this->ajaxReturn($redata);
+        }
+
+        if (!$this->check_filename($_M['form']['filename'], $_M['form']['id'], $this->module)) {
+            $errorno = $this->errorno == 'error_filename_cha' ? $_M['word']['js74'] : $_M['word']['js73'];
+            $redata['valid'] = false;
+            $redata['message'] = $errorno;
+            $this->ajaxReturn($redata);
+        } else {
+            $redata['valid'] = true;
+            $redata['message'] = $_M['word']['js75'];
+            $this->ajaxReturn($redata);
+        }
+    }
+
+    /**
      * 静态页面名称验证
      * @param  string $filename select的name名称
      * @param  string $id 选中的权限字段
-     * @return array               配置数组
+     * @return array    配置数组
      */
     public function check_filename($filename, $id)
     {
@@ -63,22 +90,111 @@ class base_admin extends admin
 
         if ($filename) {
             $filenames = $this->database->get_list_by_filename($filename);
-            if (count($filenames) > 1 || ($filenames[0]['id'] != $id && $filenames[0]['id'])) {
-                $this->errorno = 'error_filename_exist';
-                $this->error = 'error_filename_exist';
-                return false;
+            if ($filenames) {
+                $count = count($filenames);
+                if ($count > 1 || ($filenames[0]['id'] != $id && $filenames[0]['id'])) {
+                    $this->errorno = 'error_filename_exist';
+                    $this->error = 'error_filename_exist';
+                    return false;
+                }
             }
         }
-
-        // $query = "SELECT * FROM {$this->tablename($this->module)} WHERE filename='{$filename}' and lang='{$_M['lang']}'";
-        // $list = DB::get_one($query);
-
-        //if($list&&$list['id']!=$id){
-        // if($count >= 1){
-        // 	$this->errorno = 'error_filename_exist';
-        // 	return false;
-        // }
         return true;
+    }
+
+    public function displayimg_check($img = '')
+    {
+        $imgs = stringto_array($img, '*', '|');
+        $str = '';
+        foreach ($imgs as $val) {
+            if ($val[1]) {
+                $str .= "{$val[0]}*{$val[1]}*{$val[2]}|";//增加展示图片尺寸值{$val[2]}（新模板框架v2）
+            }
+        }
+        $str = trim($str, '|');
+        return $str;
+    }
+
+    /**
+     * @param $list
+     * @return mixed
+     */
+    public function insert_list_sql($list)
+    {
+        global $_M;
+        if (!$this->check_filename($list['filename'], '', $this->module)) {
+            return false;
+        }
+        if ($list['links']) {
+            $list['links'] = url_standard($list['links']);
+        }
+        if (!$list['description']) {
+            $list['description'] = $this->description($list['content']);
+        };
+        if ($list['addtype'] == 2 && strtotime($list['updatetime']) < strtotime($list['addtime'])) {
+            $list['updatetime'] = $list['addtime'];
+        }
+
+        $list['class1'] = $list['class1'] ? $list['class1'] : 0;
+        $list['class2'] = $list['class2'] ? $list['class2'] : 0;
+        $list['class3'] = $list['class3'] ? $list['class3'] : 0;
+        $list['description'] = $list['description'] ?: '';
+        $list['title'] = $list['title'] ?: '';
+        $list['ctitle'] = $list['ctitle'] ?: '';
+        $list['keywords'] = $list['keywords'] ?: '';
+        $list['custom_info'] = $list['custom_info'] ?: '';
+        $list['displayimg'] = $list['displayimg'] ?: '';
+        $list['no_order'] = $list['no_order'] ?: 0;
+        $list['displaytype'] = $list['displaytype'] ? 1 : 0;
+        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
+        $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
+        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
+        $list['new_ok'] = $list['new_ok'] ? 1 : 0;
+        $list['text_size'] = is_numeric($list['text_size']) ? $list['text_size'] : 0;
+        $list['lang'] = $list['lang'] ? $list['lang'] : $this->lang;
+        $list['issue'] = $this->met_admin['admin_id'];
+        //发布信息需要审核才能正常显示
+        $admin_info = admin_information();
+        if ($admin_info['admin_check'] == 1 && !strstr($admin_info['admin_type'], 'metinfo')) {
+            $list['displaytype'] = 0;
+        }
+        return $this->database->insert($list);
+    }
+
+    /**
+     * 保存修改sql
+     * @param array $list
+     * @param string $id
+     * @return bool
+     */
+    public function update_list_sql($list = array(), $id = '')
+    {
+        global $_M;
+        if (!$this->check_filename($list['filename'], $id, $this->module)) {
+            return false;
+        }
+        if ($list['links']) {
+            $list['links'] = url_standard($list['links']);
+        }
+        if (!$list['description']) {
+            $list['description'] = $this->description($list['content']);
+        }
+
+        $list['id'] = $id;
+        $list['description'] = $list['description'] ?: '';
+        $list['title'] = $list['title'] ?: '';
+        $list['ctitle'] = $list['ctitle'] ?: '';
+        $list['keywords'] = $list['keywords'] ?: '';;
+        $list['custom_info'] = $list['custom_info'] ?: '';
+        $list['displayimg'] = $list['displayimg'] ?: '';
+        $list['no_order'] = $list['no_order'] ?: 0;
+        $list['displaytype'] = $list['displaytype'] ? 1 : 0;
+        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
+        $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
+        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
+        $list['new_ok'] = $list['new_ok'] ? 1 : 0;
+        $list['addtime'] = $list['addtype'] == 2 ? $list['addtime'] : $list['updatetime'];
+        return $this->database->update_by_id($list);
     }
 
     /**
@@ -154,7 +270,7 @@ class base_admin extends admin
      * @param  string $module 模块
      * @return array  栏目数组
      */
-    function column($type = 1, $module = '', $id = 0)
+    public function column($type = 1, $module = '', $id = 0)
     {
         if (!$this->met_column && $type != 3) {
             $this->met_column = column_sorting(1);
@@ -195,7 +311,8 @@ class base_admin extends admin
                     if ($val2['module'] == $module) {
                         if ($val2['releclass']) {
                             $newarray['class1'][] = $val2;
-                            if (count($array['class3'][$val2['id']])) {
+                            //if (count($array['class3'][$val2['id']])) {
+                            if ($array['class3'][$val2['id']]) {
                                 $newarray['class2'][$val2['id']] = $array['class3'][$val2['id']];
                             }
                         } else {
@@ -343,7 +460,7 @@ class base_admin extends admin
      * @param  string $str 内容html
      * @return array  处理完的图片后的html
      */
-    function concentwatermark($str)
+    public function concentwatermark($str)
     {
         if (preg_match_all('/<img.*?src=\\\\"(.*?)\\\\".*?>/i', $str, $out)) {
             foreach ($out[1] as $key => $val) {
@@ -420,7 +537,8 @@ class base_admin extends admin
                 }
                 $metinfo['citylist'][$i]['p']['value'] .= $val['id'];
 
-                if (count($array['class2'][$val['id']])) { //二级栏目
+                //if (count($array['class2'][$val['id']])) { //二级栏目
+                if ($array['class2'][$val['id']]) { //二级栏目
                     $k = 0;
                     if ($type != 1) {
                         $metinfo['citylist'][$i]['c'][$k]['n']['name'] = "{$_M['word']['modClass2']}";
@@ -431,7 +549,8 @@ class base_admin extends admin
                         $metinfo['citylist'][$i]['c'][$k]['n']['name'] = $val2['name'];
                         $metinfo['citylist'][$i]['c'][$k]['n']['value'] = $val2['id'];
 
-                        if (count($array['class3'][$val2['id']])) { //三级栏目
+                        //if (count($array['class3'][$val2['id']])) { //三级栏目
+                        if ($array['class3'][$val2['id']]) { //三级栏目
                             $j = 0;
                             if ($type != 1) {
                                 $metinfo['citylist'][$i]['c'][$k]['a'][0]['s']['name'] = "{$_M['word']['modClass3']}";
@@ -460,7 +579,7 @@ class base_admin extends admin
      * @param string $choice
      * @return string
      */
-    function class_option($module = '', $choice = '')
+    public function class_option($module = '', $choice = '')
     {
         global $_M;
         $column = $this->column(3, $module);
@@ -507,15 +626,52 @@ class base_admin extends admin
      * 获取允许访问的class1ID
      * @return array
      */
-    public function get_allow_column()
+    public function get_allow_column($class_type = 1)
     {
+        if (!is_number($class_type)) {
+            $class_type = 1;
+        }
         $column_list = load::mod_class('column/column_op', 'new')->get_sorting_by_lv();
-        $class1_list = $column_list['class1'];
         $list = array();
-        foreach ($class1_list as $class1) {
-            $list[] = $class1['id'];
+
+        switch ($class_type) {
+            case 1:
+                foreach ($column_list['class1'] as $class) {
+                    $list[] = $class['id'];
+                }
+                break;
+            case 2:
+                foreach ($column_list['class2'] as $class1) {
+                    foreach ($class1 as $class2) {
+                        $list[] = $class2['id'];
+                    }
+                }
+                break;
+            case 3:
+                foreach ($column_list['class3'] as $class2) {
+                    foreach ($class2 as $class3) {
+                        $list[] = $class3['id'];
+                    }
+                }
+                break;
         }
         return $list;
+    }
+
+    /**
+     * 栏目权限列表
+     */
+    public function getAllowClass()
+    {
+        $allow_class1 = $this->get_allow_column(1);
+        $allow_class2 = $this->get_allow_column(2);
+        $allow_class2[] = 0;
+        $allow_class3 = $this->get_allow_column(3);
+        $allow_class3[] = 0;
+
+        $this->allow_class['class1'] = $allow_class1;
+        $this->allow_class['class2'] = $allow_class2;
+        $this->allow_class['class3'] = $allow_class3;
     }
 
     /**
@@ -552,7 +708,16 @@ class base_admin extends admin
     public function json_return($data)
     {
         global $_M;
-        $this->database->tabledata->rdata($data);
+        if ($data) {
+            $this->database->tabledata->rdata($data);
+        } else {
+            $redata = array();
+            $redata['data'] = '';
+            $redata['draw'] = $_M['form']['draw'];
+            $redata['recordsTotal'] = 0;
+            $redata['recordsFiltered'] = 0;
+            jsoncallback($redata);
+        }
     }
 
     /**

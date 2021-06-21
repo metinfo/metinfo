@@ -8,11 +8,11 @@
 (function () {
     window.M=parent.M;
     window.METLANG=parent.METLANG;
-    window.met_lazyloadbg=parent.met_lazyloadbg;
     var remoteImage,
         uploadImage,
         onlineImage;
-
+    window.getCookie=parent.getCookie||parent.$.cookie;
+    window.setCookie=parent.setCookie||parent.$.cookie;
     window.onload = function () {
         initTabs();
         initAlign();
@@ -82,7 +82,16 @@
                     $(this).data('path')?$(this).dblclick():setTabFocus('online');
                 });
             }
-        }else if($btn_back_imgfolderlist.length) $btn_back_imgfolderlist.addClass('hide');
+            $('.alignBar-online').show();
+        }else{
+            $('.alignBar-online').hide();
+            if($btn_back_imgfolderlist.length) $btn_back_imgfolderlist.addClass('hide');
+        }
+        if(id=='remote'){
+            $('.alignBar').show();
+        }else{
+            $('.alignBar').hide();
+        }
     }
 
     /* 初始化onok事件 */
@@ -289,7 +298,7 @@
                     hspace: data['vhSpace'] || '',
                     title: data['title'] || '',
                     alt: data['title'] || '',
-                    // style: "width:" + data['width'] + "px;height:" + data['height'] + "px;"
+                    style: "width:" + data['width'] + "px;height:" + data['height'] + "px;"
                 }];
             } else {
                 return [];
@@ -818,8 +827,6 @@
             return html;
         },
         init: function () {
-            this.reset();
-            this.initEvents();
             var _this = this;
             $('#online .online-tips').html(METLANG.enter_folder);
             // 文件夹绑定双击事件-加载图片列表
@@ -832,7 +839,7 @@
                     url: M.url.admin + 'index.php?n=system&c=filept&a=doGetFileList',
                     type: 'POST',
                     dataType: 'json',
-                    data: {dir: dir},
+                    data: {dir: dir,sort:$('.alignBar-online a.active').data('type')},
                     success:function(result){
                         if (result) {
                             var html = _this.imgList(result);
@@ -856,6 +863,19 @@
                 breadcrumb='/ '+breadcrumb.join(' / ')+' /';
                 $('#online .online-breadcrumb').show().html(breadcrumb);
             });
+            // 点击排序
+            $(document).on('click clicks', '.alignBar-online a', function(event) {
+                $(this).addClass('active').siblings('a').removeClass('active');
+                if(event.type=='click'){
+                    $('.online-breadcrumb').is(':visible')?$('.online-breadcrumb a:last-child').dblclick():setTabFocus('online');
+                    setCookie('ueditor-onlineimages-sort',$(this).data('type'),parent.setCookie?'':{path:'/',expires:365},'365');
+                }
+            });
+
+            var sort=getCookie('ueditor-onlineimages-sort');
+            sort && $('.alignBar-online a[data-type="'+sort+'"]').trigger('clicks');
+            this.reset();
+            this.initEvents();
         },
         /* 初始化容器 */
         initContainer: function () {
@@ -898,7 +918,7 @@
             if(!this.online_load){
                 this.online_load=1;
                 var _this = this,
-                    url = M.url.admin + 'index.php?n=system&c=filept&a=doGetFileList';
+                    url = M.url.admin + 'index.php?n=system&c=filept&a=doGetFileList&sort='+$('.alignBar-online a.active').data('type');
                 ajax.request(url, {
                     'dataType': 'json',
                     'method': 'post',
@@ -909,7 +929,9 @@
                         $('#online .online-breadcrumb').hide().html('');
                     },
                     'onerror': function (r) {
-                        parent.alertify.error('error')
+                        parent.metui?parent.metui.use('alertify',function(){
+                            parent.alertify.error('error');
+                        }):alert('error');
                     }
                 });
                 setTimeout(function(){

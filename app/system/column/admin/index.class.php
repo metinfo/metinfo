@@ -159,36 +159,6 @@ class index extends admin
             $redata['error'] = $this->error;
             $this->ajaxReturn($redata);
         }
-
-
-        /*$name = $_M['form']['name'];
-        $no_order = $_M['form']['no_order'];
-        $big_class = $_M['form']['bigclass'];
-        $foldername = $_M['form']['foldername'];
-        $nav = $_M['form']['nav'];
-        $module = $_M['form']['module'];
-        $out_url = $_M['form']['out_url'];
-        $index_num = $_M['form']['index_num'];
-        $filename = $_M['form']['filename'];
-        $if_in = $module ? 0 : 1;
-
-        $res = self::_addColumn($name, $no_order, $module, $big_class, $foldername, $nav, $out_url, $index_num, $filename, $if_in);
-
-        if ($res === true) {
-            //写日志
-            logs::addAdminLog('admin_colunmmanage_v6', 'column_addcolumn_v6', 'jsok', 'doAddColumn');
-            buffer::clearColumn();
-            $redata['status'] = 1;
-            $redata['msg'] = $_M['word']['jsok'];
-            $this->ajaxReturn($redata);
-        } else {
-            //写日志
-            logs::addAdminLog('admin_colunmmanage_v6', 'column_addcolumn_v6', $this->error[0], 'doAddColumn');
-            $redata['msg'] = $this->error[0];
-            $redata['status'] = 0;
-            $redata['error'] = $this->error;
-            $this->ajaxReturn($redata);
-        }*/
     }
 
     /**
@@ -302,15 +272,13 @@ class index extends admin
         if ($id) {
             $this->columnCopyconfig($sava_data['foldername'], $sava_data['module'], $id);
             //更改管理员栏目权限
-            load::mod_class("admin/admin_op", 'new')->modify_admin_column_accsess($id, 'c', 'add');
-
+            load::mod_class("admin/admin_op", 'new')->modifyAccess($id, 'c', 'add');
             return true;
         }
-        if(!$this->error){
+        if (!$this->error) {
             $this->error[] = 'Data error';
         }
         return false;
-
     }
 
     /**
@@ -370,7 +338,7 @@ class index extends admin
             $column_list['new_windows'] = $column_list['new_windows'] ? 1 : 0;
             $column_list['list_order'] = $column_list['list_order'] ? $column_list['list_order'] : 1;
 
-            $ext_list = load::mod_class('column_handle.class.php','new')->classExt($column_list);
+            $ext_list = load::mod_class('column_handle.class.php', 'new')->classExt($column_list);
             $column_list['thumb_list_default'] = $ext_list['thumb_list_default'];
             $column_list['thumb_detail_default'] = $ext_list['thumb_detail_default'];
             $column_list['list_length_default'] = $ext_list['list_length_default'];
@@ -410,213 +378,23 @@ class index extends admin
 
         $column_label = load::mod_class('column/column_label', 'new');
         $c = $column_label->get_column_id($classnow);
-
         $redata['thumb_list'] = $c['thumb_list'];
         $redata['thumb_detail'] = $c['thumb_detail'];
         $redata['list_length'] = $c['list_length'] ? $c['list_length'] : '';
         $redata['tab_num'] = $c['tab_num'] ? $c['tab_num'] : 0;
         $redata['tab_name'] = $c['tab_name'];
 
-        $ext_list = load::mod_class('column_handle.class.php','new')->classExt($c);
+        $column_handle = load::mod_class('column/column_handle', 'new');
+        $ext_list = $column_handle->classExt($c);
         $redata['thumb_list_default'] = $ext_list['thumb_list_default'];
         $redata['thumb_detail_default'] = $ext_list['thumb_detail_default'];
         $redata['list_length_default'] = $ext_list['list_length_default'];
         $redata['tab_num_default'] = $ext_list['tab_num_default'];
         $redata['tab_name_default'] = $ext_list['tab_name_default'];
 
-        if(is_mobile()){
-            $this->ajaxReturn(array('status' => 1, 'data'=>$redata));
+        if (is_mobile()) {
+            $this->ajaxReturn(array('status' => 1, 'data' => $redata));
         }
-        return $redata;
-    }
-
-    /**
-     * 额外栏目信息
-     * @param array $c
-     */
-    public function classExt_($c = array())
-    {
-        global $_M;
-        $column_lable = load::sys_class('label', 'new')->get('column');
-        $c123 = $column_lable->get_class123_no_reclass($c['id']);
-
-        $thumb_list_default = array(800, 500);
-        $thumb_detail_default = array(800, 500);
-        //新闻
-        if ($c['module'] == 2) {
-            $thumb_list_default = array($_M['config']['met_newsimg_x'], $_M['config']['met_newsimg_y']);
-        }
-
-        //产品
-        if ($c['module'] == 3) {
-            $thumb_list_default = array($_M['config']['met_productimg_x'], $_M['config']['met_productimg_y']);
-            $thumb_detail_default = array($_M['config']['met_productdetail_x'], $_M['config']['met_productdetail_y']);
-        }
-
-        //图片
-        if ($c['module'] == 5) {
-            $thumb_list_default = array($_M['config']['met_imgs_x'], $_M['config']['met_imgs_y']);
-            $thumb_detail_default = array($_M['config']['met_imgdetail_x'], $_M['config']['met_imgdetail_y']);
-        }
-
-        //栏目配置分页条数及说略图尺寸信息
-        $c_lev = $c['classtype'];
-
-        //三级栏目
-        if ($c_lev == 3) {
-            //list_length
-            $list_length = $c123['class3']['list_length'] ? $c123['class3']['list_length'] : ($c123['class2']['list_length'] ? $c123['class2']['list_length'] : ($c123['class1']['list_length'] ? $c123['class1']['list_length'] : 8));
-
-            //thumb_list
-            if ($c123['class3']['thumb_list'] && $c123['class3']['thumb_list'] != '|') {
-                $thumb_list = explode("|", $c123['class3']['thumb_list']);
-            } else {
-                if ($c123['class2']['thumb_list'] && $c123['class2']['thumb_list'] != '|') {
-                    $thumb_list = explode("|", $c123['class2']['thumb_list']);
-                } else {
-                    if ($c123['class1']['thumb_list'] && $c123['class1']['thumb_list'] != '|') {
-                        $thumb_list = explode("|", $c123['class1']['thumb_list']);
-                    } else {
-                        $thumb_list = $thumb_list_default;
-                    }
-                }
-            }
-
-            //thumb_detail
-            if ($c123['class3']['thumb_detail'] && $c123['class3']['thumb_detail'] != '|') {
-                $thumb_detail = explode("|", $c123['class3']['thumb_detail']);
-            } else {
-                if ($c123['class2']['thumb_detail'] && $c123['class2']['thumb_detail'] != '|') {
-                    $thumb_detail = explode("|", $c123['class2']['thumb_detail']);
-                } else {
-                    if ($c123['class1']['thumb_detail'] && $c123['class1']['thumb_detail'] != '|') {
-                        $thumb_detail = explode("|", $c123['class1']['thumb_detail']);
-                    } else {
-                        #$thumb_detail = array(600, 600);
-                        $thumb_detail = $thumb_detail_default;
-                    }
-                }
-            }
-
-            //tab_num
-            $tab_num = $c123['class3']['tab_num'] ? $c123['class3']['tab_num'] : ($c123['class2']['tab_num'] ? $c123['class2']['tab_num'] : ($c123['class1']['tab_num'] ? $c123['class1']['tab_num'] : 3));
-            $tab_num_default = $c123['class2']['tab_num'] ? $c123['class2']['tab_num'] : ($c123['class1']['tab_num'] ? $c123['class1']['tab_num'] : 3);
-
-            //tab_name
-            if ($c123['class3']['tab_name'] && $c123['class3']['tab_name'] != '|') {
-                $tab_name = explode("|", $c123['class3']['tab_name']);
-            } else {
-                if ($c123['class2']['tab_name'] && $c123['class2']['tab_name'] != '|') {
-                    $tab_name = explode("|", $c123['class2']['tab_name']);
-                } else {
-                    if ($c123['class1']['tab_name'] && $c123['class1']['tab_name'] != '|') {
-                        $tab_name = explode("|", $c123['class1']['tab_name']);
-                    } else {
-                        $tab_name = array(
-                            $_M['config']['met_productTabname'],
-                            $_M['config']['met_productTabname_1'],
-                            $_M['config']['met_productTabname_2'],
-                            $_M['config']['met_productTabname_3'],
-                            $_M['config']['met_productTabname_4']
-                        );
-                    }
-                }
-            }
-        }
-
-        //二级栏目将
-        if ($c_lev == 2) {
-            //list_length
-            $list_length = $c123['class2']['list_length'] ? $c123['class2']['list_length'] : ($c123['class1']['list_length'] ? $c123['class1']['list_length'] : 8);
-
-            //thumb_list
-            if ($c123['class2']['thumb_list'] && $c123['class2']['thumb_list'] != '|') {
-                $thumb_list = explode("|", $c123['class2']['thumb_list']);
-            } else {
-                if ($c123['class1']['thumb_list'] && $c123['class1']['thumb_list'] != '|') {
-                    $thumb_list = explode("|", $c123['class1']['thumb_list']);
-                } else {
-                    $thumb_list = $thumb_list_default;
-                }
-            }
-
-            //thumb_detail
-            if ($c123['class2']['thumb_detail'] && $c123['class2']['thumb_detail'] != '|') {
-                $thumb_detail = explode("|", $c123['class2']['thumb_detail']);
-            } else {
-                if ($c123['class1']['thumb_detail'] && $c123['class1']['thumb_detail'] != '|') {
-                    $thumb_detail = explode("|", $c123['class1']['thumb_detail']);
-                } else {
-                    #$thumb_detail = array(600, 600);
-                    $thumb_detail = $thumb_detail_default;
-                }
-            }
-
-            //tab_num
-            $tab_num = $c123['class2']['tab_num'] ? $c123['class2']['tab_num'] : ($c123['class1']['tab_num'] ? $c123['class1']['tab_num'] : 3);
-
-            //tab_name
-            if ($c123['class2']['tab_name'] && $c123['class2']['tab_name'] != '|') {
-                $tab_name = explode("|", $c123['class2']['tab_name']);
-            } else {
-                if ($c123['class1']['tab_name'] && $c123['class1']['tab_name'] != '|') {
-                    $tab_name = explode("|", $c123['class1']['tab_name']);
-                } else {
-                    $tab_name = array(
-                        $_M['config']['met_productTabname'],
-                        $_M['config']['met_productTabname_1'],
-                        $_M['config']['met_productTabname_2'],
-                        $_M['config']['met_productTabname_3'],
-                        $_M['config']['met_productTabname_4']
-                    );
-                }
-            }
-        }
-
-        //一级栏目
-        if ($c_lev == 1) {
-            //
-            $list_length = $c123['class1']['list_length'] ? $c123['class1']['list_length'] : 8;
-
-            //thumb_list
-            if ($c123['class1']['thumb_list'] && $c123['class1']['thumb_list'] != '|') {
-                $thumb_list = explode("|", $c123['class1']['thumb_list']);
-            } else {
-                $thumb_list = $thumb_list_default;
-            }
-
-            //thumb_detail
-            if ($c123['class1']['thumb_detail'] && $c123['class1']['thumb_detail'] != '|') {
-                $thumb_detail = explode("|", $c123['class1']['thumb_detail']);
-            } else {
-                #$thumb_detail = array(600, 600);
-                $thumb_detail = $thumb_detail_default;
-            }
-
-            //tab_num
-            $tab_num = $c123['class1']['tab_num'] ? $c123['class1']['tab_num'] : 3;
-
-            //tab_name
-            if ($c123['class1']['tab_name'] && $c123['class1']['tab_name'] != '|') {
-                $tab_name = explode("|", $c123['class1']['tab_name']);
-            } else {
-                $tab_name = array(
-                    $_M['config']['met_productTabname'],
-                    $_M['config']['met_productTabname_1'],
-                    $_M['config']['met_productTabname_2'],
-                    $_M['config']['met_productTabname_3'],
-                    $_M['config']['met_productTabname_4']
-                );
-            }
-        }
-
-        $redata = array();
-        $redata['tab_num'] = $tab_num;
-        $redata['list_length_default'] = $list_length;
-        $redata['thumb_list_default'] = implode("|", $thumb_list);
-        $redata['thumb_detail_default'] = implode("|", $thumb_detail);
-        $redata['tab_num_default'] = $tab_num;
-        $redata['tab_name_default'] = implode("|", $tab_name);
         return $redata;
     }
 
@@ -669,10 +447,10 @@ class index extends admin
         $group_column_old = load::sys_class('group', 'new')->get_group($access_old);
 
         if (!$group_column) {
-            $group_column = array('access'=>0);
+            $group_column = array('access' => 0);
         }
         if (!$group_column_old) {
-            $group_column_old = array('access'=>0);
+            $group_column_old = array('access' => 0);
         }
 
         $column = $this->database->get_list_one_by_id($cid);
@@ -697,8 +475,6 @@ class index extends admin
                 }
 
                 //更新栏目属性
-//                $query = "SELECT * FROM {$_M['table']['parameter']} WHERE nodule = '{$column['module']}' AND class1 = '{$class1}' AND class2 = '{$class2}' AND class3 = '{$class3}' AND lang = '{$_M['lang']}'";
-//                $module_parameter_list = DB::get_all($query);
                 $parameter_db = load::mod_class("parameter/parameter_database", 'new');
                 $module_parameter_list = $parameter_db->get_parameter($column['module'], $class1, $class2, $class3);
 
@@ -874,7 +650,7 @@ class index extends admin
                     $list2['id'] = $sub_class['id'];
                     $list2['classtype'] = 2;
                     $list2['bigclass'] = $now_column['id'];
-                    if($sub_class['module'] == $now_column['module']){
+                    if ($sub_class['module'] == $now_column['module']) {
                         $list2['foldername'] = $foldername;
                     }
                     $this->database->update_by_id($list2);
@@ -961,7 +737,7 @@ class index extends admin
                     $list['id'] = $sub_class['id'];
                     $list['classtype'] = 3;
                     $list['bigclass'] = $now_column['id'];
-                    if($sub_class['module'] == $to_column['module']){
+                    if ($sub_class['module'] == $to_column['module']) {
                         $list['foldername'] = $to_column['foldername'];
                     }
                     $this->database->update_by_id($list);
@@ -1145,7 +921,7 @@ class index extends admin
             load::mod_class('banner/banner_database', 'new')->update_flash_by_cid($id, $_M['lang']);
 
             //更改管理员应用权限
-            load::mod_class("admin/admin_op", 'new')->modify_admin_column_accsess($id, 'c', 'del');
+            load::mod_class("admin/admin_op", 'new')->modifyAccess($id, 'c', 'del');
             return true;
         }
         $this->error[] = 'Data error';
@@ -1183,46 +959,46 @@ class index extends admin
                 $indexaddress = "../about/index.php";
                 $newfile = PATH_WEB . $foldername . "/show.php";
                 $address = "../about/show.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 break;
             case 2://新闻
                 $indexaddress = "../news/index.php";
                 $newfile = PATH_WEB . $foldername . "/news.php";
                 $address = "../news/news.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 $newfile = PATH_WEB . $foldername . "/shownews.php";
                 $address = "../news/shownews.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 break;
             case 3://产品
                 $indexaddress = "../product/index.php";
                 $newfile = PATH_WEB . $foldername . "/product.php";
                 $address = "../product/product.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 $newfile = PATH_WEB . $foldername . "/showproduct.php";
                 $address = "../product/showproduct.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 break;
             case 4://下载
                 $indexaddress = "../download/index.php";
                 $newfile = PATH_WEB . $foldername . "/download.php";
                 $address = "../download/download.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 $newfile = PATH_WEB . $foldername . "/showdownload.php";
                 $address = "../download/showdownload.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 // $newfile = PATH_WEB . $foldername . "/down.php";
                 // $address = "../download/down.php";
-                // $this->Copyfile($address, $newfile);
+                // $this->copyFile($address, $newfile);
                 break;
             case 5://图片
                 $indexaddress = "../img/index.php";
                 $newfile = PATH_WEB . $foldername . "/img.php";
                 $address = "../img/img.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 $newfile = PATH_WEB . $foldername . "/showimg.php";
                 $address = "../img/showimg.php";
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
                 break;
             case 6://招聘
                 $array = array();
@@ -1267,7 +1043,7 @@ class index extends admin
                 $address = "../feedback/feedback.php";
                 $column = $this->database->get_list_one_by_id($id);
                 $met_fdtable = $column['name'];
-                $this->Copyfile($address, $newfile);
+                $this->copyFile($address, $newfile);
 
                 $array = array();
                 $array[] = array('met_fd_ok', '');
@@ -1293,7 +1069,7 @@ class index extends admin
                 if ($module > 2000) $this->establishAppmodule($foldername, $module);
                 break;
         }
-        $this->Copyfile($indexaddress, PATH_WEB . $foldername . '/index.php');
+        $this->copyFile($indexaddress, PATH_WEB . $foldername . '/index.php');
     }
 
     /**
@@ -1302,7 +1078,7 @@ class index extends admin
      * @param $newfile
      * @return bool|int
      */
-    private function Copyfile($address, $newfile)
+    private function copyFile($address, $newfile)
     {
         $oldcont = "<?php\n";
         $oldcont .= "# MetInfo Enterprise Content Management System \n";
@@ -1581,7 +1357,6 @@ class index extends admin
 
         if ($this->error) {
             $redata['status'] = 0;
-            #$redata['msg']      = $_M['word']['dataerror'];
             $redata['msg'] = $this->error[0];
             $redata['error'] = $this->error;
             $redata['error_info'] = $this->error_info;
@@ -1595,95 +1370,6 @@ class index extends admin
             buffer::clearColumn();
         }
         $this->ajaxReturn($redata);
-
-
-    }
-
-    /**********************************/
-
-    public function list_add($id, $list)
-    {
-        global $_M;
-        //$list['id'] = $id;
-        $if_in = $_M['form']['module-' . $id] ? 0 : 1;
-        $bigclass = $this->database->get_column_by_id($_M['form']['bigclass-' . $id]);
-        if ($bigclass) {
-            $classtype = $bigclass['classtype'] + 1;
-            $releclass = $bigclass['module'] == $_M['form']['module-' . $id] ? 0 : $list['bigclass-' . $id];
-        } else {
-            $classtype = 1;
-            $releclass = 0;
-        }
-        $alist['name'] = $list['name-' . $id];
-        if (!trim($alist['name'])) {
-            turnover("{$_M['url']['own_form']}&a=doindex", "{$_M['word']['column_descript1_v6']}", 0);
-        }
-        if (preg_match("/[<\x{4e00}-\x{9fa5}>]+/u", $_M['form']['foldername-' . $id])) {
-            //中文目录
-            turnover("{$_M['url']['own_form']}&a=doindex", "{$_M['word']['column_descript1_v6']}", 0);
-        }
-        $mod = load::sys_class('handle', 'new')->file_to_mod($_M['form']['foldername-' . $id]);
-
-        if ($mod && $mod != $_M['form']['module-' . $id]) {
-            turnover("{$_M['url']['own_form']}&a=doindex", "{$_M['word']['columndeffflor']}", 0);
-        }
-        if ($bigclass['module'] == $_M['form']['module-' . $id]) {
-            $alist['foldername'] = $bigclass['foldername'];
-        } else {
-            //验证模块是否可以用
-            if (!$if_in) {
-                #die($_M['form']['foldername-' . $id]);
-                if (!$this->is_foldername_ok($_M['form']['foldername-' . $id], $_M['form']['module-' . $id])) {
-                    turnover("{$_M['url']['own_form']}&a=doindex", "{$_M['word']['column_descript1_v6']}", 0);
-                }
-            }
-            $alist['foldername'] = $list['foldername-' . $id];
-        }
-        $alist['filename'] = '';
-        $alist['bigclass'] = $list['bigclass-' . $id];
-        $alist['samefile'] = 0;
-        $alist['module'] = $list['module-' . $id];
-        $alist['no_order'] = $list['no_order-' . $id];
-        $alist['wap_ok'] = 0;
-        $alist['wap_nav_ok'] = 0;
-        $alist['if_in'] = $if_in;
-        $alist['nav'] = $list['nav-' . $id];
-        $alist['ctitle'] = '';
-        $alist['keywords'] = '';
-        $alist['content'] = '';
-        $alist['description'] = '';
-        $alist['list_order'] = 1;
-        $alist['new_windows'] = 0;
-        $alist['classtype'] = $classtype;//可以用bigclass计算得出
-        $alist['out_url'] = $list['out_url-' . $id];
-        $alist['index_num'] = $list['index_num-' . $id];
-        $alist['indeximg'] = '';
-        $alist['columnimg'] = '';
-        $alist['isshow'] = 1;
-        $alist['lang'] = $_M['lang'];
-        $alist['namemark'] = '';
-        $alist['releclass'] = $releclass;//可以用bigclass计算得出
-        $alist['display'] = 0;
-        $alist['icon'] = '';
-        $alist['foldername'] = $list['foldername-' . $id];
-        if ($if_in) {
-            $alist['foldername'] = '';
-        } else {
-            $alist['out_url'] = '';
-        }
-        if ($list['filename']) {
-            $filenames = $this->database->get_column_by_filename($list['filename']);
-            if ($filenames && $filenames['id'] != $list['id']) {
-                turnover("{$_M['url']['own_form']}}&a=doindex", $_M['word']['jsx27'], 0);
-            }
-        }
-        $id = $this->database->insert($alist);
-        if ($id) {
-            $this->columnCopyconfig($alist['foldername'], $alist['module'], $id);
-            //更改管理员栏目权限
-            load::mod_class("admin/admin_op", 'new')->modify_admin_column_accsess($id ,'c', 'add');
-        }
-        return $id;
     }
 }
 

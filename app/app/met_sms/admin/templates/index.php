@@ -4,10 +4,9 @@
 defined('IN_MET') or exit('No permission');
 $head_tab_active=0;
 $head_tab=array(
-  array(title=>
-"短信配置",url=>'#/app/met_sms'),
-  array(title=>"短信群发",url=>'#/app/met_sms/mass'),
-  array(title=>"发送记录",url=>'#/app/met_sms/log'),
+  array('title'=>"短信配置",'url'=>'#/app/met_sms'),
+  array('title'=>"短信群发",'url'=>'#/app/met_sms/mass'),
+  array('title'=>"发送记录",'url'=>'#/app/met_sms/log'),
 );
 $domain=HTTP_HOST;
 ?>

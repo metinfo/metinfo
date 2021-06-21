@@ -1,5 +1,6 @@
-/*
-列表页翻页功能
+/*!
+ * 列表页翻页功能
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	$(function(){

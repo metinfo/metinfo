@@ -88,6 +88,7 @@ function met_cooike_unset($userid = 0)
     $query = "UPDATE {$_M['table']['admin_table']} set cookie = '' WHERE admin_id='{$userid}' AND usertype = '3'";
     DB::query($query);
     met_setcookie("met_auth", '', time() - 3600);
+    met_setcookie("met_auths", '', time() - 3600);
     met_setcookie("met_key", '', time() - 3600);
     met_setcookie("appsynchronous", 0, time() - 3600, '');
     unset($_M['user']['cookie']);

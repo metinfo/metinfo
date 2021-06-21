@@ -1,4 +1,5 @@
 /*初始化*/
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 body,
 h1,
 h2,
@@ -143,10 +144,10 @@ color:#999;}
 .v52fmbx_tbbox{margin:5px 5px;padding:5px 0px;}
 .product_index{overflow:visible!important;}
 .v52fmbx dl:after{display:block;clear:both;content:"";visibility:hidden;height:0;}
-.v52fmbx dl{width:100%;zoom:1;background:#fff;}
-.v52fmbx dl{border-top:1px solid #ddd;margin:0px 0px;display:-webkit-box;display:-moz-box;display:box;display:-ms-flexbox;position:relative;padding:5px 0px;}
-.v52fmbx dl dt{margin:15px 15px 10px 15px;width:105px;color:#333;text-align:left;font-weight:normal;overflow:hidden;line-height:1.2;}
-.v52fmbx dl dd{color:#aaa;-moz-box-flex:1.0;-webkit-box-flex:1.0;box-flex:1.0;-ms-flex:1;padding:2px 0px 0px 15px;margin:10px 0px;}
+.v52fmbx dl{}
+.v52fmbx dl{width:100%;zoom:1;background:#fff;display:-webkit-box;display:-moz-box;display:box;display:-ms-flexbox;position:relative;border-top:1px solid #ddd;margin:0;padding:10px 0;}
+.v52fmbx dl dt{margin:8px 15px;width:105px;color:#333;text-align:left;font-weight:normal;overflow:hidden;line-height:1.2;}
+.v52fmbx dl dd{color:#aaa;-moz-box-flex:1.0;-webkit-box-flex:1.0;box-flex:1.0;-ms-flex:1;margin: 0 10px;}
 .v52fmbx dl dd label input{position:relative;top:1px;margin-right:3px;}
 .v52fmbx dl dd .fbox{color:#aaa;color:#656565;}
 .v52fmbx dl dd .tips{color:#aaa;}
@@ -606,7 +607,7 @@ background:#ddd;}
 }
 
 /*加载中*/
-.met-laoding{background:url(../images/loading.gif) no-repeat center center;min-width:20px;min-height:20px;}
+.met-loadding{background:url(../../images/loading1.gif) no-repeat center center;min-width:20px;min-height:20px;}
 em.required{font-size:16px;color:#f00;padding-right:5px;}
 td .formerrorbox{border:1px solid #f00!important;}
 td .formerror{height:auto;line-height:1.5;font-size:12px;color:#f00;}

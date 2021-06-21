@@ -24,6 +24,11 @@ var editorname,
     basepath = siteurl + ret['admin'] + '/',
     pubjspath = siteurl + 'public/admin_old/',
     table;
+own=own.replace('../',siteurl);
+own_name=own_name.replace('../',siteurl);
+own_tem=own_tem.replace('../',siteurl);
+own_form=own_form.replace('../',siteurl);
+adminurl=adminurl.replace('../',siteurl);
 var metn = getQueryString('n'),
     metc = getQueryString('c'),
     meta = getQueryString('a');
@@ -37,7 +42,8 @@ seajs.config({
         'own_tem': own_tem.substring(0, own_tem.length - 1),
         'tem': own_tem.substring(0, own_tem.length - 1),
         'edturl':siteurl+(editorname=='editormd'? 'app/app/editorswith/':'public/plugins/')+editorname,
-        'siteurl':siteurl.substring(0, siteurl.length - 1)
+        'siteurl':siteurl.substring(0, siteurl.length - 1),
+        '..':siteurl.substring(0, siteurl.length - 1),
     },
     alias: {
         "jquery": 'epl/jquery/jquery_seajs.js',

@@ -1,38 +1,26 @@
-.met-template-container .col {
-  padding-left: 0;
-}
-
-.met-template-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.card-img-overlay {
-  background: rgba(0, 0, 0, 0.38);
-}
-
-.met-template-container img {
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
+.met-template-list img {
   width: 40%;
   height: 150px;
 }
 
-.met-template-container .media {
-  border: 1px solid rgba(0, 0, 0, 0.125);
+.met-template-list .media {
+  border: 1px solid #eee;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 2px;
   position: relative;
   margin-bottom: 15px;
   height: 186px;
 }
 
-.met-template-container .media.active {
+.met-template-list .media.active {
   border: 2px solid #cce5ff;
   margin-bottom: 15px;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
   background-color: #cce5ff;
 }
 
-.met-template-container .media .overlay {
+.met-template-list .media .overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -41,19 +29,11 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   border-radius: 4px;
 }
 
-.met-template-container .media .overlay .btn {
-  height: 36px;
-  width: 100px;
-  align-self: center;
-  border: none;
-  transition: all .3s ease;
-}
-
-.met-template-container .delete {
+.met-template-list .delete {
   font-size: 14px;
   color: var(--red);
   position: absolute;
@@ -62,37 +42,26 @@
   cursor: pointer;
 }
 
-.met-template-container .tips {}
-
-.met-template-container .tips p {
+.met-template-list .tips p {
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 1px;
 
 }
 
-.met-template-container .buy {
+.met-template-list .buy {
   text-align: center;
 }
-
-.met_template .head {
-  display: flex;
-  justify-content: space-between;
-}
-
-.flex {
-  display: flex;
-}
-
-.met_template-right .user div,
-.met_template-right .user a {
+.met-template-right{margin: -60px 10px 0 0;}
+.met-template-right .user div,
+.met-template-right .user a {
   padding: 0 10px;
   line-height: 35px;
 }
 
-@media (min-width: 1400px) {
-  .col-xxl-4 {
-    flex: 0 0 33.333333%;
-    max-width: 33.333333%;
+@media (min-width: 1600px) {
+  .met-template-list .col-xxl-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
   }
 }

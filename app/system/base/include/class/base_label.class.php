@@ -59,9 +59,9 @@ class base_label
         if ($para) {
             foreach ($data as $key => $val) {
                 $data[$key]['para'] = load::mod_class('parameter/parameter_label', 'new')->get_parameter_contents($this->mod, $val['id'], $val['class1'], $val['class2'], $val['class3']);
+                $data[$key]['para_url'] = load::mod_class('parameter/parameter_label', 'new')->get_parameter_contents($this->mod, $val['id'], $val['class1'], $val['class2'], $val['class3'], 10);
             }
         }
-
         return $data;
     }
 
@@ -75,6 +75,7 @@ class base_label
     public function get_list_page($id = '', $page = '', $para = 1)
     {
         global $_M;
+        $page = is_numeric($page) ? $page : 1;
         $page = $page > 0 ? $page : 1;
         $page = $page - 1;
         $start = $this->page_num * $page;
@@ -191,8 +192,11 @@ class base_label
                 $tagstr .= "&nbsp<a href=\"{$val['url']}\" target=\"_blank\">{$val['name']}</a>";
             }
 
-            $one['tag_relations'] = $tagObj->getRelationList($one, $one['tag']);
-            foreach ($one['tag_relations'] as $val) {
+            $tag_relations = $tagObj->getRelationList($one, $one['tag']);
+            foreach ($tag_relations as $val) {
+                if ($val['id'] != $one['id']) {
+                    $one['tag_relations'][] = $val;
+                }
                 $tagstr .= "&nbsp<a href=\"{$val['url']}\" target=\"_blank\">{$val['name']}</a>";
             }
 
@@ -293,6 +297,7 @@ class base_label
     public function get_list_page_html($classnow, $pagenow, $page_type)
     {
         global $_M;
+        $pagenow = is_numeric($pagenow) ? $pagenow : 1;
         if ($page_type == 1) {
             $column_label = load::sys_class('label', 'new')->get('column');
             $sub_conlumn = $column_label->get_column_by_type('son', $classnow);

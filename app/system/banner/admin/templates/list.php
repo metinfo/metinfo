@@ -10,10 +10,11 @@ $data['module']='banner';
 $table_order='banner-list';
 $pagelength=1000;
 ?>
+<div class='alert alert-primary'>{$word.admin_content_list1}</div>
+<div class="metadmin-content-min bg-white p-4">
 <div class="clearfix">
 	<div class="float-left">
 		<button type="button" class="btn btn-primary btn-banner-list-add" data-toggle="modal" data-target=".banner-add-modal" data-modal-title="{$word.indexflashaddflash}" data-modal-size="xl" data-modal-url="banner/edit/?c=banner_admin&a=doadd" data-modal-fullheight="1" data-modal-tablerefresh="#{$table_order}">{$word.indexflashaddflash}</button>
-		<font class="text-danger ml-2">{$word.admin_content_list1}</font>
 	</div>
 	<div class="float-right">
 		<select name="module" data-table-search="#{$table_order}" class="form-control">
@@ -37,7 +38,7 @@ $pagelength=1000;
 </div>
 <include file="pub/content_list/form_head"/>
 				<include file="pub/content_list/checkall_all"/>
-				<th data-table-columnclass="text-center" width="150">{$word.category}</th>
+				<th width="150">{$word.category}</th>
 				<th data-table-columnclass="text-center">{$word.setflashName}</th>
 				<th data-table-columnclass="text-center" width="80">{$word.banner_pcheight_v6}</th>
 				<th data-table-columnclass="text-center" width="80">{$word.banner_pidheight_v6}</th>
@@ -56,3 +57,4 @@ $pagelength=1000;
 		</tfoot>
 	</table>
 </form>
+</div>

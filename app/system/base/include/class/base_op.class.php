@@ -71,7 +71,7 @@ class base_op
      * @param $toclass3
      * @return mixed
      */
-    public function list_move($nowclass1, $nowclass2, $nowclass3, $toclass1, $toclass2, $toclass3)
+    public function list_move($nowclass1 = '', $nowclass2 = '', $nowclass3 = '', $toclass1 ='', $toclass2 ='', $toclass3 = '')
     {
         global $_M;
         return $this->database->move_list_by_class($nowclass1, $nowclass2, $nowclass3, $toclass1, $toclass2, $toclass3);

@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module),
     obj = that.obj
@@ -25,6 +26,7 @@
                 `<i class="fa fa-${parseInt(val.useok) ? 'check-circle text-success' : 'close-circle text-danger'}"></i>`,
                 `${val.met_admin_type === val.mark ? `<i class="fa fa-flag" />` : ''}`,
                 `<button class="btn btn-default mb-2 btn-edit"
+                type="button"
                 data-index="${index}"
                 data-toggle="modal"
                 data-target=".lang-admin-edit"
@@ -35,11 +37,12 @@
                 data-modal-tablerefresh="#lang-admin-table"
                 data-refresh="1"
                 >${METLANG.editor}</button>
-                <button class="btn btn-default mb-2 btn-langadmin-delete" data-id="${val.id}">${METLANG.delete}</button>
+                <button type="button" class="btn btn-default mb-2 btn-langadmin-delete" data-id="${val.id}">${METLANG.delete}</button>
                 <a class="btn btn-default mb-2"
                 href="${that.own_name}c=language_general&a=doExportPack&site=admin&editor=${val.mark}">
                 ${METLANG.language_outputlang_v6}</a>
               <button class="btn btn-default mb-2 btn-replace"
+              type="button"
               data-index="${index}"
               data-toggle="modal"
               data-target=".langadmin-replace-modal"
@@ -48,6 +51,7 @@
               data-modal-title="${METLANG.language_batchreplace_v6}"
               data-modal-tablerefresh="#lang-admin-table">${METLANG.language_batchreplace_v6}</button>
               <button class="btn btn-default mb-2 btn-search-edit"
+              type="button"
               data-index="${index}"
               data-toggle="modal"
               data-target=".langadmin-search-modal"
@@ -58,6 +62,7 @@
             ${
               sysMark.indexOf(val.mark) > -1
                 ? `<button
+            type="button"
             class="btn btn-default mb-2 btn-sync"
             data-index="${index}"
             data-toggle="modal"
@@ -69,6 +74,7 @@
                 : ''
             }`,
                 `<button class="btn btn-default btn-edit-app"
+                type="button"
                 data-index="${index}"
                 data-toggle="modal"
                 data-target=".langadmin-app-modal"
@@ -214,7 +220,7 @@
     let params = {
       word: val,
       editor: that.activeData.mark,
-      site: 'web',
+      site: 'admin',
     }
     if (modal.find('[name="appno"]').val()) {
       params.appno = modal.find('[name="appno"]').val()
@@ -296,7 +302,7 @@
         data: {}
       }
       formData.map(item => {
-        if (item.name === 'editor' || item.name === 'site') {
+        if (item.name === 'editor' || item.name === 'site' || item.name === 'appno') {
           values[item.name] = item.value
           return
         }
@@ -343,6 +349,7 @@
               <p class="card-text">${METLANG.numbering}${METLANG.marks}${item.no}</p>
               <a href="${that.own_name}c=language_general&a=doExportPack&site=admin&editor=${that.activeData.mark}&appno=${item.no}" >${METLANG.language_outputlang_v6}</a>
               <a
+              href="javascript:;"
               data-index="${index}"
               data-toggle="modal"
               data-target=".langadmin-replaceApp-modal"
@@ -351,6 +358,7 @@
               data-modal-title="${METLANG.language_batchreplace_v6}"
               class="ml-2 btn-app-replace">${METLANG.language_batchreplace_v6}</a>
               <a
+              href="javascript:;"
               data-index="${index}"
               data-toggle="modal"
               data-target=".langadmin-searchApp-modal"
@@ -385,7 +393,16 @@
             const val = modal.find('.input').val()
             search(val,modal)
           })
-        modal.find('.lang-search-form').attr('action', `${that.own_name}c=language_general&a=doAppModifyParameter`)
+        modal
+        .find('.input')
+        .off()
+        .keypress(function(e) {
+            let keycode = e.keyCode ? e.keyCode : e.which
+            if (keycode == '13') {
+                const val = modal.find('.input').val()
+                search(val, modal)
+            }
+        })
       }
     }
     $(document).on('click', '.btn-app-replace', function(e) {

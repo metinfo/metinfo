@@ -15,11 +15,11 @@ class session
 
     public function start()
     {
-        //$ip=$this->getip();
-        //session_id(md5($ip));
         //session_regenerate_id();
 
         session_start();
+        $secure = $_SERVER['SERVER_PORT'] == 443 ? 1 : 0;
+        setcookie('PHPSESSID', session_id(), 0, '/','', $secure, true);
     }
 
     public function set($name, $value)

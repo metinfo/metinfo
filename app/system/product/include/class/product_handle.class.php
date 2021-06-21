@@ -20,7 +20,7 @@ class product_handle extends base_handle
      * @param  string $content 内容数组
      * @return array            处理过后数组
      */
-    public function one_para_handle($content = array(), $slim = '')
+    public function one_para_handle($content = array())
     {
         global $_M;
         $content = parent::one_para_handle($content);

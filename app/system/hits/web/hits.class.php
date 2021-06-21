@@ -19,6 +19,10 @@ class hits extends web
     {
         global $_M;
 
+        if (!is_numeric($_M['form']['vid'])) {
+            return '';
+        }
+
         switch ($_M['form']['type']) {
             case 'product':
                 $met_hits = 'product';
@@ -36,6 +40,7 @@ class hits extends web
                 $met_hits = '';
                 break;
         }
+
         $query = "select id,hits from {$_M['table'][$met_hits]} where id='{$_M['form']['vid']}'";
         $hits_list = DB::get_one($query);
         if (!$_M['form']['list']) {
@@ -48,7 +53,7 @@ class hits extends web
             echo $hits_list['hits'];
             die;
         } else {
-            echo "document.write('" . $hits_list[hits] . "')";
+            echo "document.write('" . $hits_list['hits'] . "')";
             die;
         }
 

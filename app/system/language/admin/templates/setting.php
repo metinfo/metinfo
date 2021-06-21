@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-lang-setting">
-	<form method="POST" action="{$url.own_name}c=language_general&a=doSave" class="info-form mt-3" data-submit-ajax="1">
+	<form method="POST" action="{$url.own_name}c=language_general&a=doSave" class="info-form" data-submit-ajax="1">
 		<div class="metadmin-fmbx">
 			<dl>
 				<dt>

@@ -11,7 +11,7 @@
                             <a href="{$m.url}" {$m.urlnew} title="{$lang.sub_all}" <if value="$data['classnow'] eq $m['id']">class="active"</if>>{$lang.sub_all}</a>
                         </li>
                         <else/>
-                        <if value="$m[isshow]">
+                        <if value="$m['isshow']">
                         <li>
                             <a href="{$m.url}" {$m.urlnew} title="{$m.name}" <if value="$data['classnow'] eq $m['id']">class="active"</if>>{$m.name}</a>
                         </li>

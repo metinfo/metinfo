@@ -42,7 +42,7 @@ class message_handle extends base_handle
      * @param  string $message 设置数组
      * @return array           处理过后的栏目图片数组
      */
-    public function one_para_handle($message)
+    public function one_para_handle($message = array())
     {
         global $_M;
         $message['addtime'] = date($_M['config']['met_listtime'], strtotime($message['addtime']));

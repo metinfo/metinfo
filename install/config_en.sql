@@ -222,7 +222,7 @@ INSERT INTO met_language VALUES (null, 'templatesusererror', 'The current langua
 INSERT INTO met_language VALUES (null, 'phonecode', 'Get phone verification code', 0, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'phonecodeerror', 'Mobile phone verification code error', 0, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'memberbuytitle', 'Paid upgrade member group', 0, 0, 0, 0, 'en');
-INSERT INTO met_language VALUES (null, 'img_px_tips', 'Picture size exceeds system limit (picture width not exceeding 2000px)', 0, 0, 1, 0, 'en');
+INSERT INTO met_language VALUES (null, 'img_px_tips', 'Picture size exceeds system limit (picture width not exceeding 2600px)', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'member_cv', 'curriculum vitae', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'please_login', 'Log in first, please!', 0, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'user_agreement', 'User Agreement', 0, 0, 0, 0, 'en');
@@ -247,7 +247,9 @@ INSERT INTO met_language VALUES (null, 'bound', 'Bound', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unbind', 'Unbind', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'weixin_login_error', 'Wechat login is not allowed in the current language', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'login_ok', 'Login successful', 0, 0, 1, 0, 'en');
-
+INSERT INTO met_language VALUES (null, 'new_registe_email_content', 'Your website {webname} has received a registration request from a new user: {user name}. Please log in to the website background to check.', 0, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_registe_sms_content', 'Your website {webname} has received a registration request from a new user: {user name}. Please log in to the website background to check.', 0, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_regist_notice', 'New member notice', 0, 0, 0, 0, 'en');
 
 #系统配置
 INSERT INTO met_config VALUES (null, 'debug','0','','0','0','en');
@@ -307,6 +309,7 @@ INSERT INTO met_config VALUES (null, 'metconfig_footright', 'MSN:0000@000.com Em
 INSERT INTO met_config VALUES (null, 'metconfig_footaddress', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_foottel', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_footother', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_icp_info', '', '', 0, 0, 'en');
 #基本设置-邮箱配置
 INSERT INTO met_config VALUES (null, 'metconfig_fd_fromname', 'MetInfo Co.,Ltd', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_fd_smtp', '61.152.188.131', '', 0, 0, 'en');
@@ -366,6 +369,13 @@ INSERT INTO met_config VALUES (null, 'metconfig_member_bgcolor', '', '', 0, 0, '
 INSERT INTO met_config VALUES (null, 'metconfig_member_bgimage', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_member_agreement', 0, '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_member_agreement_content', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_member_bg_range', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_login_box_position', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_new_registe_email_notice', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_to_admin_email', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_new_registe_sms_notice', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_to_admin_sms', '', '', 0, 0, 'en');
+
 #用户设置-邮件内容设置
 INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_title', '{webname} Member center registration verification', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_member_email_reg_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} member center, Function is to carry out&nbsp;Member center registration verification, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131, 131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
@@ -374,6 +384,7 @@ INSERT INTO met_config VALUES (null, 'metconfig_member_email_password_content', 
 INSERT INTO met_config VALUES (null, 'metconfig_member_email_safety_title', '{webname} Member center to modify the binding mailbox', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_member_email_safety_content', '<div style=\"width:500px;margin:20px auto;\"><div class=\"header clearfix\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; background-color: rgb(255, 255, 255);\"><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname} Member Center</strong></a></div><p>&nbsp;</p><div class=\"content\" style=\"font-family: &#39;lucida Grande&#39;, Verdana, &#39;Microsoft YaHei&#39;; line-height: 23.7999992370605px; border: 1px solid rgb(233, 233, 233); margin: 2px 0px 0px; padding: 30px; background: none 0px 0px repeat scroll rgb(255, 255, 255);\"><p style=\"line-height: 23.7999992370605px;\">hello:</p><p style=\"line-height: 23.7999992370605px;\">This is your key message on the {webname} Important message on the member center, Function is to carry out&nbsp;Member center bound mailbox modification, please click on the link below to complete the verification</p><p style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); margin-top: 15px; margin-bottom: 25px; padding: 15px;\">Please click on the link to continue:{opurl}</p><p style=\"line-height: 23.7999992370605px;\">&nbsp;</p><p class=\"footer\" style=\"line-height: 23.7999992370605px; border-top-width: 1px; border-top-style: solid; border-top-color: rgb(221, 221, 221); padding-top: 6px; margin-top: 25px; color: rgb(131, 131,131);\">Please do not reply to this message, this mailbox is not monitored, you will not get any reply.<br/><br/><a href=\"{weburl}\"><strong style=\"outline: none; cursor: pointer; color: rgb(30, 84, 148);\">{webname}Member Center</strong></a></p></div></div>', '', 0, 0, 'en');
 #用户设置-社会化登录
+INSERT INTO met_config VALUES (null, 'metconfig_auto_register', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_appid', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_appsecret', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weibo_appkey', '', '', 0, 0, 'en');
@@ -386,7 +397,12 @@ INSERT INTO met_config VALUES (null, 'metconfig_qq_open', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_appid', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_appsecret', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_weixin_gz_token', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_auto_register', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_google_open', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_google_appid', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_google_appsecret', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_facebook_open', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_facebook_appid', '', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_facebook_appsecret', '', '', 0, 0, 'en');
 #用户设置-实名
 INSERT INTO met_config VALUES (null, 'metconfig_member_idvalidate', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_idvalid_key', '', '', 0, 0, 'en');
@@ -416,6 +432,7 @@ INSERT INTO met_config VALUES (null, 'global_search_range', 'all', '', 0, 0, 'en
 INSERT INTO met_config VALUES (null, 'global_search_type', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'global_search_module', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'global_search_column', '3', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'global_search_weight', '1|2|3|4|5|6', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'column_search_range', 'parent', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'column_search_type', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'advanced_search_range', 'all', '', 0, 0, 'en');
@@ -424,9 +441,6 @@ INSERT INTO met_config VALUES (null, 'advanced_search_column', '3', '', 0, 0, 'e
 INSERT INTO met_config VALUES (null, 'advanced_search_linkage', '1', '', 0, 0, 'en');
 
 INSERT INTO met_lang VALUES(null,'English','1','2','en','en','en.gif','','0','0','html','','en');
-
-INSERT INTO met_admin_array VALUES(4,'Member','','0','','0','0','1','1','en','');
-INSERT INTO met_admin_array VALUES(5,'Agents','','0','','0','0','2','1','en','');
 
 INSERT INTO `met_user_group` VALUES(4, 'Member', 1, 'en');
 INSERT INTO `met_user_group` VALUES(5, 'Agents', 2, 'en');

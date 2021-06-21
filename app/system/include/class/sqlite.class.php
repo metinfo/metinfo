@@ -231,7 +231,7 @@ class DB
      *
      * @return array 查询得到的数据
      */
-    public function get_data($table, $where, $order, $limit_start = 0, $limit_num = 20, $field_name = '*')
+    public static function get_data($table, $where, $order, $limit_start = 0, $limit_num = 20, $field_name = '*')
     {
         if ($limit_start < 0) {
             return false;

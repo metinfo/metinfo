@@ -239,6 +239,27 @@ function timeFormat($timeInt,$format='Y-m-d H:i:s'){
 }
 
 /**
+ * 字节格式化 把字节数格式为B K M G T P E Z Y 描述的大小
+ * @param int $size 大小
+ * @param int $dec 显示类型
+ * @return int
+ */
+function byte_format($size = 0, $dec = '2', $unit = "MB")
+{
+    $arr = array("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+    foreach ($arr as $key => $val) {
+        if (strtoupper($unit) == $val) {
+            $pos = $key;
+        }
+    }
+
+    if (intval($pos)) {
+        $size = $size / pow(1024, $pos);
+    }
+    return round($size, $dec);
+}
+
+/**
  * 转UTF-8码
  * @param $str
  * @param $from

@@ -28,7 +28,7 @@ class userweb extends web {
 		 $this->add_input('classnow',$this->input_class());
 	}
 
-	public function check() {
+	public function check($pid = '') {
 		global $_M;
 		$user = $this->get_login_user_info();
 		if(!$user){
@@ -42,31 +42,6 @@ class userweb extends web {
 		}
 	}
 
-	public function mcheck() {
-		global $_M;
-
-	}
-
-	protected function template($path){
-		global $_M;
-		$postion = strstr($path, '/',true);
-		$file = substr(strstr($path, '/'),1);
-		if ($postion == 'own') return PATH_OWN_FILE."templates/{$file}.php";
-		if ($postion == 'ui') return PATH_SYS_TEM."web/{$file}.php";
-		if($postion == 'tem'){
-			$sys_content=$_M['custom_template']['sys_content'];
-			$flag=$sys_content?1:0;
-			$sys_content = PATH_OWN_FILE."templates/{$file}.php";
-			!file_exists($sys_content) && $sys_content = PATH_PUBLIC_WEB."templates/{$file}.php";
-			$_M['custom_template']['sys_content']=$sys_content;
-			if($flag){
-				return $sys_content;
-			}else{
-				return $this->template('ui/compatible');
-			}
-		}
-	}
-
 	/**
 	  * 重写web类的load_url_unique方法，获取前台特有URL
 	  */
@@ -74,28 +49,6 @@ class userweb extends web {
 		global $_M;
 		parent::load_url_unique();
 		// load::mod_class('user/user_url', 'new')->insert_m();
-	}
-
-	protected function navlist(){
-
-	}
-	//错误
-	public function ajax_error($error = ''){
-		global $_M;
-		$retun = array();
-		$retun['status'] = 0;
-		$retun['msg'] = $error;
-		echo jsonencode($retun);
-		die();
-	}
-	//成功
-	public function ajax_success($success = ''){
-		global $_M;
-		$retun = array();
-		$retun['status'] = 1;
-		$retun['msg'] = $success;
-		echo jsonencode($retun);
-		die();
 	}
 }
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

@@ -6,6 +6,16 @@ defined('IN_MET') or exit('No permission');
 
 class csv
 {
+    public $encode;
+    public $origin_code;
+    public $target_code;
+
+    public function __construct()
+    {
+        $this->encode = 1;
+        $this->origin_code = "utf-8";
+        $this->target_code = "GBK//IGNORE";
+    }
 
     /**
      * @param $filename
@@ -15,17 +25,12 @@ class csv
      */
     public function get_csv($filename, $array, $head, $foot = array())
     {
-        // 输出Excel
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $filename . '.csv"');
-        header('Cache-Control: max-age=0');
-
-        // ��PHP�ļ������php://output ��ʾֱ������������
-        $fp = fopen('php://output', 'a');
+        //CLI模式通过php://output向终端输出内容
+        $fp = fopen('php://output', 'a') or die("Can't open php://output");
 
         // 表头
         foreach ($head as $i => $v) {
-            $head [$i] = iconv('utf-8', 'gb2312//TRANSLIT', $v);
+            $head [$i] = self::char_GBK($v);
         }
         fputcsv($fp, $head);
 
@@ -41,17 +46,38 @@ class csv
             }
             $content = array();
             foreach ($head as $i => $v) {
-                $content [] = iconv('utf-8', 'gb2312//TRANSLIT', $row [$i]);
+                $content [] = self::char_GBK($row[$i]);
             }
             fputcsv($fp, $content);
         }
 
         if ($foot) {
             foreach ($foot as $i => $v) {
-                $foot[$i] = iconv('utf-8', 'gb2312//TRANSLIT', $v);
+                $foot[$i] = self::char_GBK($v);
             }
             fputcsv($fp, $foot);
         }
+
+        // 输出Excel
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.csv"');
+        header('Cache-Control: max-age=0');
+    }
+
+    public function char_GBK($str = '')
+    {
+        if (!$str) {
+            return '';
+        }
+
+        if ($this->encode) {
+            //return iconv("UTF-8", "gb2312//TRANSLIT", $str);
+            //return iconv("UTF-8", "GBK//IGNORE", $str);
+            return iconv($this->origin_code, $this->target_code, $str);
+        }else{
+            return $str;
+        }
+
     }
 
 }

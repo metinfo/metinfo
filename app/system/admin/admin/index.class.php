@@ -118,6 +118,7 @@ class index extends admin
                     break;
             }
         }
+
         foreach ($metinfo_column as $key => $val) {
             if ($val['info']['id'] == '1') {//管理，添加内容管理
                 $langs = load::mod_class('language/language_op', 'new')->get_lang();
@@ -127,14 +128,36 @@ class index extends admin
                     $mlist['info']['name'] = $langval['name'];
                     $mlist['info']['field'] = $langval['mark'];
                     foreach ($module as $modulekey => $moduleval) {
-                        if ($modulekey > 0 && ($modulekey <= 9 || $modulekey == 11 || $modulekey == 12 || $modulekey == 13)) {
+                        if (in_array($modulekey, array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13))) {
                             foreach ($moduleval['class1'] as $class1val) {
                                 $list = array();
                                 $list['name'] = $class1val['name'];
                                 $list['field'] = 'c' . $class1val['id'];
                                 $list['column_lang'] = "column-lang column-lang-{$langval['mark']}";
                                 $list['data_lang'] = "data-lang-column=\"{$langval['mark']}\"";
-                                $mlist['column'][$list['field']] = $list;
+                                $mlist['column_1'][$list['field']] = $list;
+                                //$mlist['column'][$list['field']] = $list;
+                            }
+
+                            foreach ($moduleval['class2'] as $class1val) {
+                                $list = array();
+                                $list['name'] = $class1val['name'];
+                                $list['field'] = 'c' . $class1val['id'];
+                                $list['column_lang'] = "column-lang column-lang-{$langval['mark']}";
+                                $list['data_lang'] = "data-lang-column=\"{$langval['mark']}\"";
+                                $mlist['column_2'][$list['field']] = $list;
+                                //$mlist['column'][$list['field']] = $list;
+
+                            }
+
+                            foreach ($moduleval['class3'] as $class1val) {
+                                $list = array();
+                                $list['name'] = $class1val['name'];
+                                $list['field'] = 'c' . $class1val['id'];
+                                $list['column_lang'] = "column-lang column-lang-{$langval['mark']}";
+                                $list['data_lang'] = "data-lang-column=\"{$langval['mark']}\"";
+                                $mlist['column_3'][$list['field']] = $list;
+                                //$mlist['column'][$list['field']] = $list;
                             }
                         }
                     }

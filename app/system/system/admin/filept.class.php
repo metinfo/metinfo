@@ -31,7 +31,7 @@ class filept extends admin
             $array[] = $info;
         }
         $arrays = arr_sort($array, 'filename', SORT_DESC);
-        echo jsonencode($arrays);
+        $this->ajaxReturn($arrays);
     }
 
     /**
@@ -43,7 +43,8 @@ class filept extends admin
         global $_M;
         $dir = $_M['form']['dir'] ? str_replace('../', '', $_M['form']['dir']) : '/upload/';
         $dir = PATH_WEB . $dir;
-        $filearray = scan_dir($dir, 'jpg|png|gif|jpeg|bmp', '((\/upload\/[0-9]{6}\/thumb)|(\/upload\/[0-9]{6}\/thumb_dis)|(\/upload\/[0-9]{6}\/watermark)|(\/upload\/thumb_src)|(\/upload\/files)|(\/upload\/images)|(\/upload\/_thumb)|(\/upload\/sql)|(\/upload\/\.quarantine)|(\/upload\/\.tmb))');//_thumbs
+        $filearray = scan_dir($dir, 'jpg|png|gif|jpeg|bmp|svg', '((\/upload\/[0-9]{6}\/thumb)|(\/upload\/[0-9]{6}\/thumb_dis)|(\/upload\/[0-9]{6}\/watermark)|(\/upload\/thumb_src)|(\/upload\/files)|(\/upload\/images)|(\/upload\/_thumb)|(\/upload\/sql)|(\/upload\/\.quarantine)|(\/upload\/\.tmb))');//_thumbs
+        $i=0;
         foreach ($filearray as $val) {
             // $img_info = getimagesize(PATH_WEB.$val);
             $img_name = pathinfo(PATH_WEB . $val);
@@ -55,11 +56,31 @@ class filept extends admin
             $info['type'] = $file_type;
             // $info['x'] = $img_info[0];
             // $info['y'] = $img_info[1];
-            // $info['time'] = filemtime(PATH_WEB.$val);
+            $i++;
+            if(strstr($_M['form']['sort'],'time_')){
+                if($i>100){
+                    $info['time']=$info['filename'];
+                }else{
+                    $info['time'] = filemtime(PATH_WEB.$val);
+                }
+            }
             $array[] = $info;
         }
         if (is_array($array)) {
-            $arrays = $_M['form']['dir']?arr_sort($array, 'filename', SORT_DESC):$array;
+            switch ($_M['form']['sort']){
+                case 'name_desc':
+                    $arrays = arr_sort($array, 'filename', SORT_DESC);
+                    break;
+                case 'time_asc':
+                    $arrays = arr_sort($array, 'time', SORT_ASC);
+                    break;
+                case 'time_desc':
+                    $arrays = arr_sort($array, 'time', SORT_DESC);
+                    break;
+                default:
+                    $arrays = arr_sort($array, 'filename', SORT_ASC);
+                    break;
+            }
         } else {
             $arrays = array();
             /*$arrays['name'] = '';

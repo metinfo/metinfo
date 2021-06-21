@@ -7,17 +7,16 @@ defined('IN_MET') or exit('No permission');
   <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-modal-url="admin/admin_add"
     data-target=".admin-add-modal" data-modal-title="{$word.add}{$word.metadmin}" data-modal-size="lg" data-modal-fullheight="1"
     data-modal-tablerefresh="#admin-table" data-modal-loading="1">
-    <i class="fa fa-plus mr-1"></i>
     {$word.add}{$word.metadmin}
   </button>
   <div class="input-group w-a float-right">
-    <input type="search" name="search" placeholder="{$word.adminusername}" class="form-control" data-table-search="#admin-table" />
+    <input type="search" name="keyword" placeholder="{$word.adminusername}" class="form-control" data-table-search="#admin-table" />
     <div class="input-group-append">
-      <div class="input-group-text"><i class="input-search-icon wb-search" aria-hidden="true"></i></div>
+      <div class="input-group-text btn bg-none px-2"><i class="input-search-icon fa-search" aria-hidden="true"></i></div>
     </div>
   </div>
 </div>
-<table class="dataTable table table-bordered table-hover table-striped w-100 mt-2" id="admin-table"
+<table class="dataTable table table-hover w-100 mt-2" id="admin-table"
   data-ajaxurl="{$url.own_name}c=index&a=doGetList" data-table-pagelength="20" data-plugin="checkAll"
   data-datatable_order="#admin-table">
   <thead>

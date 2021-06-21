@@ -41,12 +41,6 @@ class download_admin extends news_admin
         return parent::insert_list($list);
     }
 
-    public function insert_list_sql($list = array())
-    {
-        global $_M;
-        return parent::insert_list_sql($list);
-    }
-
     /**
      *系统属性
      */
@@ -72,12 +66,6 @@ class download_admin extends news_admin
     {
         global $_M;
         return parent::update_list($list, $id);
-    }
-
-    public function update_list_sql($list = array(), $id = '')
-    {
-        global $_M;
-        return parent::update_list_sql($list, $id);
     }
 
     /**

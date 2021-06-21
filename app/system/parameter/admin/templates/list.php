@@ -9,9 +9,9 @@ if($data['handle']){
 $table_order='parameter-list-'.$data['module'].'-'.$data['class1'].'-'.$data['class2'].'-'.$data['class3'];
 $colspan=$data['module']=='message'?5:6;
 ?>
-<font class="text-danger">{$word.admin_content_list1}</font>
+<div class="alert alert-primary">{$word.admin_content_list1}</div>
 <form method="POST" action="{$url.own_name}c=parameter_admin&a=doparasave&module={$data.module_value}&class1={$data.class1}&class2={$data.class2}&class3={$data.class3}" data-submit-ajax='1'>
-	<table class="table table-hover dataTable w-100 mt-2 parameter-list" id="{$table_order}" data-ajaxurl="{$url.own_name}c=parameter_admin&a=dojson_para_list&module={$data.module_value}&class1={$data.class1}&class2={$data.class2}&class3={$data.class3}" data-table-pageLength="1000" data-plugin="checkAll" data-datatable_order="#{$table_order}">
+	<table class="table table-hover dataTable w-100 parameter-list" id="{$table_order}" data-ajaxurl="{$url.own_name}c=parameter_admin&a=dojson_para_list&module={$data.module_value}&class1={$data.class1}&class2={$data.class2}&class3={$data.class3}" data-table-pageLength="1000" data-plugin="checkAll" data-datatable_order="#{$table_order}">
 		<thead>
 			<tr>
 				<include file="pub/content_list/checkall_all"/>

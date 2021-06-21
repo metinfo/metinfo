@@ -14,7 +14,6 @@ class news_admin extends base_admin
     public $para_list;
     public $plist_database;
 
-
     /**
      * news_admin constructor.
      */
@@ -110,30 +109,21 @@ class news_admin extends base_admin
     public function insert_list($list = array())
     {
         global $_M;
-        //自动发布更新时间设置
-        if ($list['addtype'] == 2 && strtotime($list['updatetime']) < strtotime($list['addtime'])) {
-            $list['updatetime'] = $list['addtime'];
-        }
-        //发布人信息
-        $list['issue'] = $this->met_admin['admin_id'];
-
+        //图片处理 缩略图 水印图
         if ($list['imgurl'] == '') {
             if (preg_match('/\.\.\/upload([\w\/\_<\x{4e00}-\x{9fa5}>\-\(\)]*)\.(jpg|png|gif)/iu', $list['content'], $out)) {
                 if ($out[0]) {
-                    $list['imgurl'] = $out[0];
-                } else {
-                    $list['imgurl'] = '';
+                    $list['imgurl'] = str_replace('watermark/', '', $out[0]);
                 }
             }
         }
-        //图片处理 缩略图 水印图
-        $list = $this->form_imglist($list, $this->module);
+        if ($list['imgurl']) {
+            $list = $this->form_imglist($list, $this->module);
+        }
 
         $pid = $this->insert_list_sql($list);
-
         // 更新TAG标签
         load::sys_class('label', 'new')->get('tags')->updateTags($list['tag'], $this->module, $list['class1'], $pid, 1);
-
         if ($pid) {
             if ($this->module == 3 || $this->module == 4 || $this->module == 5) {
                 //更新系统属性产品 下载 图片
@@ -143,74 +133,6 @@ class news_admin extends base_admin
         } else {
             $this->error[] = "Data error";
             return false;
-        }
-    }
-
-    /**
-     * 插入sql
-     * @param  array $list 插入的数组
-     * @return number     插入后的数据ID
-     */
-    public function insert_list_sql($list = array())
-    {
-        global $_M;
-        if (!$list['title']) {
-            return false;
-        }
-        if (!$this->check_filename($list['filename'], '', $this->module)) {
-            return false;
-        }
-        if ($list['links']) {
-            $list['links'] = url_standard($list['links']);
-        }
-        if (!$list['description']) {
-            $list['description'] = $this->description($list['content']);
-        };
-
-        $list['displayimg'] = $list['displayimg'] ? : '';
-        $list['displaytype'] = $list['displaytype'] ? 1: 0;
-        $list['no_order'] = $list['no_order'] ? 1 : 0;
-        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
-        $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
-        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
-        $list['new_ok'] = $list['new_ok'] ? 1 : 0;
-
-        $list['text_size'] = is_numeric($list['text_size']) ? $list['text_size'] : 0;
-        // $list['updatetime'] = date("Y-m-d H:i:s");
-        // $list['addtime']    = $list['addtime']?$list['addtime']:$list['updatetime'];
-        $list['lang'] = $list['lang'] ? $list['lang'] : $this->lang;
-        //发布信息需要审核才能正常显示
-        $admin_info = admin_information();
-        if ($admin_info['admin_check'] == 1 && !strstr($admin_info['admin_type'], 'metinfo')) {
-            $list['displaytype'] = 0;
-        }
-        return $this->database->insert($list);
-    }
-
-    /**
-     * ajax检测静态文件是否重名//base
-     */
-    public function docheck_filename()
-    {
-        global $_M;
-        $redata = array();
-        if (is_numeric($_M['form']['filename'])) {
-            $errorno = $this->errorno == 'error_filename_cha' ? $_M['word']['js74'] : $_M['word']['admin_tag_setting10'];
-            #$errorno = $this->errorno == 'error_filename_cha' ? $_M['word']['js74'] : $_M['word']['js73'];
-            $redata['valid'] = false;
-            $redata['message'] = $errorno;
-            $this->ajaxReturn($redata);
-        }
-
-        if (!$this->check_filename($_M['form']['filename'], $_M['form']['id'], $this->module)) {
-            $errorno = $this->errorno == 'error_filename_cha' ? $_M['word']['js74'] : $_M['word']['js73'];
-            $redata['valid'] = false;
-            $redata['message'] = $errorno;
-            $this->ajaxReturn($redata);
-        } else {
-            $redata['valid'] = true;
-            $redata['message'] = $_M['word']['js75'];
-            $this->ajaxReturn($redata);
         }
     }
 
@@ -273,9 +195,9 @@ class news_admin extends base_admin
     public function doeditorsave()
     {
         global $_M;
-        $redata = array();
-        $id = $_M['form']['id'];
         $list = $_M['form'];
+        $id = $list['id'];
+        $redata = array();
 
         if (!is_numeric($id)) {
             $redata['status'] = 0;
@@ -297,7 +219,6 @@ class news_admin extends base_admin
             $redata['html_res'] = $html_res;
             $redata['back_url'] = $url;
             $this->ajaxReturn($redata);
-
         } else {
             $redata['status'] = 0;
             $redata['msg'] = $_M['word']['dataerror'];
@@ -308,18 +229,12 @@ class news_admin extends base_admin
     /**
      * 保存修改
      * @param  array $list 修改的数组
-     * @return bool                     修改是否成功
+     * @return bool  修改是否成功
      */
     public function update_list($list = array(), $id = '')
     {
         global $_M;
         //水印图
-        /*if ($list['imgurl'] == '') {
-            if (preg_match('/<img.*?src=\\\\"(.*?)\\\\".*?>/i', $list['content'], $out)) {
-                $imgurl = explode("upload/", $out[1]);
-                $list['imgurl'] = '../upload/' . str_replace('watermark/', '', $imgurl[1]);
-            }
-        }*/
         if ($list['imgurl'] == '') {
             if (preg_match('/\.\.\/upload([\w\/\_<\x{4e00}-\x{9fa5}>\-\(\)]*)\.(jpg|png|gif)/iu', $list['content'], $out)) {
                 if ($out[0]) {
@@ -330,10 +245,10 @@ class news_admin extends base_admin
 
         //图片处理 缩略图 水印图
         $list = $this->form_imglist($list, $this->module);
+        // 更新TAG标签
         load::sys_class('label', 'new')->get('tags')->updateTags($list['tag'], $this->module, $list['class1'], $id);
 
         if ($this->update_list_sql($list, $id)) {
-
             if ($this->module == 3 || $this->module == 4 || $this->module == 5) {
                 $this->para_op->update($id, $this->module, $list);
             }
@@ -342,45 +257,6 @@ class news_admin extends base_admin
             $this->error[] = 'Data error';
             return false;
         }
-    }
-
-    /**
-     * 保存修改sql
-     * @param array $list
-     * @param string $id
-     * @return bool
-     */
-    public function update_list_sql($list = array(), $id = '')
-    {
-        $list['displaytype'] = $list['displaytype'] ? 1: 0;
-        $list['no_order'] = $list['no_order'] ? 1: 0;
-        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
-        $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
-        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
-        $list['new_ok'] = $list['new_ok'] ? 1 : 0;
-
-        if (!$list['title']) {
-            $this->error[] = 'no title';
-            return false;
-        }
-        if (!$this->check_filename($list['filename'], $id, $this->module)) {
-            return false;
-        }
-        if ($list['links']) {
-            $list['links'] = url_standard($list['links']);
-        }
-        if ($list['description']) {
-            $listown = $this->database->get_list_one_by_id($id);
-            $description = $this->description($listown['content']);
-            if ($list['description'] == $description) {
-                $list['description'] = $this->description($list['content']);
-            }
-        } else {
-            $list['description'] = $this->description($list['content']);
-        }
-        $list['addtime'] = $list['addtype'] == 2 ? $list['addtime'] : $list['updatetime'];
-        $list['id'] = $id;
-        return $this->database->update_by_id($list);
     }
 
     /**
@@ -425,7 +301,6 @@ class news_admin extends base_admin
         }
 
         $list = $this->_dojson_list($class1, $class2, $class3, $keyword, $search_type, $order['hits'], $order['updatetime']);
-
         $this->json_return($list);
     }
 
@@ -442,38 +317,39 @@ class news_admin extends base_admin
     public function _dojson_list($class1 = '', $class2 = '', $class3 = '', $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '')
     {
         global $_M;
-        if ($class3) {
-            $classnow = $class3;
-        } elseif ($class2) {
-            $classnow = $class2;
-        } else {
-            $classnow = $class1;
+        //栏目访问权限
+        if (($class1 && !in_array($class1, $this->allow_class['class1'])) || ($class2 && !in_array($class2, $this->allow_class['class2'])) || ($class3 && !in_array($class3, $this->allow_class['class3']))) {
+            return false;
         }
+        $allow_class1 = implode(',', $this->allow_class['class1']);
+        $allow_class2 = implode(',', $this->allow_class['class2']);
+        $allow_class3 = implode(',', $this->allow_class['class3']);
 
-        $get_allow_column = $this->get_allow_column();
-        $get_allow_column = implode(',', $get_allow_column);
-        $where = $class1 ? " and class1 = '{$class1}'" : " AND class1 IN ({$get_allow_column}) ";
-        #$where = $class1 ? " and class1 = '{$class1}'" : ' and class1 = 0 ';
-        $where .= $class2 ? " and class2 = '{$class2}'" : '';
-        $where .= $class3 ? " and class3 = '{$class3}'" : '';
-        $where .= $keyword ? " and title like '%{$keyword}%'" : '';
+        $classnow = $class3 ? $class3 : ($class2 ? $class2 : $class1);
+        $_where = '';
+
+        #$_where = $class1 ? " AND class1 = '{$class1}'" : ' and class1 = 0 ';
+        $_where .= $class1 ? " AND class1 = '{$class1}'" : " AND class1 IN ({$allow_class1}) ";
+        $_where .= $class2 ? " AND class2 = '{$class2}'" : " AND  class2 IN ({$allow_class2}) ";
+        $_where .= $class3 ? " AND class3 = '{$class3}'" : " AND  class3 IN ({$allow_class3}) ";
+        $_where .= $keyword ? " AND title like '%{$keyword}%'" : '';
         switch ($search_type) {
             case 0:
                 break;
             case 1:
-                $where .= " and displaytype = '0'";
+                $_where .= " AND displaytype = '0'";
                 break;
             case 2:
-                $where .= " and com_ok = '1'";
+                $_where .= " AND com_ok = '1'";
                 break;
             case 3:
-                $where .= " and top_ok = '1'";
+                $_where .= " AND top_ok = '1'";
                 break;
         }
 
         $admininfo = admin_information();
         if ($admininfo['admin_issueok'] == 1) {
-            $where .= "and issue = '{$admininfo['admin_id']}'";
+            $_where .= "and issue = '{$admininfo['admin_id']}'";
         }
         $met_class = $this->column(2, $this->module);
 
@@ -481,7 +357,7 @@ class news_admin extends base_admin
         $order = $this->list_order($met_class[$classnow]['list_order']);
         if ($orderby_hits) $order = "hits {$orderby_hits}";
         if ($orderby_updatetime) $order = "updatetime {$orderby_updatetime}";
-        $userlist = $this->json_list($where, $order);
+        $userlist = $this->json_list($_where, $order);
 
         foreach ($userlist as $key => $val) {
             $list['id'] = $val['id'];
@@ -611,7 +487,14 @@ class news_admin extends base_admin
         $this->ajaxReturn($redata);
     }
 
-    /*复制*/
+    /**
+     * 复制内容
+     * @param string $id
+     * @param string $class1
+     * @param string $class2
+     * @param string $class3
+     * @return bool|mixed|number
+     */
     public function list_copy($id = '', $class1 = '', $class2 = '', $class3 = '')
     {
         if ($id && is_numeric($id)) {
@@ -710,7 +593,14 @@ class news_admin extends base_admin
         }
     }
 
-    /*移动产品*/
+    /**
+     * 移动内容
+     * @param string $id
+     * @param string $class1
+     * @param string $class2
+     * @param string $class3
+     * @return bool
+     */
     public function list_move($id = '', $class1 = '', $class2 = '', $class3 = '')
     {
         if ($id && is_numeric($id)) {
@@ -724,7 +614,12 @@ class news_admin extends base_admin
         return false;
     }
 
-    /*修改排序*/
+    /**
+     * 修改排序
+     * @param string $id
+     * @param string $no_order
+     * @return bool
+     */
     public function list_no_order($id = '', $no_order = '')
     {
         if ($id && is_numeric($id)) {
@@ -736,7 +631,12 @@ class news_admin extends base_admin
         return false;
     }
 
-    /*上架下架*/
+    /**
+     * 前台显示
+     * @param string $id
+     * @param string $display
+     * @return bool
+     */
     public function list_display($id = '', $display = '')
     {
         if ($id && is_numeric($id)) {
@@ -748,7 +648,12 @@ class news_admin extends base_admin
         return false;
     }
 
-    /*置顶*/
+    /**
+     * 置顶
+     * @param string $id
+     * @param string $top
+     * @return bool
+     */
     public function list_top($id = '', $top = '')
     {
         if ($id && is_numeric($id)) {
@@ -760,7 +665,12 @@ class news_admin extends base_admin
         return false;
     }
 
-    /*推荐*/
+    /**
+     * 推荐
+     * @param string $id
+     * @param string $com
+     * @return bool
+     */
     public function list_com($id = '', $com = '')
     {
         if ($id && is_numeric($id)) {
@@ -772,7 +682,12 @@ class news_admin extends base_admin
         return false;
     }
 
-    /*删除*/
+    /**
+     * 删除
+     * @param string $id
+     * @param int $recycle
+     * @return bool
+     */
     public function del_list($id = '', $recycle = 1)
     {
         if ($id && is_numeric($id)) {
@@ -791,7 +706,6 @@ class news_admin extends base_admin
         $this->error[] = 'error no id';
         return false;
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

@@ -23,7 +23,7 @@ class  job_database extends base_database
         return 'id|position|count|place|deal|class1|class2|class3|addtime|updatetime|useful_life|content|access|no_order|wap_ok|top_ok|email|filename|lang|displaytype|text_size|text_color';
     }
 
-    public function get_list_by_class_sql($id = '', $type = 'all', $order = '')
+    public function get_list_by_class_sql($id = '', $type = '', $order = '')
     {
         global $_M;
         $column = load::sys_class('label', 'new')->get('column');
@@ -57,28 +57,30 @@ class  job_database extends base_database
         }
 
         //自定义条件
-        if ($type['type'] == 'array') {
-            $serach = '';
-            if ($type['title']['status'] && $type['title']['info']) {
-                if ($type['title']['precision']) {
-                    $serach .= " OR position = '{$type['title']['info']}' ";
-                } else {
-                    $serach .= " OR position like '%{$type['title']['info']}%' ";
+        if (is_array($type)) {
+            if ($type['type'] == 'array') {
+                $serach = '';
+                if ($type['title']['status'] && $type['title']['info']) {
+                    if ($type['title']['precision']) {
+                        $serach .= " OR position = '{$type['title']['info']}' ";
+                    } else {
+                        $serach .= " OR position like '%{$type['title']['info']}%' ";
+                    }
                 }
-            }
-            if ($type['content']['status'] && $type['content']['info']) {
-                if ($type['content']['precision']) {
-                    $serach .= " OR content = '{$type['content']['info']}' ";
-                } else {
-                    $serach .= " OR content like '%{$type['content']['info']}%' ";
+                if ($type['content']['status'] && $type['content']['info']) {
+                    if ($type['content']['precision']) {
+                        $serach .= " OR content = '{$type['content']['info']}' ";
+                    } else {
+                        $serach .= " OR content like '%{$type['content']['info']}%' ";
+                    }
                 }
+                if ($serach) {
+                    $sql .= "AND ( 1 != 1 {$serach} ) ";
+                    $sql = str_replace('1 != 1  OR', '', $sql);
+                }
+            }elseif($type['type'] == 'tag'){
+                $sql = ' 1 != 1 ';
             }
-            if ($serach) {
-                $sql .= "AND ( 1 != 1 {$serach} ) ";
-                $sql = str_replace('1 != 1  OR', '', $sql);
-            }
-        }elseif($type['type'] == 'tag'){
-            $sql = ' 1 != 1 ';
         }
 
         $class_sum = $column->get_column_son($id);

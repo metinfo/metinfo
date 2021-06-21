@@ -5,11 +5,11 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-anchor-list">
   <div class="alert dark alert-primary radius0">{$word.applies_paper}</div>
+  <div class="metadmin-content-min bg-white p-4">
   <button type="button" class="btn btn-primary btn-add" >
     {$word.anchor_textadd}
   </button>
-
-    <table class="dataTable table table-bordered table-hover table-striped w-100 mt-2"
+    <table class="dataTable table table-hover w-100 mt-2"
     id="anchor-table" data-ajaxurl="{$url.own_name}c=anchor&a=doGetAnchor"
     data-table-pagelength="20" data-plugin="checkAll"
     data-datatable_order="#anchor-table">
@@ -41,16 +41,16 @@ defined('IN_MET') or exit('No permission');
 									</div>
 								</td>
 								<td class="text-center">
-										<input type="text" name="oldwords"   class="form-control text-center" required>
+										<input type="text" name="oldwords"   class="form-control" required>
 								</td>
 								<td class="text-center">
-										<input type="text" name="newwords"   class="form-control text-center">
+										<input type="text" name="newwords"   class="form-control">
 								</td>
 								<td class="text-center">
-										<input type="text" name="newtitle"  class="form-control text-center">
+										<input type="text" name="newtitle"  class="form-control">
 								</td>
 								<td class="text-center">
-										<input type="text" name="url" value=""  class="form-control text-center">
+										<input type="text" name="url" value=""  class="form-control">
 								</td>
 								<td class="text-center">
 										<input type="text" name="num" value="999"  class="form-control text-center">
@@ -79,5 +79,5 @@ defined('IN_MET') or exit('No permission');
         </tr>
       </tfoot>
     </table>
-
+    </div>
 </div>

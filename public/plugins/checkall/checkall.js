@@ -1,5 +1,6 @@
 /**
- * [checkAll 全选，反选]
+ * checkAll 全选，反选
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  * @param  {[obj]} checkBtn   [全选obj]
  * @param  {[obj]} sub        [子复选框obj]
  * @param  {[obj]} contraryCheckBtn [取消全选obj]

@@ -15,11 +15,10 @@ data-modal-title="{$word.langadd}"
 data-modal-tablerefresh="#lang-admin-table"
 data-modal-loading="1"
 >
-<i class="fa fa-plus mr-1"></i>
 {$word.langadd}
 </button>
 <table
-	class="dataTable table table-bordered table-hover table-striped w-100 mt-2"
+	class="dataTable table table-hover w-100 mt-2"
 	id="lang-admin-table"
 	data-ajaxurl="{$url.own_name}c=language_admin&a=doGetAdminLanguage"
 	data-table-pagelength="1000"

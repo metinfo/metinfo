@@ -30,7 +30,7 @@ class register extends userweb
         $_M['paraclass'] = $this->paraclass;
     }
 
-    public function check()
+    public function check($pid = '')
     {
 
     }
@@ -66,6 +66,9 @@ class register extends userweb
                     $user['id'] = $register_result;
                     $this->userclass->set_login_record($user);
                     if ($valid->get_email($_M['form']['username'])) {
+                        //管理员通知
+                        self::adminNotice($_M['form']['username']);
+
                         $this->userclass->login_by_password($_M['form']['username'], $_M['form']['password']);
                         okinfo($_M['url']['profile'], $_M['word']['emailchecktips1']);
                     } else {
@@ -93,6 +96,9 @@ class register extends userweb
                 $session->del('phonetel');
                 $register_result = $this->userclass->register($_M['form']['phone'], $_M['form']['password'], '', $_M['form']['username'], $info, 1);
                 if ($register_result) {
+                    //管理员通知
+                    self::adminNotice($_M['form']['username']);
+
                     $user = array();
                     $user['id'] = $register_result;
                     $this->userclass->set_login_record($user);
@@ -103,13 +109,21 @@ class register extends userweb
                 }
                 break;
             default ://默认注册
+                //验证码
                 if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'] ,$_M['form']['random']) && $_M['config']['met_memberlogin_code']) {
                     okinfo(-1, $_M['word']['membercode']);
                 }
+
+                //字段检测
+                self::check_field();
+
                 $valid = $_M['config']['met_member_vecan'] == 2 ? 0 : 1;
                 $turnovertext = $_M['config']['met_member_vecan'] == 2 ? $_M['word']['js25'] : $_M['word']['regsuc'];
                 $register_result = $this->userclass->register($_M['form']['username'], $_M['form']['password'], '', '', $info, $valid);
                 if ($register_result) {
+                    //管理员通知
+                    self::adminNotice($_M['form']['username']);
+
                     $user = array();
                     $user['id'] = $register_result;
                     $this->userclass->set_login_record($user);
@@ -121,6 +135,50 @@ class register extends userweb
                 break;
         }
     }
+
+    /**
+     * 管理员通知
+     */
+    public function adminNotice($usernaem = '')
+    {
+        global $_M;
+        //管理员通知
+        $this->notice = $other = load::mod_class('user/web/class/notice', 'new');;
+        $this->notice->notice_by_emial($usernaem);
+        $this->notice->notice_by_sms($usernaem);
+    }
+
+    /**
+     * 字段检测
+     */
+    protected function check_field()
+    {
+        global $_M;
+        $paralist = load::mod_class('parameter/parameter_database', 'new')->get_parameter('10');
+        foreach ($paralist as $key => $val) {
+            $para[$val['id']] = $val;
+        }
+
+        $paraarr = array();
+        $form = $_M['form'];
+        foreach (array_keys($form) as $vale) {
+            if (strstr($vale, 'info_')) {
+                $arr = explode('_', $vale);
+                $paraarr[] = str_replace('info_', '', $arr[1]);
+            }
+        }
+
+        //必填属性验证
+        foreach (array_keys($para) as $val) {
+            if ($para[$val]['wr_ok'] == 1 /*&& in_array($val, $paraarr)*/) {
+                if ($_M['form']['info_' . $val] == '') {
+                    $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
+                    okinfo('javascript:history.back();', $info);
+                }
+            }
+        }
+    }
+
 
     public function doemailvild()
     {
@@ -156,21 +214,21 @@ class register extends userweb
         global $_M;
         $pinok = load::sys_class('pin', 'new')->check_pin($_M['form']['code'] ,$_M['form']['random']);
         if(!$pinok){
-            $this->ajax_error($_M['word']['membercode']);
+            $this->error($_M['word']['membercode']);
         }
 		if($this->userclass->get_user_by_username($_M['form']['phone'])){
-			$this->ajax_error($_M['word']['telreg']);
+			$this->error($_M['word']['telreg']);
 		}
 
         $valid = load::mod_class('user/web/class/valid', 'new');
         $res = $valid->get_tel($_M['form']['phone']);
         if ($res['status'] == 200) {
-            $this->ajax_success($_M['word']['getOK']);
+            $this->success('', $_M['word']['getOK']);
         } else {
             if ($res['msg']) {
-                $this->ajax_error($res['msg']);
+                $this->error($res['msg']);
             }
-            $this->ajax_error($_M['word']['getFail']);
+            $this->error($_M['word']['getFail']);
         }
     }
 

@@ -103,28 +103,19 @@ function operation_column($lang = '')
     global $_M;
     $lang = $lang ? $lang : $_M['lang'];
     $jurisdiction = background_privilege();
-    if ($jurisdiction['column'] == "metinfo") {
+    if ($jurisdiction['column'] == "metinfo") {//创始人权限
         $query = "SELECT * from {$_M['table']['column']} WHERE lang = '{$lang}' AND module < 100 ORDER BY no_order ASC, id DESC";
         $admin_column = DB::get_all($query);
-    } else {
+    } else {//不同管理员权限
         $column_id = explode('|', $jurisdiction['column']);
-        $i = 0;
-        $sql_id = '';
-        foreach ($column_id as $key => $val) {
-            if ($val) {
-                if ($i == 0) {
-                    $sql_id = "AND (id = '{$val}' ";
-                } else {
-                    $sql_id .= "OR id = '{$val}' ";
-                }
-            }
-            $i++;
-        }
-        $sql_id .= ")";
-        $query = "SELECT * from {$_M['table']['column']} WHERE lang = '{$lang}'{$sql_id} AND module < 100 ORDER BY no_order ASC, id DESC";
+        $sql_id = ' AND ( id IN (' . implode(',', $column_id) . ' )) ';
+
+        $query = "SELECT * from {$_M['table']['column']} WHERE lang = '{$lang}' {$sql_id} AND module < 100 ORDER BY no_order ASC, id DESC";
         $admin_column_1 = DB::get_all($query);
-        $query = "SELECT * from {$_M['table']['column']} WHERE lang = '{$lang}' AND classtype!=1 AND releclass=0 AND module < 100 ORDER BY no_order ASC, id DESC";
+
+        $query = "SELECT * from {$_M['table']['column']} WHERE lang = '{$lang}' {$sql_id} AND classtype!=1 AND releclass=0 AND module < 100 ORDER BY no_order ASC, id DESC";
         $admin_column_2 = DB::get_all($query);
+
         foreach ($admin_column_1 as $key => $val) {
             $admin_column[] = $val;
         }
@@ -150,13 +141,13 @@ function is_have_power($now = '')
     switch ($a) {
         case 's':
             $list = $power['navigation'];
-        break;
+            break;
         case 'a':
-        $list = $power['application'];
-        break;
+            $list = $power['application'];
+            break;
         case 'c':
             $list = $power['column'];
-        break;
+            break;
     }
     $p = str_replace($a, '', $now);
     if (!$list) {
@@ -221,7 +212,10 @@ function column_sorting($type = '', $lang = '')
             }
         }
     }
-    ksort($sorting);
+    if (is_array($sorting)) {
+        ksort($sorting);
+        return $sorting;
+    }
     return $sorting;
 }
 

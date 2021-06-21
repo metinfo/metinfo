@@ -249,13 +249,10 @@ class language_general extends admin
     public function doModifyParameter()
     {
         global $_M;
-        if (!isset($_M['form']['editor']) || !isset($_M['form']['site'])) {
-            $this->error($_M['word']['jsx10']);
-        }
-
         $site = $_M['form']['site'] == 'admin' ? 1 : 0;
         $no = isset($_M['form']['appno']) ? $_M['form']['appno'] : 0;
         $editor = $_M['form']['editor'];
+        $data = $_M['form']['data'];
         $log_name = $_M['form']['site'] == 'admin' ? 'langadmin' : 'langweb';
 
         if (!$editor) {
@@ -264,22 +261,19 @@ class language_general extends admin
             $this->error($_M['word']['js41']);
         }
 
-        $query = "SELECT id,name,value FROM {$_M['table']['language']} WHERE site='{$site}' AND app='{$no}' AND lang='{$editor}' ORDER BY no_order";
-        $language_data = DB::get_all($query);
+        foreach ($data as $name => $value) {
+            $query = "SELECT * FROM {$_M['table']['language']} WHERE site='{$site}' AND app='{$no}' AND lang='{$editor}' AND name = '{$name}' ORDER BY no_order";
+            $word = DB::get_one($query);
 
-        $data = $_M['form']['data'];
-        foreach ($language_data as $key => $value) {
-            $language_data[$key]['value'] = str_replace('"', '&#34;', str_replace("'", '&#39;', $value['value']));
-            $name = $value['name'];
-            $metino_name = isset($data[$name]) ? $data[$name] : '';
-            if ($metino_name && $value['value'] != $metino_name) {
-                $metino_name = stripslashes($metino_name);
-                $metino_name = str_replace("'", "''", $metino_name);
-                $metino_name = str_replace("\\", "\\\\", $metino_name);
-                $query = "UPDATE {$_M['table']['language']} SET value='{$metino_name}' WHERE id='{$value['id']}'";
+            if (isset($word['value']) && $value != '') {
+                $value  = stripslashes($value);
+                $value  = preg_replace("/\'/", "''", $value);
+                $query = "UPDATE {$_M['table']['language']} SET value='{$value}' WHERE id='{$word['id']}'";
                 DB::query($query);
             }
         }
+
+        //清除语言缓存
         $this->clear_lang_cache();
         //写日志
         logs::addAdminLog($log_name, 'langwebeditor', 'jsok', 'doModifyParameter');

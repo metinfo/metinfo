@@ -1,5 +1,6 @@
-/*
-内容列表功能
+/**
+ * 内容列表功能
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	// 产品、新闻、图片、下载模块列表加载
@@ -14,10 +15,10 @@
 							$.each(result.data, function(index, val) {
 								var item=[],
 									status='';
-								if(parseInt(val.com_ok)) status+='<span class="badge font-weight-normal py-1 mx-1 badge-success">'+METLANG.recom+'</span>';
-								if(parseInt(val.top_ok)) status+='<span class="badge font-weight-normal py-1 mx-1 badge-info">'+METLANG.top+'</span>';
-								if(!parseInt(val.displaytype)) status+='<span class="badge font-weight-normal py-1 mx-1 badge-secondary">'+METLANG.displaytype2+'</span>';
-								if(parseInt(val.addtype)) status+='<span class="badge font-weight-normal py-1 mx-1 badge-secondary">'+METLANG.timedrelease+'</span>';
+								if(parseInt(val.com_ok)) status+='<span class="badge font-weight-normal mx-1 badge-success">'+METLANG.recom+'</span>';
+								if(parseInt(val.top_ok)) status+='<span class="badge font-weight-normal mx-1 badge-info">'+METLANG.top+'</span>';
+								if(!parseInt(val.displaytype)) status+='<span class="badge font-weight-normal mx-1 badge-secondary">'+METLANG.displaytype2+'</span>';
+								if(parseInt(val.addtype)) status+='<span class="badge font-weight-normal mx-1 badge-secondary">'+METLANG.timedrelease+'</span>';
 								item.push(M.component.checkall('item',val.id));
 								if(that.module=='img'||that.module=='product'){
 									item.push('<a href="'+val.url+'" target="_blank" class="media align-items-center"><img src="'+val.imgurl+'" width="100" class="mr-2"/><div class="media-body">'+val.title+'</div></a>');

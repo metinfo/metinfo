@@ -1,5 +1,6 @@
-/*
-图标设置弹框
+/**
+ * 图标设置弹框
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
     // 弹框参数
@@ -21,11 +22,11 @@
             var value=$(this).val(),
                 btn_size=$(this).data('btn_size')||'',
                 icon_class=$(this).data('icon_class')||'';
-            $(this).after('<div class="d-inline-block met-icon-view position-relative h5 mb-0 mr-2 '+icon_class+(value?'':' hide')+'"><i class="'+value+'"></i></div>'
-                    +'<div class="btn-group btn-group-'+btn_size+'">'
-                        +'<button type="button" class="btn btn-default btn-icon-del"><i class="wb-trash"></i> '+(METLANG.delete||'删除')+'</button>'
-                        +'<button type="button" class="btn btn-primary btn-icon-set" data-toggle="modal" data-target=".met-icon-modal">'+(METLANG.column_choosicon_v6||'选择图标')+'</button>'
-                    +'</div>');
+            $(this).after('<div class="d-inline-block met-icon-view position-relative h5 mb-0 px-1 mr-2 '+icon_class+(value?'':' hide')+'"><button type="button" class="btn btn-default position-absolute btn-icon-del"><i class="wb-trash"></i></button><i class="'+value+'" icon-value></i></div>'
+                // +'<div class="btn-group btn-group-'+btn_size+'">'
+                +'<div class="btn-group">'
+                    +'<button type="button" class="btn btn-primary btn-icon-set" data-toggle="modal" data-target=".met-icon-modal">'+(METLANG.column_choosicon_v6||'选择图标')+'</button>'
+                +'</div>');
         });
     }
     // 图标选择框-初始化
@@ -69,7 +70,7 @@
                 (!$self.attr('data-obj') || $self.attr('data-obj').indexOf('pageset-iconset-')<0) && alertify.success(METLANG.jsok||'操作成功');
                 if($form_group.length){
                     $form_group.find('input[type="hidden"][name][data-plugin="iconset"]').val(icon_active).trigger('change');
-                    $form_group.find('.met-icon-view').removeClass('hide').find('i').attr({class:icon_active});
+                    $form_group.find('.met-icon-view').removeClass('hide').find('i[icon-value]').attr({class:icon_active});
                 }
             }else{
                 alertify.error(METLANG.column_choosicon_v6||'请选择图标');
@@ -78,10 +79,10 @@
     });
     // 图标设置框-删除
     $(document).on('click', '.btn-icon-del', function(event) {
-        var $form_group=$(this).parents('.btn-group').parent();
+        var $form_group=$(this).parents('.met-icon-view').parent();
         if($form_group.find('input[type="hidden"][name][data-plugin="iconset"]').val()){
             $form_group.find('input[type="hidden"][name][data-plugin="iconset"]').val('').trigger('change');
-            $form_group.find('.met-icon-view').addClass('hide').find('i').attr({class:''});
+            $form_group.find('.met-icon-view').addClass('hide').find('i[icon-value]').attr({class:''});
         }
     });
     $(document).on('hidden.bs.modal', '.met-icon-modal', function(event) {

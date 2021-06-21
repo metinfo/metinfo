@@ -27,6 +27,16 @@ class loadtemp extends admin
         $data = $_M['form']['data'];
 
         if ($path) {
+            $path = str_replace("\\", '/', $path);
+            if (strstr($path, '../')) {
+                die();
+            }
+
+            $path_info = pathinfo($path);
+            if (isset($path_info['extension']) && strtolower($path_info['extension']) != 'php') {
+                die();
+            }
+
             $paths = explode('/', $path);
             // 权限检测
             $m_type = $paths[0] == 'apps' ? 'app' : 'system';
@@ -54,7 +64,11 @@ class loadtemp extends admin
                         $_GET['noajax'] = 1;
                         unset($_POST);
                         $data_class = load::module($dir . $data['n'] . '/admin/', $data['c'], 'new');
-                        $data['handle'] = call_user_func(array($data_class, $data['a']));
+                        if (method_exists($data_class, $data['a'])) {
+                            $data['handle'] = call_user_func(array($data_class, $data['a']));
+                        }else{
+                            $data['handle'] = array();
+                        }
                         $_M['form']['noajax'] = 0;
                         $_M['form']['path'] = $path;
                     }

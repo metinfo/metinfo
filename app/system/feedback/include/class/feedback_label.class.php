@@ -35,12 +35,12 @@ class feedback_label extends base_label
         return $return;
     }
 
-    public function get_module_form_html($id, $fdtitle = '')
+    public function get_module_form_html($id = '', $fdtitle = '')
     {
         global $_M;
         //cxrf_token
         $form_token = random('5');
-        load::sys_class('session', 'new')->set("form_token_{$id}", $form_token);
+        load::sys_class('session', 'new')->set("fd_form_token_{$id}", $form_token);
 
         $class = load::sys_class('label', 'new')->get('column')->get_column_id($id);
         if ($class['module'] != 8) {
@@ -106,7 +106,7 @@ EOT;
         }
     }
 
-    public function get_module_list()
+    public function get_module_list($id = '', $rows = '', $type = '', $order = '', $para = 0)
     {
         return;
     }

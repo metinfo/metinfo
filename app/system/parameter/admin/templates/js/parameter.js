@@ -1,5 +1,6 @@
-/*
-参数设置
+/**
+ * 参数设置
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
 	var parameter_list='.parameter-list';
@@ -144,7 +145,7 @@
 		    		+'<th width="80">'+METLANG.operate+'</th>'
 	    		+'</tr>'
 	    	+'</thead>'
-	    	+'<tbody data-plugin="dragsort" data-dragsort_order="#parameter-options-list">'+M.component.loader({type:'table',colspan:2})+'</tbody>'
+	    	+'<tbody data-plugin="dragsort" data-dragsort_order="#parameter-options-list">'+M.component.loader({type:'table',colspan:3})+'</tbody>'
 	    	+'<tfoot>'
 	    		+'<tr>'
 	    			+M.component.checkall()

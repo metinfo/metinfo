@@ -40,9 +40,9 @@
                         <li class="met-bar-son">
                             <if value="$m['sub']&& $lang['bar_column3_open']">
                             <a href="javascript:;" title="{$m.name}" class='{$m.class}' data-toggle="collapse" data-target=".sidebar-column3-{$m._index}">{$m.name}<i class="wb-chevron-right-mini"></i></a>
-                            <div class="sidebar-column3-{$m._index} collapse <if value='$m[id] eq $data[class2]'>in</if>" aria-expanded="false">
+                            <div class='sidebar-column3-{$m._index} collapse <if value="$m['id'] eq $data['class2']">in</if>' aria-expanded="false">
                                 <ul class="m-t-5 p-l-20">
-                                    <li><a href="{$m.url}" title="{$lang.all}" {$m.urlnew} class="<if value='$m[id] eq $data[classnow]'>active</if>">{$lang.all}</a></li>
+                                    <li><a href="{$m.url}" title="{$lang.all}" {$m.urlnew} class='<if value="$m['id'] eq $data['classnow']">active</if>'>{$lang.all}</a></li>
                                     <tag action='category' cid="$m['id']" type='son' class='active'>
                                     <li><a href="{$m.url}" title="{$m.name}" {$m.urlnew} class='{$m.class}'>{$m.name}</a></li>
                                     </tag>

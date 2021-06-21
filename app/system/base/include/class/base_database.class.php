@@ -16,7 +16,7 @@ class base_database extends database
      * @param  string $module 模型编号
      * @param  string $table 数据表名称
      */
-    public function construct($table)
+    public function construct($table = '')
     {
         global $_M;
         parent::construct($table);
@@ -27,7 +27,7 @@ class base_database extends database
      * @param $table
      * @return int
      */
-    public function table_to_module($table)
+    public function table_to_module($table = '')
     {
         global $_M;
         switch ($table) {
@@ -67,7 +67,7 @@ class base_database extends database
      *
      * @return array 配置数组get_list_by_class
      */
-    public function get_list_by_class($id, $start = 0, $rows = '', $type = '', $order = '')
+    public function get_list_by_class($id = '', $start = 0, $rows = '', $type = '', $order = '')
     {
         global $_M;
         $sql = $this->get_list_by_class_sql($id, $type, $order);
@@ -77,7 +77,7 @@ class base_database extends database
 
         $query = "SELECT * FROM {$this->table} WHERE {$sql} ";
         $data = DB::get_all($query);
-        
+
         return $data;
     }
 
@@ -91,7 +91,7 @@ class base_database extends database
      *
      * @return array 配置数组
      */
-    public function get_page_count_by_class($id, $type)
+    public function get_page_count_by_class($id = '', $type = '')
     {
         $sql = $this->get_list_by_class_sql($id, $type, -1);
 
@@ -106,7 +106,7 @@ class base_database extends database
      *
      * @return array 配置数组
      */
-    public function get_list_by_class_sql($id, $type, $order)
+    public function get_list_by_class_sql($id = '', $type = '', $order = '')
     {
         global $_M;
         $time = date('Y-m-d H:i:s');
@@ -143,21 +143,21 @@ class base_database extends database
             // search_label的search_info的数据
             $search = '';
             $fields = array('ctitle', 'title', 'keywords', 'description', 'content', 'tag');
-            if ($type['type'] == 'array' || $type['type'] == 'tag') {
+            if (isset($type['type']) && ($type['type'] == 'array' || $type['type'] == 'tag')) {
                 if ($type['type'] == 'tag') {
                     $search .= load::sys_class('label', 'new')->get('tags')->getSqlByTag($_M['form']['content'], $class123);
                     if ($_M['config']['tag_show_range']) {//聚合范围配置为 ：设置了相同TAG标签的内容
                         if ($type['tag']['status'] && is_string($type['tag']['info']) && $type['tag']['info'] != '') {
                             $search .= " OR tag like '%{$type['tag']['info']}%' AND 1=1";
                         }
-                    }else{
+                    } else {
                         foreach ($fields as $val) {
                             if ($type[$val]['status'] && is_string($type[$val]['info']) && $type[$val]['info'] != '') {
                                 $search .= " OR {$val} like '%{$type[$val]['info']}%' ";
                             }
                         }
                     }
-                }else{
+                } else {
                     foreach ($fields as $val) {
                         if ($type[$val]['status'] && is_string($type[$val]['info']) && $type[$val]['info'] != '') {
                             $search .= " OR {$val} like '%{$type[$val]['info']}%' ";
@@ -175,7 +175,7 @@ class base_database extends database
                 }
 
                 //商城規格 价格 筛选
-                if ($this->module == 'product' || strstr($this->module,'product')) {
+                if ($this->module == 'product' || strstr($this->module, 'product')) {
                     if ($type['specv']['status'] && $type['specv']['info'] && $_M['config']['shopv2_open'] && $_M['config']['shopv2_para'] || ($_M['form']['price_low'] || $_M['form']['price_top'])) {
                         $specv_sql = load::app_class("shop/include/class/shop_search", "new")->get_search_list_by_specv_sql($type['specv']['info']);
                         if ($specv_sql) {
@@ -196,14 +196,14 @@ class base_database extends database
         }
 
         //栏目条件
-        if($_M['form']['search_module'] && $_M['form']['search'] == 'search'){
+        if ($_M['form']['search_module'] && $_M['form']['search'] == 'search') {
             //按模块收索不指定特定栏目
             $class123 = '';
         }
 
         if ($_M['form']['search'] == 'tag' && $_M['config']['tag_search_type'] == 'module') {
             $sql .= '';
-        }else{
+        } else {
             if ($this->multi_column == 1) {
                 //产品模块
                 $sql .= $this->get_multi_column_sql($class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
@@ -331,28 +331,31 @@ class base_database extends database
                 $order_sql .= ' ORDER BY updatetime DESC, id DESC ';    //按更新时间
                 break;
             case '2':
-                $order_sql .= ' ORDER BY addtime DESC, id DESC ';        //按添加时间
+                $order_sql .= ' ORDER BY addtime DESC, id DESC ';   //按添加时间
                 break;
             case '3':
-                $order_sql .= ' ORDER BY hits DESC, id DESC ';            //按点击数
+                $order_sql .= ' ORDER BY hits DESC, id DESC ';  //按点击数
                 break;
             case '4':
-                $order_sql .= ' ORDER BY id DESC ';                        //按ID倒叙
+                $order_sql .= ' ORDER BY id DESC '; //按ID倒叙
                 break;
             case '5':
-                $order_sql .= ' ORDER BY id ASC ';                        //按ID顺序
+                $order_sql .= ' ORDER BY id ASC ';  //按ID顺序
                 break;
             case '6':
-                $order_sql .= ' ORDER BY com_ok DESC, id DESC ';        //按推荐
+                $order_sql .= ' ORDER BY com_ok DESC, id DESC ';    //按推荐
+                break;
+            case '7':
+                $order_sql .= ' ORDER BY rand()';   //随机排序
+                break;
+            case '8':
+                $order_sql .= ' ORDER BY sales DESC, id DESC ';     //销量排序
+                break;
+            case '9':
+                $order_sql .= ' ORDER BY title ASC, id DESC ';      //标题排序
                 break;
             case '-1':
                 $order_sql .= '  ';
-                break;
-            case '7':
-                $order_sql .= ' ORDER BY rand()';
-                break;
-            case '8':
-                $order_sql .= ' ORDER BY sales DESC, id DESC ';
                 break;
             default:
                 $order_sql .= $this->get_column_order($defult_order);
@@ -374,7 +377,7 @@ class base_database extends database
     {
         global $_M;
         $time = date('Y-m-d H:i:s');
-        $where = "(recycle='0' or recycle='-1') AND displaytype='1' AND addtime < '{$time}' AND (links = '' OR links is null) ";
+        $where = " {$this->langsql} AND (recycle='0' or recycle='-1') AND displaytype='1' AND addtime < '{$time}' AND (links = '' OR links is null) ";
 
         $classnow = $one['class3'] ? $one['class3'] : ($one['class2'] ? $one['class2'] : $one['class1']);
 
@@ -399,38 +402,38 @@ class base_database extends database
         switch ($list_order) {
             case '1':
                 $list_order_where = " (
-					(updatetime > '$one[original_updatetime]')
+					(updatetime > '{$one['original_updatetime']}')
 					OR
-					(updatetime = '$one[original_updatetime]' AND id > '$one[id]')
+					(updatetime = '{$one['original_updatetime']}' AND id > '{$one['id']}')
 				)";
                 $order = 'top_ok ASC, com_ok ASC, no_order ASC, updatetime ASC, id ASC';
                 break;
             case '2':
                 $list_order_where = " (
-					(addtime > '$one[original_addtime]')
+					(addtime > '{$one['original_addtime']}')
 					OR
-					(addtime = '$one[original_addtime]' AND id > '$one[id]')
+					(addtime = '{$one['original_addtime']}' AND id > '{$one['id']}')
 				) ";
                 $order = 'top_ok ASC, com_ok ASC, no_order ASC, addtime ASC, id ASC';
                 break;
             case '3':
                 $list_order_where = " (
-					(hits > '$one[hits]')
+					(hits > '{$one['hits']}')
 					OR
-					(hits = '$one[hits]' AND id > '$one[id]')
+					(hits = '{$one['hits']}' AND id > '{$one['id']}')
 				)";
                 $order = 'top_ok ASC, com_ok ASC, no_order ASC, hits ASC, id ASC';
                 break;
             case '4':
-                $list_order_where = " id > '$one[id]' ";
+                $list_order_where = " id > '{$one['id']}' ";
                 $order = 'top_ok ASC, com_ok ASC, no_order ASC, id ASC';
                 break;
             case '5':
-                $list_order_where = " id < '$one[id]' ";
+                $list_order_where = " id < '{$one['id']}' ";
                 $order = 'top_ok ASC, com_ok ASC, no_order ASC, id DESC';
                 break;
             default:
-                $list_order_where = " updatetime > '$one[original_updatetime]' ";
+                $list_order_where = " updatetime > '{$one['original_updatetime']}' ";
                 $order = 'top_ok ASC, com_ok ASC, no_order ASC, updatetime ASC';
                 break;
         }
@@ -496,7 +499,7 @@ class base_database extends database
     {
         global $_M;
         $time = date('Y-m-d H:i:s');
-        $where = "(recycle='0' or recycle='-1') AND displaytype='1' AND addtime < '{$time}' AND (links = '' OR links is null) ";
+        $where = " {$this->langsql} AND (recycle='0' or recycle='-1') AND displaytype='1' AND addtime < '{$time}' AND (links = '' OR links is null) ";
 
         $classnow = $one['class3'] ? $one['class3'] : ($one['class2'] ? $one['class2'] : $one['class1']);
 
@@ -521,38 +524,38 @@ class base_database extends database
         switch ($list_order) {
             case '1':
                 $list_order_where = "(
-					 (updatetime < '$one[original_updatetime]')
+					 (updatetime < '{$one['original_updatetime']}')
 					 OR
-					 (updatetime = '$one[original_updatetime]' AND id < '$one[id]' )
+					 (updatetime = '{$one['original_updatetime']}' AND id < '{$one['id']}' )
 				)";
                 $order = 'top_ok DESC, com_ok DESC, no_order DESC, updatetime DESC, id DESC';
                 break;
             case '2':
                 $list_order_where = " (
-					(addtime < '$one[original_addtime]')
+					(addtime < '{$one['original_addtime']}')
 					OR
-					(addtime = '$one[original_addtime]' AND id < '$one[id]' )
+					(addtime = '{$one['original_addtime']}' AND id < '{$one['id']}' )
 				)";
                 $order = 'top_ok DESC, com_ok DESC, no_order DESC, addtime DESC, id DESC';
                 break;
             case '3':
                 $list_order_where = " (
-					(hits < '$one[hits]')
+					(hits < '{$one['hits']}')
 					OR
-					(hits = '$one[hits]' AND id < '$one[id]' )
+					(hits = '{$one['hits']}' AND id < '{$one['id']}' )
 				)";
                 $order = 'top_ok DESC, com_ok DESC, no_order DESC, hits DESC, id DESC';
                 break;
             case '4':
-                $list_order_where = " id < '$one[id]' ";
+                $list_order_where = " id < '{$one['id']}' ";
                 $order = 'top_ok DESC, com_ok DESC, no_order DESC, id DESC';
                 break;
             case '5':
-                $list_order_where = " id > '$one[id]' ";
+                $list_order_where = " id > '{$one['id']}' ";
                 $order = 'top_ok DESC, com_ok DESC, no_order DESC, id ASC';
                 break;
             default:
-                $list_order_where = " updatetime < '$one[original_updatetime]' ";
+                $list_order_where = " updatetime < '{$one['original_updatetime']}' ";
                 $order = 'top_ok DESC, com_ok DESC, no_order DESC, updatetime DESC';
                 break;
         }
@@ -726,7 +729,6 @@ class base_database extends database
     {
         return '';
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

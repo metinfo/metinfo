@@ -23,7 +23,7 @@ class login extends userweb
         }
     }
 
-    public function check()
+    public function check($pid = '')
     {
 
     }
@@ -59,7 +59,7 @@ class login extends userweb
     public function dologin()
     {
         global $_M;
-        $this->login($_M['form']['username'], $_M['form']['password'], '');
+        $this->login(authcode($_M['form']['username']), authcode($_M['form']['password']));
     }
 
     public function login($username, $password, $type = 'pass')
@@ -131,9 +131,10 @@ class login extends userweb
         $other = $this->other($type);
         $user = $other->get_user($_M['form']['code']);
 
-        if (!$other->state_ok($_M['form']['state'])) {
+        /*if (!$other->state_ok($_M['form']['state'])) {
             okinfo($_M['url']['login'], $_M['word']['membererror2']);
-        }
+        }*/
+
         if ($user) {
             if ($user['register'] == 1) {//跳转用户注册
                 okinfo("{$_M['url']['login_other_info']}&other_id={$user['other_id']}&type={$user['other_type']}");
@@ -157,6 +158,12 @@ class login extends userweb
         global $_M;
         if (!$_M['form']['type'] && !$_M['form']['other_id']) {
             okinfo($_M['url']['login'], $_M['word']['regfail']);
+        }
+
+        $other = $this->other($_M['form']['type']);
+        $user = $other->get_user_by_openid($_M['form']['other_id']);
+        if ($user) {//系统用户已存在
+            okinfo($_M['url']['user_home']);
         }
 
         $this->input['type'] = $_M['form']['type'];
@@ -212,20 +219,30 @@ class login extends userweb
         }
     }
 
-    public function other($type)
+    public function other($type = '')
     {
         global $_M;
+        $type = strtolower($type);
         if (!$type) {
             okinfo($_M['url']['login'], $_M['word']['membererror4']);
         }
-        if ($type == 'qq') {
-            $other = load::mod_class('user/web/class/qq', 'new');
-        }
-        if ($type == 'weibo') {
-            $other = load::mod_class('user/web/class/weibo', 'new');
-        }
-        if ($type == 'weixin') {
-            $other = load::mod_class('user/web/class/weixin', 'new');
+
+        switch ($type) {
+            case 'qq':
+                $other = load::mod_class('user/web/class/qq', 'new');
+                break;
+            case 'weixin':
+                $other = load::mod_class('user/web/class/weixin', 'new');
+                break;
+            case 'weibo':
+                $other = load::mod_class('user/web/class/weibo', 'new');
+                break;
+            case 'google':
+                $other = load::mod_class('user/web/class/google', 'new');
+                break;
+            case 'facebook':
+                $other = load::mod_class('user/web/class/facebook', 'new');
+                break;
         }
         return $other;
     }

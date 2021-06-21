@@ -137,7 +137,7 @@
                             </button>
                             </if>
                         <else/>
-                            <a href="{$v.met_weburl}" title="{$v.name}" class="btn btn-outline btn-default btn-squared btn-lang" <if value="$v[newwindows] eq 1">target="_blank"</if>>
+                            <a href="{$v.met_weburl}" title="{$v.name}" class="btn btn-outline btn-default btn-squared btn-lang" <if value="$v['newwindows'] eq 1">target="_blank"</if>>
                                 <if value="$lang['langlist1_icon_ok']">
                                 <img src="{$v.flag}" alt="{$v.name}" width="20">
                                 </if>
@@ -148,7 +148,7 @@
                         <if value="$sub gt 1">
                             <ul class="dropdown-menu dropdown-menu-right animate animate-reverse" id="met-langlist-dropdown" role="menu">
                                 <lang>
-                                <a href="{$v.met_weburl}" title="{$v.name}" class='dropdown-item' <if value="$v[newwindows] eq 1">target="_blank"</if>>
+                                <a href="{$v.met_weburl}" title="{$v.name}" class='dropdown-item' <if value="$v['newwindows'] eq 1">target="_blank"</if>>
                                     <if value="$lang['langlist1_icon_ok']">
                                     <img src="{$v.flag}" alt="{$v.name}" width="20">
                                     </if>

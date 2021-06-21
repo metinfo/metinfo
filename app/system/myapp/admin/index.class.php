@@ -8,7 +8,6 @@ load::sys_class('admin');
 
 class index extends admin
 {
-
     public function __construct()
     {
         global $_M;
@@ -20,11 +19,9 @@ class index extends admin
     public function doIndex()
     {
         global $_M;
-
         // $this->moduleObj->getUserInfo();
-        $data = $this->moduleObj->listApp();
-
-        $this->success($data);
+        $app_list = $this->moduleObj->listApp();
+        $this->success($app_list);
     }
 
     public function doAction()
@@ -47,16 +44,18 @@ class index extends admin
     {
         global $_M;
         $type = $_M['form']['type'] ? $_M['form']['type'] : 'free';
-        echo $this->moduleObj->appList($type);
-        die;
+        $list =  $this->moduleObj->appList($type);
+        $this->success($list);
     }
 
     public function doLogin()
     {
         global $_M;
         $data = array();
-        $data['username'] = $_M['form']['username'];
-        $data['password'] = $_M['form']['password'];
+//        $data['username'] = $_M['form']['username'];
+//        $data['password'] = $_M['form']['password'];
+        $data['username'] = isset($_M['form']['username']) ? authcode($_M['form']['username'], "DECODE") : '';
+        $data['password'] = isset($_M['form']['password']) ? authcode($_M['form']['password'], "DECODE") : '';
         $res = $this->moduleObj->login($data);
         if ($res) {
             //写日志

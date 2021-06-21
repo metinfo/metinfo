@@ -73,8 +73,9 @@ class met_datatags
                                     $rs[$k][$key] = $this->add_tag($val, $tableName, $key, $rs[$k]['id'], $rs[$k]['type']);
                                 } elseif ($tableName == 'ui_config') {
                                     $rs[$k][$key] = $this->add_tag($val, $tableName, $key, $rs[$k]['id'], $rs[$k]['uip_type']);
+                                }else{
+                                    $rs[$k][$key] = $this->add_tag($val, $tableName, $key, $rs[$k]['id']);
                                 }
-                                $rs[$k][$key] = $this->add_tag($val, $tableName, $key, $rs[$k]['id']);
                             }
                         }
                     }
@@ -155,6 +156,7 @@ class met_datatags
 
         if ($field == 'icon' || ($table == 'ui_config' && $type == 15)) {
             // 分类栏目标识
+            $val = $val ? $val : "icon fa-pencil-square-o";
             return $val . " met-icon|{$id}|{$table}|{$field}";
         }
 

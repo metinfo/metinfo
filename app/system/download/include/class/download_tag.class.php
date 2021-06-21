@@ -26,7 +26,7 @@ class download_tag extends tag
     \$num = $num;
     \$order = "$order";
     \$result = load::sys_class('label', 'new')->get('download')->get_list_page(\$cid, \$data['page']);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
      foreach(\$result as \$index=>\$v):
         \$v['sub']      = \$sub;
         \$v['_index']   = \$index;

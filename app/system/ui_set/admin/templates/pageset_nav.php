@@ -9,9 +9,9 @@ if($data['handle']){
 $checkbox_time=time();
 $submit_wrapper_class='text-right';
 ?>
+<div class='alert dark alert-primary radius0'>{$word.uiset_descript_v6}</div>
 <form action="{$url.own_name}&c=index&a=dosave_pageset_nav" id="pageset-nav-set" data-submit-ajax="1">
-	<div class="metadmin-fmbx">
-		<div class='alert dark alert-primary radius0'>{$word.uiset_descript_v6}</div>
+	<div class="metadmin-fmbx metadmin-content-min p-4 bg-white">
 		<dl>
 			<dd class="row">
 				<list data="$data['applist']" name="$v">

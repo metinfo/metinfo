@@ -31,10 +31,10 @@ if(!$data['handle']) die;
         </if>
         <if value="$data['handle']['basic_info']">
         <div class="list-group-item px-2 col-6 col-sm-4 col-md-3 col-lg-2">
-            <a href="{$url.site_admin}#/webset/email" target="_blank" class="d-block">{$word.mailSetting}</a>
+            <a href="{$url.site_admin}#/webset/?head_tab_active=1" target="_blank" class="d-block">{$word.mailSetting}</a>
         </div>
         <div class="list-group-item px-2 col-6 col-sm-4 col-md-3 col-lg-2">
-            <a href="{$url.site_admin}#/webset/thirdparty" target="_blank" class="d-block">{$word.thirdCode}</a>
+            <a href="{$url.site_admin}#/webset/?head_tab_active=2" target="_blank" class="d-block">{$word.thirdCode}</a>
         </div>
         </if>
         <if value="$data['handle']['watermark_thumbnail']">
@@ -77,7 +77,7 @@ if(!$data['handle']) die;
         </if>
         <if value="$data['handle']['databack']">
         <div class="list-group-item px-2 col-6 col-sm-4 col-md-3 col-lg-2">
-            <a href="{$url.site_admin}#/databack" target="_blank" class="d-block">{$word.data_processing}</a>
+            <a href="{$url.site_admin}#/databack/?head_tab_active=0" target="_blank" class="d-block">{$word.data_processing}</a>
         </div>
         </if>
         <if value="$data['handle']['clear_cache']">

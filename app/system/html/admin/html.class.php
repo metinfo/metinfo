@@ -226,7 +226,7 @@ class html extends admin
                 }
             }
         }
-        #dump($pageinfo);
+
         $pages = array();
         foreach ($pageinfo as $key => $val) {
             $mod = load::sys_class('handle', 'new')->mod_to_file($val['module']);
@@ -241,9 +241,7 @@ class html extends admin
                     $p = array();
                     $p['url'] = load::sys_class('label', 'new')->get($mod)->handle->replace_list_page_url($val['url'], $page, $val['id'], 1) . "&metinfonow={$_M['config']['met_member_force']}";
                     $p['filename'] = urlencode(
-                        str_replace(
-                            $_M['url']['site'],
-                            '',
+                        str_replace($_M['url']['web_site'],'',
                             load::sys_class('label', 'new')->get($mod)->handle->replace_list_page_url($val['filename'], $page, $val['id'], 3)
                         )
                     );
@@ -255,7 +253,7 @@ class html extends admin
             } else {
                 $p = array();
                 $p['filename'] = urlencode(
-                    str_replace($_M['url']['site'], '', $val['filename'])
+                    str_replace($_M['url']['web_site'], '', $val['filename'])
                 );
                 $p['url'] .= $val['url'] . "&metinfonow={$_M['config']['met_member_force']}" . "&html_filename={$p['filename']}";
                 $p['url'] = str_replace('.php&', '.php?', $p['url']);
@@ -267,8 +265,8 @@ class html extends admin
         foreach ($pages as $key => $val) {
             $now = $key + 1;
             $f = urldecode($val['filename']);
-            $pages[$key]['suc'] = "<a target=\"_blank\" href=\"{$_M['url']['site']}{$f}\">{$f}{$_M['word']['physicalgenok']}</a>";
-            $pages[$key]['fail'] = "<a target=\"_blank\" href=\"{$_M['url']['site']}{$f}\" style=\"color:red\">{$f}{$_M['word']['html_createfail_v6']}</a>";
+            $pages[$key]['suc'] = "<a target=\"_blank\" href=\"{$_M['url']['web_site']}{$f}\">{$f}{$_M['word']['physicalgenok']}</a>";
+            $pages[$key]['fail'] = "<a target=\"_blank\" href=\"{$_M['url']['web_site']}{$f}\" style=\"color:red\">{$f}{$_M['word']['html_createfail_v6']}</a>";
         }
         //写日志
         logs::addAdminLog('physicalstatic', 'js54', 'jsok', 'doCreatePage');
@@ -316,9 +314,9 @@ class html extends admin
             $page['module'] = $module;
             $page['count'] = 0;
             $page['type'] = 'content';
-            $re[] = $page;
+            $redata[] = $page;
         }
-        return $re;
+        return $redata;
     }
 
     /**
@@ -348,7 +346,7 @@ class html extends admin
     public function homepage()
     {
         global $_M;
-        $page['url'] = $_M['url']['site'] . 'index.php?lang=' . $_M['lang'];
+        $page['url'] = $_M['url']['web_site'] . 'index.php?lang=' . $_M['lang'];
         $page['count'] = 0;
         $page['filename'] = 'index';
         if ($_M['config']['met_index_type'] != $_M['lang']) {

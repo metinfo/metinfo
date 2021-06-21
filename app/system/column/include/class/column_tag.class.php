@@ -17,7 +17,7 @@ class column_tag extends tag {
         $cid = isset( $attr['cid'] ) ? ( $attr['cid'][0] == '$' ? $attr['cid']
             : "'{$attr['cid']}'" ) : 0;
         //当前栏目的class样式
-        $class = isset( $attr['class'] ) ? $attr['class'] : '';
+        $class = isset( $attr['class'] ) ? $attr['class'] : "''";
 
         $hide = isset($attr['hide']) ? ( $attr['hide'][0] == '$' ? $attr['hide']
             : "'{$attr['hide']}'" ) : '1';
@@ -27,14 +27,14 @@ class column_tag extends tag {
         $php = <<<str
 <?php
     \$type=strtolower(trim('$type'));
-    \$cid=$cid;
+    \$cid = $cid;
     \$num = $num;
     if(!isset(\$column)){
         \$column = load::sys_class('label', 'new')->get('column');
     }
     \$result = \$column->get_column_by_type(\$type,\$cid,\$num);
     
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
     foreach(\$result as \$index=>\$m):
         if(\$m['display'] == 1){
             continue;
@@ -71,14 +71,13 @@ class column_tag extends tag {
             \$m['sub'] = 0;
         }
 
-
         if(substr(trim(\$m['icon']),0,1) == 'm' || substr(trim(\$m['icon']),0,1) == ''){
             \$m['icon'] = 'icon fa-pencil-square-o '.\$m['icon'];
         }
         \$m['urlnew'] = \$m['new_windows'] ? "target='_blank'" :"target='_self'";
         \$m['urlnew'] = \$m['nofollow'] ? \$m['urlnew']." rel='nofollow'" :\$m['urlnew'];
         \$m['_first']=\$index==0 ? true:false;
-        \$m['_last']=\$index==(count(\$result)-1)?true:false;
+        \$m['_last']=\$index==(\$sub-1)?true:false;
         \$$name = \$m;
         
         \$result[\$index] = \$m;
@@ -99,9 +98,9 @@ str;
         $num = isset($attr['num']) ? $attr['num'] :10;
         $name = isset($attr['name']) ? $attr['name'] : '$v';
         $type = isset($attr['type']) ? $attr['type'][0] == '$' ? $attr['type']
-            : "'{$attr['type']}'"  :'all';
+            : "'{$attr['type']}'"  :"'all'";
         $para = isset($attr['para']) ? $attr['para'] : 0;
-        if(trim($type) == ''){$type = 'all';}
+        if(trim($type) == ''){$type = "'all'";}
         $php = <<<str
 <?php
     \$cid=$cid;
@@ -122,14 +121,14 @@ str;
     }
 
     \$result = load::sys_class('label', 'new')->get('tag')->get_list(\$value, \$num, \$type, \$order, \$para);
-    \$sub = count(\$result);
+    \$sub = is_array(\$result)? count(\$result):0;
     foreach(\$result as \$index=>\$v):
         \$id = \$v['id'];
         \$v['sub'] = \$sub;
         \$v['_index']= \$index;
         \$v['_first']= \$index==0 ? true:false;
         \$v['_last']=\$index==(count(\$result)-1)?true:false;
-        \$$name = \$v;
+        \$$name = \$v;    
 ?>
 str;
         $php .= $content;
@@ -145,7 +144,7 @@ str;
         $php = <<<str
 <?php
     \$result = load::mod_class('column/ifcolumn_database','new')->getLeftColumn();
-    \$sub = count(\$result);
+    \$sub = is_array(\$result) ? count(\$result) : 0;
     foreach(\$result as \$index=>\$v):
         \$id = \$v['id'];
         \$v['sub'] = \$sub;

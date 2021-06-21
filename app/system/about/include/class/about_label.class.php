@@ -26,18 +26,13 @@ class about_label extends column_label
 
     /**
      * 搜索简介
-     * @param  string $lang 语言标示
-     * @return array         about栏目配置数组
+     * @param string $type
+     * @return mixed
      */
-    public function search_about($searchword)
+    public function column_list($type = '')
     {
         global $_M;
-        $c = load::sys_class('label', 'new')->get('column')->get_class_list();
-        foreach ($c as $val) {
-            if ((strstr($val['name'], $searchword) || strstr($val['name'], $searchword)) && $val['module'] == 1) {
-                $list[] = $val;
-            }
-        }
+        $list = load::sys_class('label', 'new')->get('column')->get_column_list($type, '1');
         return $list;
     }
 }

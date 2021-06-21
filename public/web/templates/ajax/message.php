@@ -11,7 +11,7 @@
 				{$v.name}
 			</h4>
 			<p class='m-b-0'>{$v.content}</p>
-			<div class="content well m-t-10 m-b-0"><if value="$v[useinfo]">{$v.useinfo}<else/>{$v.met_fd_content}</if></div>
+			<div class="content well m-t-10 m-b-0"><if value="$v['useinfo']">{$v.useinfo}<else/>{$v.met_fd_content}</if></div>
 		</div>
 	</div>
 </li>

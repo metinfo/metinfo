@@ -49,8 +49,89 @@ defined('IN_MET') or exit('No permission');
           </div>
         </dd>
       </dl>
-      <h3 class="example-title">{$word.displaytype}</h3>
 
+        <h3 class="example-title">{$word.new_regist_admin_notice}</h3>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.new_regist_mail_open}</label>
+            </dt>
+            <dd>
+                <div class="form-group clearfix">
+                    <input type="checkbox" data-plugin="switchery" name="met_new_registe_email_notice" value="0" />
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.new_regist_mail}</label>
+            </dt>
+            <dd>
+                <input type="text" name="met_to_admin_email" value="" class="form-control">
+                <span class="text-help ml-2">{$word.fdincTip9}</span>
+            </dd>
+        </dl>
+
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.new_regist_sms_open}</label>
+            </dt>
+            <dd>
+                <div class="form-group clearfix">
+                    <input type="checkbox" data-plugin="switchery" name="met_new_registe_sms_notice" value="0" />
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.new_regist_sms}</label>
+            </dt>
+            <dd>
+                <input type="text" name="met_to_admin_sms" value="" class="form-control">
+                <span class="text-help ml-2">{$word.module_reply1}</span>
+            </dd>
+        </dl>
+
+      <h3 class="example-title">{$word.displaytype}</h3>
+      <dl>
+        <dt>
+          <label class="form-control-label">{$word.user_login_box_position}</label>
+        </dt>
+        <dd>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="met_login_box_position-0" name="met_login_box_position" value="0"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="met_login_box_position-0">{$word.posleft}</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="met_login_box_position-1" name="met_login_box_position" value="1"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="met_login_box_position-1">{$word.poscenter}</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="met_login_box_position-2" name="met_login_box_position" value="2"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="met_login_box_position-2">{$word.posright}</label>
+          </div>
+          <span class="text-help">{$word.user_login_box_tips}</span>
+        </dd>
+      </dl>
+      <dl>
+        <dt>
+          <label class="form-control-label">{$word.user_login_bg_range_set}</label>
+        </dt>
+        <dd>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="met_member_bg_range-0" name="met_member_bg_range" value="0"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="met_member_bg_range-0">{$word.user_login_bg_range_all_page}</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="met_member_bg_range-1" name="met_member_bg_range" value="1"
+              class="custom-control-input" />
+            <label class="custom-control-label" for="met_member_bg_range-1">{$word.user_login_bg_range_login_page}</label>
+          </div>
+        </dd>
+      </dl>
       <dl>
         <dt>
           <label class="form-control-label">{$word.background_color}</label>

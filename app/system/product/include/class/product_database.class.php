@@ -85,6 +85,22 @@ class product_database extends base_database
         return $sql;
     }
 
+    /**
+     * @param int $class1
+     * @param int $class2
+     * @param int $class3
+     * @return array|void
+     */
+    public function get_list_by_class123($class1 = 0, $class2 = 0, $class3 = 0)
+    {
+        global $_M;
+        $sql = self::get_multi_column_sql();
+
+        $query = "SELECT id,title,access FROM {$this->table} WHERE  recycle = 0 AND lang='{$_M['lang']}' {$sql} ORDER BY no_order DESC";
+
+        return DB::get_all($query);
+    }
+
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

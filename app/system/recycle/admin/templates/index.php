@@ -18,7 +18,7 @@ $foot_submit_type='restore';
     <div class="input-group w-a float-right">
         <input type="search" name="title" placeholder="{$word.title}" class="form-control" data-table-search="#{$table_order}">
         <div class="input-group-append">
-            <div class="input-group-text btn"><i class="input-search-icon wb-search" aria-hidden="true"></i></div>
+            <div class="input-group-text btn"><i class="input-search-icon fa-search" aria-hidden="true"></i></div>
         </div>
     </div>
 </div>

@@ -12,10 +12,10 @@ $table_order='job-position-list-'.$data['class1'].'-'.$data['class2'].'-'.$data[
 ?>
 <include file="pub/content_list/head"/>
 				<include file="pub/content_list/checkall_all"/>
-				<th data-table-columnclass="text-center">{$word.jobposition}</th>
+				<th>{$word.jobposition}</th>
 				<th data-table-columnclass="text-center" width="50">{$word.jobnum}</th>
 				<th data-table-columnclass="text-center" width="90">
-					<select name="search_type" data-table-search class="form-control">
+					<select name="search_type" data-table-search class="form-control w-a d-inline-block">
 						<option value="0">{$word.state}</option>
 						<option value="1">{$word.fronthidden}</option>
 						<option value='2'>{$word.top}</option>

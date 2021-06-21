@@ -40,7 +40,7 @@ class weibo extends other {
 		$send['grant_type'] = 'authorization_code';
 		$send['redirect_uri'] = $redirect_uri;
 
-		$data = jsondecode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send));
+        $data = json_decode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send), true);
 		$data['openid'] = $data['uid'];
 		if($this->error_curl($data)){
 			return false;
@@ -56,7 +56,7 @@ class weibo extends other {
 		$send['access_token'] = $data['access_token'];
 		$send['uid'] = $data['openid'];
 		$send['source'] = $this->appkey;
-		$data = jsondecode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send, 'get'));
+        $data = json_decode(load::mod_class('user/web/class/curl_ssl', 'new')->curl_post($url, $send, 'get'), true);
 		$data['username'] = $data['screen_name'];
 		if($this->error_curl($data)){
 			return false;

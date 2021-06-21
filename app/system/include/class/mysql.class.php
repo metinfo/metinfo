@@ -94,7 +94,7 @@ class DB
         $result = self::query($sql, $type);
         $rs = self::fetch_array($result);
         //如果是前台可视化编辑模式
-        if (IN_ADMIN !== true && $_GET['pageset'] == 1) {
+        if (!defined('IN_ADMIN')  && $_GET['pageset'] == 1) {
             $rs = load::sys_class('view/met_datatags', 'new')->replace_sql_one($sql, $rs);
         }
         self::free_result($result);
@@ -116,7 +116,7 @@ class DB
             self::error();
         }
         //如果是前台可视化编辑模式
-        if (IN_ADMIN !== true && $_GET['pageset'] == 1) {
+        if ( !defined('IN_ADMIN') && $_GET['pageset'] == 1) {
             $rs = load::sys_class('view/met_datatags', 'new')->replace_sql_all($sql, $rs);
         }
 
@@ -216,7 +216,7 @@ class DB
      *
      * @return array 查询得到的数据
      */
-    public function get_data($table, $where, $order, $limit_start = 0, $limit_num = 20, $field_name = '*')
+    public static function get_data($table, $where, $order, $limit_start = 0, $limit_num = 20, $field_name = '*')
     {
         if ($limit_start < 0) {
             return false;

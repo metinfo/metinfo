@@ -32,7 +32,7 @@ class search_handle extends handle
      * @param  string $search 设置数组
      * @return array           处理过后的栏目图片数组
      */
-    public function one_para_handle($search)
+    public function one_para_handle($search = array())
     {
         global $_M;
 

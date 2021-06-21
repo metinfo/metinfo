@@ -83,30 +83,43 @@ class image
         if ($return) {
             $this->default = '';
         }
-        if (!isset($image_path)) {
+        if (!$image_path) {
             $image_path = $this->default;
         }
 
-        $this->thumb_wate = $thumb_wate;
+        //图片源路径
+        $true_path = $image_path;
+        $pram = '';
+        if (strpos($image_path, '?')) {
+            $true_path = substr($image_path, 0, strpos($image_path, '?'));
+            $pram = substr($image_path,  strpos($image_path, '?'));
+        }
+        $this->ext = pathinfo($true_path,PATHINFO_EXTENSION );
+        $this->image = end(explode('/', $true_path));
 
-        $this->image_path = str_replace(array($_M['url']['site'], '../', './',$_M['url']['web_site']), '', $image_path);
+        //检测文件类型
+        if (!in_array(strtolower($this->ext),array('jpg','jpeg','png','gif'))) {
+            return $image_path;
+        }
+
+        $this->thumb_wate = $thumb_wate;
+        $this->image_path = str_replace(array($_M['url']['site'], '../', './',$_M['url']['web_site']), '', $true_path);
         // 如果地址为空 缩略默认图片
         if (!$this->image_path) {
             $this->image_path = $this->default;
         }
         // 如果去掉网址还有http就是外部链接图片 不需要缩略处理
         if (substr($this->image_path, 0, 4) == 'http') {
-            return $this->image_path;
+            return $image_path;
         }
         $this->x = is_numeric($x) ? intval($x) : false;
         $this->y = is_numeric($y) ? intval($y) : false;
 
-        $this->image = pathinfo($this->image_path);
         $this->thumb_dir = PATH_WEB . 'upload/thumb_src/';
-        $this->thumb_path = $this->get_thumb_path() . $this->image['basename'];
+        $this->thumb_path = $this->get_thumb_path() . $this->image;
 
         $image = $this->get_thumb();
-        return $image;
+        return $image . $pram;
     }
 
     // 先直接返回缩略图地址
@@ -115,11 +128,6 @@ class image
         global $_M;
         $x = $this->x;
         $y = $this->y;
-        if ($path = explode('?', $this->image_path)) {
-            $image_path = $path[0];
-        } else {
-            $image_path = $this->image_path;
-        }
 
         if ($x && $y) {
             $dirname = "{$x}_{$y}/";
@@ -137,7 +145,7 @@ class image
             $dirname = "400_400/";
         }
 
-        $this->thumb_url = $_M['url']['site'] . 'upload/thumb_src/' . $dirname . $this->image['basename'];
+        $this->thumb_url = $_M['url']['site'] . 'upload/thumb_src/' . $dirname . $this->image;
         $dirname = $this->thumb_dir . $dirname;
 
         if (stristr(PHP_OS, "WIN")) {
@@ -193,7 +201,7 @@ class image
             $this->thumb_x = 400;
         }
 
-        $this->thumb_url = $_M['url']['site'] . 'upload/thumb_src/' . $dirname . $this->image['basename'];
+        $this->thumb_url = $_M['url']['site'] . 'upload/thumb_src/' . $dirname . $this->image;
         $dirname = $this->thumb_dir . $dirname;
 
         if (stristr(PHP_OS, "WIN")) {
@@ -205,7 +213,6 @@ class image
 
     public function get_thumb()
     {
-
         if ($path = explode('?', $this->thumb_path)) {
             $thumb_path = $path[0];
         } else {
@@ -217,12 +224,6 @@ class image
     public function create_thumb()
     {
         global $_M;
-        $thumb = load::sys_class('thumb', 'new');
-        $thumb->set('thumb_save_type', 3);
-        $thumb->set('thumb_kind', $_M['config']['met_thumb_kind']);
-        $thumb->set('thumb_savepath', $this->get_new_path());
-        $thumb->set('thumb_width', $this->thumb_x);
-        $thumb->set('thumb_height', $this->thumb_y);
         $suf = '';
         if ($path = explode('?', $this->image_path)) {
             $image_path = $path[0];
@@ -230,6 +231,7 @@ class image
         } else {
             $image_path = $this->image_path;
         }
+        $savename = end(explode('/', $image_path));
 
         if ($_M['config']['met_big_wate'] && strpos($image_path, 'watermark') !== false) {
             $image_path = str_replace('watermark/', '', $image_path);
@@ -239,8 +241,14 @@ class image
             $image_path = $this->default;
         }
 
+        $thumb = load::sys_class('thumb', 'new');
+        $thumb->set('thumb_save_type', 3);
+        $thumb->set('thumb_kind', $_M['config']['met_thumb_kind']);
+        $thumb->set('thumb_savepath', $this->get_new_path());
+        $thumb->set('thumb_savename', $savename);
+        $thumb->set('thumb_width', $this->thumb_x);
+        $thumb->set('thumb_height', $this->thumb_y);
         $image = $thumb->createthumb($image_path);
-
         //缩略图水印
         if ($_M['config']['met_thumb_wate'] && strpos($image_path, 'watermark') === false && $this->thumb_wate) {
             $mark = load::sys_class('watermark', 'new');

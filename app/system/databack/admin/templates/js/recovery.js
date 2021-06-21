@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
   renderTable()
@@ -32,7 +33,7 @@
                     ? `<button class="btn btn-primary ml-2 btn-import"
                 data-index="${index}"
                 >${METLANG.setdbImportData}</button>`
-                    : ''
+                    : val.error_info||''
                 }
                 <button class="btn ml-2 btn-recovery-delete" data-index="${index}">${METLANG.delete}</button>
                 <a class="btn btn-default ml-2" href="${val.download_url}">${METLANG.databackup3}</a>
@@ -171,7 +172,7 @@
     if (result.status === 2) {
       metui.request(
         {
-          url: `${M.url.admin}?${result.call_url}`
+            url: `${result.call_url}`
         },
         function(result) {
           continueBack(result)

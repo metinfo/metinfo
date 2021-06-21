@@ -29,11 +29,11 @@
                     <section class="met-editor clearfix">
                         {$data.content}
                     </section>
-                   <if value="$data[taglist]">
+                   <if value="$data['taglist']">
                    <div class="tag-border">
                         <div class="detail_tag font-size-14">
                             <span>{$data.tagname}</span>
-                            <list data="$data[taglist]" name="$tag">
+                            <list data="$data['taglist']" name="$tag">
                                 <a href="{$tag.url}" {$g.urlnew} title="{$tag.name}">{$tag.name}</a>
                             </list>
                         </div>
@@ -67,9 +67,9 @@
                             <li>
                                 <if value="$m['sub'] && $lang['download_column3_ok']">
                                 <a href="javascript:;" title="{$m.name}" class='{$m.class}' data-toggle="collapse" data-target=".sidebar-column3-{$m._index}">{$m.name}<i class="wb-chevron-right-mini"></i></a>
-                                <div class="sidebar-column3-{$m._index} collapse <if value='$m[id] eq $data[class2]'>in</if>" aria-expanded="false">
+                                <div class="sidebar-column3-{$m._index} collapse <if value='$m["id"] eq $data["class2"]'>in</if>" aria-expanded="false">
                                     <ul class="m-t-5 p-l-20">
-                                        <li><a href="{$m.url}" title="{$lang.all}" {$m.urlnew} class="<if value='$m[id] eq $data[classnow]'>active</if>">{$lang.all}</a></li>
+                                        <li><a href="{$m.url}" title="{$lang.all}" {$m.urlnew} class="<if value='$m["id"] eq $data["classnow"]'>active</if>">{$lang.all}</a></li>
                                         <tag action='category' cid="$m['id']" type='son' class='active'>
                                         <li><a href="{$m.url}" title="{$m.name}" {$m.urlnew} class='{$m.class}'>{$m.name}</a></li>
                                         </tag>

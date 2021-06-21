@@ -51,7 +51,7 @@ class weixinreply
     {
         global $_M;
         libxml_disable_entity_loader(true);
-        $data = json_decode(jsonencode(simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        $data = json_decode(json_encode(simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 
         $this->openid = $data['FromUserName'];
 

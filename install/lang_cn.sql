@@ -137,7 +137,7 @@ INSERT INTO met_language VALUES (null, 'indexhtm', '静态页面生成', 1, 74, 
 INSERT INTO met_language VALUES (null, 'indexhtmset', '静态页面', 1, 73, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'indexcv', '招聘系统配置', 1, 70, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'indexflash', 'Banner 管理', 1, 67, 4, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'indexbbs', '技术支持', 1, 63, 8, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'indexbbs', '关于', 1, 63, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'indexcode', '商业授权', 1, 61, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'indexlang', '语言设置', 1, 54, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'indexloginout', '退出', 1, 51, 8, 0, 'cn');
@@ -421,6 +421,7 @@ INSERT INTO met_language VALUES (null, 'setfootstat', '底部代码', 1, 11, 39,
 INSERT INTO met_language VALUES (null, 'setfootOther', '其他信息', 1, 10, 39, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setfootAddressCode', '地址邮编', 1, 8, 39, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setfootVersion', '版权信息', 1, 7, 39, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'seticpinfo', 'ICP备案信息', 1, 10, 39, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'article6', '参数设置', 1, 6, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'article4', '排序数值越大越靠前', 1, 4, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'article1', '可选属性', 1, 1, 0, 0, 'cn');
@@ -710,6 +711,8 @@ INSERT INTO met_language VALUES (null, 'setdbNotExist', '文件不存在', 1, 11
 INSERT INTO met_language VALUES (null, 'setdbArchiveOK', '压缩成功', 1, 115, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setdbImportOK', '导入成功', 1, 111, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setdbBackupOK', '数据库备份完毕!', 1, 109, 8, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'setBackuoNo', '备份失败', 1, 109, 8, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'setBackuoDiskFull', '磁盘空间不足', 1, 109, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setdbTip2', '数据无法备份到服务器!请检查', 1, 104, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setdbTip3', '目录是否可写。', 1, 105, 8, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'setdbImportData', '导入', 1, 101, 8, 0, 'cn');
@@ -873,7 +876,7 @@ INSERT INTO met_language VALUES (null, 'success_payment', '支付成功后，请
 INSERT INTO met_language VALUES (null, 'latest_version', '已是最新版', 1, 0, 1, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'pay_success', '支付成功', 1, 0, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'be_updated', '可更新至', 1, 0, 1, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'update_log', '更新日志', 1, 0, 37, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'update_log', '关于系统', 1, 0, 37, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'current_version', '当前版本', 1, 0, 37, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'program_information', '程序信息', 1, 0, 37, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'system_maintenance', '系统维护中', 1, 0, 0, 0, 'cn');
@@ -1114,7 +1117,7 @@ INSERT INTO met_language VALUES (null, 'user_auto_register', '自动注册系统
 INSERT INTO met_language VALUES (null, 'user_auto_register_tips', '开启该配置，用户使用社会化账号首次登录，网站会员账号由系统自动生成并绑定社会化账号信息。', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_QQinterconnect_v6', 'QQ互联', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips9_v6', '申请 （管理中心-登录-创建应用-网站）', 1, 0, 38, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'user_backurl_v6', '回调地址', 1, 0, 38, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_backurl_v6', '授权回调地址', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips10_v6', '微信开放平台', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_Apply_v6', '申请', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips11_v6', '用于PC端会员登录', 1, 0, 38, 0, 'cn');
@@ -1145,6 +1148,17 @@ INSERT INTO met_language VALUES (null, 'user_tips28_v6','需开通短信服务�
 INSERT INTO met_language VALUES (null, 'user_Notverifying_v6','不验证', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_Backgroundpicture_v6','背景图片', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips30_v6','登录界面中间横屏背景（建议尺寸 1920 * 800 宽 * 高 ）', 1, 0, 38, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_login_box_position', '登录框位置', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_login_box_tips', '手机端位置统一居中', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_login_bg_range_set', '背景生效页面', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_login_bg_range_all_page', '会员中心所有页面', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'user_login_bg_range_login_page', '仅登录页', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'member_agreement', '用户协议功能', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'new_regist_admin_notice', '管理员通知', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'new_regist_mail_open', '邮件通知', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'new_regist_mail', '管理员邮箱', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'new_regist_sms_open', '短信通知', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'new_regist_sms', '短信通知号码', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'user_tips4_v6', '请输入6-30位的密码', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'weixinlogin', '微信登录', 1, 0, 38, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'sinalogin', '微博登录', 1, 0, 38, 0, 'cn');
@@ -1281,7 +1295,7 @@ INSERT INTO met_language VALUES (null, 'appstore_downshowdata_v6', '下载演示
 INSERT INTO met_language VALUES (null, 'banner_column_v6', '栏目', 1, 533, 4, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'batch_watermarking_v6', '批量水印操作', 1, 538, 5, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'open_allchildcolumn_v6', '展开所有子栏目', 1, 541, 7, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'column_descript1_v6', '目录名称只能为小写字母或者数子，且不能和其他栏目重名！', 1, 542, 7, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'column_descript1_v6', '目录名称只能为小写字母或者数字，且不能和其他栏目重名！', 1, 542, 7, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'add_to_v6', '添加至', 1, 543, 7, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'seo_set_v6', 'SEO设置', 1, 544, 7, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'content_name_v6', '名称', 1, 553, 7, 0, 'cn');
@@ -1316,7 +1330,7 @@ INSERT INTO met_language VALUES (null, 'columnselect1', '选择栏目', 1, 0, 0,
 INSERT INTO met_language VALUES (null, 'columnnofollow', 'nofollow属性', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'columnnofollowinfo', '勾选后网站不向链接网址传递权重', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'feedbackinquiry', '在线询价', 1, 0, 0, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'feedbackinquiryinfo', '已有一个反馈栏目开启此功能，如要在当前栏目启用，请先在已开启反馈栏目中关闭。', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'feedbackinquiryinfo', '只可在一个反馈栏目中开启此选项。', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'feedbackinquiryinfo1', '开启在线询价后，产品详情页将自动显示询价按钮。', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'webupate1', '网站备份', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'webupate3', '解压成功', 1, 0, 0, 0, 'cn');
@@ -1441,7 +1455,6 @@ INSERT INTO `met_language` VALUES (NULL, 'buyCondition', '单独购买后可在�
 INSERT INTO met_language VALUES (null, 'thumb_size_list', '列表页缩略图尺寸', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'thumb_size_showpage', '详情页缩略图尺寸', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'thumb_seting_tips', '详情页缩略图尺寸、选项卡请在对应栏目的可视化编辑“当前页设置”中设置', 1, 0, 0, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'member_agreement', '用户协议功能', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'top_menu', '顶部菜单', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'admin_name_repeat', '管理员姓名不能重复', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'ing', '中', 1, 0, 0, 0, 'cn');
@@ -1524,6 +1537,8 @@ INSERT INTO met_language VALUES (null, 'admin_job1', '需要到招聘职位管�
 INSERT INTO met_language VALUES (null, 'admin_manage1', '点击左侧栏目列表管理内容', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'admin_menu1', '此功能需要模板支持，部分模板底部自带了手机菜单，请在可视化界面设置。', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'search_range', '搜索范围', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'search_weight', '模块排序', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'search_weight_tips', '左右拖动调整模块排序。全局搜索结果将根据模块排序依次展示', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'admin_search1', '指定一级栏目', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'admin_search2', '是否开启搜索方式', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'admin_search3', '是否联动', 1, 0, 0, 0, 'cn');

@@ -1,3 +1,4 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 define(function(require, exports, module) {
 
 	var $ = jQuery = require('jquery');
@@ -34,7 +35,7 @@ define(function(require, exports, module) {
 						common.AssemblyLoad($(".paralistbox"));
 						common.defaultoption($(".paralistbox"));
 						if(dom){
-							dom.removeClass('met-laoding').css("font-size","");
+							dom.removeClass('met-loadding').css("font-size","");
 						}
 				   }
 				});
@@ -98,7 +99,7 @@ define(function(require, exports, module) {
 	}
 
 	$(".refresh_para").click(function(){
-		if(selectclass.val())$(this).addClass('met-laoding');
+		if(selectclass.val())$(this).addClass('met-loadding');
 		classpara(selectclass.val(),1,$(this));
 	});
 

@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 $checkbox_time=time();
 ?>
-<h3 class='example-title clearfix'><span class="my-1 d-inline-block">{$word.unitytxt_15}</span><button type='button' data-toggle="collapse" data-target=".{$data.n}-details-other" class='btn btn-default btn-sm float-right'>{$word.moreSettings}<i class="icon fa-angle-right ml-2"></i></button></h3>
+<h3 class='example-title clearfix'><span class="my-1 d-inline-block">{$word.unitytxt_15}</span><button type='button' data-toggle="collapse" data-target=".{$data.n}-details-other" class='btn btn-default btn-sm float-right'>{$word.moreSettings}<i class="icon fa-caret-right ml-2"></i></button></h3>
 <div class="collapse {$data.n}-details-other">
 	<if value="$data['n'] eq 'news'">
 	<dl>
@@ -63,18 +63,18 @@ $checkbox_time=time();
     </if>
 	<?php
 	$webaccess=array(
-		value=>$data['list']['access'],
-		access=>$data['access_option']
+		'value'=>$data['list']['access'],
+		'access'=>$data['access_option']
 	);
 	?>
 	<include file="pub/content_details/webaccess"/>
 	<if value="$data['n'] eq 'download'">
 	<?php
 	$webaccess=array(
-		title=>$word['dowloadauthority'],
-		name=>'downloadaccess',
-		value=>$data['list']['downloadaccess'],
-		access=>$data['access_option']
+		'title'=>$word['dowloadauthority'],
+		'name'=>'downloadaccess',
+		'value'=>$data['list']['downloadaccess'],
+		'access'=>$data['access_option']
 	);
 	?>
 	<include file="pub/content_details/webaccess"/>

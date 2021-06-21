@@ -22,7 +22,6 @@ class job_admin extends news_admin
     {
         global $_M;
         parent::__construct();
-        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
         $this->module = 6;
         $this->database = load::mod_class('job/job_database', 'new');
         $this->tabledata = load::sys_class('tabledata', 'new');
@@ -59,8 +58,6 @@ class job_admin extends news_admin
         } else {
             return $redata;
         }
-        /*nav::select_nav(1);
-        require $this->template('own/article_add');*/
     }
 
     /**
@@ -72,29 +69,16 @@ class job_admin extends news_admin
         parent::doaddsave();
     }
 
-    public function insert_list($list){
-        global $_M;
-        return $this->insert_list_sql($list);
-    }
-
     /**
-     * 插入sql
-     * @param  array $list 插入的数组
-     * @return number 插入后的数据ID
+     * @param array $list
+     * @return number
      */
-    public function insert_list_sql($list)
+    public function insert_list($list = array())
     {
         global $_M;
-        if (!$this->check_filename($list['filename'], '', $this->module)) {
-            return false;
-        }
-        $list['class1'] = $list['class1'] ? $list['class1'] : 0;
-        $list['class2'] = $list['class2'] ? $list['class2'] : 0;
-        $list['class3'] = $list['class3'] ? $list['class3'] : 0;
-        $list['lang'] = $this->lang;
         $list['count'] = is_numeric($list['count']) ? $list['count'] : 0;
         $list['useful_life'] = is_numeric($list['useful_life']) ? $list['useful_life'] : 0;
-        return $this->database->insert($list);
+        return parent::insert_list($list);
     }
 
     /**
@@ -104,20 +88,16 @@ class job_admin extends news_admin
     {
         global $_M;
         $id = $_M['form']['id'];
-        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
-        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
-        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
-        $classnow = $class3 ? $class3 : ($class2 ? $class2 : $class1);
-
-        $config_op = load::mod_class('config/config_op', 'new');
-        $conlum_configs = $config_op->getColumnConfArry($classnow);
-
-        $list = $this->database->get_list_one_by_id($id);
+        $one = $this->database->get_list_one_by_id($id);
         $access_option = $this->access_option();
         $column_list = $this->_columnjson();
 
-        $redata['list'] = $list;
-        $redata['met_cv_emtype'] = $conlum_configs['met_cv_emtype'];
+        $config_op = load::mod_class('config/config_op', 'new');
+        $classnow = $one['class3'] ? $one['class3'] : ($one['class2'] ? $one['class2'] : $one['class1']);
+        $conlum_configs = $config_op->getColumnConfArry($classnow);
+
+        $redata['list'] = $one;
+        $redata['met_cv_emtype'] = $conlum_configs['met_cv_emtype'];    //独立邮件通知
         $redata['now_time'] = date('Y-m-d', time());
         $redata['access_option'] = $access_option;
         $redata = array_merge($redata, $column_list);
@@ -147,18 +127,6 @@ class job_admin extends news_admin
     }
 
     /**
-     * 保存修改sql
-     * @param  array $list 修改的数组
-     * @return bool                     修改是否成功
-     */
-    public function update_list_sql($list = array(), $id = '')
-    {
-        global $_M;
-        $list['id'] = $id;
-        return $this->database->update_by_id($list);
-    }
-
-    /**
      * 获取列表数据
      */
     function dojson_list()
@@ -180,23 +148,28 @@ class job_admin extends news_admin
     public function _dojson_list($class1 = '', $class2 = '', $class3 = '', $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '')
     {
         global $_M;
-        $where = '';
-        $where .= $class1 ? " AND class1 = '{$class1}'" : " AND class1 = 0";
-        $where .= $class2 ? " AND class2 = '{$class2}'" : " AND class2 = 0";
-        $where .= $class3 ? " AND class3 = '{$class3}'" : " AND class3 = 0";
-        $where .= $keyword ? " AND position like '%{$keyword}%'" : '';
+        //栏目访问权限
+        if (($class1 && !in_array($class1, $this->allow_class['class1'])) || ($class2 && !in_array($class2, $this->allow_class['class2'])) || ($class3 && !in_array($class3, $this->allow_class['class3']))) {
+            return false;
+        }
+
+        $_where = '';
+        $_where .= $class1 ? " AND class1 = '{$class1}'" : " AND class1 = 0";
+        $_where .= $class2 ? " AND class2 = '{$class2}'" : " AND class2 = 0";
+        $_where .= $class3 ? " AND class3 = '{$class3}'" : " AND class3 = 0";
+        $_where .= $keyword ? " AND position like '%{$keyword}%'" : '';
         switch ($search_type) {
             case 0:
                 break;
             case 1:
-                $where .= " and displaytype = '0'";
+                $_where .= " AND displaytype = '0'";
                 break;
             case 2:
-                $where .= " and top_ok = '1'";
+                $_where .= " AND top_ok = '1'";
                 break;
         }
         $admininfo = admin_information();
-        if ($admininfo['admin_issueok'] == 1) $where .= " and issue = '{$admininfo['admin_id']}'";
+        if ($admininfo['admin_issueok'] == 1) $_where .= " and issue = '{$admininfo['admin_id']}'";
         $met_class = $this->column(2, $this->module);
         if ($class3) {
             $classnow = $class3;
@@ -207,7 +180,7 @@ class job_admin extends news_admin
         }
 
         $order = $this->list_order($met_class[$classnow]['list_order']);
-        $data = $this->json_list($where, $order);
+        $data = $this->json_list($_where, $order);
 
         foreach ($data as $key => $val) {
             $list = array();

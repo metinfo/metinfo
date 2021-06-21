@@ -60,21 +60,22 @@ class language_label
             } else {
                 $url_mark = 'index.php?lang=' . $val['mark'];
             }
+
             // 是否为默认语言
-            if ($_M['config']['met_index_type'] == $val['lang'] && !$_M['form']['pageset']) {
+            /*if ($_M['config']['met_index_type'] == $val['lang'] && !$_M['form']['pageset']) {
                 if ($_M['lang'] == $val['lang']) {
                     $url_mark = '';
                 } else {
                     $url_mark = './';
                 }
+            }*/
 
-            }
             if ($val['link'] && !$_M['form']['pageset']) {
 
                 $val['met_weburl'] = $val['link'];
                 $url_mark = "";
             } else {
-                $val['met_weburl'] = $_M['url']['site'];
+                $val['met_weburl'] = $_M['url']['web_site'];
             }
 
             $return[$val['mark']] = array(
@@ -280,7 +281,6 @@ class language_label
         }
         return $vga;
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

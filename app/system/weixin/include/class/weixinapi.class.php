@@ -30,10 +30,6 @@ class weixinapi
         $this->secret = $_M['config']['met_weixin_gz_appsecret'];
         $this->appid = $_M['config']['met_weixin_gz_appid'];
         $this->token = $_M['config']['met_weixin_gz_token'];
-
-        /*$this->secret = $_M['config']['weixin_secret'];
-        $this->appid = $_M['config']['weixin_appid'];
-        $this->token = $_M['config']['weixin_token'];*/
     }
 
     /**
@@ -74,6 +70,16 @@ class weixinapi
             }
         }
         return false;
+    }
+
+    /**
+     * 检测接口是否配置正常
+     * @return bool|mixed
+     */
+    public function apiCheck()
+    {
+        $info = self::getWxToken();
+        return $info;
     }
 
     /**

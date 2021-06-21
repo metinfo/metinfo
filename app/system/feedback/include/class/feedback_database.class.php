@@ -26,7 +26,7 @@ class  feedback_database extends base_database
         return 'id|addtime|class1|fdtitle|fromurl|useinfo|readok|customerid|lang|ip';
     }
 
-    public function get_list_by_class_sql($id = '', $type = 'all')
+    public function get_list_by_class_sql($id = '', $type = '', $order = '')
     {
         $sql = '';
         $sql .= " WHERE class1 = '{$id}' AND readok = 1  ";

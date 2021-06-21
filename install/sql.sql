@@ -892,11 +892,11 @@ CREATE TABLE IF NOT EXISTS `met_weixin_reply_log` (
 
 
 INSERT INTO met_applist VALUES(null, '0', '1.0', 'ueditor', 'index', 'doindex', '百度编辑器', '编辑器', '0', '0', '0','0','','0');
-INSERT INTO met_applist VALUES(null,'10070','1.4', 'metconfig_sms', 'index', 'doindex', '短信功能', '短信接口', '0', '0', '0','1','','0');
+INSERT INTO met_applist VALUES(null,'10070','1.5', 'metconfig_sms', 'index', 'doindex', '短信功能', '短信接口', '0', '0', '0','1','','0');
 INSERT INTO met_applist VALUES(null,'50002','1.0', 'metconfig_template', 'temtool', 'dotemlist', '官方模板管理工具', '官方商业模板请在此进行管理操作', '0', '0', '0','1','','1');
 
 #系统全局配置
-INSERT INTO met_config VALUES(null,'metcms_v','7.2.0','','0','0','metinfo');
+INSERT INTO met_config VALUES(null,'metcms_v','7.3.0','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_ch_lang','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_lang_mark','1','','0','0','metinfo');
 INSERT INTO met_config VALUES(null,'metconfig_admin_type_ok','0','','0','0','metinfo');

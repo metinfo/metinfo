@@ -1,5 +1,6 @@
-/*
-弹框组件
+/**
+ * 弹框组件
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
     // 自定义弹框参数
@@ -41,20 +42,20 @@
         options.id=is_id?options.modal_class.substr(1):'';
         options.modal_class_name=is_id?'':options.modal_class.substr(1);
         var html='<div class="modal fade met-scrollbar met-modal '+options.modalOtherclass+' '+options.modal_class_name+'" id="'+options.id+'" data-key="'+options.modal_class+'" data-keyboard="'+options.modalKeyboard+'" data-backdrop="'+options.modalBackdrop+'" '+(options.modalSubmitNoclose?'data-submit-noclose="1"':'')+' style="'+options.modalStyle+'">'
-                +'<div class="modal-dialog modal-dialog-'+options.modalType+' modal-'+options.modalSize+' '+(options.modalFullheight?'my-0 mx-auto h-100':'')+'">'
+                +'<div class="modal-dialog modal-dialog-'+options.modalType+' modal-'+options.modalSize+' '+(options.modalFullheight?'my-0 mx-auto h-100 py-2':'')+'">'
                     +'<div class="modal-content '+(options.modalFullheight?'h-100':'')+'">'
                         +'<div class="modal-header d-block clearfix bg-dark text-white '+options.modalHeaderclass+'">'
-                            +'<h5 class="modal-title float-left '+options.modalTitleclass+'">'+options.modalTitle+'</h5>'
+                            +'<h6 class="modal-title float-left '+options.modalTitleclass+'">'+options.modalTitle+'</h6>'
                             +options.modalHeadercenter
-                            +(options.modalClose?'<button type="button" class="close text-white h1" data-dismiss="modal" aria-label="Close"><span>×</span></button>':'')
+                            +(options.modalClose?'<button type="button" class="close text-white h2" data-dismiss="modal" aria-label="Close"><span>×</span></button>':'')
                             +options.modalHeaderappend
                         +'</div>'
                         +'<div class="modal-body '+options.modalBodyclass+' '+(options.modalFullheight?'oya met-scrollbar':'')+'" data-url="'+options.modalUrl+'" data-dataurl="'+options.modalDataurl+'" data-refresh="'+options.modalRefresh+'" data-tablerefresh="'+options.modalTablerefresh+'" data-tablerefresh-type="'+options.modalTablerefreshType+'" data-loading="'+options.modalLoading+'" data-load="'+options.modalLoad+'">'+(typeof options.modalBody=='function'?options.modalBody():options.modalBody)+'</div>'
                         +(options.modalFooterok?('<div class="modal-footer clearfix d-block'+options.modalFooterclass+'">'
                             +(options.modalFooter?options.modalFooter:'')
                             +'<div class="float-right">'
-                          +(options.modalNotext?('<button type="button" class="btn btn-default mr-1" data-dismiss="modal">'+options.modalNotext+'</button>'):'')
-                          +(options.modalOktext?('<button type="button" class="btn btn-primary" data-ok>'+options.modalOktext+'</button>'):'')
+                          +(options.modalNotext?('<button type="button" class="btn btn-default" data-dismiss="modal">'+options.modalNotext+'</button>'):'')
+                          +(options.modalOktext?('<button type="button" class="btn btn-primary ml-1" data-ok>'+options.modalOktext+'</button>'):'')
                         +'</div></div>'):'')
                     +'</div>'
                 +'</div>'
@@ -62,7 +63,7 @@
         return html;
     };
     // 弹框初始化
-    $(document).on('click', '[data-toggle="modal"]', function(event) {
+    $(document).on('click clicks', '[data-toggle="modal"]', function(event) {
         var modal_class=$(this).attr('data-target');
         if(!modal_class){
             modal_class='.modal-'+new Date().getTime();
@@ -71,7 +72,8 @@
         if(modal_class){
             var $modal_class=$(modal_class);
             if($modal_class.length){
-                $modal_class.find('.modal-body').attr({'data-url':$(this).attr('data-modal-url'),'data-loading':$(this).attr('data-modal-loading'),'data-load':$(this).attr('data-modal-load'),'data-dataurl':$(this).attr('data-modal-dataurl')||'','data-tablerefresh':$(this).attr('data-modal-tablerefresh'),'data-tablerefresh-type':$(this).attr('data-modal-tablerefresh-type'),'data-title':$(this).attr('data-modal-title')});
+                $modal_class.find('.modal-body').attr({'data-url':$(this).attr('data-modal-url'),'data-loading':$(this).attr('data-modal-loading'),'data-load':$(this).attr('data-modal-load'),'data-dataurl':$(this).attr('data-modal-dataurl')||'','data-tablerefresh':$(this).attr('data-modal-tablerefresh'),'data-tablerefresh-type':$(this).attr('data-modal-tablerefresh-type'),'data-title':$(this).attr('data-modal-title'),'data-body':$(this).attr('data-modal-body')||''});
+                if(event.type=='clicks') $modal_class.trigger('shows');
             }else{
                 var options=$(this).data();
                 options.modal_class=modal_class;
@@ -82,7 +84,7 @@
         }
     });
     // 弹框弹出回调
-    $(document).on('show.bs.modal', '.modal', function(event) {
+    $(document).on('show.bs.modal shows', '.modal', function(event) {
         if(!$(this).hasClass('met-scrollbar')) $(this).addClass('met-scrollbar');
         // 弹框加载模板
         var $btn_ok=$('[data-ok]',this),
@@ -96,6 +98,7 @@
                 loading=$modal_body.attr('data-loading'),
                 title=$modal_body.attr('data-title'),
                 tablerefresh_type=parseInt($modal_body.attr('data-tablerefresh-type')),
+                body=$modal_body.attr('data-body'),
                 callback=function(data){
                     // 弹框内容保存回调
                     setTimeout(function(){
@@ -146,6 +149,7 @@
                             callback(data);
                         });
                     }else{
+                        body && $modal_body.html(body);
                         if(refresh!='0') $modal_body.metCommon();
                         key && key!='.pageset-nav-modal' && typeof admin_module!='undefined' && admin_module.obj.parents(key).length && typeof TEMPLOADFUNS[admin_module.hash]=='function'&&TEMPLOADFUNS[admin_module.hash]();
                         $modal_body.scrollTop(0);
@@ -154,6 +158,12 @@
                     if(refresh=='one') $modal_body.attr({'data-refresh':0});
                     title && $('.modal[data-key="'+key+'"] .modal-title').html(title);
                 };
+            if(key!='.pageset-nav-modal'&&$('.pageset-nav-modal').is(':visible')){
+                $('.modal-dialog',key).addClass('pt');
+            }else{
+                $('.modal-dialog',key).removeClass('pt');	
+            }
+            M.component.modal_options[key] && typeof M.component.modal_options[key].before=='function'&&M.component.modal_options[key].before(key);
             if(url && $modal_body.attr('data-dataurl')){
                 var dataurl=$modal_body.attr('data-dataurl');
                 if(dataurl.indexOf('M.list')>=0){

@@ -2,19 +2,12 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$head_tab_active=1;
-$head_tab=array(
-	array(title=>$word['website_information'],url=>'#/webset'),
-	array(title=>$word['email_Settings'],url=>'#/webset/email'),
-	array(title=>$word['third_party_code'],url=>'#/webset/thirdparty')
-);
 ?>
 <div class="met-web-set">
-	<include file="pub/head_tab"/>
-	<form method="POST" action="{$url.own_name}c=email&a=doSaveEmail"  class='email-form mt-3' data-submit-ajax='1'>
-	  	<div class="metadmin-fmbx">
-		    <h3 class='example-title'>{$word.setbasicTip6}</h3>
-		    <dl>
+	<form method="POST" action="{$url.own_name}c=email&a=doSaveEmail"  class='email-form' data-submit-ajax='1'>
+		<div class="metadmin-fmbx">
+			<h3 class='example-title'>{$word.setbasicTip6}</h3>
+			<dl>
 				<dt>
 					<label class='form-control-label'>{$word.setbasicFromName}</label>
 				</dt>
@@ -37,7 +30,7 @@ $head_tab=array(
 				</dd>
 			</dl>
 
-	    <dl>
+		<dl>
 				<dt>
 					<label class='form-control-label'>{$word.setbasicSMTPPassword}</label>
 				</dt>
@@ -95,6 +88,6 @@ $head_tab=array(
 					<button  type="submit"  class='btn btn-primary' id="btn-save" >{$word.save}</button>
 				</dd>
 			</dl>
-	    </div>
-    </form>
+		</div>
+	</form>
 </div>

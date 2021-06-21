@@ -1,19 +1,18 @@
+/* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module)
-  renderList(that)
-  getUserInfo(that)
-  TEMPLOADFUNS[`app/met_template/other`] = function() {
+  TEMPLOADFUNS[`met_template/other`] = function() {
     const met_template_other = $.extend(true, {}, admin_module)
     renderList(met_template_other)
   }
-  TEMPLOADFUNS[`app/met_template`] = function() {
+  TEMPLOADFUNS[`met_template/ui`] = function() {
     const met_template = $.extend(true, {}, admin_module)
-    renderList(met_template)
     getUserInfo(met_template)
+    renderList(met_template)
   }
   function renderList(that) {
-    const isOther = that.hash == `app/met_template/other`
-    const list = $('.met-template-container')
+    const isOther = that.hash == `met_template/other`
+    const list = that.obj.find('.met-template-list')
     list.html(M.component.loader({ height: '300px', class_name: 'w-100' }))
     $.ajax({
       url: that.own_name + '&c=index&a=dolist',
@@ -23,7 +22,7 @@
       },
       dataType: 'json',
       success: function(result) {
-        const url = $('.met-tips').data('url')
+        const url = that.obj.find('.met-tips').data('url')
 
         const noTemplate = `<div class="alert alert-primary tips w-100">
         <p>还没有购买模板或购买的模板绑定域名不是：${url}（注意域名不能带http://、二级目录） </p>
@@ -36,7 +35,7 @@
         that.data = result.data
         let html = ''
         that.data.map(item => {
-          const card = `<div class="col-6 col-xl-4" >
+          const card = `<div class="col-6 col-xl-4 col-xxl-3" >
           <div class="media ${item.enable ? `active` : ''}" data-skin_name="${item.skin_name}">
             <img class="mr-3" src="${item.view}">
           <div class="media-body">
@@ -61,14 +60,14 @@
           ${
             item.install
               ? `<div class="overlay">
-            <button class="btn btn-primary btn-install" >安装</button>
+            <button class="btn btn-primary btn-install px-4">${METLANG.appinstall}</button>
           </div>`
               : ''
           }
           ${
             item.import
               ? `<div class="overlay">
-            <button class="btn btn-primary btn-import">导入</button>
+            <button class="btn btn-primary btn-import px-4">${METLANG.setdbImportData}</button>
           </div>`
               : ''
           }
@@ -76,7 +75,7 @@
             item.hasOwnProperty('enable') && !item.enable && item.skin_name.indexOf('ui') > -1
               ? `<div class="delete">
           <i class="fa fa-trash ml-2">
-          <span>删除</span></i>
+          <span>${METLANG.delete}</span></i>
           </div>`
               : ''
           }
@@ -152,11 +151,11 @@
     })
   }
   function updateTemplate(that) {
-    const active = that.obj.find('.met-template-container .active')
+    const active = that.obj.find('.met-template-list .active')
     that.obj.find('.btn-update').metClickConfirmAjax({
       confirm_text: '如你自行修改了模板源代码文件，且未按商业模板修改规则设置UI区块版本号，升级模板会覆盖原文件，覆盖之后无法恢复！',
       true_fun: function() {
-        active.append(`<div class="overlay"><button class="btn btn-default block" style="width:85%;">升级中，请稍后...</button></div>`)
+        active.append(`<div class="overlay"><button class="btn btn-default block" style="width:85%;">${METLANG.upgrade}</button></div>`)
         $.ajax({
           url: that.own_name + 'c=index&a=doupdate',
           type: 'POST',
@@ -202,11 +201,10 @@
     })
   }
   function installTemplate(that) {
-    $('.btn-install').click(function() {
+    that.obj.find('.btn-install').click(function() {
       const btn = $(this)
       const skin_name = btn.parents('.media').data('skin_name')
-      btn.html(`安装中，请稍后...`)
-      btn.css({ width: '85%', height: 'auto' })
+      btn.html(`<i class="fa fa-circle-o-notch fa-spin"></i> ${METLANG.installing}`).css({ width: '85%', height: 'auto' })
       btn.unbind('click')
       metui.request(
         {
@@ -247,7 +245,7 @@
     })
   }
   function installData(that) {
-    $('.btn-install-data').click(function() {
+    that.obj.find('.btn-install-data').click(function() {
       const modal = $('.met-install-modal')
       that.modal = modal
       const btn = $(this)
@@ -259,7 +257,7 @@
         .off()
         .click(function() {
           $(this)
-            .html(`<i class="fa fa-spinner fa-spin mr-2"></i>正在备份，请耐心等待...`)
+            .html(`<i class="fa fa-spinner fa-spin mr-2"></i>${METLANG.databacking}`)
             .attr('disabled', true)
           that.precent = 0
           let params = {
@@ -269,7 +267,7 @@
             },
             body: body
           }
-          renderProgress(body, { title: '备份中，请不要操作。' })
+          renderProgress(body, { title: METLANG.databacking })
           metui.request(
             {
               url: M.url.admin + '?n=databack&c=index&a=dopackdata'
@@ -294,7 +292,7 @@
             },
             body: body
           }
-          renderProgress(body, { title: '下载中，请不要操作。' })
+          renderProgress(body, { title: METLANG.download_prompt })
           downloadData(that, params)
         })
     })
@@ -309,7 +307,7 @@
       let html = `
       <div class="p-2">
       <h4>${params.title}</h4>
-      <div class="progress">
+      <div class="progress border">
       <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%">0%</div>
       </div>
       </div>
@@ -320,7 +318,7 @@
   function continueBack(result, params) {
     if (result.status === 1) {
       that.precent = 0
-      renderProgress(params.body, { title: '下载中，请不要操作。' })
+      renderProgress(params.body, { title: METLANG.download_prompt })
       downloadData(that, params)
     }
     if (result.status === 2) {
@@ -354,7 +352,7 @@
           } else {
             that.precent = 0
             params.data.piece = 0
-            renderProgress(params.body, { title: '导入中，请不要操作。' })
+            renderProgress(params.body, { title: METLANG.being_imported })
             importData(that, params)
           }
         } else {
@@ -399,10 +397,12 @@
     )
   }
   function importTemplate(that) {
-    $('.btn-import').click(function() {
+    that.obj.find('.btn-import').click(function() {
       const btn = $(this)
       const skin_name = btn.parents('.media').data('skin_name')
+      btn.html(`<i class="fa fa-circle-o-notch fa-spin"></i> ${METLANG.being_imported}`);
       btn.unbind('click')
+      // return;
       metui.request(
         {
           url: that.own_name + '&c=index&a=doimport',
@@ -453,7 +453,7 @@
           that.btn.html(
             `<div>
             <p>${result.data.ui_name}下载完成</p>
-              <div class="progress">
+              <div class="progress border">
               <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"  style="width: ${that.now}%" />
               </div>
             </div>
@@ -467,13 +467,13 @@
     })
   }
   function getUserInfo(that) {
-    const tips = $('.met-tips')
+    const tips = that.obj.find('.met-tips')
     $.ajax({
       url: M.url.admin + '?n=myapp&c=index&a=doUserInfo',
       type: 'GET',
       dataType: 'json',
       success: function(result) {
-        const url = $('.met-tips').data('url')
+        const url = tips.data('url')
         const noLoginTips = `<div class="alert alert-primary tips w-100">
         <p>使用米拓用户中心（u.mituo.cn）账号登录即可同步已购买模板！</p>
         <span>友情提示：此处显示的模板绑定域名必须为 ${url}</span></div>`
@@ -481,11 +481,11 @@
         <p>请保持账号登录状态，以便正常获取模板升级状态并正常升级</p>
         <span>友情提示：此处显示的模板绑定域名必须为 ${url}</span></div>`
         if (result.status) {
-          const user = $('.met_template-right')
-          const userHtml = `<div class="flex user">
+          const user = that.obj.find('.met-template-right')
+          const userHtml = `<div class="d-flex user">
             <div class="user-name">${result.data.username}</div>
-            <a href="https://u.mituo.cn/#/user/login" target="_blank">用户中心</a>
-            <button class="btn btn-logout btn-default">退出</button>
+            <a href="https://u.mituo.cn/#/user/login" target="_blank">${METLANG.account_Settings}</a>
+            <button class="btn btn-logout btn-default">${METLANG.indexloginout}</button>
             </div>`
           user.html(userHtml)
           tips.html(LoginTips)
@@ -505,9 +505,9 @@
             })
           })
         } else {
-          const user = that.obj.find('.met_template-right')
-          const userHtml = `<a href="#/myapp/login" onClick="setCookie('app_href_source','${that.hash}')" class="mr-2">
-          <button class="btn btn-default" >
+          const user = that.obj.find('.met-template-right')
+          const userHtml = `<a href="#/myapp/login" onClick="setCookie('app_href_source','app/met_template/?head_tab_active=0')" class="mr-2">
+          <button class="btn btn-default">
           ${METLANG.loginconfirm}
           </button>
           </a>

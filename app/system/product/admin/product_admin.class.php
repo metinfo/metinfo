@@ -23,8 +23,8 @@ class product_admin extends news_admin
         parent::__construct();
         ###$this->moduleclass = load::mod_class('content/class/sys_product', 'new');
         $this->shop_exists = false;
-        $shop_applist = DB::get_one("SELECT * FROM {$_M['table']['applist']} WHERE `no`='10043'");    //判断商城applist
-        $shop_appfile = file_exists(PATH_ALL_APP . 'shop');                                        //商城文件
+        $shop_applist = DB::get_one("SELECT * FROM {$_M['table']['applist']} WHERE `no`='10043'");  //判断商城applist
+        $shop_appfile = file_exists(PATH_ALL_APP . 'shop'); //商城文件
         if ($_M['config']['shopv2_open'] && $shop_applist && $shop_appfile) {
             $this->specification_admin = load::app_class('shop/admin/specification_admin', 'new');
             if ($this->shop = load::plugin('doproduct_plugin_class', '99')) {
@@ -36,7 +36,6 @@ class product_admin extends news_admin
 
         $this->module = 3;
         $this->database = load::mod_class('product/product_database', 'new');
-
     }
 
     /*产品管理*/
@@ -57,120 +56,6 @@ class product_admin extends news_admin
         }
     }
 
-    /*产品增加*/
-    function doadd()
-    {
-        global $_M;
-        $redata = array();
-        $list = $this->add();
-        $list['class1'] = $_M['form']['class1'] ? $_M['form']['class1'] : 0;
-        $list['class2'] = $_M['form']['class2'] ? $_M['form']['class2'] : 0;
-        $list['class3'] = $_M['form']['class3'] ? $_M['form']['class3'] : 0;
-        $list['lnvoice'] = 0;
-        $list['auto_sent'] = 0;
-
-        if ($this->shop_exists) {
-            $list = $this->shop->default_value($list);
-            $list_s['paraku'] = $this->specification_admin->dogetspeclist();
-            $list_s['speclist'] = jsonencode($list_s['paraku']);
-            $list = array_merge($list, $list_s);
-        }
-        $column_list = $this->_columnjson();
-        $access_option = $this->access_option($list['access']);
-
-        $redata['list'] = $list;
-        $redata['access_option'] = $access_option;
-        $redata = array_merge($redata, $column_list);
-
-        if (is_mobile()) {
-            $this->success($redata);
-        } else {
-            if ($_M['form']['app_type'] == 'shop') {
-                require $this->shop->get_tmpname('product_shop');
-            } else {
-                return $redata;
-            }
-        }
-    }
-
-    function doaddsave()
-    {
-        global $_M;
-        $redata = array();
-        $_M['form']['addtime'] = $_M['form']['addtype'] == 2 ? $_M['form']['addtime'] : date("Y-m-d H:i:s");
-        $pid = $this->insert_list($_M['form']);
-        if ($pid) {
-            //商城产品属性
-            if ($this->shop_exists) {
-
-                $this->shop->save_product($pid, $_M['form']);
-            }
-
-            $url = "{$_M['url']['own_form']}a=doindex{$_M['form']['turnurl']}";
-            $html_res = load::mod_class('html/html_op', 'new')->html_generate($url, $_M['form']['class1'], $pid);
-
-            //写日志
-            logs::addAdminLog('administration', 'addinfo', 'jsok', 'doaddsave');
-            if ($_M['form']['app_type']) {
-                okinfo($_M['form']['turnurl'], $_M['word']['jsok']);
-            } else {
-                $redata['status'] = 1;
-                $redata['msg'] = $_M['word']['jsok'];
-                $redata['html_res'] = $html_res;
-                $redata['back_url'] = $url;
-                $this->ajaxReturn($redata);
-            }
-        } else {
-            //写日志
-            logs::addAdminLog('administration', 'addinfo', 'dataerror', 'doaddsave');
-            if ($_M['form']['app_type']) {
-                okinfo('-1', $_M['word']['dataerror']);
-            } else {
-                $redata['status'] = 0;
-                $redata['msg'] = $_M['word']['dataerror'];
-                $redata['error'] = $this->error;
-                $this->ajaxReturn($redata);
-            }
-        }
-    }
-
-    /**
-     * @param 前台提交的表单数组 $list
-     * @return bool|number
-     */
-    public function insert_list($list)
-    {
-        global $_M;
-        $list['issue'] = $this->met_admin['admin_id'];
-
-        // $list = $this->form_classlist($list);
-        if ($list['imgurl']) {
-            $list = $this->form_imglist($list, $this->module);
-        }
-        $pid = $this->insert_list_sql($list);
-        // 更新TAG标签
-        load::sys_class('label', 'new')->get('tags')->updateTags($list['tag'], $this->module, $list['class1'], $pid, 1);
-        if ($pid) {
-            if ($this->module == 3 || $this->module == 4 || $this->module == 5) {
-                //产品 下载 图片
-                $this->para_op->insert($pid, $this->module, $list);
-            }
-            return $pid;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @param array $list
-     * @return bool
-     */
-    public function insert_list_sql($list = array())
-    {
-        $list['classother'] = $list['classother'] ? $list['classother'] : '';//mod2
-        return parent::insert_list_sql($list);
-    }
-
     /**
      *系统属性
      */
@@ -183,7 +68,7 @@ class product_admin extends news_admin
             $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
             $listid = is_numeric($_M['form']['id']) ? $_M['form']['id'] : 0;
             $paralist = $this->para_op->paratem($listid, $this->module, $class1, $class2, $class3);
-            require PATH_SYS_TEM.'admin_old/paratype.php';
+            require PATH_SYS_TEM . 'admin_old/paratype.php';
         } else {
             parent::dopara();
         }
@@ -289,6 +174,95 @@ class product_admin extends news_admin
     }
 
     /**
+     * 产品增加
+     * @return array
+     */
+    function doadd()
+    {
+        global $_M;
+        $redata = array();
+        $list = $this->add();
+        $list['class1'] = $_M['form']['class1'] ? $_M['form']['class1'] : 0;
+        $list['class2'] = $_M['form']['class2'] ? $_M['form']['class2'] : 0;
+        $list['class3'] = $_M['form']['class3'] ? $_M['form']['class3'] : 0;
+        $list['lnvoice'] = 0;
+        $list['auto_sent'] = 0;
+
+        if ($this->shop_exists) {
+            $list = $this->shop->default_value($list);
+            $list_s['paraku'] = $this->specification_admin->dogetspeclist();
+            $list_s['speclist'] = jsonencode($list_s['paraku']);
+            $list = array_merge($list, $list_s);
+        }
+        $column_list = $this->_columnjson();
+        $access_option = $this->access_option($list['access']);
+
+        $redata['list'] = $list;
+        $redata['access_option'] = $access_option;
+        $redata = array_merge($redata, $column_list);
+
+        if (is_mobile()) {
+            $this->success($redata);
+        } else {
+            if ($_M['form']['app_type'] == 'shop') {
+                require $this->shop->get_tmpname('product_shop');
+            } else {
+                return $redata;
+            }
+        }
+    }
+
+    function doaddsave()
+    {
+        global $_M;
+        $redata = array();
+        $_M['form']['addtime'] = $_M['form']['addtype'] == 2 ? $_M['form']['addtime'] : date("Y-m-d H:i:s");
+        $pid = $this->insert_list($_M['form']);
+        if ($pid) {
+            //商城产品属性
+            if ($this->shop_exists) {
+                $this->shop->save_product($pid, $_M['form']);
+            }
+            $url = "{$_M['url']['own_form']}a=doindex{$_M['form']['turnurl']}";
+            $html_res = load::mod_class('html/html_op', 'new')->html_generate($url, $_M['form']['class1'], $pid);
+
+            //写日志
+            logs::addAdminLog('administration', 'addinfo', 'jsok', 'doaddsave');
+            if ($_M['form']['app_type']) {
+                okinfo($_M['form']['turnurl'], $_M['word']['jsok']);
+            } else {
+                $redata['status'] = 1;
+                $redata['msg'] = $_M['word']['jsok'];
+                $redata['html_res'] = $html_res;
+                $redata['back_url'] = $url;
+                $this->ajaxReturn($redata);
+            }
+        } else {
+            //写日志
+            logs::addAdminLog('administration', 'addinfo', 'dataerror', 'doaddsave');
+            if ($_M['form']['app_type']) {
+                okinfo('-1', $_M['word']['dataerror']);
+            } else {
+                $redata['status'] = 0;
+                $redata['msg'] = $_M['word']['dataerror'];
+                $redata['error'] = $this->error;
+                $this->ajaxReturn($redata);
+            }
+        }
+    }
+
+    /**
+     * @param array $list
+     * @return bool|mixed|number
+     */
+    public function insert_list($list = array())
+    {
+        global $_M;
+        $list['classother'] = $list['classother'] ? $list['classother'] : '';//mod2
+        return parent::insert_list($list);
+    }
+
+    /**
      * 产品编辑
      */
     public function doeditor()
@@ -348,8 +322,6 @@ class product_admin extends news_admin
                 } else {
                     return $redata;
                 }
-
-
             }
         }
 
@@ -358,7 +330,6 @@ class product_admin extends news_admin
         } else {
             return false;
         }
-
     }
 
     /**
@@ -367,9 +338,9 @@ class product_admin extends news_admin
     function doeditorsave()
     {
         global $_M;
-        $redata = array();
         $list = $_M['form'];
-        $id = $_M['form']['id'];
+        $id = $list['id'];
+        $redata = array();
 
         if (!is_numeric($id)) {
             //写日志
@@ -424,61 +395,8 @@ class product_admin extends news_admin
      */
     public function update_list($list = array(), $id = '')
     {
-        $list['displaytype'] = $list['displaytype'] ? 1 : 0;
-        $list['com_ok'] = $list['com_ok'] ? 1 : 0;
-        $list['top_ok'] = $list['top_ok'] ? 1 : 0;
-        return parent::update_list($list, $id);
-    }
-
-    /**
-     * 保存修改sql
-     * @param array $list
-     * @param string $id
-     * @return bool
-     */
-    public function update_list_sql($list = array(), $id = '')
-    {
-        if (!$list['title']) {
-            $this->error[] = 'no title';
-            return false;
-        }
-        if (!$this->check_filename($list['filename'], $id, $this->module)) {
-            return false;
-        }
-        if ($list['links']) {
-            $list['links'] = url_standard($list['links']);
-        }
-        if ($list['description']) {
-            $listown = $this->database->get_list_one_by_id($id);
-            $description = $this->description($listown['content']);
-            if ($list['description'] == $description) {
-                $list['description'] = $this->description($list['content']);
-            }
-        } else {
-            $list['description'] = $this->description($list['content']);
-        }
-        $list['addtime'] = $list['addtype'] == 2 ? $list['addtime'] : $list['updatetime'];
-        $list['id'] = $id;
         $list['displayimg'] = $this->displayimg_check($list['displayimg']);
-        return $this->database->update_by_id($list);
-    }
-
-    /**
-     * 去除多余的displayimg里面的图片数据
-     * @param $img
-     * @return string
-     */
-    public function displayimg_check($img)
-    {
-        $imgs = stringto_array($img, '*', '|');
-        $str = '';
-        foreach ($imgs as $val) {
-            if ($val[1]) {
-                $str .= "{$val[0]}*{$val[1]}*{$val[2]}|";//增加展示图片尺寸值{$val[2]}（新模板框架v2）
-            }
-        }
-        $str = trim($str, '|');
-        return $str;
+        return parent::update_list($list, $id);
     }
 
     function dojson_list()
@@ -487,18 +405,19 @@ class product_admin extends news_admin
         if ($this->shop_exists && $_M['form']['app_type'] == 'shop') {
             $this->shop->plgin_json_list();
             die();
-        } else {
-            $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
-            $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
-            $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
-            $keyword = $_M['form']['keyword'];
-            $search_type = $_M['form']['search_type'];
-            foreach ($_M['form']['order'] as $key => $value) {
-                $order[$value['name']] = $value['value'];
-            }
-
-            $list = self::_dojson_list($class1, $class2, $class3, $keyword, $search_type, $order['hits'], $order['updatetime']);
         }
+
+        $class1 = is_numeric($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $class2 = is_numeric($_M['form']['class2']) ? $_M['form']['class2'] : '';
+        $class3 = is_numeric($_M['form']['class3']) ? $_M['form']['class3'] : '';
+        $keyword = $_M['form']['keyword'];
+        $search_type = $_M['form']['search_type'];
+        foreach ($_M['form']['order'] as $key => $value) {
+            $order[$value['name']] = $value['value'];
+        }
+
+        $list = self::_dojson_list($class1, $class2, $class3, $keyword, $search_type, $order['hits'], $order['updatetime']);
+
         $this->json_return($list);
     }
 
@@ -515,71 +434,73 @@ class product_admin extends news_admin
     public function _dojson_list($class1 = '', $class2 = '', $class3 = '', $keyword = '', $search_type = '', $orderby_hits = '', $orderby_updatetime = '')
     {
         global $_M;
+        //栏目访问权限
+        if (($class1 && !in_array($class1, $this->allow_class['class1'])) || ($class2 && !in_array($class2, $this->allow_class['class2'])) || ($class3 && !in_array($class3, $this->allow_class['class3']))) {
+            return false;
+        }
+        $allow_class1 = implode(',', $this->allow_class['class1']);
+        $allow_class2 = implode(',', $this->allow_class['class2']);
+        $allow_class3 = implode(',', $this->allow_class['class3']);
+
+        $classnow = $class3 ? $class3 : ($class2 ? $class2 : $class1);
+        $_where = '';
+        $ps = '';
+
+        $_class = '(';
+        $_class .= $class1 ? " class1 = '{$class1}'" : " class1 IN ({$allow_class1}) ";
+        $_class .= $class2 ? " AND class2 = '{$class2}'" : " AND  class2 IN ({$allow_class2}) ";
+        $_class .= $class3 ? " AND class3 = '{$class3}'" : " AND  class3 IN ({$allow_class3}) ";
+        $_class .= ")";
+
         if ($class3) {
-            $classnow = $class3;
+            $_classother = "|-{$class1}-{$class2}-{$class3}-|";
         } elseif ($class2) {
-            $classnow = $class2;
-        } else {
-            $classnow = $class1;
+            #$_classother = "|-{$class1}-{$class2}-0-|";
+            $_classother = "|-{$class1}-{$class2}-";
+        } elseif ($class1) {
+            #$$_classother = "|-{$class1}-0-0-|";
+            $_classother = "|-{$class1}-";
         }
 
-        $ps = '';
-        $get_allow_column = $this->get_allow_column();
-        $get_allow_column = implode(',', $get_allow_column);
-        $where = $class1 ? " and class1 = '{$class1}'" : " AND class1 IN ({$get_allow_column}) ";
-        #$where = $class1 ? " and class1 = '{$class1}'" : ' and class1 = 0 ';
-        $where .= $class2 ? " and class2 = '{$class2}'" : '';
-        $where .= $class3 ? " and class3 = '{$class3}'" : '';
-        $where .= $keyword ? " and title like '%{$keyword}%'" : '';
+        //栏目筛选
+        if ($_classother) {
+            $_where .= " AND ($_class OR (classother like '%{$_classother}%') ) ";
+        } else {
+            $_where .= " AND $_class ";
+        }
+
+        //筛选
         switch ($search_type) {
             case 0:
                 break;
             case 1:
-                $where .= " and {$ps}displaytype = '0'";
+                $_where .= " AND {$ps}displaytype = '0'";
                 break;
             case 2:
-                $where .= " and {$ps}com_ok = '1'";
+                $_where .= " AND {$ps}com_ok = '1'";
                 break;
             case 3:
-                $where .= " and {$ps}top_ok = '1'";
+                $_where .= " AND {$ps}top_ok = '1'";
                 break;
         }
 
-        if ($class3) {
-            $classother = "|-{$class1}-{$class2}-{$class3}-|";
-        } elseif ($class2) {
-            #$classother = "|-{$class1}-{$class2}-0-|";
-            $classother = "|-{$class1}-{$class2}-";
-        } else {
-            #$classother = "|-{$class1}-0-0-|";
-            $classother = "|-{$class1}-";
-        }
+        //搜索
+        $_where .= $keyword ? " AND title like '%{$keyword}%'" : '';
 
-        $where .= " or classother like '%{$classother}%'";
-
+        //排序规则
         $met_class = $this->column(2, $this->module);
-
         $order = $this->list_order($met_class[$classnow]['list_order']);
         if ($orderby_hits) $order = "{$ps}hits {$orderby_hits}";
         if ($orderby_updatetime) $order = "{$ps}updatetime {$orderby_updatetime}";
 
-        $data = $this->json_list($where, $order);
+        $data = $this->json_list($_where, $order);
 
         foreach ($data as $key => $val) {
-            $val['url'] = $this->url($val, $this->module);
-            // $val['displaytype'] = $val['displaytype'];
-            // $state = array();
-            // $val['displaytype'] ? array_push($state,$_M['word']['displaytype2']) : '';
-            // strtotime($val['addtime']) > time() ? array_push($state,$_M['word']['timedrelease']) : '';
-            // $val['com_ok'] ? array_push($state,$_M['word']['recom']) : '';
-            // $val['top_ok'] ? array_push($state,$_M['word']['top']) : '';
-            // $var['state'] = $state;
-
             $row = array();
             $row['id'] = $val['id'];
             $row['no_order'] = $val['no_order'];
             $row['title'] = $val['title'];
-            $row['url'] = $val['url'];
+            $row['url'] = $this->url($val, $this->module);
             $row['imgurl'] = $val['imgurl'];
             $row['com_ok'] = $val['com_ok'];
             $row['top_ok'] = $val['top_ok'];
@@ -631,7 +552,16 @@ class product_admin extends news_admin
     public function json_return($data)
     {
         global $_M;
-        $this->tabledata->rdata($data);
+        if ($data) {
+            $this->tabledata->rdata($data);
+        } else {
+            $redata = array();
+            $redata['data'] = '';
+            $redata['draw'] = $_M['form']['draw'];
+            $redata['recordsTotal'] = 0;
+            $redata['recordsFiltered'] = 0;
+            jsoncallback($redata);
+        }
     }
 
     /**
@@ -755,7 +685,7 @@ class product_admin extends news_admin
     {
         global $_M;
         $copyid = parent::list_copy($id, $class1, $class2, $class3);
-        if($copyid){
+        if ($copyid) {
             //开启在线订购时
             if ($this->shop_exists) {
                 $this->shop->copy_product($id, $copyid);
@@ -773,7 +703,6 @@ class product_admin extends news_admin
     {
         return parent::copy_tolang($id, $module, $tolang, $new_class);
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

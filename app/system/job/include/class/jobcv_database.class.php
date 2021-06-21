@@ -26,7 +26,7 @@ class jobcv_database extends base_database
         return 'id|addtime|readok|customerid|jobid|lang|ip';
     }
 
-    public function del_by_id($id)
+    public function del_by_id($id = '')
     {
         global $_M;
         $query = "delete from {$_M['table']['plist']} where listid='$id' and lang='{$_M['lang']}' and module='6'";

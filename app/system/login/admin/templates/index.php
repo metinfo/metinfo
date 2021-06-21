@@ -22,7 +22,7 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
 <meta name="format-detection" content="telephone=no">
-<title data-title="{$word.metinfo}">{$met_title}</title>
+<title>{$met_title}</title>
 <meta name="generator" content="MetInfo {$c.metcms_v}" data-variable="{$url.site}|{$_M['lang']}|{$synchronous}|{$c.met_skin_user}||||">
 <link href="{$url.site}favicon.ico?{$favicon_filemtime}" rel="shortcut icon" type="image/x-icon">
 <link href="{$url.public_admin}css/basic_admin.css?{$basic_admin_css_filemtime}" rel='stylesheet' type='text/css'>
@@ -40,7 +40,7 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
         <a href="{$data.met_agents_linkurl}" title="{$word.metinfo}" target="_blank">
             <img src="{$data.met_agents_logo_login}?{$login_logo_filemtime}" alt="{$word.metinfo}" width="200">
         </a>
-        <form action="{$url.own_form}a=dologin" class="border-left pl-4 ml-5 met-login-form" style="border-color: #eee !important;" data-submit-ajax="1">
+        <form action="{$url.own_form}a=dologin" class="border-left pl-2 ml-4 met-login-form" style="border-color: #eee !important;" data-submit-ajax="1">
             <div class="row mb-4">
                 <label class="col-form-label" style="width: 100px;"></label>
                 <div class="mb-3">
@@ -62,13 +62,13 @@ $favicon_filemtime = filemtime(PATH_WEB."favicon.ico");
             <div class="row">
                 <label class="col-form-label pr-3 text-right" style="width: 100px;">{$word.loginusename}</label>
                 <div class="form-group mb-4">
-                    <input type="text" name="login_name" required class="form-control" style="width: 200px;">
+                    <input type="text" name="login_name" data-safety required class="form-control" style="width: 200px;">
                 </div>
             </div>
             <div class="row">
                 <label class="col-form-label pr-3 text-right" style="width: 100px;">{$word.loginpassword}</label>
                 <div class="form-group mb-4">
-                    <input type="password" name="login_pass" required class="form-control" style="width: 200px;">
+                    <input type="password" name="login_pass" data-safety required class="form-control" style="width: 200px;">
                 </div>
             </div>
             <if value="$c['met_login_code']">

@@ -38,9 +38,9 @@ class column_database extends database
         $langsql = $this->get_lang($lang);
         $query = "SELECT * FROM {$this->table} WHERE {$langsql} ORDER BY no_order ASC, id DESC";
         $data = DB::get_all($query);
-        $handle = load::sys_class('handle', 'new');
 
         if (defined('IN_ADMIN')) {
+            $handle = load::sys_class('handle', 'new');
             foreach ($data as $key => $val) {
                 $mod_name = $handle->mod_to_name($val['module']);
                 $query = "SELECT parent_name,ui_name FROM {$_M['table']['ui_list']} WHERE ui_page = '{$mod_name}'";
@@ -94,6 +94,14 @@ class column_database extends database
         return DB::get_all($query);
     }
 
+    public function get_first_column_by_module($module, $lang = '')
+    {
+        global $_M;
+        $langsql = $this->get_lang($lang);
+        $sql = "SELECT * FROM {$_M['table']['column']} WHERE  {$langsql} AND module = '{$module}' ORDER BY no_order";
+        return DB::get_one($sql);
+    }
+
     public function get_column_by_bigclass($bigclass, $lang = '')
     {
         global $_M;
@@ -101,6 +109,41 @@ class column_database extends database
         $query = "SELECT * FROM {$_M['table']['column']} WHERE {$langsql} AND bigclass='{$bigclass}'";
 
         return DB::get_all($query);
+    }
+
+    public function search_column($type = '', $lang ='', $mod = '' )
+    {
+        global $_M;
+        $fields = array('name', 'ctitle', 'keywords', 'content', 'description');
+        if (isset($type['title'])) {
+            $type['name'] = $type['title'];
+        }
+
+        $search = array();
+        foreach ($fields as $val) {
+            if ($type[$val]['status'] && is_string($type[$val]['info']) && $type[$val]['info'] != '') {
+                $search []= " {$val} like '%{$type[$val]['info']}%' ";
+            }
+        }
+
+
+        $langsql = $this->get_lang($lang);
+        $sql = "SELECT * FROM {$this->table} WHERE {$langsql} AND ";
+
+        if (is_numeric($mod)) {
+            $sql .= " module = '{$mod}' ";
+        }
+
+        if ($search) {
+            $search_sql = ' AND (';
+            $search_sql .= implode(' OR ', $search);
+            $search_sql .= ') ';
+            $sql .= $search_sql;
+        }
+
+        $sql .= "ORDER BY no_order ASC, id DESC";
+        $data = DB::get_all($sql);
+        return $data;
     }
 
     /*更新表数据*/

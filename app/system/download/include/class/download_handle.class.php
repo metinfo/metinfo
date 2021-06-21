@@ -20,7 +20,7 @@ class download_handle extends base_handle
      * @param  string $content 内容数组
      * @return array            处理过后数组
      */
-    public function one_para_handle($content)
+    public function one_para_handle($content = array())
     {
         global $_M;
         $content = parent::one_para_handle($content);
@@ -28,7 +28,7 @@ class download_handle extends base_handle
         if ($content['downloadaccess']) {
             $url = urlencode(load::sys_class('auth', 'new')->encode($content['downloadurl']));
             $groupid = urlencode(load::sys_class('auth', 'new')->encode($content['downloadaccess']));
-            $content['downloadurl'] = "{$_M['url']['entrance']}?m=include&c=access&a=dodown&url={$url}&groupid={$groupid}";
+            $content['downloadurl'] = "{$_M['url']['entrance']}?m=include&c=access&a=dodown&url={$url}&groupid={$groupid}&lang={$_M['lang']}";
         }
         return $content;
     }

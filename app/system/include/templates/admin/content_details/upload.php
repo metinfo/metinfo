@@ -44,7 +44,7 @@ defined('IN_MET') or exit('No permission');
 		</div>
 		<if value="$data['n'] eq 'product' && $upload['name'] eq 'imgurl'">
 		<div class="mb-2">
-			<button type="button" class="btn btn-primary" data-target=".product-video-collapse" data-toggle="collapse">{$word.show_video}<i class="icon fa-angle-right ml-2"></i></button>
+			<button type="button" class="btn btn-primary" data-target=".product-video-collapse" data-toggle="collapse">{$word.show_video}<i class="icon fa-caret-right ml-2"></i></button>
 			<a href="{$url.site_admin}#/safe/?head_tab_active=0" class="btn btn-outline-primary ml-2" target="_blank">{$word.video_switch}</a>
 		</div>
 		<div class="collapse product-video-collapse">

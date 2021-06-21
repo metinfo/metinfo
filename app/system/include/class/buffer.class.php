@@ -77,6 +77,11 @@ class buffer
         }
     }
 
+    public static function clearTemp()
+    {
+        deldir(PATH_WEB . 'cache/templates', 1);
+    }
+
     public static function getPage($tplFile)
     {
         global $_M;

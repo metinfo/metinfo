@@ -1,4 +1,5 @@
-/*!
+/**
+ * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  * M['weburl']      网站网址
  * M['lang']        网站语言
  * M['tem']         模板目录路径
