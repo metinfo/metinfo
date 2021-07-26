@@ -128,7 +128,7 @@ class index extends admin
                     $mlist['info']['name'] = $langval['name'];
                     $mlist['info']['field'] = $langval['mark'];
                     foreach ($module as $modulekey => $moduleval) {
-                        if (in_array($modulekey, array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13))) {
+                        if (in_array($modulekey, array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13)) || $modulekey > 1000) {
                             foreach ($moduleval['class1'] as $class1val) {
                                 $list = array();
                                 $list['name'] = $class1val['name'];

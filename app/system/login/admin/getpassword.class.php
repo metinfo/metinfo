@@ -220,8 +220,10 @@ class getpassword extends admin
         global $_M;
         $redata = array();
         $admin_id = $form['admin_id'];
-        ##$admin_list = DB::get_one("SELECT * FROM {$_M['table']['admin_table']} WHERE admin_id='{$admin_id}' and usertype='3'");
-        $admin_list = DB::get_one("SELECT * FROM {$_M['table']['admin_table']} WHERE admin_id='{$admin_id}'");
+
+        //$sql = "SELECT * FROM {$_M['table']['admin_table']} WHERE admin_id='{$admin_id}' and usertype='3'";
+        $sql = "SELECT * FROM {$_M['table']['admin_table']} WHERE admin_id='{$admin_id}'";
+        $admin_list = DB::get_one($sql);
         if ($admin_list && $admin_list['admin_mobile'] == '') {
             $redata['status'] = 0;
             $redata['msg'] = $_M['word']['password6'];
@@ -233,8 +235,9 @@ class getpassword extends admin
                 $redata['msg'] = $_M['word']['password7'];
                 $this->ajaxReturn($redata);
             }
-            #$admin_list = DB::get_one("SELECT * FROM {$_M['table']['admin_table']} WHERE admin_mobile='{$admin_id}' and usertype='3'");
-            $admin_list = DB::get_one("SELECT * FROM {$_M['table']['admin_table']} WHERE admin_mobile='{$admin_id}'");
+
+            $sql = "SELECT * FROM {$_M['table']['admin_table']} WHERE admin_mobile='{$admin_id}'";
+            $admin_list = DB::get_one($sql);
             if (!$admin_list) {
                 $redata['status'] = 0;
                 $redata['msg'] = $_M['word']['password8'];
@@ -269,11 +272,9 @@ class getpassword extends admin
             $string = urlencode($string);
 
             //写入数据库
-            $query = "delete from {$_M['table']['otherinfo']} WHERE lang = 'met_cnde'";
+            $query = "delete from {$_M['table']['otherinfo']} WHERE lang='met_cnde'";
             DB::query($query);
-            $query = "INSERT INTO {$_M['table']['otherinfo']} SET
-    						authpass = '{$cnde}',
-    						lang     = 'met_cnde'";
+            $query = "INSERT INTO {$_M['table']['otherinfo']} SET authpass='{$cnde}',lang='met_cnde'";
             $res = DB::query($query);
 
             if ($res) {
@@ -281,9 +282,10 @@ class getpassword extends admin
                 $description = $_M['word']['password11'] . '<br/><span class="color999">' . $_M['word']['password12'] . '</span>';
 
                 logs::addAdminLog('admin_getpassword', 'sendsms', 'ok', 'getPasswordByMobile');
-                $redata['url'] = $_M['url']['own_form'] . "a=doCodeCheck&abt_type=1&p={$string}";
+                $redata['url'] = $_M['url']['own_form'] . "a=doCodeCheck&langset={$form['langset']}&abt_type=1&p={$string}";
                 $redata['description'] = $description;
                 $redata['mobile'] = $mobile;
+                $redata['langset'] = $form['langset'];
                 $redata['msg'] = $_M['word']['password31'];
                 $redata['abt_type'] = 1;
                 $redata['status'] = 1;
@@ -327,7 +329,6 @@ class getpassword extends admin
     {
         global $_M;
         $form = $_M['form'];
-
         $string = urlencode($form['p']);
         $this->data['url'] = $_M['url']['own_form'] . "a=doCodeCheckSave&abt_type=1&p={$string}";
         $this->data['p'] = $form['p'];
@@ -342,6 +343,8 @@ class getpassword extends admin
     {
         global $_M;
         $form = $_M['form'];
+        $langset = $form['langset'];
+
         if ($form['p'] && $form['code']) {
             //解密
             $array = explode('.', authcode($form['p'], 'DECODE', $_M['config']['met_webkeys']));
@@ -364,11 +367,12 @@ class getpassword extends admin
 
             //短信验证码核实
             $cnde = $form['code'] . '-' . $nber . '-' . $admin_id;
-            $codeok = DB::get_one("SELECT * FROM {$_M['table']['otherinfo']} WHERE authpass='{$cnde}' and lang='met_cnde'");
+            $sql = "SELECT * FROM {$_M['table']['otherinfo']} WHERE authpass='{$cnde}' and lang='met_cnde'";
+            $codeok = DB::get_one($sql);
 
             if ($codeok) {
                 logs::addAdminLog('admin_getpassword', 'CodeCheck', 'ok', 'doCodeCheckSave');
-                $redata['url'] = "{$_M['url']['own_form']}&a=doResetpass&abt_type=1&p={$string}&admin_name={$admin_id}&code={$form['code']}";
+                $redata['url'] = "{$_M['url']['own_form']}&a=doResetpass&langset={$langset}&abt_type=1&p={$string}&admin_name={$admin_id}&code={$form['code']}";
                 $redata['admin_name'] = $admin_id;
                 $redata['abt_type'] = 1;
                 $redata['status'] = 1;

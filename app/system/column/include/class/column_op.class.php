@@ -21,71 +21,74 @@ class column_op
     }
 
     /**
-     * 对当前管理员有权限操作的栏目信息进行整理；
-     * @param  int $type 1；按模块生成;2：按栏目生成
-     * @return array  $column  返回把记录当前管理员有权限操作的栏目信息的数组按模块归类或栏目归类整理后的数组
+     * 对当前管理员有权限操作的栏目信息进行整理
+     * @param string $lang
+     * @return mixed
      */
-    public function get_sorting_by_lv($power = 1, $lang = '')
+    public function get_sorting_by_lv($lang = '')
     {
         global $_M;
         $information = load::mod_class('column/column_database', 'new')->get_all_column_by_lang($lang);
         //$power_admin = background_privilege();
         foreach ($information as $key => $val) {
-            $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($val['id']);
-
-            if ($val['classtype'] == 1) {
-                if (!is_have_power('c' . $class123['class1']['id'])) {
+            //为外部栏目
+            if ($val['module'] == 0 || 1) {
+                if (!is_have_power('c' . $val['id'])) {
                     continue;
                 }
-                $sorting['class1'][$key] = $information[$key];
-            }
-
-            if ($val['classtype'] == 2) {
-                if (!is_have_power('c' . $class123['class2']['id'])) {
-                    continue;
+                $classtype = 'class' . $val['classtype'];
+                if ($val['classtype'] > 1) {
+                    $sorting[$classtype][$val['bigclass']][$key] = $val;
+                }else{
+                    $sorting[$classtype][$key] = $val;
                 }
-                $sorting['class2'][$val['bigclass']][$key] = $information[$key];
-            }
-
-            if ($val['classtype'] == 3) {
-                if (!is_have_power('c' . $class123['class3']['id'])) {
-                    continue;
-                }
-                $sorting['class3'][$val['bigclass']][$key] = $information[$key];
-            }
-        }
-        return $sorting;
-    }
-
-    public function get_lv_array($power = 1, $lang = '')
-    {
-        global $_M;
-        $information = load::mod_class('column/column_database', 'new')->get_all_column_by_lang($lang);
-        //$power_admin = background_privilege();
-        foreach ($information as $key => $val) {
-            if ($power) {
-                $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($val['id']);
-                if (!is_have_power('c' . $class123['class1']['id'])) {
-                    continue;
-                }
-            }
-            if ($val['classtype'] == 1) {
-                $sorting[0] = $information[$key];
-            }
-            if ($val['classtype'] == 2) {
-                $sorting[$val['bigclass']][$key] = $information[$key];
-            }
-            if ($val['classtype'] == 3) {
-                $sorting[$val['bigclass']][$key] = $information[$key];
+                continue;
             }
         }
         return $sorting;
     }
 
     /**
-     * 对当前管理员有权限操作的栏目信息进行整理；
-     * @param  int $type 1；按模块生成;2：按栏目生成
-     * @return array  $column  返回把记录当前管理员有权限操作的栏目信息的数组按模块归类或栏目归类整理后的数组
+     *
+     * @param string $lang
+     */
+    public function lv_class($lang = '')
+    {
+        $column_list = load::mod_class('column/column_database', 'new')->get_all_column_by_lang($lang);
+
+        $list = array();
+        foreach ($column_list as $key => $val) {
+            $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($val['id']);
+
+            if ($class123['class1']) {
+                if (!is_have_power('c' . $class123['class1']['id'])) {
+                    continue;
+                }
+                $list['class1'][$class123['class1']['id']] = $class123['class1'];
+             }
+
+            if ($class123['class2']) {
+                if (!is_have_power('c' . $class123['class2']['id'])) {
+                    continue;
+                }
+                $list['class2'][$class123['class2']['id']] = $class123['class2'];
+            }
+
+            if ($class123['class3']) {
+                if (!is_have_power('c' . $class123['class3']['id'])) {
+                    continue;
+                }
+                $list['class3'][$class123['class3']['id']] = $class123['class3'];
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param bool $power
+     * @param string $lang
+     * @return mixed
      */
     public function get_sorting_by_module($power = true, $lang = '')
     {
@@ -99,7 +102,8 @@ class column_op
                     continue;
                 }
             }
-            if ($val['releclass'] != 0) {
+
+            if ($val['releclass'] != 0 && in_array($val['module'], array(1,2,3,4,5,6))) {
                 $sorting[$val['module']]['class1'][$key] = $information[$key];
                 $column_classtype[] = $val['id'];
             } else {

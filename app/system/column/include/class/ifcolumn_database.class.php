@@ -26,11 +26,22 @@ class ifcolumn_database extends database
     public function getLeftColumn()
     {
         global $_M;
-        // 会员侧栏添加的数据
+        //会员中心侧栏添加的数据
+        $query = "SELECT * FROM {$_M['table']['applist']} WHERE no != 0 ORDER BY id ";
+        $app_list = DB::get_all($query);
+        $app_no = array();
+        foreach ($app_list as $app) {
+            $app_no[] = $app['no'];
+        }
+
         $query = "SELECT * FROM {$_M['table']['ifmember_left']} WHERE lang='{$_M['lang']}' AND  effect = 1 ORDER BY `no`,`own_order`";
         $navigation = DB::get_all($query);
+
         $data = array();
         foreach ($navigation as $key => $val) {
+            if (!in_array($val['no'], $app_no)) {
+                continue;
+            }
             if ($val['columnid']) {
                 $query = "SELECT * FROM {$_M['table']['column']} WHERE id = '{$val['columnid']}' and lang='{$_M['lang']}'";
                 $column = DB::get_one($query);
@@ -50,7 +61,6 @@ class ifcolumn_database extends database
         }
         return $data;
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

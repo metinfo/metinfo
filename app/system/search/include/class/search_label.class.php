@@ -107,12 +107,16 @@ EOT;
                 $para = urlencode($_M['form']['para']);
                 $order_url .= "&para=" . $para;
             }
-            $search['order']['title']['name'] = $_M['word']['Title'];
-            $search['order']['title']['url'] = $order_url . '&order=title';
+            //内容title
+            /*$search['order']['title']['name'] = $_M['word']['Title'];
+            $search['order']['title']['url'] = $order_url . '&order=title';*/
+            //推荐
             $search['order']['com']['name'] = $_M['word']['listcom'];
             $search['order']['com']['url'] = $order_url . '&order=com';
+            //热门
             $search['order']['hit']['name'] = $_M['word']['listhot'];
             $search['order']['hit']['url'] = $order_url . '&order=hit';
+            //最新
             $search['order']['new']['name'] = $_M['word']['listnew'];
             $search['order']['new']['url'] = $order_url . '&order=new';
             $order_para['order'] = $search['order'];

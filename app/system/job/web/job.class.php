@@ -88,7 +88,7 @@ class job extends news
                     if ($ret['path'] != '') {
                         $info[$key] = $ret['path'];
                     } else {
-                        okinfo('javascript:history.back();', "{$_M['word']['opfailed']} [{$ret['error']}]");
+                        okinfo('-1', "{$_M['word']['opfailed']} [{$ret['error']}]");
                     }
                 }
             }
@@ -130,7 +130,7 @@ class job extends news
             }
 
             if (strstr($content, $word)) {
-                okinfo('javascript:history.back();', $word);
+                okinfo('-1', $word);
                 die();
             }
         }
@@ -156,7 +156,7 @@ class job extends news
         $conlum_configs = $this->getClsaaConfig($classnow);
         if ($timeok <= $conlum_configs['met_cv_time'] && $timeok2 <= $conlum_configs['met_cv_time']) {
             $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_cv_time'] . "{$_M['word']['Feedback2']}";
-            okinfo('javascript:history.back();', $fd_time);
+            okinfo('-1;', $fd_time);
         } else {
             return true;
         }
@@ -176,7 +176,7 @@ class job extends news
         $s_token = load::sys_class('session', 'new')->get("job_form_token_{$id}");
         $form_token = $_M['form']['form_token'];
         if (!$form_token || $s_token != $form_token) {
-            okinfo('javascript:history.back();', 'forbidden');
+            okinfo('-1;', 'forbidden');
             return false;
         }
         return true;
@@ -339,12 +339,12 @@ class job extends news
                 if ($para[$val]['type'] == 5) {
                     if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size']) {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
-                        okinfo('javascript:history.back();', $info);
+                        okinfo('-1;', $info);
                     }
                 } else {
                     if ($_M['form']['para' . $val] == '') {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
-                        okinfo('javascript:history.back();', $info);
+                        okinfo('-1;', $info);
                     }
                 }
             }

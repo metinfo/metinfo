@@ -374,7 +374,8 @@ class base_label
             if ($_M['form']['class1']) $search_str .= "&class1={$_M['form']['class1']}";
             if ($_M['form']['class2']) $search_str .= "&class2={$_M['form']['class2']}";
             if ($_M['form']['class3']) $search_str .= "&class3={$_M['form']['class3']}";
-            $search_str .= "&search={$_M['form']['search']}";
+            $search = urlencode($_M['form']['search']);
+            $search_str .= "&search={$search}";
             if ($_M['form']['search_module']) $search_str .= "&search_module={$_M['form']['search_module']}";
             if ($_M['form']['searchword']) $search_str .= "&searchword={$_M['form']['searchword']}";
             if ($_M['form']['content']) $search_str .= "&content={$_M['form']['content']}";

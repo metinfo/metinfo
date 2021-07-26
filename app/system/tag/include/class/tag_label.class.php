@@ -100,7 +100,6 @@ class tag_label
             }
             if (method_exists(load::sys_class('label', 'new')->get($module), 'get_list_page_html')) {
                 return load::sys_class('label', 'new')->get($module)->get_list_page_html($classnow, $pagenow, $page_type);
-                return false;
             }
         } else {
             return false;

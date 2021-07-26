@@ -108,12 +108,15 @@ class web extends common
     protected function load_domain()
     {
         global $_M;
+        if ($_M['lang']) {
+            return;
+        }
 
-        $domain = trim(str_replace($_SERVER['REQUEST_SCHEME'] . '://', '', $_M['url']['site']), '/');
-
+        $domain = trim(str_replace($_SERVER['REQUEST_SCHEME'] . '://', '', $_M['url']['web_site']), '/');
         if ($domain) {
             foreach ($_M['langlist']['web'] as $key => $val) {
-                if ($val['link'] == $domain) {
+                $link = trim(str_replace(array('http://', 'https://'), '', $val['link']),'/');
+                if ($link == $domain) {
                     $_M['lang'] = $val['mark'];
                 }
             }
@@ -414,7 +417,7 @@ class web extends common
     protected function classExt($c = array())
     {
         global $_M;
-        $class_ext = load::mod_class('column_handle.class.php', 'new')->classExt($c);
+        $class_ext = load::mod_class('column/column_handle', 'new')->classExt($c);
 
         //分页条数
         $list_length = $class_ext['list_length'] ? $class_ext['list_length'] : 8;

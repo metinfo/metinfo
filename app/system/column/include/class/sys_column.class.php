@@ -299,6 +299,10 @@ class sys_column
             }
         }
 
+        if ($column['module'] > 1000) {//应用栏目
+            $action['columnmove'] = '';
+        }
+
         return $action;
     }
 

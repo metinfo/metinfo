@@ -46,7 +46,7 @@ class hits extends web
         if (!$_M['form']['list']) {
             $hits_list['hits']++;
 
-            $query = "update {$_M['table'][$met_hits]} SET hits='$hits_list[hits]' where id='{$_M['form']['vid']}'";
+            $query = "update {$_M['table'][$met_hits]} SET hits='{$hits_list['hits']}' where id='{$_M['form']['vid']}'";
             DB::query($query);
         }
         if ($_M['form']['ajax']) {

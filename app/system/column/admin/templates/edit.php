@@ -204,7 +204,7 @@ $data['list']['thumb_detail_default']=explode('|', $data['list']['thumb_detail_d
 			</dt>
 			<dd>
 				<div class='form-group clearfix'>
-					<input type="text" name="index_num" value="{$data.list.index_num}" class="form-control">
+					<input type="text" name="index_num" value="{$data.list.index_num}" class="form-control" data-fv-integer="true">
 					<span class="text-help">{$word.columnexplain7}</span>
 				</div>
 			</dd>

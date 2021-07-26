@@ -35,7 +35,11 @@ class upfile extends common
             $_M['word'][$val['name']] = trim($val['value']);
         }
 
-        $this->maxsize = 1073741824;
+        //上传文件大小限制
+        $php_upload_max_size = min(intval(get_cfg_var('upload_max_filesize')), intval(get_cfg_var('post_max_size')), intval(get_cfg_var('memory_limit')));
+        $upload_max_size = is_numeric($php_upload_max_size) ? $php_upload_max_size : 8;
+        $this->maxsize = $upload_max_size * 1048576;
+
         $this->set_upfile();
     }
 
@@ -149,9 +153,10 @@ class upfile extends common
         if (!is_writable(PATH_WEB . "upload")) {
             return self::_error("directory ['" . PATH_WEB . "upload'] can not write");
         }
-        //文件大小是否正确{}
+        //文件大小是否正确
         if ($filear["size"] > $this->maxsize) {
-            return self::_error("{$_M['word']['upfileFile']}" . $filear["name"] . " {$_M['word']['upfileMax']} {$_M['word']['upfileTip1']}");
+            $md = ceil($this->maxsize / 1048576) . 'M';
+            return self::_error("{$_M['word']['upfileFile']}" . $filear["name"] . " {$_M['word']['upfileMax']} {$md} {$_M['word']['upfileTip1']}");
         }
         //文件后缀是否为合法后缀
         $this->getext($filear["name"]); //获取允许的后缀
@@ -283,9 +288,10 @@ class upfile extends common
         if (!is_writable(PATH_WEB . "upload")) {
             return self::_error("directory ['" . PATH_WEB . "upload'] can not write");
         }
-        //文件大小是否正确{}
+        //文件大小是否正确
         if ($filear["size"] > $this->maxsize) {
-            return self::_error("{$_M['word']['upfileFile']}" . $filear["name"] . " {$_M['word']['upfileMax']} {$_M['word']['upfileTip1']}");
+            $md = ceil($this->maxsize / 1048576) . 'M';
+            return self::_error("{$_M['word']['upfileFile']}" . $filear["name"] . " {$_M['word']['upfileMax']} {$md} {$_M['word']['upfileTip1']}");
         }
         //文件后缀是否为合法后缀
         $this->getext($filear["name"]); //获取允许的后缀

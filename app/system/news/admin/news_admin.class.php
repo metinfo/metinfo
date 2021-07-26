@@ -321,6 +321,7 @@ class news_admin extends base_admin
         if (($class1 && !in_array($class1, $this->allow_class['class1'])) || ($class2 && !in_array($class2, $this->allow_class['class2'])) || ($class3 && !in_array($class3, $this->allow_class['class3']))) {
             return false;
         }
+
         $allow_class1 = implode(',', $this->allow_class['class1']);
         $allow_class2 = implode(',', $this->allow_class['class2']);
         $allow_class3 = implode(',', $this->allow_class['class3']);

@@ -62,7 +62,7 @@ class language_web extends admin
             $this->error($_M['word']['js41']);
         }
 
-        $query = "SELECT no_order FROM {$_M['table']['lang']} WHERE no_order='{$order}' AND mark!='{$mark}' and lang！= 'metinfo'";
+        $query = "SELECT no_order FROM {$_M['table']['lang']} WHERE no_order='{$order}' AND mark!='{$mark}' and lang!= 'metinfo'";
         if (DB::get_one($query)) {
             //写日志
             logs::addAdminLog('langwebmanage', 'edite', 'langnameorder', 'doSaveEdite');

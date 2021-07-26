@@ -57,7 +57,7 @@ class message extends web
 
         $met_msg_ok = $conlum_configs['met_msg_ok'];
         if (!$met_msg_ok) {
-            okinfo('javascript:history.back();', "{$_M['word']['MessageInfo5']}");
+            okinfo('-1', "{$_M['word']['MessageInfo5']}");
         }
 
         //图形验证码
@@ -120,7 +120,7 @@ class message extends web
             }
 
             if (strstr($content, $word)) {
-                okinfo('javascript:history.back();', $word);
+                okinfo('-1', $word);
                 die();
             }
         }
@@ -150,7 +150,7 @@ class message extends web
 
         if ($timeok <= $conlum_configs['met_msg_time'] && $timeok2 <= $conlum_configs['met_msg_time']) {
             $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_msg_time'] . "{$_M['word']['Feedback2']}";
-            okinfo('javascript:history.back();', $fd_time);
+            okinfo('-1', $fd_time);
         } else {
             return true;
         }
@@ -171,7 +171,7 @@ class message extends web
         $s_token = load::sys_class('session', 'new')->get("msg_form_token_{$id}");
         $form_token = $_M['form']['form_token'];
         if (!$form_token || $s_token != $form_token) {
-            okinfo('javascript:history.back();', 'forbidden');
+            okinfo('-1', 'forbidden');
             return false;
         }
         return true;
@@ -299,12 +299,12 @@ class message extends web
                 if ($para[$val]['type'] == 5) {
                     if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size']) {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
-                        okinfo('javascript:history.back();', $info);
+                        okinfo('-1', $info);
                     }
                 } else {
                     if ($_M['form']['para' . $val] == '') {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
-                        okinfo('javascript:history.back();', $info);
+                        okinfo('-1', $info);
                     }
                 }
             }

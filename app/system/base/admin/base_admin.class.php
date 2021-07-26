@@ -623,55 +623,25 @@ class base_admin extends admin
     }
 
     /**
-     * 获取允许访问的class1ID
-     * @return array
-     */
-    public function get_allow_column($class_type = 1)
-    {
-        if (!is_number($class_type)) {
-            $class_type = 1;
-        }
-        $column_list = load::mod_class('column/column_op', 'new')->get_sorting_by_lv();
-        $list = array();
-
-        switch ($class_type) {
-            case 1:
-                foreach ($column_list['class1'] as $class) {
-                    $list[] = $class['id'];
-                }
-                break;
-            case 2:
-                foreach ($column_list['class2'] as $class1) {
-                    foreach ($class1 as $class2) {
-                        $list[] = $class2['id'];
-                    }
-                }
-                break;
-            case 3:
-                foreach ($column_list['class3'] as $class2) {
-                    foreach ($class2 as $class3) {
-                        $list[] = $class3['id'];
-                    }
-                }
-                break;
-        }
-        return $list;
-    }
-
-    /**
      * 栏目权限列表
      */
     public function getAllowClass()
     {
-        $allow_class1 = $this->get_allow_column(1);
-        $allow_class2 = $this->get_allow_column(2);
-        $allow_class2[] = 0;
-        $allow_class3 = $this->get_allow_column(3);
-        $allow_class3[] = 0;
+        $column_list = load::mod_class('column/column_op', 'new')->lv_class();
+        $id_list = array();
+        foreach ($column_list['class1'] as $class) {
+            $id_list['class1'][] = $class['id'];
+        }
+        foreach ($column_list['class2'] as $class2) {
+            $id_list['class2'][] = $class2['id'];
+        }
+        $id_list['class2'][] = 0;
+        foreach ($column_list['class3'] as $class3) {
+            $id_list['class3'][] = $class3['id'];
+        }
+        $id_list['class3'][] = 0;
 
-        $this->allow_class['class1'] = $allow_class1;
-        $this->allow_class['class2'] = $allow_class2;
-        $this->allow_class['class3'] = $allow_class3;
+        $this->allow_class =  $id_list;
     }
 
     /**

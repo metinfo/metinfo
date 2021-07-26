@@ -682,7 +682,7 @@ class admin extends common
         );
         $res = api_curl($url, $data);
         $res = json_decode($res, true);
-        
+
         if ($res['code'] == 0) {
             $data = $res['data'];
             if(isset($data['license'])){
@@ -749,6 +749,50 @@ class admin extends common
     }
 
     /**
+     * @param string $dir
+     * @return array
+     */
+    protected function get_plugins_license_by_dir($dir = '')
+    {
+        global $_M;
+        $list = array();
+        $suffix = strstr($dir, 'app/system/include/class/') || strstr($dir, 'app/system/include/module/') ? 'php' : 'js';
+        $handle = scan_dir($dir);
+        sort($handle, SORT_FLAG_CASE | SORT_NATURAL);
+        foreach ($handle as $row) {
+            $path = PATH_WEB . $row;
+            if (is_dir($path)) {
+                if (file_exists($path . '/LICENSE')) {
+                    $license = array();
+                    $license['name'] = $row . '/';
+                    $license['license_url'] = $row . '/LICENSE';
+                    $list[] = $license;
+                } else {
+                    $handle_2 = scan_dir($path);
+                    sort($handle_2, SORT_FLAG_CASE | SORT_NATURAL);
+                    foreach ($handle_2 as $row2) {
+                        if (strstr($row2, 'LICENSE')) {
+                            $license = array();
+                            $license['name'] = str_replace(array('.LICENSE', '-LICENSE', '.MIT', '.LGPLv2.1'), '', $row2) . '.' . $suffix;
+                            $license['license_url'] = $row2;
+                            $list[] = $license;
+                        }
+                    }
+                }
+            } else {
+                if (strstr($row, 'LICENSE')) {
+                    $license = array();
+                    $license['name'] = str_replace(array('.LICENSE', '-LICENSE', '.MIT', '.LGPLv2.1'), '', $row) . '.' . $suffix;
+                    $license['license_url'] = $row;
+                    $list[] = $license;
+                }
+            }
+        }
+
+        return $list;
+    }
+
+    /**
      * 获取系统插件开源许可协议
      * @param string $dir
      * @param int $level
@@ -760,40 +804,22 @@ class admin extends common
         if (!$_M['config']['met_agents_metmsg']) {//显示官方信息
             return;
         }
-
-        $dir = PATH_PUBLIC . 'plugins/';
-
-        $list = array();
-        $handle = scan_dir($dir);
-        foreach ($handle as $row) {
-            $path = PATH_WEB . $row;
-            if (is_dir($path)) {
-                if(file_exists($path.'/LICENSE')){
-                    $license = array();
-                    $license['name'] = $row . '/';
-                    $license['license_url'] = $row . '/LICENSE';
-                    $list[] = $license;
-                }else{
-                    $handle_2 = scan_dir($path);
-                    foreach ($handle_2 as $row2) {
-                        if (strstr($row2, 'LICENSE')) {
-                            $license = array();
-                            $license['name'] = str_replace('.LICENSE', '.js', $row2);
-                            $license['license_url'] = $row2;
-                            $list[] = $license;
-                        }
-                    }
-                }
-            } else{
-                if (strstr($row, 'LICENSE')) {
-                    $license = array();
-                    $license['name'] = str_replace('.LICENSE', '.js', $row);
-                    $license['license_url'] = $row;
-                    $list[] = $license;
-                }
+        $dir_list = array(
+            PATH_PUBLIC . 'plugins/',
+            PATH_PUBLIC . 'web/plugins/',
+            PATH_PUBLIC . 'admin_old/plugins/',
+            PATH_PUBLIC . 'fonts/',
+            PATH_SYS_CLASS,
+            PATH_SYS_MODULE
+        );
+        $list = '';
+        foreach ($dir_list as $key => $value) {
+            if ($list) {
+                $list = array_merge($list, $this->get_plugins_license_by_dir($value));
+            } else {
+                $list = $this->get_plugins_license_by_dir($value);
             }
         }
-
         return $list;
     }
 

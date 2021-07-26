@@ -14,10 +14,10 @@ $license_data=$data['handle'];
 		<tr>
 			<th>开源代码许可协议</th>
 		</tr>
-        <list data="$license_data">
+        <list data="$license_data" num="1000">
         <tr>
             <td>
-                <a href="javascript:;" <if value="substr($val['name'],-1) neq '/'">data-url="{$val.license_url}"</if>>{$val.name}</a>
+                <a href="javascript:;" <if value="substr($val['name'],-1) neq '/'">data-modal-title="{$val.license_url}"</if>>{$val.name}</a>
             </td>
         </tr>
         </list>

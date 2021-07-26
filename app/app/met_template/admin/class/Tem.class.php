@@ -133,7 +133,7 @@ class Tem
             DB::insert($_M['table']['ui_config'], $g);
         }
         self::downloadParse();
-        $this->createSkin($skin_name);
+        $this->createSkin($skin_name, $config);
 
         return $uilist;
     }
@@ -622,7 +622,7 @@ class Tem
         }
     }
 
-    private function createSkin($skin_name = '')
+    private function createSkin($skin_name = '',$config = array())
     {
         global $_M;
         $query = "SELECT * FROM {$_M['table']['skin_table']} WHERE skin_name = '{$skin_name}'";
@@ -631,12 +631,13 @@ class Tem
             return $has;
         }
 
+        $ver = isset($config['version']) ? $config['version'] : '1.0';
         $data = array(
             'skin_name' => $skin_name,
             'skin_file' => $skin_name,
             'skin_info' => '',
             'devices' => 0,
-            'ver' => '1.0',
+            'ver' => $ver,
         );
 
         return DB::insert($_M['table']['skin_table'], $data);

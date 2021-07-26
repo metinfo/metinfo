@@ -1302,11 +1302,11 @@ class update_database extends database
         if (!file_exists(PATH_WEB . 'app/app/shop')) {
             $query = "DELETE FROM {$_M['table']['applist']} WHERE no = 10043";
             DB::query($query);
-
             $query = "DELETE FROM {$_M['table']['app_config']} WHERE appno = 10043";
             DB::query($query);
-
             $query = "DELETE FROM {$_M['table']['app_plugin']} WHERE no = 10043";
+            DB::query($query);
+            $query = "DELETE FROM {$_M['table']['ifmember_left']} WHERE no = 10043";
             DB::query($query);
         } else {
             $file = PATH_WEB . 'app/app/shop/admin/install.class.php';
@@ -1319,14 +1319,19 @@ class update_database extends database
             }
         }
 
-        /*if (!file_exists(PATH_WEB . 'app/system/pay')) {
+        if (!file_exists(PATH_WEB . 'app/system/pay')) {
             $query = "DELETE FROM {$_M['table']['applist']} WHERE no = 10080";
             DB::query($query);
             $query = "DELETE FROM {$_M['table']['app_config']} WHERE appno = 10080";
             DB::query($query);
+            $query = "DELETE FROM {$_M['table']['app_plugin']} WHERE no = 10080";
+            DB::query($query);
+            $query = "DELETE FROM {$_M['table']['ifmember_left']} WHERE no = 10080";
+            DB::query($query);
             $query = "DELETE FROM {$_M['table']['pay_config']}";
             DB::query($query);
-        } else {
+        }
+        /*else {
             $file = PATH_WEB . 'app/system/pay/admin/install.class.php';
             if (file_exists($file)) {
                 include $file;

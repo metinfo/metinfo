@@ -65,7 +65,7 @@ class feedback extends web
         global $_M;
         $classnow = $info['id'];
         if (!$classnow) {
-            okinfo(HTTP_REFERER, $_M['word']['dataerror']);
+            okinfo('-1', $_M['word']['dataerror']);
         }
 
         $conlum_configs = $this->getClsaaConfig($classnow);
@@ -90,7 +90,7 @@ class feedback extends web
                     if ($ret['path'] != '') {
                         $info[$key] = $ret['path'];
                     } else {
-                        okinfo('javascript:history.back();', "{$_M['word']['opfailed']} [{$ret['error']}]");
+                        okinfo('-1', "{$_M['word']['opfailed']} [{$ret['error']}]");
                     }
                 }
             }
@@ -157,7 +157,7 @@ class feedback extends web
             }
 
             if (strstr($content, $word)) {
-                okinfo('javascript:history.back();', $word);
+                okinfo('-1', $word);
                 die();
             }
         }
@@ -189,7 +189,7 @@ class feedback extends web
 
         if ($timeok <= $conlum_configs['met_fd_time'] && $timeok2 <= $conlum_configs['met_fd_time']) {
             $fd_time = "{$_M['word']['Feedback1']}" . $conlum_configs['met_fd_time'] . "{$_M['word']['Feedback2']}";
-            okinfo('javascript:history.back();', $fd_time);
+            okinfo('-1', $fd_time);
         } else {
             return true;
         }
@@ -209,7 +209,7 @@ class feedback extends web
         $s_token = load::sys_class('session', 'new')->get("fd_form_token_{$id}");
         $form_token = $_M['form']['form_token'];
         if (!$form_token || $s_token != $form_token) {
-            okinfo('javascript:history.back();', 'forbidden');
+            okinfo('-1', 'forbidden');
         }
         return true;
     }
@@ -347,12 +347,12 @@ class feedback extends web
                 if ($para[$val]['type'] == 5) {
                     if ($_FILES['para' . $val]['name'] == '' || !$_FILES['para' . $val]['size']) {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
-                        okinfo('javascript:history.back();', $info);
+                        okinfo('-1', $info);
                     }
                 } else {
                     if ($_M['form']['para' . $val] == '') {
                         $info = "【{$para[$val]['name']}】" . $_M['word']['noempty'];
-                        okinfo('javascript:history.back();', $info);
+                        okinfo('-1', $info);
                     }
                 }
 

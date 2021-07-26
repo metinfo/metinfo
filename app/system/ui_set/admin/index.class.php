@@ -539,7 +539,7 @@ class index extends base_admin
         $redata['tab_num'] = $c['tab_num'] ? $c['tab_num'] : 0;
         $redata['tab_name'] = $c['tab_name'];
 
-        $data = load::mod_class('column_handle.class.php','new')->classExt($c);
+        $data = load::mod_class('column/column_handle', 'new')->classExt($c);
         $redata['thumb_list_default'] = $data['thumb_list_default'];
         $redata['thumb_detail_default'] = $data['thumb_detail_default'];
         $redata['list_length_default'] = $data['list_length_default'];

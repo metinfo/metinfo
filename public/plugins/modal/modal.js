@@ -2,7 +2,7 @@
  * 弹框组件
  * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
-(function(){
+ (function(){
     // 自定义弹框参数
     M.component.modal_options=[];
     M.component.modal_call_status=[];
@@ -111,7 +111,7 @@
                                             var $form=$(this);
                                             formSaveCallback($(this).attr('data-validate_order'), {
                                                 true_fun: function() {
-                                                    if(!$form.find('.dataTable').length && !$modal.attr('data-submit-noclose')) $modal.modal('hide');
+                                                    if(!$form.find('.dataTable').filter(function(index, el){return !$(this).parents('.metadmin-fmbx').length;}).length && !$modal.attr('data-submit-noclose')) $modal.modal('hide');
                                                     var $table = $('.dataTable[data-datatable_order="' + tablerefresh + '"]');
                                                     if (tablerefresh && $table.length) datatable[tablerefresh].row().draw(false);
                                                 }
@@ -161,7 +161,7 @@
             if(key!='.pageset-nav-modal'&&$('.pageset-nav-modal').is(':visible')){
                 $('.modal-dialog',key).addClass('pt');
             }else{
-                $('.modal-dialog',key).removeClass('pt');	
+                $('.modal-dialog',key).removeClass('pt');
             }
             M.component.modal_options[key] && typeof M.component.modal_options[key].before=='function'&&M.component.modal_options[key].before(key);
             if(url && $modal_body.attr('data-dataurl')){

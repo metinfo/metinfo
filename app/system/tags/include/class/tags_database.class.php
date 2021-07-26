@@ -33,7 +33,7 @@ class tags_database extends database
 
         $query = "SELECT * FROM {$_M['table']['tags']} WHERE tag_pinyin = '{$tag_pinyin}' AND lang = '{$_M['lang']}' AND module = '{$module}'";
         if ($id) {
-            $query .= " AND id != {$id}";
+            $query .= " AND id != '{$id}'";
         }
         $res = DB::get_one($query);
 

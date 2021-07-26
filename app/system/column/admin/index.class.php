@@ -338,7 +338,7 @@ class index extends admin
             $column_list['new_windows'] = $column_list['new_windows'] ? 1 : 0;
             $column_list['list_order'] = $column_list['list_order'] ? $column_list['list_order'] : 1;
 
-            $ext_list = load::mod_class('column_handle.class.php', 'new')->classExt($column_list);
+            $ext_list = load::mod_class('column/column_handle', 'new')->classExt($column_list);
             $column_list['thumb_list_default'] = $ext_list['thumb_list_default'];
             $column_list['thumb_detail_default'] = $ext_list['thumb_detail_default'];
             $column_list['list_length_default'] = $ext_list['list_length_default'];

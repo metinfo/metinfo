@@ -2,7 +2,7 @@
  * 表单验证功能（需调用formvalidation插件）
  * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
-(function(){
+ (function(){
     $(function(){
         // 上传文件
         $(document).on('change keyup','.input-group-file input[type="file"]',function(){
@@ -55,7 +55,7 @@
                 var $self=$(this),
                     order=$(this).attr('data-validate_order')&&$(this).attr('data-validate_order')!=''?$(this).attr('data-validate_order'):($(this).attr('id')?'#'+$(this).attr('id'):(new Date().getTime()+index)),
                     self_validation='',
-                    $table=$(table_selector,this),
+                    $table=$(table_selector,this).filter(function(index, el){return !$(this).parents('.metadmin-fmbx').length;}),
                     action=$(this).attr('action'),
                     not_validate_checked=action=='#'||action=='javascript:;';
                 $(this).attr({'data-validate_order':order});
@@ -165,6 +165,7 @@
                             framework:'bootstrap4'
                         });
                         if($self.data('submit-ajax')){
+                            var $table=$self.find('.dataTable').filter(function(index, el){return !$(this).parents('.metadmin-fmbx').length;});
                             // 自动执行流程
                             success(function(result,form){
                                 // 回调处理
@@ -173,7 +174,7 @@
                                     if(typeof validate_fun[order].success.true_fun != 'undefined') true_fun=validate_fun[order].success.true_fun;
                                     if(typeof validate_fun[order].success.false_fun != 'undefined') false_fun=validate_fun[order].success.false_fun;
                                 }
-                                $self.find('.dataTable').length?$self.find('.dataTable').tabelAjaxFun(result):(function(){
+                                $table.length?$table.tabelAjaxFun(result):(function(){
                                     metAjaxFun({
                                         result: result,
                                         true_fun: true_fun,
@@ -186,7 +187,7 @@
                                 $self.find('.file-input').parents('.form-group:eq(0)').find('.form-control-label').text('');
                             });
                             // 添加回调
-                            !$self.find('.dataTable').length && setTimeout(()=>{
+                            !$table.length && setTimeout(()=>{
                                 formSaveCallback(order,{
                                     true_fun:function(){
                                         that1 && that1.reload();
@@ -293,7 +294,7 @@
             var type=typeof type!='undefined'?type:1,
                 type_str=type?(type==1?'save':type):'del',
                 $table=$(this).find(table_selector);
-            if($(this).find(table_selector).length){
+            if($table.length){
                 if(type=='recycle'){
                     type_str='del';
                     $(this).append(M.component.formWidget('recycle',1));
@@ -375,7 +376,7 @@
         $form.attr({'data-submited':1}).metSubmitBefore($(this).data('submit_type'));
         if($(this).data('url')){
             $form.removeAttr('data-submited');
-            var $table=$(this).parents('.dataTable');
+            var $table=$(this).parents('.dataTable').filter(function(index, el){return !$(this).parents('.metadmin-fmbx').length;});
             metui.ajax({
                 url: $(this).data('url'),
                 data: $form.serializeArray(),
@@ -396,7 +397,7 @@
             not_validate_checked=action=='#'||action=='javascript:;';
         if(action.indexOf('http')<0&&action.substr(0,3)!='../') return;
         var $self=$(this),
-            $table=$(table_selector,this);
+            $table=$(table_selector,this).filter(function(index, el){return !$(this).parents('.metadmin-fmbx').length;});
         $(this).attr('data-submited')?setTimeout(function(){$self.removeAttr('data-submited')},500):$(this).metSubmitBefore();
         $('.dataTable',this).attr({'data-scrolltop':0});
         // 提交删除时没有勾选时提示

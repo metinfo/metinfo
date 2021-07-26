@@ -61,7 +61,7 @@ function getip()
         }
     }
 
-    $ip = daddslashes($ip, 1) ?: '';
+    $ip = sqlinsert($ip) ?: '';
     return $ip;
 }
 
@@ -93,9 +93,14 @@ function copykey($roc, $keyarray)
  *
  * @return array 返回处理好的字符串或数组
  */
-function daddslashes($string, $force = 1)
+function daddslashes($string, $force = 0)
 {
-    if ($force) {
+    $magic_quotes_gpc = false;
+    if (function_exists('get_magic_quotes_gpc')) {//兼容PHP5.*
+        $magic_quotes_gpc = get_magic_quotes_gpc();
+    }
+
+    if (!$magic_quotes_gpc || $force) {
         if (is_array($string)) {
             foreach ($string as $key => $val) {
                 $string[$key] = daddslashes($val, $force);
