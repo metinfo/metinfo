@@ -128,7 +128,7 @@ class recycle extends admin
         global $_M;
         $column = $this->get_colnum_name($colu);
         $query = "UPDATE {$_M['table'][$column]} SET `recycle` = 0 WHERE `id` = '{$id}' and `lang` = '{$_M['lang']}'";
-        $data = DB::get_all($query);
+        $data = DB::query($query);
     }
 
     /**

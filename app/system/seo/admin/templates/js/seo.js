@@ -27,14 +27,16 @@
         })
         if (!refresh) {
           obj.metCommon()
-          metui.use('form', function() {
+          M.load('form', function() {
             var validate_order = obj.find('.info-form').attr('data-validate_order')
             formSaveCallback(validate_order, {
               true_fun: function(result) {
                 M.met_keywords = obj.find('.info-form [name="met_keywords"]').val()
                 M.met_alt = obj.find('.info-form [name="met_alt"]').val()
                 M.met_atitle = obj.find('.info-form [name="met_atitle"]').val()
-                M.is_admin ? window.location.reload() : null
+                M.is_admin && setTimeout(()=>{
+                  window.location.reload()
+                },1000);
               }
             })
           })

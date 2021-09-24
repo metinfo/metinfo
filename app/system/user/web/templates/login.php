@@ -2,15 +2,13 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$data['page_title']=$_M['word']['memberLogin'].$data['page_title'];
-$login_position=$c['met_login_box_position']==1?'m-x-auto':($c['met_login_box_position']==2?'pull-xs-right':'');
 ?>
 <include file="sys_web/head"/>
 <include file="app/style"/>
 <div class="met-member login-index page p-y-50">
 	<div class="container">
-		<form method="post" action="{$url.login_check}" class='met-form met-form-validation {$login_position}'>
-			<input type="hidden" name="gourl" value="{$_M['form']['gourl']}" />
+		<form method="post" action="{$url.login_check}" class='met-form met-form-validation {$data.login_position}'>
+			<input type="hidden" name="gourl" value="{$data.gourl}" />
 			<div class="form-group">
 				<input type="text" name="username" class="form-control" placeholder="{$word.logintips}" data-safety required
 				data-fv-notempty-message="{$word.noempty}"

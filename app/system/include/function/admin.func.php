@@ -271,11 +271,15 @@ function add_table($tablenames = '')
 {
     global $_M;
     $list = explode('|', $tablenames);
+    $sql = "SELECT * FROM {$_M['table']['config']} WHERE name = 'met_tablename'";
+    $res = DB::get_one($sql);
+    $met_tablename = $res['value'];
+
     foreach ($list as $key=>$val) {
         $tablename = $val;
-        if (strpos("|{$_M['config']['met_tablename']}|", "|{$tablename}|") === false) {
-            $_M['config']['met_tablename'] = "{$_M['config']['met_tablename']}|{$tablename}";
-            $query = "UPDATE {$_M['table']['config']} SET value = '{$_M['config']['met_tablename']}' WHERE name='met_tablename'";
+        if (strpos("|{$met_tablename}|", "|{$tablename}|") === false) {
+            $met_tablename = "{$met_tablename}|{$tablename}";
+            $query = "UPDATE {$_M['table']['config']} SET value = '{$met_tablename}' WHERE name='met_tablename'";
             DB::query($query);
             $_M['table'][$tablename] = $_M['config']['tablepre'].$tablename;
         }
@@ -386,16 +390,16 @@ function setDbConfig($config)
 {
     global $_M;
     $file = PATH_CONFIG . 'config_db.php';
-    $db = parse_ini_file($file);
+    $dbset = parse_ini_file($file);
     foreach ($config as $key => $val) {
-        $db[$key] = $val;
+        $dbset[$key] = $val;
     }
-    if (!isset($db['db_type'])) {
-        $db['db_type'] = 'mysql';
-        $db['db_name'] = 'config/metinfo.db';
+    if (!isset($dbset['db_type'])) {
+        $dbset['db_type'] = 'mysql';
+        $dbset['db_name'] = 'config/metinfo.db';
     }
     $string = "<?php\n/*\n";
-    foreach ($db as $key => $val) {
+    foreach ($dbset as $key => $val) {
         $string .= "{$key} = \"{$val}\"\n";
     }
     $string .= '*/?>';

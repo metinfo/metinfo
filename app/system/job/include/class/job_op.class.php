@@ -34,9 +34,9 @@ class job_op extends base_op
             $list['id'] = '';
             $list['filename'] = '';
             $list['lang'] = $tolang ? $tolang : $list['lang'];
-            $list['class1'] = $toclass1 ? $toclass1 : $list['lang'];
-            $list['class2'] = $toclass2 ? $toclass2 : $list['lang'];
-            $list['class3'] = $toclass3 ? $toclass3 : $list['lang'];
+            $list['class1'] = $toclass1 ? $toclass1 : $list['class1'];
+            $list['class2'] = $toclass2 ? $toclass2 : $list['class2'];
+            $list['class3'] = $toclass3 ? $toclass3 : $list['class3'];
 
             $id_array[$id] = $this->database->insert($list);
         }

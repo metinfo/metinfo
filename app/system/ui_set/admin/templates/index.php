@@ -89,7 +89,7 @@ $headnav_ml=$_M['langset']=='cn'?'ml-xl-3':'en-headnav-padiing';
                             </if>
 	                        <if value="$c['met_agents_app'] && $data['auth']['myapp'] eq 1">
 	                    	<list data="$data['applist']" name="$v">
-							<a <if value="$v['version']">href="javascript:;" data-toggle="modal" data-target=".pageset-nav-modal" data-url='{$v.url}'<else/>href="{$v.url}" target="_blank"</if> class='dropdown-item px-3 py-2'>{$v.appname}</a>
+							<a <if value="$v['newapp']">href="javascript:;" data-toggle="modal" data-target=".pageset-nav-modal" data-url='{$v.url}'<else/>href="{$v.url}" target="_blank"</if> class='dropdown-item px-3 py-2'>{$v.appname}</a>
 							</list>
 							</if>
 						</ul>

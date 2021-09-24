@@ -1,6 +1,6 @@
 <?php
-# MetInfo Enterprise Content Management System 
-# Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved. 
+# MetInfo Enterprise Content Management System
+# Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 
 defined('IN_MET') or exit('No permission');
 
@@ -140,7 +140,7 @@ class admin_set extends admin
             configsave($configlist);
             //写日志
             logs::addAdminLog('thirdlogin', 'save', 'jsok', 'doSaveThirdParty');
-            $this->success($_M['word']['jsok']);
+            $this->success('',$_M['word']['jsok']);
         }
         $this->error($_M['word']['third_party_error']);
     }

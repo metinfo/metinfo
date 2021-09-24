@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <h3 class='example-title'>
-	<span class='d-inline-block' style="width:146px;">{$word.parameter}</span>
+	<span class='d-inline-block' style="width:155px;">{$word.parameter}</span>
 	<button type="button" class="btn btn-outline-primary btn-paraset" data-toggle="modal" data-target=".content-para-manage-modal" data-modal-title="{$word.parmanage}" data-modal-url="parameter/list/?c=parameter_admin&a=doparaset&module={$data.n}&id={$data.list.id}" data-modal-size="xl" data-modal-fullheight="1" data-modal-oktext="" data-modal-notext="{$word.close}">{$word.parmanage}</button>
 	<button type="button" class="btn btn-outline-primary btn-content-para-refresh ml-2">
 		<i class="fa-refresh mr-1"></i>

@@ -61,7 +61,7 @@ function getip()
         }
     }
 
-    $ip = sqlinsert($ip) ?: '';
+    $ip = daddslashes($ip) ?: '';
     return $ip;
 }
 
@@ -363,31 +363,6 @@ function url_standard($url)
             $url = 'http://'.$url;
         }
     }
-    /*
-    $start = strripos($url,'.');
-    $start1 = strripos($url,'?');
-    if($start !== false && $start1 !== false && $start > $start1){
-    return $url;
-    die();
-    }
-    if($start !== false){
-    $end = stripos($url,'?');
-    if($end !== false){
-    $start = $start+1;
-    $end = $end-$start;
-    $suffix = substr($url, $start, $end);
-    }else{
-    $start = $start+1;
-    $suffix = substr($url, $start);
-    }
-    $arr = array('php','html','htm');
-    if(!in_array($suffix,$arr)){
-    $url = substr($url, -1) == '/' ? $url : $url . '/';
-    }
-    }else{
-    $url = substr($url, -1) == '/' ? $url : $url . '/';
-    }
-     */
     return $url;
 }
 
@@ -452,14 +427,14 @@ function thumb($image_path, $x = '', $y = '', $return = 0, $thumb_wate = 1)
 
 function met_substr($string, $start = 0, $len = 20, $end = '')
 {
-    preg_match("/<m[\s_a-zA-Z=\d->]+<\/m>/", $string, $match);
+    preg_match("/<m[\s_a-zA-Z=\d\->]+<\/m>/", $string, $match);
     if ($match) {
         $m = $match[0];
     } else {
         $m = '';
     }
 
-    $res = preg_replace("/<m[\s_a-zA-Z=\d->]+<\/m>/", '', $string);
+    $res = preg_replace("/<m[\s_a-zA-Z=\d\->]+<\/m>/", '', $string);
     if ($res || is_string($res)) {
         $string = $res;
     }
@@ -694,6 +669,24 @@ function getAdminDir()
 }
 
 /**
+ * 磁盘空间检测
+ * @param int $file_total Mb
+ * @return bool
+ */
+function checkDisk($file_total = 0)
+{
+    if (!function_exists('disk_free_space')) {
+        return true;
+    }
+    $disk_total = byte_format(disk_free_space('.'), 2, "mb");
+    if (ceil($file_total) < ceil($disk_total)) {
+        return true;
+    }
+    return false;
+
+}
+
+/**
  * @param string $url
  * @param string $data
  * @param string $method
@@ -730,7 +723,7 @@ function api_curl($url, $data = array(), $timeout = 60)
     $data['user_key'] = $_M['config']['met_secret_key'];
     $data['domain'] = $_M['url']['web_site'];
     $data['cms_version'] = $_M['config']['metcms_v'];
-    
+
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_URL, $url);

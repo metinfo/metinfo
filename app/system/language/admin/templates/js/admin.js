@@ -8,7 +8,7 @@
     renderTable(1)
   }
   function renderTable(refresh) {
-    metui.use(['table', 'alertify'], function() {
+    M.load(['table', 'alertify'], function() {
       const table = that.obj.find('#lang-admin-table')
       table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
       datatable_option['#lang-admin-table'] = {
@@ -94,7 +94,9 @@
 
       that.obj.metDataTable(function() {
         that.table = datatable['#lang-admin-table']
-        if (!refresh) {
+        if (refresh) {
+          that.table.ajax.reload();
+        }else{
           deleteLang()
           renderAdd()
           renderEditForm()
@@ -225,7 +227,7 @@
     if (modal.find('[name="appno"]').val()) {
       params.appno = modal.find('[name="appno"]').val()
     }
-    metui.request(
+    M.ajax(
       {
         url: that.own_name + 'c=language_general&a=doSearchParameter',
         data: params
@@ -308,7 +310,7 @@
         }
         values['data'][item.name] = item.value
       })
-      metui.request(
+      M.ajax(
         {
           url: form.attr('action'),
           data: values
@@ -331,7 +333,7 @@
       const btn = $(e.target)
       const index = btn.data('index')
       that.activeData = that.langData[index]
-      metui.request(
+      M.ajax(
         {
           url: that.own_name + 'c=language_general&a=doGetAppList',
           data: {
@@ -340,10 +342,10 @@
           }
         },
         function(result) {
-          that.appData = result.data
-          const html = result.data
-            .map((item, index) => {
-              return `<div class="card col-6" >
+            that.appData = result.data
+            const html = result.data ? result.data
+                .map((item, index) => {
+                return `<div class="card col-6" >
             <div class="card-body">
               <h5 class="card-title">${item.appname}</h5>
               <p class="card-text">${METLANG.numbering}${METLANG.marks}${item.no}</p>
@@ -368,9 +370,9 @@
               class="ml-2 btn-app-search">${METLANG.langwebeditor}</a>
             </div>
           </div>`
-            })
-            .join('')
-          $('.langadmin-app-modal .modal-body').html(html)
+            }):`<div class="text-center h5 mb-0 py-5">${METLANG.dataexplain1}</div>`
+            $.isArray(html) && html.join('');
+            $('.langadmin-app-modal .modal-body').html(html)
         }
       )
     })
@@ -424,7 +426,7 @@
       const btn = $(e.target)
       const index = btn.data('index')
       that.activeData = that.langData[index]
-      metui.request(
+      M.ajax(
         {
           url: that.own_name + 'c=language_general&a=doSynLanguage',
           data: {

@@ -6,7 +6,7 @@
     that.table && that.table.ajax.reload()
   }
   function renderTable(refresh) {
-    metui.use(['table', 'alertify', 'dragsort'], function() {
+    M.load(['table', 'alertify', 'dragsort'], function() {
       const table = that.obj.find('#user-attr-table')
       table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
       datatable_option['#user-attr-table'] = {
@@ -101,7 +101,7 @@
   function add() {
     const btn_add = that.obj.find('.btn-add')
     const table = that.obj.find('#user-attr-table tbody')
-    metui.request(
+    M.ajax(
       {
         url: that.own_name + 'c=parameter&a=doGetOptions'
       },

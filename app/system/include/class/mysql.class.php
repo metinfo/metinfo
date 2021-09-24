@@ -405,7 +405,7 @@ class DB
     /**
      * 从结果集中取得一行作为数字数组.
      *
-     * @param $result myslqi_result对象
+     * @param $result mysqli_result对象
      *
      * @return array 结果集一行数组
      */

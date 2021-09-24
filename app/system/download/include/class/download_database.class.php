@@ -19,7 +19,7 @@ class download_database extends base_database
 
     public function table_para()
     {
-        return 'id|title|ctitle|keywords|description|content|class1|class2|class3|no_order|wap_ok|img_ok|com_ok|issue|hits|updatetime|addtime|access|top_ok|filename|lang|recycle|displaytype|tag|downloadurl|links|downloadaccess|filesize|text_size|text_color|other_info|custom_info';
+        return 'id|title|ctitle|keywords|description|content|class1|class2|class3|no_order|wap_ok|img_ok|com_ok|issue|hits|updatetime|addtime|access|top_ok|imgurl|filename|lang|recycle|displaytype|tag|downloadurl|links|downloadaccess|filesize|text_size|text_color|other_info|custom_info';
     }
 
     /**

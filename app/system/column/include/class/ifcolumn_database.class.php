@@ -61,6 +61,14 @@ class ifcolumn_database extends database
         }
         return $data;
     }
+
+    public function get_all($sql = '')
+    {
+        global $_M;
+        $query = "SELECT * FROM {$this->table}";
+        $query .= $sql;
+        return DB::get_all($query);
+    }
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

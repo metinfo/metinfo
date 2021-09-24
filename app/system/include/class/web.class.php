@@ -12,20 +12,15 @@ load::sys_func('web');
  */
 class web extends common
 {
-    /**
-     * 初始化.
-     */
-    /**
-     * 获取url传递的参数.
-     *
-     * @var [type]
-     */
     protected $input;
 
+    /**
+     * web constructor.
+     */
     public function __construct()
     {
-        parent::__construct();
         global $_M;
+        parent::__construct();
         // 可视化窗口语言栏跳转后，整个可视化页面跳转到新语言
         if (strstr($_SERVER['HTTP_REFERER'], $_M['url']['admin_site']) && strstr($_SERVER['HTTP_REFERER'], 'n=ui_set')) {
             preg_match('/lang=(\w+)/', $_COOKIE['page_iframe_url'], $prev_lang);
@@ -48,7 +43,7 @@ class web extends common
         $this->tem_dir(); //确定模板根目录
         $this->load_domain(); //加载绑定域名的语言
         $this->load_language(); //语言加载
-        // $this->load_publuc_data();//加载公共数据
+        //$this->load_publuc_data();//加载公共数据
         $this->sys_input();
 
         load::sys_class('user', 'new')->get_login_user_info(); //会员登录
@@ -88,8 +83,10 @@ class web extends common
             $_M['form']['class3'] = '';
         }
 
-        $_M['form']['content'] = load::sys_class('label', 'new')->get('tags')->getTagName($_M['form']['content']);
-        $_M['form']['searchword'] = load::sys_class('label', 'new')->get('tags')->getTagName($_M['form']['searchword']);
+        if (isset($_M['table'])) {
+            $_M['form']['content'] = load::sys_class('label', 'new')->get('tags')->getTagName($_M['form']['content']);
+            $_M['form']['searchword'] = load::sys_class('label', 'new')->get('tags')->getTagName($_M['form']['searchword']);
+        }
     }
 
     /**
@@ -453,7 +450,8 @@ class web extends common
         define('SHOW_PAGE', true); //标记为详情页数据
         if ($_M['form']['pseudo_jump']) {
             if (!is_numeric($_M['form']['metid'])) {//根据静态页名称获取内容详情
-                $custom = load::sys_class('label', 'new')->get($module)->database->get_list_by_filename($_M['form']['metid']);
+                $metid = daddslashes($_M['form']['metid']);
+                $custom = load::sys_class('label', 'new')->get($module)->database->get_list_by_filename($metid);
                 $_M['form']['metid'] = $custom['0']['id'];
             }
             $_M['form']['id'] = $_M['form']['metid'];
@@ -522,7 +520,8 @@ class web extends common
                 return 'show';
             } elseif ($_M['form']['list']) {//列表页
                 if (!is_numeric($_M['form']['metid'])) {//根据静态页名称获取栏目信息
-                    $column = load::sys_class('label', 'new')->get('column')->get_column_by_filename($_M['form']['metid']);
+                    $metid = daddslashes($_M['form']['metid']);
+                    $column = load::sys_class('label', 'new')->get('column')->get_column_by_filename($metid);
                     if ($column) {
                         $_M['form']['class' . $column['classtype']] = $column['id'];
                     }
@@ -532,7 +531,8 @@ class web extends common
         $classnow = $_M['form']['class3'] ? $_M['form']['class3'] : ($_M['form']['class2'] ? $_M['form']['class2'] : $_M['form']['class1']);
         $classnow = $classnow ? $classnow : $_M['form']['metid'];
         if (!is_numeric($classnow)) {//根据栏目名称获取内容列表
-            $custom = load::sys_class('label', 'new')->get('column')->get_column_folder($_M['form']['metid']);
+            $metid = daddslashes($_M['form']['metid']);
+            $custom = load::sys_class('label', 'new')->get('column')->get_column_folder($metid);
             $classnow = $custom['0']['id'];
         }
         $classnow = $this->input_class($classnow);

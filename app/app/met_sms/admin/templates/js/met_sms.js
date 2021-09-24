@@ -28,7 +28,7 @@
         type: 'GET',
         dataType: 'json',
         success: function(result) {
-          metui.use(['alertify'], function() {
+          M.load(['alertify'], function() {
             if (result.status) {
               tips.html(`<div class="alert alert-primary tips w-100">${result.data.sms.tips}</div>`)
               that.obj.find('.avalible').text(`${result.data.sms.avalible} 条`)
@@ -64,7 +64,7 @@
       return
     }
     if (hash.indexOf('log') > -1) {
-      metui.use(['table', 'alertify'], function() {
+      M.load(['table', 'alertify'], function() {
         const table = that.obj.find(`#sms-table`)
         table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
         datatable_option[`#sms-table`] = {
@@ -91,7 +91,7 @@
   }
 
   function count_str(e, data) {
-    
+
     const content = e.val()
     const len = content.length
     const count = Math.ceil((len+data.count) / data.word)

@@ -6,9 +6,9 @@ echo <<<EOT
 <link href="../public/fonts/font-awesome/font-awesome.min.css" rel='stylesheet' type='text/css'>
 <div class="p-4 border">
 	<p>检查你的数据库设置情况，请在相应栏目仔细输入配置内容。</p>
-	<form method="post">
+	<form method="post" >
 		<input name="setup" type="hidden" value="1">
-		<input name="db_type" type="hidden" value="mysql">
+		<input name="db_type" type="hidden" value="{$db_type}">
 		<fieldset class="border pb-3 px-3">
 			<legend class="h6 text-primary w-auto px-1"><strong>数据库信息</strong></legend>
 			<div class="form-group row">

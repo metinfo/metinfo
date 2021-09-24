@@ -3,7 +3,7 @@
     var that = $.extend(true, {}, admin_module);
     // 分类列表初始化
     function renderNavlist() {
-        metui.ajax({
+        M.ajax({
             url: that.own_name + 'c=index&a=doCategory'
         }, function(result) {
             if (parseInt(result.status)) {
@@ -23,7 +23,7 @@
     that.obj.on('click', '.nav a', function(event) {
         var $tab_pane=that.obj.find(`.tab-content ${$(this).attr('href')}`);
         if(!$tab_pane.html()){
-            metui.ajax({
+            M.ajax({
                 url: that.own_name + 'c=index&a=doindex',
                 data:{pid:$(this).data('pid')}
             }, function(result) {
@@ -39,7 +39,7 @@
                                     <div class="media-body cover">
                                         <h5 class="mt-1 h6">${item.user_name}</h5>
                                         <div class="card-text text-truncate">${item.service}</div>
-                                    </div> 
+                                    </div>
                                 </a>
                             </div>
                         </div>`;

@@ -111,7 +111,7 @@
 			});
 			var that1=$.extend(true,{}, admin_module);
 			// banner列表排序
-			metui.use('dragsort',function(){
+			M.load('dragsort',function(){
 		        dragsortFun[that1.obj.find('table tbody').attr('data-dragsort_order')]=function(wrapper,item){
 		        	wrapper.find('tr [name*="no_order"]').each(function(index, el) {
 		    			$(this).val($(this).parents('tr').index());

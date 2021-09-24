@@ -50,8 +50,8 @@ class para
         return $info;
     }
 
-    /*//后台表单渲染
-    public function paratem($listid, $module, $class1, $class2, $class3)
+    //后台表单渲染
+    /*public function paratem($listid, $module, $class1, $class2, $class3)
     {
         global $_M;
         $paralist = $this->get_para_list($module, $class1, $class2, $class3);

@@ -7,7 +7,7 @@
     }
 })()
 function fetch(that) {
-  metui.request({
+  M.ajax({
       url: that.own_name + '&c=index&a=doGetSetup'
     },
     function(result) {
@@ -33,7 +33,7 @@ function fetch(that) {
   )
   const btn_delete = that.obj.find('.btn-delete')
   btn_delete.off().click(function() {
-    metui.request({
+    M.ajax({
         url: that.own_name + '&c=index&a=doDelInstallFile'
       },
       function() {
@@ -44,7 +44,7 @@ function fetch(that) {
       }
     )
   })
-  metui.use(['form', 'formvalidation'], function() {
+  M.load(['form', 'formvalidation'], function() {
     var order = that.obj.find('#safe-form').attr('data-validate_order')
     formSaveCallback(order, {
       true_fun: function(result) {

@@ -31,7 +31,7 @@ defined('IN_MET') or exit('No permission');
 			<th width="150">{$word.memberarayname}</th>
 			<th width="300" data-table-columnclass="text-center">{$word.usegroupauto1}</th>
 			<th width="300" data-table-columnclass="text-center">{$word.usegroupbuy}</th>
-      <th width="300">
+      <th>
           <abbr title="{$word.user_tips21_v6}">{$word.reading_authority}</abbr>
       </th>
       <th width="300">

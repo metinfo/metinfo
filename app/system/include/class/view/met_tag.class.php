@@ -22,6 +22,7 @@ class met_tag extends tag
         'location' => array('block' => 1, 'level' => 4),
         'pager' => array('block' => 0, 'level' => 0),
         'pagination' => array('block' => 0, 'level' => 0),
+        'relations' => array('block' => 1, 'level' => 0),
     );
 
     public function _mituo($attr, $content)
@@ -121,17 +122,17 @@ php;
         $num = isset($attr['num']) ? $attr['num'] : 50;
 
         $php =
-<<<php
+            <<<php
         <?php
             \$sub = is_array($from) ? count($from) : 0;
-            \$num = $num;
+            \$cycleindex = $num;
             
             if(!is_array($from) && $from){
                 $from = explode('|',$from);
             }
 
             foreach ($from as \$index => \$val) {
-                if(is_numeric(\$index) && \$index >= \$num){
+                if(is_numeric(\$index) && \$index >= \$cycleindex){
                     break;
                 }
 
@@ -202,7 +203,7 @@ php;
     public function _if($attr, $content, &$met)
     {
         $php =
-<<<php
+            <<<php
     <?php if({$attr['value']}){ ?>$content<?php } ?>
 php;
 
@@ -231,7 +232,7 @@ php;
     {
         $cid = isset($attr['cid']) ? $attr['cid'] : 0;
         $php =
-<<<str
+            <<<str
         <?php
             \$cid = $cid;
             if(!\$cid){
@@ -256,7 +257,7 @@ str;
     {
         $page_type = $attr['type'] ? $attr['type'] : 0;
         $php =
-<<<str
+            <<<str
      <?php
      \$page_type = $page_type;
      if(!\$data['classnow']){
@@ -280,7 +281,7 @@ str;
     {
         global $_M;
         $php =
-<<<str
+            <<<str
         <div class='met-page p-y-30 border-top1'>
             <div class="container p-t-30 ">
                 <ul class="pagination block blocks-2 text-xs-center text-sm-left">
@@ -308,7 +309,7 @@ str;
     {
         global $_M;
         $php =
-<<<str
+            <<<str
         <?php
             \$language = load::sys_class('label', 'new')->get('language')->get_lang();
            
@@ -325,6 +326,35 @@ str;
         $php .= $content;
         $php .= '<?php endforeach;?>';
 
+        return $php;
+    }
+
+    public function _relations($attr, $content = '')
+    {
+        global $_M;
+        $id = isset($attr['id']) ? $attr['id'] : 0;
+        $module = isset($attr['module']) ? $attr['module'] : 0;
+
+        $php = <<<str
+<?php
+    \$relation_id = $id;
+    \$relation_module = $module;
+    
+    if(!\$relation_id){
+        \$relation_id = \$data['id'];
+    }
+    
+    if(!\$relation_module){
+        \$relation_module = \$data['module'];
+    }
+    
+    \$relations = load::sys_class('label', 'new')->get('relation')->getRelations(\$relation_id, \$relation_module);
+    \$sub = is_array(\$relations) ? count(\$relations) : 0;
+     foreach(\$relations as \$index=>\$relation):
+?>
+str;
+        $php .= $content;
+        $php .= '<?php endforeach;?>';
         return $php;
     }
 }

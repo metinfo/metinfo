@@ -22,7 +22,7 @@ class update_database extends database
     public function __construct()
     {
         global $_M;
-        $this->version = '7.3.0';
+        $this->version = '7.5.0';
         $this->colum_label = load::sys_class('label', 'new')->get('column');
         $this->tables = load::mod_class('databack/tables', 'new');
     }
@@ -36,98 +36,38 @@ class update_database extends database
         //强制更新表字段
         $this->alter_table($version);
 
-        //注册数据表
-        $this->table_regist();
-
         //恢复用户数据
         $this->recovery_data();
 
         //更新配置
         $this->add_config();
 
+        //注册数据表
+        $this->table_regist();
+
         //商城开关
         $this->check_shop();
 
-        if (version_compare($version, '7.0.0beta', '<')) {//6.1/6.2->7.0.0beta
-            //表单模块数据迁移
-            $this->recovery_form_seting();
+        //更新applist
+        $this->update_app_list();
 
-            //更新online数据
-            $this->recovery_online();
+        //更新后台导航
+        $this->update_admin_column();
 
-            // 更新友情链接数据
-            $this->recovery_link();
-
-            //更新新闻发布人
-            $this->recovery_news();
-
-            //更新栏目信息
-            $this->recovery_column();
-
-            //更新后台栏目
-            $this->update_admin_column();
-
-            //更新applist
-            $this->update_app_list();
-
-            //更新tags
-            $this->update_tags();
-
-            //更新语言
-            $this->update_language($version);
-        } elseif (version_compare($version, '7.3.0', '<')) {//7.0.0beta->7.3.0
+        if (version_compare($version, $this->version, '<')) {//7.*->7.5.0
             //更新语言
             $this->update_language($version);
         }
     }
 
     /**
-     * 对比数据库机构
+     * 对比数据库结构
      * @param $version
      */
     public function diff_fields($version)
     {
         global $_M;
-        $this->tables->version = $version;
-        $diffs = $this->tables->get_diff_tables();
-        if (isset($diffs['table'])) {
-            foreach ($diffs['table'] as $table => $detail) {
-                $sql = "CREATE TABLE IF NOT EXISTS `{$table}` (";
-                foreach ($detail as $k => $v) {
-                    if ($k == 'id') {
-                        $sql .= "`{$k}` {$v['Type']} {$v['Extra']} ,";
-                    } else {
-                        $sql .= "`{$k}` {$v['Type']} ";
-
-                        if ($v['Default'] === null) {
-                            $sql .= " DEFAULT NULL ";
-                        } else {
-                            $sql .= " DEFAULT '{$v['Default']}' ";
-                        }
-
-                        $sql .= "  {$v['Extra']} ,";
-                    }
-                }
-                $sql .= "PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
-                DB::query($sql);
-                add_table(str_replace($_M['config']['tablepre'], '', $table));
-            }
-        }
-
-        if (isset($diffs['field'])) {
-            foreach ($diffs['field'] as $table => $v) {
-                foreach ($v as $field => $f) {
-                    $sql = "ALTER TABLE `{$table}` ADD COLUMN `{$field}`  {$f['Type']} ";
-
-                    if ($f['Default'] === null) {
-                        $sql .= " Default NULL ";
-                    } else {
-                        $sql .= " Default '{$f['Default']}' ";
-                    }
-                    DB::query($sql);
-                }
-            }
-        }
+        $this->tables->diff_fields($version);
     }
 
     /**
@@ -137,31 +77,7 @@ class update_database extends database
     public function alter_table($version)
     {
         global $_M;
-        $this->tables->version = $version;
-        $base = $this->tables->get_base_table();
-        if (!$base) {
-            return;
-        }
-
-        foreach ($base as $table_name => $table) {
-            $table_name_now = str_replace('met_', $_M['config']['tablepre'], $table_name);
-            $sql = "ALTER TABLE `{$table_name_now}` ";
-            foreach ($table as $key => $field) {
-                if ($key == 'id') {
-                    continue;
-                }
-
-                $sql .= " MODIFY COLUMN `{$field['Field']}` {$field['Type']} ";
-                if ($field['Default'] === null) {
-                    $sql .= " DEFAULT NULL ";
-                } else {
-                    $sql .= " DEFAULT '{$field['Default']}' ";
-                }
-                $sql .= ',';
-            }
-            $sql = trim($sql, ',') . ';';
-            DB::query($sql);
-        }
+        $this->tables->alter_table($version);
     }
 
     /**
@@ -170,11 +86,7 @@ class update_database extends database
     public function table_regist()
     {
         global $_M;
-        add_table('flash_button');
-        add_table('tags');
-        add_table('admin_logs');
-        add_table('menu');
-        add_table('weixin_reply_log');
+        add_table('admin_array|admin_column|admin_logs|admin_table|app_config|app_plugin|applist|column|config|cv|download|feedback|flash|flash_button|flist|ifcolumn|ifcolumn_addfile|ifmember_left|img|infoprompt|job|label|lang|lang_admin|language|link|menu|message|mlist|news|online|otherinfo|para|parameter|plist|product|relation|skin_table|tags|templates|ui_config|ui_list|user|user_group|user_group_pay|user_list|user_other|weixin_reply_log');
     }
 
     /**
@@ -241,335 +153,6 @@ class update_database extends database
     }
 
     /**
-     * 表单模块数据迁移
-     */
-    public function recovery_form_seting()
-    {
-        global $_M;
-        //job
-        foreach (array_keys($_M['langlist']['web']) as $lang) {
-            //栏目初始化
-            $this->colum_label->get_column($lang);
-
-            $query = "SELECT * FROM {$_M['table']['column']} WHERE lang = '{$lang}' AND module = 6";
-            $jobs = DB::get_all($query);
-            if ($jobs) {
-                foreach ($jobs as $job) {
-                    self::recovery_job($job, $lang);
-                }
-            }
-
-            //message
-            $query = "SELECT * FROM {$_M['table']['column']} WHERE lang = '{$lang}' AND module = 7";
-            $message = DB::get_one($query);
-            if ($message) {
-                self::recovery_message($message);
-            }
-
-            //feedback
-            $query = "SELECT * FROM {$_M['table']['column']} WHERE lang = '{$lang}' AND module = 8";
-            $feedbacks = DB::get_all($query);
-            if ($feedbacks) {
-                foreach ($feedbacks as $fd) {
-                    self::recovery_feedback($fd);
-                }
-            }
-        }
-    }
-
-    /**
-     * 更新job配置
-     */
-    public function recovery_job($data = array(), $lang = '')
-    {
-        global $_M;
-        if ($data && $lang) {
-            //跟新内容层级关系
-            #$class123 = $this->colum_label->get_class123_reclass($data['id']);
-            #$query = "UPDATE {$_M['table']['job']} SET class1 = '{$class123['class1']['id']}' , class2 = '{$class123['class2']['id']}', class3 = '{$class123['class3']['id']}'";
-            $query = "UPDATE {$_M['table']['job']} SET class1 = '{$data['id']}' , class2 = '0', class3 = '0' WHERE lang = '{$lang}'";
-            DB::query($query);
-
-            //更新表单配置
-            $array = array();
-            $array[] = array('met_cv_time', '120');
-            $array[] = array('met_cv_image', '');
-            $array[] = array('met_cv_showcol', '');
-            $array[] = array('met_cv_emtype', '1');
-            $array[] = array('met_cv_type', '');
-            $array[] = array('met_cv_to', '');
-            $array[] = array('met_cv_job_tel', '');
-            $array[] = array('met_cv_back', '');
-            $array[] = array('met_cv_email', '');
-            $array[] = array('met_cv_title', '');
-            $array[] = array('met_cv_content', '');
-            $array[] = array('met_cv_sms_back', '');
-            $array[] = array('met_cv_sms_tell', '');
-            $array[] = array('met_cv_sms_content', '');
-
-            $config_op = load::mod_class('config/config_op', 'new');
-            $column_config = $config_op->getColumnConfArry($data['id']);
-
-            foreach ($array as $row) {
-                $name = $row[0];
-                $value = $column_config[$name] ? $column_config[$name] : $row[1];
-                $cid = $data['id'];
-                $lang = $data['lang'];
-                self::update_config($name, $value, $cid, $lang);
-            }
-
-            //删除无用配置
-            $query = "DELETE FROM {$_M['table']['config']} WHERE name LIKE '%met_cv%' AND lang = '{$data['lang']}' AND columnid = '0'";
-            DB::query($query);
-        }
-        return;
-    }
-
-    /**
-     * 更新message配置
-     */
-    public function recovery_message($data = array())
-    {
-        global $_M;
-        if ($data) {
-            $array = array();
-            $array[] = array('met_msg_ok', '');
-            $array[] = array('met_msg_time', '120');
-            $array[] = array('met_msg_name_field', '');
-            $array[] = array('met_msg_content_field', '');
-            $array[] = array('met_msg_show_type', '1');
-            $array[] = array('met_msg_type', '1');
-            $array[] = array('met_msg_to', '');
-            $array[] = array('met_msg_admin_tel', '');
-            $array[] = array('met_msg_back', '');
-            $array[] = array('met_msg_email_field', '');
-            $array[] = array('met_msg_title', '');
-            $array[] = array('met_msg_content', '');
-            $array[] = array('met_msg_sms_back', '');
-            $array[] = array('met_msg_sms_field', '');
-            $array[] = array('met_msg_sms_content', '');
-
-            $config_op = load::mod_class('config/config_op', 'new');
-            $column_config = $config_op->getColumnConfArry($data['id']);
-
-            foreach ($array as $row) {
-                $name = $row[0];
-                $value = $column_config[$name] ? $column_config[$name] : $row[1];
-                $cid = $data['id'];
-                $lang = $data['lang'];
-                self::update_config($name, $value, $cid, $lang);
-            }
-        }
-    }
-
-    /**
-     * 更新feedback配置
-     */
-    public function recovery_feedback($data = array())
-    {
-        global $_M;
-        if ($data) {
-            $column = $this->colum_label->get_column_id($data['id']);
-            $met_fdtable = $column['name']; //反馈表单名称
-
-            $array = array();
-            $array[] = array('met_fd_ok', '');
-            $array[] = array('met_fdtable', $met_fdtable);
-            ###$array[] = array('met_fd_class', '');
-            $array[] = array('met_fd_time', '120');
-            $array[] = array('met_fd_related', '');
-            $array[] = array('met_fd_showcol', '');
-            $array[] = array('met_fd_inquiry', '');
-            $array[] = array('met_fd_type', '');
-            $array[] = array('met_fd_to', '');
-            $array[] = array('met_fd_admin_tel', '');
-            $array[] = array('met_fd_back', '');
-            $array[] = array('met_fd_email', '');
-            $array[] = array('met_fd_title', '');
-            $array[] = array('met_fd_content', '');
-            $array[] = array('met_fd_sms_back', '');
-            $array[] = array('met_fd_sms_tell', '');
-            $array[] = array('met_fd_sms_content', '');
-
-            $config_op = load::mod_class('config/config_op', 'new');
-            $column_config = $config_op->getColumnConfArry($data['id']);
-
-            foreach ($array as $row) {
-                $name = $row[0];
-                $value = $column_config[$name] ? $column_config[$name] : $row[1];
-                $cid = $data['id'];
-                $lang = $data['lang'];
-                self::update_config($name, $value, $cid, $lang);
-            }
-        }
-    }
-
-    /**
-     * 更新online数据
-     */
-    public function recovery_online()
-    {
-        global $_M;
-        /*if(file_exists(PATH_WEB.'cache/temp_online.php')){
-        $data = Cache::get('temp_online');
-        }*/
-
-        $query = "SELECT * FROM {$_M['table']['online']}";
-        $data = DB::get_all($query);
-
-        //清空online表
-        #$query = "TRUNCATE TABLE {$_M['table']['online']} ";
-        $query = "DELETE FROM {$_M['table']['online']} ";
-        DB::query($query);
-        $query = "ALTER TABLE `{$_M['table']['online']}`
-                    DROP COLUMN `qq`,
-                    DROP COLUMN `msn`,
-                    DROP COLUMN `taobao`,
-                    DROP COLUMN `alibaba`,
-                    DROP COLUMN `skype`;
-                    ";
-        DB::query($query);
-
-        foreach (array_keys($_M['langlist']['web']) as $lang) {
-            //客服默认样式
-            self::update_config('met_online_skin', 3, 0, $lang);
-            //插入新客服数据
-            self::onlineInsert($data, $lang);
-        }
-        return;
-    }
-
-    /**
-     * 插入新客服数据
-     * @param array $online_list
-     * @param string $lang
-     */
-    private function onlineInsert($online_list = array(), $lang = '')
-    {
-        global $_M;
-        foreach ($online_list as $online) {
-            if ($online['lang'] == $lang) {
-                if ($online['qq']) {
-                    $name = $online['name'];
-                    $no_order = $online['no_order'];
-                    $value = $online['qq'];
-                    $icon = 'icon fa-qq';
-                    $type = '0';
-                    $query = "INSERT INTO {$_M['table']['online']} (name,no_order,lang,value,icon,type) VALUES ('{$name}','{$no_order}','{$lang}','{$value}','{$icon}','{$type}')";
-                    DB::query($query);
-                }
-                if ($online['msn']) {
-                    $name = $online['name'];
-                    $no_order = $online['no_order'];
-                    $value = $online['sms'];
-                    $icon = 'icon fa-facebook';
-                    $type = '6';
-                    $query = "INSERT INTO {$_M['table']['online']} (name,no_order,lang,value,icon,type) VALUES ('{$name}','{$no_order}','{$lang}','{$value}','{$icon}','{$type}')";
-                    DB::query($query);
-                }
-                if ($online['taobao']) {
-                    $name = $online['name'];
-                    $no_order = $online['no_order'];
-                    $value = $online['taobao'];
-                    $icon = 'icon fa-comment';
-                    $type = '1';
-                    $query = "INSERT INTO {$_M['table']['online']} (name,no_order,lang,value,icon,type) VALUES ('{$name}','{$no_order}','{$lang}','{$value}','{$icon}','{$type}')";
-                    DB::query($query);
-                }
-                if ($online['alibaba']) {
-                    $name = $online['name'];
-                    $no_order = $online['no_order'];
-                    $value = $online['alibaba'];
-                    $icon = 'icon fa-comment';
-                    $type = '2';
-                    $query = "INSERT INTO {$_M['table']['online']} (name,no_order,lang,value,icon,type) VALUES ('{$name}','{$no_order}','{$lang}','{$value}','{$icon}','{$type}')";
-                    DB::query($query);
-                }
-                if ($online['skype']) {
-                    $name = $online['name'];
-                    $no_order = $online['no_order'];
-                    $value = $online['skype'];
-                    $icon = 'icon fa-skype';
-                    $type = '5';
-                    $query = "INSERT INTO {$_M['table']['online']} (name,no_order,lang,value,icon,type) VALUES ('{$name}','{$no_order}','{$lang}','{$value}','{$icon}','{$type}')";
-                    DB::query($query);
-                }
-
-            }
-        }
-    }
-
-    /**
-     * 更新友情链接数据
-     */
-    public function recovery_link()
-    {
-        global $_M;
-        $query = "UPDATE {$_M['table']['link']} SET module = ',10001,'";
-        DB::query($query);
-
-    }
-
-    /**
-     * 更新友情链接数据
-     */
-    public function recovery_news()
-    {
-        global $_M;
-        $query = "SELECT * FROM {$_M['table']['news']}";
-        $news_list = DB::get_all($query);
-        foreach ($news_list as $news) {
-            if ($news['issue']) {
-                $query = "UPDATE {$_M['table']['news']} SET publisher = '{$news['issue']}' WHERE id = {$news['id']}";
-                DB::query($query);
-            }
-        }
-        return;
-    }
-
-    /**
-     * 更新栏目数据
-     */
-    public function recovery_column()
-    {
-        return;
-        global $_M;
-        foreach (array_keys($_M['langlist']['web']) as $lang) {
-            $query = "SELECT * FROM {$_M['table']['column']} WHERE lang = '{$lang}' ";
-            $column_list = DB::get_all($query);
-            foreach ($column_list as $column) {
-                if ($column['module'] == 2) {
-                    $list_length = $_M['config']['met_news_list'];
-                }
-                if ($column['module'] == 3) {
-                    $list_length = $_M['config']['met_product_list'];
-                }
-                if ($column['module'] == 4) {
-                    $list_length = $_M['config']['met_download_list'];
-                }
-                if ($column['module'] == 5) {
-                    $list_length = $_M['config']['met_img_list'];
-                }
-                if ($column['module'] == 6) {
-                    $list_length = $_M['config']['met_job_list'];
-                }
-                if ($column['module'] == 7) {
-                    $list_length = $_M['config']['met_message_list'];
-                }
-                if ($column['module'] == 11) {
-                    $list_length = $_M['config']['met_search_list'];
-                }
-
-                $list_length = $list_length ? $list_length : 8;
-
-                $query = "UPDATE {$_M['table']['column']} SET list_length = '{$list_length}' WHERE id = {$column['id']}";
-                DB::query($query);
-
-            }
-        }
-    }
-
-    /**
      * 更新语言
      */
     public function update_language($version)
@@ -590,7 +173,7 @@ class update_database extends database
         $query = "SELECT * FROM {$_M['table']['lang_admin']} WHERE lang = 'cn' AND mark = 'cn'";
         $res = DB::get_one($query);
         if (!$res) {
-            $query = "INSERT INTO {$_M['table']['lang_admin']} SET name = '简体中文', useok = 1, no_order = 1, mark = 'cn', synchronous = 'cn',  link = '', lang = 'cn' ";
+            $query = "INSERT INTO {$_M['table']['lang_admin']} SET name = '简体中文', useok = '1', no_order = '1', mark = 'cn', synchronous = 'cn',  link = '', lang = 'cn' ";
             DB::query($query);
         }
 
@@ -616,7 +199,7 @@ class update_database extends database
             $lang_data = json_decode($lang_json, true);
 
             if (is_array($lang_data)) {
-                $sql = "DELETE FROM {$_M['table']['language']} WHERE lang = '{$lang}' AND  site = 1 AND app = 0 ";
+                $sql = "DELETE FROM {$_M['table']['language']} WHERE lang = '{$lang}' AND  site = '1' AND app = '0' ";
                 DB::query($sql);
                 foreach ($lang_data as $lang_row) {
                     if ($lang_row['site'] == 1) {
@@ -635,8 +218,8 @@ class update_database extends database
     {
         global $_M;
         //本地指纹
-        $path_cn = __DIR__ . "/update_7.3.0/v{$version}lang_web_cn.json";
-        $path_en = __DIR__ . "/update_7.3.0/v{$version}lang_web_en.json";
+        $path_cn = __DIR__ . "/update_7.5.0/v{$version}lang_web_cn.json";
+        $path_en = __DIR__ . "/update_7.5.0/v{$version}lang_web_en.json";
 
         $sql = "SELECT * FROM {$_M['table']['lang']} ";
         $web_lang_list = DB::get_all($sql);
@@ -694,10 +277,23 @@ class update_database extends database
             $query = "DELETE FROM {$_M['table']['admin_column']} ";
             DB::query($query);
 
+            if (strtolower($_M['config']['db_type']) == 'dmsql') {
+                $sql = "SET IDENTITY_INSERT {$_M['table']['admin_column']} ON;";
+                dm_exec(DB::$link, $sql);
+                dm_autocommit(DB::$link);
+            }
+
             foreach ($admin_column_list as $row) {
                 $sql = get_sql($row);
                 $query = "INSERT INTO {$_M['table']['admin_column']} SET {$sql}";
                 DB::query($query);
+            }
+
+            if (strtolower($_M['config']['db_type']) == 'dmsql') {
+                $sql = "SET IDENTITY_INSERT {$_M['table']['admin_column']} OFF;";
+                dm_exec(DB::$link, $sql);
+                dm_commit(DB::$link);
+
             }
         }
     }
@@ -1159,83 +755,65 @@ class update_database extends database
     {
         global $_M;
         foreach (array_keys($_M['langlist']['web']) as $lang) {
-            //shearch
-            self::update_config('global_search_range', 'all', 0, $lang);
-            self::update_config('global_search_type', '0', 0, $lang);
-            self::update_config('global_search_module', '2', 0, $lang);
-            self::update_config('global_search_column', '3', 0, $lang);
-            self::update_config('global_search_weight', '1|2|3|4|5|6', 0, $lang);
-            self::update_config('column_search_range', 'parent', 0, $lang);
-            self::update_config('column_search_type', '0', 0, $lang);
-            self::update_config('advanced_search_range', 'all', 0, $lang);
-            self::update_config('advanced_search_type', '1', 0, $lang);
-            self::update_config('advanced_search_column', '3', 0, $lang);
-            self::update_config('advanced_search_linkage', '1', 0, $lang);
             //tags
-            self::update_config('tag_show_range', '0', 0, $lang);
-            self::update_config('tag_show_number', '4', 0, $lang);
-            self::update_config('tag_search_type', 'module', 0, $lang);
+            self::_insert_config('tag_show_range', '0', 0, $lang);
+            self::_insert_config('tag_show_number', '4', 0, $lang);
+            self::_insert_config('tag_search_type', 'module', 0, $lang);
             //logs
-            self::update_config('met_logs', '0', 0, $lang);
+            self::_insert_config('met_logs', '0', 0, $lang);
             //logo
-            self::update_config('met_logo_keyword', "{$_M['config']['met_webname']}", 0, $lang);
+            self::_insert_config('met_logo_keyword', "{$_M['config']['met_webname']}", 0, $lang);
             //safe
-            self::update_config('access_type', '1', 0, $lang);
-            self::update_config('met_auto_play_pc', '0', 0, $lang);
-            self::update_config('met_auto_play_mobile', '0', 0, $lang);
+            self::_insert_config('access_type', '1', 0, $lang);
+            self::_insert_config('met_auto_play_pc', '0', 0, $lang);
+            self::_insert_config('met_auto_play_mobile', '0', 0, $lang);
             //member
-            self::update_config('met_login_box_position', '', 0, $lang);
-            self::update_config('met_weixin_gz_token', '', 0, $lang);
-            self::update_config('met_auto_register', '', 0, $lang);
-            self::update_config('met_member_agreement', '', 0, $lang);
-            self::update_config('met_member_agreement_content', '', 0, $lang);
-            self::update_config('met_member_bg_range', '', 0, $lang);
-            self::update_config('met_login_box_position', '', 0, $lang);
-            self::update_config('met_new_registe_email_notice', '', 0, $lang);
-            self::update_config('met_to_admin_email', '', 0, $lang);
-            self::update_config('met_new_registe_sms_notice', '', 0, $lang);
-            self::update_config('met_to_admin_sms', '', 0, $lang);
-            self::update_config('met_google_open', '', 0, $lang);
-            self::update_config('met_google_appid', '', 0, $lang);
-            self::update_config('met_google_appsecret', '', 0, $lang);
-            self::update_config('met_facebook_open', '', 0, $lang);
-            self::update_config('met_facebook_appid', '', 0, $lang);
-            self::update_config('met_facebook_appsecret', '', 0, $lang);
+            self::_insert_config('met_login_box_position', '', 0, $lang);
+            self::_insert_config('met_weixin_gz_token', '', 0, $lang);
+            self::_insert_config('met_auto_register', '', 0, $lang);
+            self::_insert_config('met_member_agreement', '', 0, $lang);
+            self::_insert_config('met_member_agreement_content', '', 0, $lang);
+            self::_insert_config('met_member_bg_range', '', 0, $lang);
+            self::_insert_config('met_login_box_position', '', 0, $lang);
+            self::_insert_config('met_new_registe_email_notice', '', 0, $lang);
+            self::_insert_config('met_to_admin_email', '', 0, $lang);
+            self::_insert_config('met_new_registe_sms_notice', '', 0, $lang);
+            self::_insert_config('met_to_admin_sms', '', 0, $lang);
+            self::_insert_config('met_google_open', '', 0, $lang);
+            self::_insert_config('met_google_appid', '', 0, $lang);
+            self::_insert_config('met_google_appsecret', '', 0, $lang);
+            self::_insert_config('met_facebook_open', '', 0, $lang);
+            self::_insert_config('met_facebook_appid', '', 0, $lang);
+            self::_insert_config('met_facebook_appsecret', '', 0, $lang);
             //webset
-            self::update_config('met_icp_info', '', 0, $lang);
-
-            if ($lang == 'cn') {
-                self::update_config('met_data_null', '没有找到数据', 0, $lang);
-                self::update_config('met_404content', '404错误，页面不见了。。。', 0, $lang);
-            } else {
-                self::update_config('met_404content', '404 error, the page is gone. . .', 0, $lang);
-                self::update_config('met_data_null', 'The page is gone', 0, $lang);
-            }
+            self::_insert_config('met_icp_info', '', 0, $lang);
+            self::_insert_config('met_data_null', '', 0, $lang);
+            self::_insert_config('met_404content', '', 0, $lang);
         }
 
         //global
-        self::update_config('met_api', 'https://u.mituo.cn/api/client', 0, 'metinfo');
-        self::update_config('met_301jump', '0', 0, 'metinfo');
-        self::update_config('disable_cssjs', '0', 0, 'metinfo');
-        self::update_config('met_uiset_guide', '1', 0, 'metinfo');
-        self::update_config('met_copyright_nofollow', '1', 0, 'metinfo');
-        self::update_config('met_https', '0', 0, 'metinfo');
-        self::update_config('met_copyright_type', '0', 0, 'metinfo');
-        self::update_config('met_agents_copyright_foot1', '本站基于 <b><a href=https://www.metinfo.cn target=_blank title=CMS>米拓企业建站系统搭建 $metcms_v</a></b> &copy;2008-$m_now_year', 0, 'metinfo');
-        self::update_config('met_agents_copyright_foot2', '技术支持：<b><a href=https://www.mituo.cn target=_blank title=CMS>米拓建站 $metcms_v</a></b> &copy;2008-$m_now_year', 0, 'metinfo');
+        self::_update_config('met_api', 'https://u.mituo.cn/api/client', 0, 'metinfo');
+        self::_update_config('met_301jump', '0', 0, 'metinfo');
+        self::_update_config('disable_cssjs', '0', 0, 'metinfo');
+        self::_update_config('met_uiset_guide', '1', 0, 'metinfo');
+        self::_update_config('met_copyright_nofollow', '1', 0, 'metinfo');
+        self::_update_config('met_https', '0', 0, 'metinfo');
+        self::_update_config('met_copyright_type', '0', 0, 'metinfo');
+        self::_update_config('met_agents_copyright_foot1', '本站基于 <b><a href=https://www.metinfo.cn target=_blank title=CMS>米拓企业建站系统搭建 $metcms_v</a></b> &copy;2008-$m_now_year', 0, 'metinfo');
+        self::_update_config('met_agents_copyright_foot2', '技术支持：<b><a href=https://www.mituo.cn target=_blank title=CMS>米拓建站 $metcms_v</a></b> &copy;2008-$m_now_year', 0, 'metinfo');
         //global-agents
-        self::update_config('met_agents_type', '1', 0, 'metinfo');
-        self::update_config('met_agents_pageset_logo', '1', 0, 'metinfo');
-        self::update_config('met_agents_update', '1', 0, 'metinfo');
-        self::update_config('met_agents_linkurl', '', 0, 'metinfo');
+        self::_update_config('met_agents_type', '1', 0, 'metinfo');
+        self::_update_config('met_agents_pageset_logo', '1', 0, 'metinfo');
+        self::_update_config('met_agents_update', '1', 0, 'metinfo');
+        self::_update_config('met_agents_linkurl', '', 0, 'metinfo');
         //fonts
-        self::update_config('met_text_fonts', '../public/fonts/Cantarell-Regular.ttf', 0, 'metinfo');
+        self::_update_config('met_text_fonts', '../public/fonts/Cantarell-Regular.ttf', 0, 'metinfo');
     }
 
     /**
      * 配置变更
      */
-    public function motify_config()
+    public function modify_config()
     {
         global $_M;
         //met_agents_type 前台版权标识
@@ -1245,31 +823,26 @@ class update_database extends database
         DB::query($query);
 
         if (!$met_agents_type || $met_agents_type['value'] == '0') {
-            self::update_config('met_agents_type', '1', 0, 'metinfo');
+            self::_update_config('met_agents_type', '1', 0, 'metinfo');
         } elseif ($met_agents_type['value'] == '2') {
-            self::update_config('met_agents_type', '0', 0, 'metinfo');
+            self::_update_config('met_agents_type', '0', 0, 'metinfo');
         } else {
-            self::update_config('met_agents_type', '1', 0, 'metinfo');
+            self::_update_config('met_agents_type', '1', 0, 'metinfo');
         }
 
         //met_agents_logo_login 后台登陆logo
         $query = "SELECT * FROM {$_M['table']['config']} WHERE name='met_agents_logo_login' AND lang = 'metinfo' ORDER BY ID DESC";
         $met_agents_logo_login = DB::get_one($query);
         if (!$met_agents_logo_login || !strstr($met_agents_logo_login['value'], 'upload')) {
-            self::update_config('met_agents_logo_login', '../public/images/login-logo.png', 0, 'metinfo');
+            self::_update_config('met_agents_logo_login', '../public/images/login-logo.png', 0, 'metinfo');
         }
 
         //met_agents_logo_index 后台logo
         $query = "SELECT * FROM {$_M['table']['config']} WHERE name='met_agents_logo_index' AND lang = 'metinfo' ORDER BY ID DESC";
         $met_agents_logo_index = DB::get_one($query);
         if (!$met_agents_logo_index || !strstr($met_agents_logo_index['value'], 'upload')) {
-            self::update_config('met_agents_logo_index', '../public/images/logo.png', 0, 'metinfo');
+            self::_update_config('met_agents_logo_index', '../public/images/logo.png', 0, 'metinfo');
         }
-
-        //调用字体文件
-        $query = "DELETE FROM {$_M['table']['config']} WHERE name='met_text_fonts'";
-        DB::query($query);
-        self::update_config('met_text_fonts', '../public/fonts/Cantarell-Regular.ttf', 0, 'metinfo');
     }
 
     /**
@@ -1344,6 +917,17 @@ class update_database extends database
     }
 
     /*****************************工具方法******************************/
+    private function _insert_config($name = '', $value = '', $cid = '', $lang = '')
+    {
+        global $_M;
+        $query = "SELECT id FROM {$_M['table']['config']} WHERE  name='{$name}' AND lang = '{$lang}'";
+        $config = DB::get_one($query);
+        if (!$config) {
+            $query = "INSERT INTO {$_M['table']['config']} (name,value,mobile_value,columnid,flashid,lang)VALUES ('{$name}', '{$value}', '', '{$cid}', '0', '{$lang}')";
+            DB::query($query);
+        }
+        return;
+    }
     /**
      * 更新配置
      * @param $name
@@ -1351,7 +935,7 @@ class update_database extends database
      * @param $cid
      * @param $lang
      */
-    private function update_config($name, $value, $cid, $lang)
+    private function _update_config($name = '', $value = '', $cid = '', $lang = '')
     {
         global $_M;
         $query = "SELECT id FROM {$_M['table']['config']} WHERE  name='{$name}' AND lang = '{$lang}'";

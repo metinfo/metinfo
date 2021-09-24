@@ -27,7 +27,7 @@ class myapp
         $data['action'] = 'login';
         $result = api_curl($_M['config']['met_api'], $data);
         $res = json_decode($result, true);
-        
+
         if ($res['status'] == 200 || $res['code'] == 0) {
             $user_key = $res['data']['user_key'];
             if ($user_key) {
@@ -388,6 +388,14 @@ class myapp
                 $list[] = $val;
             }
         }
+        return $list;
+    }
+
+    public function getAppModule()
+    {
+        global $_M;
+        $sql = "SELECT * FROM {$_M['table']['applist']} WHERE no > 10000";
+        $list = DB::get_all($sql);
         return $list;
     }
 }

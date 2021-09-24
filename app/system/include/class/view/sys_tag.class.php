@@ -21,10 +21,6 @@ class sys_tag extends tag
     public function _met_meta($attr, $content, &$met)
     {
         global $_M;
-        /**
-         * 系统UI scc js解析
-         */
-        // load::sys_class('view/met_compile', 'new')->parse_met_ui();
         $_M['html_plugin']['head_script']=str_replace($_M['url']['web_site'],$_M['url']['site'],$_M['html_plugin']['head_script']);
         $_M['html_plugin']['foot_script']=str_replace($_M['url']['web_site'],$_M['url']['site'],$_M['html_plugin']['foot_script']);
         $php = '
@@ -109,7 +105,10 @@ if($lang_json_file_ok){
     if($_M["html_plugin"]["head_script"]){
 ?>
 {$_M["html_plugin"]["head_script"]}' . "\n" . '
-<?php } ?>
+<?php }
+$explode_m=explode("<m ",$g["met_font"]);
+$g["met_font"]=$explode_m[0];
+?>
 <style>
 body{
 <?php if($g["bodybgimg"]){ ?>

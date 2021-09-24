@@ -4,7 +4,7 @@
  */
 (function(){
 	M.component.modal_call_status.form_sys_set=[];
-	metui.use('form',function(){
+	M.load('form',function(){
 		var that=$.extend(true,{}, admin_module),
 			hash=that.hash=='job/set'?'feedback/set':'job/set',
 			formSaveCallbackItem=function(){

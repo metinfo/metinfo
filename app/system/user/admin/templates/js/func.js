@@ -6,7 +6,7 @@
     fetch(1)
   }
   function fetch(refresh) {
-    metui.request(
+    M.ajax(
       {
         url: that.own_name + '&c=admin_set&a=doGetUserSetup'
       },

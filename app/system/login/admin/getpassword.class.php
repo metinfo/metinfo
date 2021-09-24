@@ -58,6 +58,10 @@ class getpassword extends admin
     {
         global $_M;
         $abt_type = $_M['form']['abt_type'];
+        if (!is_numeric($abt_type)) {
+            abort();
+        }
+
         if ($abt_type == 1) {
             $this->data['description'] = $_M['word']['password2'];
             $this->data['title'] = $_M['word']['password3'];

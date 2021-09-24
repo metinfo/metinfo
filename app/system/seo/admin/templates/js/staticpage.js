@@ -68,7 +68,7 @@
     });
   }
   function FormSubmit() {
-    metui.use(["form", "formvalidation", "alertify"], function() {
+    M.load(["form", "formvalidation", "alertify"], function() {
       const form = that.obj.find(".static-form");
       const order = form.attr("data-validate_order");
       formSaveCallback(order, {
@@ -114,7 +114,7 @@
     });
   }
   function getHtml(modal) {
-    metui.request(
+    M.ajax(
       {
         url: M.url.admin + "?n=html&c=html&a=doGetHtml"
       },
@@ -165,7 +165,7 @@
       );
       const url = $(this).data("url");
       const html_list = html_loading.find('.html-list');
-      metui.request(
+      M.ajax(
         {
           url: url
         },
@@ -182,7 +182,7 @@
             scrolltop && html_loading.scrollTop(scrolltop);
           };
           result.data.map((val, index) => {
-            metui.request(
+            M.ajax(
               {
                 url: val.url
               },

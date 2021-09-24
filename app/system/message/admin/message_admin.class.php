@@ -353,7 +353,7 @@ class message_admin extends base_admin
         /*if ($_M['config']['met_webhtm'] == 2 && $_M['config']['met_htmlurl'] == 0) {
             turnover("./content/article/save.php?lang={$_M['lang']}&action=html");
         } else {
-            turnover("{$_M[url][own_form]}a=doindex&class1=" . $_M[form][class1]);
+            turnover("{$_M['url'][own_form]}a=doindex&class1=" . $_M['form'][class1]);
         }*/
     }
 

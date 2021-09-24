@@ -115,6 +115,17 @@ class base_label
         return $data;
     }
 
+    public function get_one_content($id = '')
+    {
+        global $_M;
+        $one = $this->database->get_list_one_by_id($id);
+        if (!$one) {
+            return '';
+        }
+        $one = $this->handle->one_para_handle($one);
+        return $one;
+    }
+
     /**
      * 根据内容ID获取数据
      * @param $id        内容id

@@ -51,7 +51,8 @@ class feedback extends web
             // $this->seo_title($_M['config']['met_fdtable']);
             $this->add_input('fdtitle', $data['name']);
             if ($_M['form']['fdtitle']) {//产品询价
-                $this->input['url'] = $this->input['url'] . "?fdtitle={$_M['form']['fdtitle']}";
+                $fdtitle = urlencode($_M['form']['fdtitle']);
+                $this->input['url'] = $this->input['url'] . "?fdtitle={$fdtitle}";
             }else{
                 load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
             }

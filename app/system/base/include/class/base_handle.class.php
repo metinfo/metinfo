@@ -41,7 +41,7 @@ class base_handle extends handle
     /**
      * 处理list数组
      * @param  string $content 内容数组
-     * @return array            处理过后数组
+     * @return array           处理过后数组
      */
     public function one_para_handle($content = array())
     {
@@ -289,7 +289,10 @@ class base_handle extends handle
                     $lname = "&lang={$lang}";
                     break;
                 case '2'://伪静态
-                    $lname = "-{$lang}";
+                    $website = $_M['langlist']['web'][$lang]['link'];    //独立域名
+                    if (!$website) {
+                        $lname = "-{$lang}";
+                    }
                     break;
                 case '3'://静态
                     $lname = "_{$lang}";

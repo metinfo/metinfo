@@ -8,7 +8,7 @@
     that.table && that.table.ajax.reload();
   }
   function renderTable() {
-    metui.use(['table', 'alertify'], function() {
+    M.load(['table', 'alertify'], function() {
       const table = that.obj.find('#logs-table')
       table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
       datatable_option['#logs-table'] = {

@@ -25,7 +25,7 @@
 										'<span>'+val.useful_life+'</span>',
 										'<span>'+val.updatetime+'</span>',
 										'<span>'+val.access.name+'</span>',
-										M.component.formWidget('no_order-'+val.id,val.no_order,'text',1,0,'text-center'),
+										M.component.formWidget('no_order-'+val.id,val.no_order,'number',1,0,'text-center'),
 										'<button type="button" class="btn btn-sm btn-primary mr-1" data-toggle="modal" data-target=".'+thats.module+'-position-details-modal" data-modal-title="'+METLANG.jobposition+'" data-modal-size="lg" data-modal-url="'+edit_dataurl+val.id+'" data-modal-fullheight="1">'+METLANG.editor+'</button>'
 										+'<button type="button" class="btn btn-sm btn-primary mr-1 btn-view-cv" data-id="'+val.id+'">'+METLANG.memberCV+'</button>'
 										+M.component.btn('del',{del_url:val.delete})
@@ -81,7 +81,7 @@
 	}
 	// 简历列表获取职位
 	function getPosition(form){
-		metui.ajax({
+		M.ajax({
 			url: that.own_name+'c=job_manage&a=doget_position_list&class1='+form.find('[name="class1"]').val()+'&class2='+(form.find('[name="class2"]').val()||'')+'&class3='+(form.find('[name="class3"]').val()||''),
 			success:function(result){
 				if(result.length){

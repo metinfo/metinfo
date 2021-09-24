@@ -213,6 +213,9 @@ final class met_view
                     case 'site':
                         $file = PATH_WEB . str_replace('site/', '', $file);
                         break;
+                    case 'tem_ui':
+                        $file = PATH_TEM . str_replace('tem_ui/', 'ui/', $file);
+                        break;
                     default:
                         $onlyfile = true;
                         break;
@@ -222,6 +225,9 @@ final class met_view
             }
 
             if ($onlyfile) {
+                if($file_info && $file_info[0] && $file_info[0]=='tem_ui'){
+                    return str_replace(PATH_TEM, PATH_ALL_APP.'met_ui/admin/', $file);
+                }
                 if ($file == 'user_sidebar') {
                     $file = PATH_WEB . 'app/system/user/web/templates/sidebar';
                 } else {

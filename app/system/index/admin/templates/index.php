@@ -111,7 +111,7 @@ $html_class.=' met-admin';
 		                    <i class="metinfo-admin-icon metinfo-admin-icon-clear-chache"></i>
 		                    <span class="d-none d-md-inline-block">{$word.clearCache}</span>
 		                </button>
-		                <ul class="dropdown-menu dropdown-menu-right metadmin-head-langlist">
+		                <ul class="dropdown-menu dropdown-menu-right">
 		                	<a href="{$url.own_form}n=ui_set&c=index&a=doclear_cache" title="{$word.clearCache}" class='dropdown-item px-3 clear-cache'>{$word.system_cache}</a>
 		                	<a href="{$url.own_form}n=ui_set&c=index&a=doClearThumb" title="{$word.clearThumb}" class='dropdown-item px-3 clear-cache'>{$word.modimgurls}</a>
 		                </ul>
@@ -157,7 +157,7 @@ $html_class.=' met-admin';
 		                	<list data="$_M['user']['langok']" name="$v">
 		                        <a href="javascript:;" data-val='{$v.mark}' class='dropdown-item px-3'>{$v.name}</a>
 		                    </list>
-	                        <li class="px-3 py-1"><a href="#/language" class="btn btn-primary btn-add-lang"><i class="fa fa-plus"></i> {$word.added}{$word.langweb}</a></li>
+	                        <li class="px-3 py-1"><a href="#/language" class="btn btn-primary"><i class="fa fa-plus"></i> {$word.added}{$word.langweb}</a></li>
 		                </ul>
 		            </div>
 		            <div class="btn-group">

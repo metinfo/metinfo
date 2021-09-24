@@ -12,6 +12,7 @@ echo <<<EOT
 		<input name="showdata" type="hidden" value="$showdata">
 		<input name="met_index_type" type="hidden" value="$met_index_type">
 		<input name="met_admin_type" type="hidden" value="$met_admin_type">
+		<input name="db_type" type="hidden" value="$db_type">
 		<fieldset class="border pb-3 px-3">
 			<legend class="h6 text-primary w-auto px-1"><strong>管理员信息</strong></legend>
 			<div class="form-group row">

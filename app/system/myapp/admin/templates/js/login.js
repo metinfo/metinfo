@@ -1,7 +1,7 @@
 /* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
   var that = $.extend(true, {}, admin_module);
-  metui.use(['form', 'formvalidation'], function() {
+  M.load(['form', 'formvalidation'], function() {
     var order = that.obj.find('form').attr('data-validate_order')
     validate[order].success(function(res) {
       metAjaxFun({

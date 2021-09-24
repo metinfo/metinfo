@@ -30,6 +30,7 @@
                 modalFullheight:0,
                 modalRefresh:1,
                 modalClose:1,
+                modalContentclass:'',
                 modalHeaderclass:'',
                 modalTitleclass:'',
                 modalHeadercenter:'',
@@ -43,7 +44,7 @@
         options.modal_class_name=is_id?'':options.modal_class.substr(1);
         var html='<div class="modal fade met-scrollbar met-modal '+options.modalOtherclass+' '+options.modal_class_name+'" id="'+options.id+'" data-key="'+options.modal_class+'" data-keyboard="'+options.modalKeyboard+'" data-backdrop="'+options.modalBackdrop+'" '+(options.modalSubmitNoclose?'data-submit-noclose="1"':'')+' style="'+options.modalStyle+'">'
                 +'<div class="modal-dialog modal-dialog-'+options.modalType+' modal-'+options.modalSize+' '+(options.modalFullheight?'my-0 mx-auto h-100 py-2':'')+'">'
-                    +'<div class="modal-content '+(options.modalFullheight?'h-100':'')+'">'
+                    +'<div class="modal-content '+(options.modalFullheight?'h-100':'')+' '+options.modalContentclass+'">'
                         +'<div class="modal-header d-block clearfix bg-dark text-white '+options.modalHeaderclass+'">'
                             +'<h6 class="modal-title float-left '+options.modalTitleclass+'">'+options.modalTitle+'</h6>'
                             +options.modalHeadercenter
@@ -72,6 +73,7 @@
         if(modal_class){
             var $modal_class=$(modal_class);
             if($modal_class.length){
+                !$modal_class.hasClass('show') && $modal_class.modal();
                 $modal_class.find('.modal-body').attr({'data-url':$(this).attr('data-modal-url'),'data-loading':$(this).attr('data-modal-loading'),'data-load':$(this).attr('data-modal-load'),'data-dataurl':$(this).attr('data-modal-dataurl')||'','data-tablerefresh':$(this).attr('data-modal-tablerefresh'),'data-tablerefresh-type':$(this).attr('data-modal-tablerefresh-type'),'data-title':$(this).attr('data-modal-title'),'data-body':$(this).attr('data-modal-body')||''});
                 if(event.type=='clicks') $modal_class.trigger('shows');
             }else{
@@ -79,7 +81,7 @@
                 options.modal_class=modal_class;
                 $('body').append(M.component.modalFun(options));
                 $modal_class=$(modal_class);
-                $modal_class.modal();
+                !$modal_class.hasClass('show') && $modal_class.modal();
             }
         }
     });
@@ -103,7 +105,7 @@
                     // 弹框内容保存回调
                     setTimeout(function(){
                         var loadFun=function(){
-                                $modal_body.find('form').length && metui.use('form',function(){
+                                $modal_body.find('form').length && M.load('form',function(){
                                     $modal_body.find('form').each(function(index, el) {
                                         var validate_order=$(this).attr('data-validate_order');
                                         if(!M.component.modal_call_status.this[validate_order]){

@@ -165,7 +165,7 @@
                                     gotopage--;
                                     datatable[datatable_order].page(gotopage).draw(false);
                                 }else{
-                                    metui.use('alertify',function(){
+                                    M.load('alertify',function(){
                                         alertify.error((M.synchronous=='cn'?'页码有效范围为：':'The valid range of page number is:')+'1~'+pagenum);
                                     });
                                 }
@@ -196,7 +196,7 @@
                     $(this).removeAttr('data-scrolltop');
                     // $('#'+$(this).attr('id')+'_paginate .paginate_button.active').addClass('disabled');
                     // 添加表单验证
-                    metui.use(['form','formvalidation'],function(){$show_body.metFormAddField();});
+                    M.load(['form','formvalidation'],function(){$show_body.metFormAddField();});
                     $('.checkall-all',this).prop({checked:false});
                 },
                 rowCallback: function(row,data){// 行class
@@ -219,7 +219,7 @@
             var $self=$(this),
                 $dataTable=$('.dataTable[data-table-ajaxurl]',this);
             if(!$dataTable.length) return;
-            metui.use('datatables',function(){
+            M.load('datatables',function(){
                 $dataTable.each(function(index, el) {
                     var order=$(this).attr('data-datatable_order')&&$(this).attr('data-datatable_order')!=''?$(this).attr('data-datatable_order'):($(this).attr('id')?'#'+$(this).attr('id'):('met-datatable-'+new Date().getTime()+index));
                     $(this).attr({'data-datatable_order':order});
@@ -258,7 +258,7 @@
             $form.removeAttr('data-submited');
             if(url?$(this).parents('tbody').length:allid!=''){
                 if(url.indexOf('&allid=')>0) data={};
-                metui.ajax({
+                M.ajax({
                     url: url||$form.attr('action'),
                     data:data,
                     success: function(result){
@@ -266,7 +266,7 @@
                     }
                 });
             }else{
-                metui.use('alertify',function(){
+                M.load('alertify',function(){
                     alertify.error(METLANG.jslang3||'请选择至少一项');
                 });
             }
@@ -321,7 +321,7 @@
             var html=$table.find('[table-addlist-data]').val();
             addlist(html,$(this).data('table-newid')?1:0);
         }else if($(this).data('url')){
-            metui.ajax({
+            M.ajax({
                 url: $(this).data('url'),
                 data:{new_id:datatable_option[table_order]['new_id']},
                 dataType:'text',
@@ -365,7 +365,7 @@
     $(document).on('click', 'table [table-del]', function(event) {
         var $self=$(this),
             checked_length=$self.parents('table').find('tbody .checkall-item:checked').length;
-        metui.use('alertify',function(){
+        M.load('alertify',function(){
             if(!$self.parents('tbody').length && !checked_length){
                 alertify.error(METLANG.jslang3||'请选择至少一项');
             }else{
@@ -395,7 +395,7 @@
             var allid=$form.find('[name="allid"]').val()||'';
             if(url?!$(this).parents('tbody').length&&allid=='':allid==''){
                 $form.removeAttr('data-submited');
-                metui.use('alertify',function(){
+                M.load('alertify',function(){
                     alertify.error(METLANG.jslang3||'请选择至少一项');
                 });
             }

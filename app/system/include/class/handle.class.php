@@ -365,30 +365,40 @@ class handle
             $site_url = $_M['url']['web_site'];
         }
 
-        $items = array(
-            array('mysqli_connect', 'danger', '支持', '函数未开启，网站程序无法使用mysql数据库', '函数'),
-            array('zip', 'danger', '支持', '无法在线解压ZIP文件。（无法通过后台上传模板和数据备份文件）<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '模块'),
-            array('curl', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2450.html" target="_blank">帮助</a>', '模块'),
-            array('file_get_contents', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2461.html" target="_blank">帮助</a>', '函数'),
-            array('file_put_contents', 'danger', '支持', '系统无法写文件<a href="https://www.mituo.cn/qa/2462.html" target="_blank">帮助</a>', '函数'),
-            array('file_uploads', 'danger', '支持', '无法上传文件<a href="https://www.mituo.cn/qa/2456.html" target="_blank">帮助</a>', '配置'),
-            array('parse_ini_file', 'danger', '支持', '无法连接数据库<a href="https://www.mituo.cn/qa/2463.html" target="_blank">帮助</a>', '函数'),
-            array('fopen', 'danger', '支持', '系统无法打开操作文件<a href="https://www.mituo.cn/qa/2460.html" target="_blank">帮助</a>', '函数'),
-            array('mb_strlen', 'danger', '支持', '函数未开启，会导致前台显示不完整<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '函数'),
-            array('bccomp', 'danger', '支持', '函数未开启，会导致支付回调失效<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '函数'),
-            array('bcmath', 'danger', '支持', '会导致支付回调失效<a href="https://www.mituo.cn/qa" target="_blank">帮助</a>', '模块'),
-            array('gd', 'danger', '支持', '图片打水印和缩略生成功能无法使用<a href="https://www.mituo.cn/qa/2453.html" target="_blank">帮助</a>', '模块'),
-            array('copy', 'danger', '支持', '无法上传或复制文件<a href="https://www.mituo.cn/qa/2465.html" target="_blank">帮助</a>', '函数'),
-            array('smtp', 'warning', '支持', '系统邮件功能无法使用<a href="https://www.mituo.cn/qa/2469.html" target="_blank">帮助</a>', 'smtp'),
-            array('rename', 'danger', '支持', '无法重命名文件<a href="https://www.mituo.cn/qa/2464.html" target="_blank">帮助</a>', '函数'),
-            array('unlink', 'danger', '支持', '函数未开启，无法清除缓存<a href="https://www.mituo.cn/qa/2467.html" target="_blank">帮助</a>', '函数'),
-            array('opendir', 'danger', '支持', '无法列出目录下文件', '函数'),
-            array('scandir', 'danger', '支持', '无法列出目录下文件<a href="https://www.mituo.cn/qa/2466.html" target="_blank">[帮助]</a>', '函数'),
-            array('curl_exec', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2468.html" target="_blank">[帮助]</a>', '函数'),
-            array('woff2', 'warning', '支持', '不支持该文件类型<a href="https://www.mituo.cn/qa/2446.html" target="_blank">[帮助]</a>', 'woff2'),
-            array('PHP', 'danger', PHP_VERSION, 'php版本需要在5.3到8.0之间，否则无法安装使用程序', 'php'),
-            array('openssl', 'warning', OPENSSL_VERSION_TEXT, OPENSSL_VERSION_TEXT . '模块未开启，无法发送邮件，且部分应用插件无法使用（如官方商城、一键导入微信文章等）<a href="https://www.mituo.cn/qa/2449.html" target="_blank">[帮助]</a>', 'openssl'),
-        );
+        $items = array();
+        //函数
+        $items[] = array('mysqli_connect', 'danger', '支持', '函数未开启，网站程序无法使用mysql数据库', 'func');
+        $items[] = array('file_get_contents', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2461.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('file_put_contents', 'danger', '支持', '系统无法写文件<a href="https://www.mituo.cn/qa/2462.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('parse_ini_file', 'danger', '支持', '无法连接数据库<a href="https://www.mituo.cn/qa/2463.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('fopen', 'danger', '支持', '系统无法打开操作文件<a href="https://www.mituo.cn/qa/2460.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('mb_strlen', 'danger', '支持', '函数未开启，会导致前台显示不完整<a href="https://www.mituo.cn/qa" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('bccomp', 'danger', '支持', '函数未开启，会导致支付回调失效<a href="https://www.mituo.cn/qa" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('copy', 'danger', '支持', '无法上传或复制文件<a href="https://www.mituo.cn/qa/2465.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('rename', 'danger', '支持', '无法重命名文件<a href="https://www.mituo.cn/qa/2464.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('unlink', 'danger', '支持', '函数未开启，无法清除缓存<a href="https://www.mituo.cn/qa/2467.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('opendir', 'danger', '支持', '无法列出目录下文件', 'func');
+        $items[] = array('scandir', 'danger', '支持', '无法列出目录下文件<a href="https://www.mituo.cn/qa/2466.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('curl_exec', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2468.html" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('json_decode', 'danger', '支持', '函数未开启，会导致接口数据解析失败，模板安装失败<a href="https://www.mituo.cn/qa/" target="_blank">[帮助]</a>', 'func');
+        $items[] = array('json_encode', 'danger', '支持', '函数未开启，无法构造json字符串<a href="https://www.mituo.cn/qa/" target="_blank">[帮助]</a>', 'func');
+        if ($_M['config']['db_type'] == 'dmsql') {
+            $items[] = array('dm_connect', 'danger', '支持', '不支持达梦数据库连接<a href="https://www.mituo.cn/qa/" target="_blank">[帮助]</a>', 'func');
+        }
+
+        //PHP扩展
+        $items[] = array('zip', 'danger', '支持', '无法在线解压ZIP文件。（无法通过后台上传模板和数据备份文件）<a href="https://www.mituo.cn/qa" target="_blank">[帮助]</a>', 'model');
+            $items[] = array('curl', 'danger', '支持', '系统无法远程获取内容，会导致有些操作不起作用或数据不显示<a href="https://www.mituo.cn/qa/2450.html" target="_blank">[帮助]</a>', 'model');
+            $items[] = array('bcmath', 'danger', '支持', '会导致支付回调失效<a href="https://www.mituo.cn/qa" target="_blank">[帮助]</a>', 'model');
+            $items[] = array('gd', 'danger', '支持', '图片打水印和缩略生成功能无法使用<a href="https://www.mituo.cn/qa/2453.html" target="_blank">[帮助]</a>', 'model');
+            $items[] = array('dom', 'danger', '支持', 'DOM扩展库未正常开启<a href="https://www.mituo.cn/qa/" target="_blank">[帮助]</a>', 'model');
+
+        //环境配置
+        $items[] = array('file_uploads', 'danger', '支持', '无法上传文件<a href="https://www.mituo.cn/qa/2456.html" target="_blank">[帮助]</a>', 'setup');
+            $items[] = array('smtp', 'warning', '支持', '系统邮件功能无法使用<a href="https://www.mituo.cn/qa/2469.html" target="_blank">[帮助]</a>', 'smtp');
+            $items[] = array('woff2', 'warning', '支持', '不支持该文件类型<a href="https://www.mituo.cn/qa/2446.html" target="_blank">[帮助]</a>', 'woff2');
+            $items[] = array('PHP', 'danger', PHP_VERSION, 'php版本需要在5.3到8.0之间，否则无法安装使用程序', 'php');
+            $items[] = array('openssl', 'warning', OPENSSL_VERSION_TEXT, OPENSSL_VERSION_TEXT . '模块未开启，无法发送邮件，且部分应用插件无法使用（如官方商城、一键导入微信文章等）<a href="https://www.mituo.cn/qa/2449.html" target="_blank">[帮助]</a>', 'openssl');
 
         if (stristr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
             $items[] = array('伪静态', 'warning', '支持', '伪静态无法生效', 'apache');
@@ -396,17 +406,23 @@ class handle
         if (!defined('IN_ADMIN')) {
             $items[] = array('session', 'danger', '支持', '无法登录', 'session');
         } else {
-            $items[] = array('SQLite3', 'warning', '支持', '无法使用sqlite数据库，请到php.ini中开启', '类');
+            $items[] = array('SQLite3', 'warning', '支持', '无法使用sqlite数据库，请到php.ini中开启', 'class');
         }
 
         foreach ($items as &$v) {
             $yes = true;
             switch ($v[4]) {
-                case '模块':
+                case 'model':
                     $yes = extension_loaded($v[0]);
                     break;
-                case '函数':
+                case 'func':
                     $yes = function_exists($v[0]);
+                    break;
+                case 'class':
+                    $yes = class_exists($v[0]);
+                    break;
+                case 'setup':
+                    $yes = ini_get($v[0]);
                     break;
                 case 'openssl':
                     $yes = strstr(OPENSSL_VERSION_TEXT, '1.');
@@ -437,12 +453,6 @@ class handle
                     break;
                 case 'woff2':
                     $yes = @file_get_contents('../public/fonts/font-awesome/metinfo-icon1.woff2');
-                    break;
-                case '类':
-                    $yes = class_exists($v[0]);
-                    break;
-                case '配置':
-                    $yes = ini_get($v[0]);
                     break;
             }
 

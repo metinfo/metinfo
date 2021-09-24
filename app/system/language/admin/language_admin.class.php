@@ -69,11 +69,12 @@ class language_admin extends admin
         DB::query($query);
 
         //复制本地后台语言
-        $query = "SELECT name,value,array,app FROM {$_M['table']['language']} WHERE lang='{$file}' AND `site`=1";
+        //$query = "SELECT name,value,array,app FROM {$_M['table']['language']} WHERE lang='{$file}' AND `site`=1";
+        $query = "SELECT * FROM {$_M['table']['language']} WHERE lang='{$file}' AND `site`=1";
         $language_data = DB::get_all($query);
         foreach ($language_data as $key => $val) {
-            $val['value'] = str_replace("'", "''", $val['value']);
-            $val['value'] = str_replace("\\", "\\\\", $val['value']);
+            $lang_value = str_replace("'", "''", $val['value']);
+            $val['value'] = str_replace("\\", "\\\\", $lang_value);
             $val['lang'] = $mark;
             $val['site'] = 1;
             unset($val['id']);

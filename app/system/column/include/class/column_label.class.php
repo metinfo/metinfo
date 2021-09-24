@@ -439,6 +439,7 @@ class column_label
     {
         global $_M;
         if ($_M['config']['access_type'] == 2) {
+            //无权限则不显示栏目
             $new_data = array();
             foreach ($data as $key => $val) {
                 $res = $this->check_one($val['access']);

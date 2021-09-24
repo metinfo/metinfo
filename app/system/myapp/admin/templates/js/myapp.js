@@ -69,7 +69,7 @@
             list.hide()
             detail.show()
           } else {
-            metui.use(['alertify'], function() {
+            M.load(['alertify'], function() {
               alertify.error(METLANG.install_first)
             })
           }
@@ -149,7 +149,7 @@
   function deleteApp(that) {
     that.obj.find('.uninstall').click(function() {
       const btn = $(this)
-      metui.use('alertify', function() {
+      M.load('alertify', function() {
         alertify
           .okBtn(METLANG.confirm)
           .cancelBtn(METLANG.cancel)

@@ -53,8 +53,7 @@ class about extends admin
         $res = json_decode($result, true);
 
         if ($res['status'] != 200) {
-            $msg = $_M['woed']['noupdate'];
-            $this->error($res['msg']);
+            $this->error( $res['msg']);
         } else {
             $install = file_exists(PATH_CACHE.'update/'.$res['data'].'.zip');
             $data = array('version' => $res['data'], 'install' => intval($install));

@@ -929,7 +929,7 @@
                         $('#online .online-breadcrumb').hide().html('');
                     },
                     'onerror': function (r) {
-                        parent.metui?parent.metui.use('alertify',function(){
+                        parent.metui?parent.M.load('alertify',function(){
                             parent.alertify.error('error');
                         }):alert('error');
                     }

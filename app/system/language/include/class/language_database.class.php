@@ -98,9 +98,7 @@ class language_database
             foreach ($flash_data as $key => $val) {
                 $val['lang'] = $lang;
                 unset($val['id']);
-                $sql = get_sql($val);
-                $query = "INSERT INTO {$_M['table']['flash']} SET {$sql}";
-                DB::query($query);
+                DB::insert($_M['table']['flash'], $val);
             }
         }
 
@@ -307,6 +305,9 @@ class language_database
     public function copy_lang($table, $from_lang, $to_lang)
     {
         global $_M;
+        if (!isset($_M['table'][$table])) {
+            return;
+        }
         $query = "SELECT * FROM {$_M['table'][$table]} WHERE lang = '{$from_lang}'";
         $from = DB::get_all($query);
         foreach ($from as $new) {

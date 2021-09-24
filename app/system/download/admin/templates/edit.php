@@ -22,17 +22,26 @@ $upload = array(
 ?>
 <include file="pub/content_details/upload"/>
 <dl>
-	<dt>
-		<label class='form-control-label'>{$word.setfilesize}</label>
-	</dt>
-	<dd>
-		<div class='form-group clearfix'>
-			<input type="text" name="filesize" value="{$data.list.filesize}" class="form-control w-a">
-			<span class="text-help ml-2">KB</span>
-		</div>
-	</dd>
+    <dt>
+        <label class='form-control-label'>{$word.setfilesize}</label>
+    </dt>
+    <dd>
+        <div class='form-group clearfix'>
+            <input type="text" name="filesize" value="{$data.list.filesize}" class="form-control w-a">
+            <span class="text-help ml-2"></span>
+        </div>
+    </dd>
 </dl>
 <include file="pub/content_details/paraset"/>
 <include file="pub/content_details/content_seo_other"/>
-	</div>
+<?php
+$upload = array(
+    'title' => $word['coverimg'],
+    'name' => 'imgurl',
+    'value' => $data['list']['imgurl'],
+    'tips' => $word['tips7_v6']
+);
+?>
+<include file="pub/content_details/upload"/>
+</div>
 </form>

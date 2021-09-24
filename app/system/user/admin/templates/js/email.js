@@ -3,11 +3,11 @@
   var that = $.extend(true, {}, admin_module)
   fetch(that)
   TEMPLOADFUNS[that.hash] = function() {
-    fetch(that)
+    fetch(that,1)
   }
 })()
-function fetch(that) {
-  metui.request(
+function fetch(that,norefresh) {
+  M.ajax(
     {
       url: that.own_name + '&c=admin_set&a=doGetemailSetup'
     },
@@ -16,7 +16,7 @@ function fetch(that) {
       Object.keys(data).map(item => {
         $(`[name=${item}]`).val(data[item])
       })
-      that.obj.metCommon()
+      !norefresh && that.obj.metCommon()
     }
   )
 }

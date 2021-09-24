@@ -28,7 +28,7 @@ class config_app
                 $list['appname'] = get_word($list['name']);
                 $list['m_name'] = $list['field'];
                 $list['url'] = "{$_M['url']['site_admin']}{$list['url']}&lang={$_M['lang']}";
-                $list['ico'] = "{$_M[url]['tem']}myapp/images/{$list[icon]}";
+                $list['ico'] = "{$_M['url']['tem']}myapp/images/{$list['icon']}";
             } else {
                 $list['appname'] = get_word($list['name']);
                 $list['m_name'] = $list['file'];

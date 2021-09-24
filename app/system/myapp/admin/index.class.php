@@ -52,15 +52,18 @@ class index extends admin
     {
         global $_M;
         $data = array();
-//        $data['username'] = $_M['form']['username'];
-//        $data['password'] = $_M['form']['password'];
+        // $data['username'] = $_M['form']['username'];
+        //$data['password'] = $_M['form']['password'];
         $data['username'] = isset($_M['form']['username']) ? authcode($_M['form']['username'], "DECODE") : '';
         $data['password'] = isset($_M['form']['password']) ? authcode($_M['form']['password'], "DECODE") : '';
         $res = $this->moduleObj->login($data);
         if ($res) {
             //写日志
             logs::addAdminLog('myapp', 'loginconfirm', 'jsok', 'doLogin');
-            $this->success($res['data'], $res['msg']);
+            if ($res['status'] == 200) {
+                $this->success($res['data'], $res['msg']);
+            }
+            $this->error($res['msg']);
         } else {
             //写日志
             logs::addAdminLog('myapp', 'loginconfirm', 'opfailed', 'doLogin');

@@ -123,7 +123,7 @@
                         }
                     }
                     var this_ajax=function(){
-                            metui.ajax({
+                            M.ajax({
                                 url: action,
                                 data: formData,
                                 cache: false,
@@ -137,7 +137,7 @@
                             });
                         };
                     if(handle_name.length){
-                        metui.ajax({
+                        M.ajax({
                             url: M.url.system+'entrance.php?m=include&c=sysinfo&a=doGetinfo',
                             success: function(result) {
                                 $.each(handle_name, function(i, val) {
@@ -158,7 +158,7 @@
                 validate[order]={success:success,formDataAjax:formDataAjax};
                 var that=typeof admin_module!='undefined'?$.extend(true,{},admin_module):'';
                 (function(that1){
-                    metui.use('formvalidation',function(){
+                    M.load('formvalidation',function(){
                         // 初始化
                         self_validation=$self.formValidation({
                             locale:M.validation_locale,
@@ -200,7 +200,7 @@
                         }
                     });
                 })(that);
-                $self.find('[name][data-safety]').length && metui.use(['blueimp-md5','string-handle']);
+                $self.find('[name][data-safety]').length && M.load(['blueimp-md5','string-handle']);
             });
         }
     });
@@ -327,7 +327,7 @@
             var $form=$(this)[0].tagName=='FORM'?$(this):$(this).parents('form'),
                 $self=$(this);
             if($form.length){
-                metui.use('formvalidation',function(){
+                M.load('formvalidation',function(){
                     if(name){
                         if(!$.isArray(name)){
                             if(name.indexOf(',')>=0){
@@ -377,7 +377,7 @@
         if($(this).data('url')){
             $form.removeAttr('data-submited');
             var $table=$(this).parents('.dataTable').filter(function(index, el){return !$(this).parents('.metadmin-fmbx').length;});
-            metui.ajax({
+            M.ajax({
                 url: $(this).data('url'),
                 data: $form.serializeArray(),
                 success:function(result){
@@ -403,7 +403,7 @@
         // 提交删除时没有勾选时提示
         if(!not_validate_checked && $table.length && ($table.find('tbody .checkall-item[name="id"]').length?!$table.find('tbody .checkall-item[name="id"]:checked').length:0) && $('[name="allid"]',this).val()==''){
             event.preventDefault();
-            metui.use('alertify',function(){alertify.error(METLANG.jslang3||'请选择至少一项')});
+            M.load('alertify',function(){alertify.error(METLANG.jslang3||'请选择至少一项')});
             var $submit=$(M.component.submit_selctor,this);
             $submit.removeAttr('disabled').removeClass('disabled');
         }

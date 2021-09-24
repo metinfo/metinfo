@@ -6,7 +6,7 @@
 	var parameter_list='.parameter-list';
 	// 参数列表
 	M.component.commonList(function(that){
-		$.inArray(that.data.module, ['message','feedback','job'])>=0 && metui.use('form',function(){
+		$.inArray(that.data.module, ['message','feedback','job'])>=0 && M.load('form',function(){
 			formSaveCallback(that.obj.find('form').attr('data-validate_order'),{
 				true_fun:function(){
 					$(that.obj.parents('.content-show-item').find('.met-headtab a[data-url^="'+that.data.module+'/set/"]').attr('href')).removeAttr('data-loaded');
@@ -87,7 +87,7 @@
         };
 	});
     // 拖拽排序
-    metui.use('dragsort',function(){
+    M.load('dragsort',function(){
         dragsortFun[parameter_list]=function(wrapper){
         	wrapper.find('tr [name*="no_order-"]').each(function(index, el) {
     			$(this).val($(this).parents('tr').index());

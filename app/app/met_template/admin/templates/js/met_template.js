@@ -102,7 +102,7 @@
       .off()
       .click(function() {
         const btn = $(this)
-        metui.use('alertify', function() {
+        M.load('alertify', function() {
           alertify
             .okBtn(METLANG.confirm)
             .cancelBtn(METLANG.cancel)
@@ -178,7 +178,7 @@
   }
   function enableTemplate(that) {
     that.obj.find('.met_enable').on('change', function(e) {
-      metui.request(
+      M.ajax(
         {
           url: that.own_name + 'c=index&a=doenable',
           data: {
@@ -206,7 +206,7 @@
       const skin_name = btn.parents('.media').data('skin_name')
       btn.html(`<i class="fa fa-circle-o-notch fa-spin"></i> ${METLANG.installing}`).css({ width: '85%', height: 'auto' })
       btn.unbind('click')
-      metui.request(
+      M.ajax(
         {
           url: that.own_name + '&c=index&a=doinstall',
           data: {
@@ -268,7 +268,7 @@
             body: body
           }
           renderProgress(body, { title: METLANG.databacking })
-          metui.request(
+          M.ajax(
             {
               url: M.url.admin + '?n=databack&c=index&a=dopackdata'
             },
@@ -322,7 +322,7 @@
       downloadData(that, params)
     }
     if (result.status === 2) {
-      metui.request(
+      M.ajax(
         {
           url: `${M.url.admin}?${result.call_back}`
         },
@@ -337,7 +337,7 @@
     }
   }
   function downloadData(that, params) {
-    metui.request(
+    M.ajax(
       {
         url: that.own_name + '&c=index&a=dodownloadData',
         data: params.data
@@ -356,7 +356,7 @@
             importData(that, params)
           }
         } else {
-          metui.use(['alertify'], function() {
+          M.load(['alertify'], function() {
             alertify.error(result.msg)
             setTimeout(() => {
               window.location.reload()
@@ -367,7 +367,7 @@
     )
   }
   function importData(that, params) {
-    metui.request(
+    M.ajax(
       {
         url: that.own_name + '&c=index&a=doimportData',
         data: params.data
@@ -403,7 +403,7 @@
       btn.html(`<i class="fa fa-circle-o-notch fa-spin"></i> ${METLANG.being_imported}`);
       btn.unbind('click')
       // return;
-      metui.request(
+      M.ajax(
         {
           url: that.own_name + '&c=index&a=doimport',
           data: {
@@ -445,7 +445,7 @@
     })
   }
   function installUI(data, that) {
-    metui.request(data, function(result) {
+    M.ajax(data, function(result) {
       metAjaxFun({
         result: result,
         true_fun: function() {

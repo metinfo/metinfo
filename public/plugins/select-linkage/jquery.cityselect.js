@@ -94,7 +94,8 @@ required:必选项
 				$.each(city_json,function(i,prov){
 					var tn = prov[settings.p_name_key].name?prov[settings.p_name_key].name:prov[settings.p_name_key];
 					var tv = prov[settings.value_key]||prov[settings.value_key]==''?prov[settings.value_key]:(prov[settings.p_name_key][settings.value_key]||prov[settings.p_name_key][settings.value_key]==''?prov[settings.p_name_key][settings.value_key]:prov[settings.p_name_key]);
-					temp_html+=prov[settings.p_name_key]==settings.required_title?"<option value=''>"+tn+"</option>":"<option value='"+tv+"' data-val='"+(prov[settings.data_val_key]||tn)+"'>"+tn+"</option>";
+					var data_val=(typeof prov[settings.p_name_key]=='object'?prov[settings.p_name_key][settings.data_val_key]:prov[settings.data_val_key])||tn;
+					temp_html+=prov[settings.p_name_key]==settings.required_title?"<option value=''>"+tn+"</option>":"<option value='"+tv+"' data-val='"+data_val+"'>"+tn+"</option>";
 				});
 				prov_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""}).trigger('changes');
 				cityStart();
@@ -126,7 +127,8 @@ required:必选项
 				$.each(city_json[prov_id][settings.p_children_key],function(i,city){
 					var tn = city[settings.n_name_key].name?city[settings.n_name_key].name:city[settings.n_name_key];
 					var tv = city[settings.value_key]||city[settings.value_key]==''?city[settings.value_key]:(city[settings.n_name_key][settings.value_key]||city[settings.n_name_key][settings.value_key]==''?city[settings.n_name_key][settings.value_key]:city[settings.n_name_key]);
-					temp_html+="<option value='"+tv+"' data-val='"+(city[settings.data_val_key]||tn)+"'>"+tn+"</option>";
+					var data_val=(typeof city[settings.n_name_key]=='object'?city[settings.n_name_key][settings.data_val_key]:city[settings.data_val_key])||tn;
+					temp_html+="<option value='"+tv+"' data-val='"+data_val+"'>"+tn+"</option>";
 				});
 				city_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""}).trigger('changes');
 				distStart();
@@ -158,7 +160,8 @@ required:必选项
 					$.each(city_json[prov_id][settings.p_children_key][city_id][settings.n_children_key],function(i,dist){
 						var tn = dist[settings.s_name_key].name?dist[settings.s_name_key].name:dist[settings.s_name_key];
 						var tv = dist[settings.value_key]||dist[settings.value_key]==''?dist[settings.value_key]:(dist[settings.s_name_key][settings.value_key]||dist[settings.s_name_key][settings.value_key]==''?dist[settings.s_name_key][settings.value_key]:dist[settings.s_name_key]);
-						temp_html+="<option value='"+tv+"' data-val='"+(dist[settings.data_val_key]||tn)+"'>"+tn+"</option>";
+						var data_val=(typeof dist[settings.s_name_key]=='object'?dist[settings.s_name_key][settings.data_val_key]:dist[settings.data_val_key])||tn;
+						temp_html+="<option value='"+tv+"' data-val='"+data_val+"'>"+tn+"</option>";
 					});
 					dist_obj.html(temp_html).attr("disabled",false).css({"display":"","visibility":""}).trigger('changes');
 				// }

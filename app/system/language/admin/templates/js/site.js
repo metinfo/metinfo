@@ -6,7 +6,7 @@
         renderTable(1)
     }
     function renderTable(refresh) {
-        metui.use(['table', 'alertify'], function() {
+        M.load(['table', 'alertify'], function() {
             const table = that.obj.find('#lang-table')
             table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
             datatable_option['#lang-table'] = {
@@ -94,7 +94,9 @@
 
             that.obj.metDataTable(function() {
                 that.table = datatable['#lang-table']
-                if (!refresh) {
+                if (refresh) {
+                    that.table.ajax.reload();
+                }else{
                     deleteLang()
                     renderAdd()
                     renderEditForm()
@@ -156,7 +158,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(result) {
-                    metui.use('webui-popover', function() {
+                    M.load('webui-popover', function() {
                         modal.find('[name="order"]').val(parseInt(that.langData[that.langData.length - 1].no_order) + 1)
                         modal.find('[name="file"]').html(that.selectHtml)
                         modal.find('[name="copy_config"]').html(that.selectHtml)
@@ -219,7 +221,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(result) {
-                    metui.use('webui-popover', function() {
+                    M.load('webui-popover', function() {
                         modal.find('[name="order"]').val(that.activeData.no_order)
                         modal.find('[name="name"]').val(that.activeData.name)
                         modal.find('[name="link"]').val(that.activeData.link)
@@ -276,7 +278,7 @@
         if (modal.find('[name="appno"]').val()) {
             params.appno = modal.find('[name="appno"]').val()
         }
-        metui.request(
+        M.ajax(
             {
                 url: that.own_name + 'c=language_general&a=doSearchParameter',
                 data: params
@@ -379,7 +381,7 @@
             }
             values['data'][item.name] = item.value
         })
-            metui.request(
+            M.ajax(
                 {
                     url: form.attr('action'),
                     data: values
@@ -402,7 +404,7 @@
             const btn = $(e.target)
             const index = btn.data('index')
             that.activeData = that.langData[index]
-            metui.request(
+            M.ajax(
                 {
                     url: that.own_name + 'c=language_general&a=doGetAppList',
                     data: {
@@ -508,7 +510,7 @@
             const btn = $(e.target)
             const index = btn.data('index')
             that.activeData = that.langData[index]
-            metui.request(
+            M.ajax(
                 {
                     url: that.own_name + 'c=language_general&a=doSynLanguage',
                     data: {

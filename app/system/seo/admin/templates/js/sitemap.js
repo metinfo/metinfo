@@ -7,7 +7,7 @@
   }
 })()
 function fetch(that) {
-  metui.request(
+  M.ajax(
     {
       url: that.own_name + '&c=map&a=doGetSiteMap'
     },

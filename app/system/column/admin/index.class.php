@@ -111,6 +111,7 @@ class index extends admin
         }
         $array[] = array('name' => $_M['word']['modout'], 'mod' => 0);//外部模块
 
+        //自定义模块
         $ifcolumn = load::mod_class('column/ifcolumn_database', 'new')->get_all();
         foreach ($ifcolumn as $key => $val) {
             $array[] = array('name' => $val['name'], 'mod' => $val['no']);
@@ -1155,7 +1156,7 @@ class index extends admin
             $structure = $this->database->getdata($_M['table']['ifcolumn_addfile'], $where, '0');
 
             foreach ($structure as $key => $val) {
-                $path = PATH_WEB . $foldername . '/' . $val[filename];
+                $path = PATH_WEB . $foldername . '/' . $val['filename'];
                 $fp = fopen($path, "w+");
                 $str = "<?php";
                 $str .= "# MetInfo Enterprise Content Management System";
@@ -1227,12 +1228,20 @@ class index extends admin
             $module_name = load::sys_class('handle', 'new')->mod_to_file($module);
             $module_database = load::mod_class("{$module_name}/{$module_name}_database", 'new');
 
-            if ($classtype == 1) {
-                $list = $module_database->del_list_by_class123($cid, null, null);
-            } elseif ($classtype == 2) {
-                $list = $module_database->del_list_by_class123(null, $cid, null);
-            } else {
-                $list = $module_database->del_list_by_class123(null, null, $cid);
+            if(in_array($module,array(2, 3, 4, 5, 6))){
+                if(method_exists($module_database, 'del_contents')) {
+                    if ($classtype == 1) {
+                        $list = $module_database->del_list_by_class123($cid, null, null);
+                    } elseif ($classtype == 2) {
+                        $list = $module_database->del_list_by_class123(null, $cid, null);
+                    } else {
+                        $list = $module_database->del_list_by_class123(null, null, $cid);
+                    }
+                }
+            }else{
+                if(method_exists($module_database, 'del_contents')){
+                    $list = $module_database->del_contents_by_class($cid);
+                }
             }
 
             $para_list = load::mod_class('parameter/parameter_list_database', 'new');

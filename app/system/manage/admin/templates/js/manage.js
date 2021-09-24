@@ -107,7 +107,7 @@
 		setTimeout(function(){
 			$self.next('.dropdown').find('.dropdown-menu a[data-value="'+val+'"]').addClass('active').siblings().removeClass('active');
 		},0);
-		metui.use('alertify',function(){
+		M.load('alertify',function(){
 			alertify.success(METLANG.jsok);
 		});
 	});
@@ -219,13 +219,13 @@
 				$content_show_item[0].innerHTML=html;
 			},function(){
 				$content_show_item=$content_show.find('.content-show-item[data-path="'+hash+'"]');
-				/*if(is_listmodule) */metui.use('#pub/js/content_list',function(){
+				/*if(is_listmodule) */M.load('#pub/js/content_list',function(){
 					is_listmodule && setTimeout(function(){
 						M.component.contentList();
 					},0);
 				});
 				loadFun();
-				options.module=='about' && metui.use('form',function(){
+				options.module=='about' && M.load('form',function(){
                     setTimeout(function(){
                         formSaveCallback($content_show_item.find('form').attr('data-validate_order'),{
                             true_fun: function(result) {

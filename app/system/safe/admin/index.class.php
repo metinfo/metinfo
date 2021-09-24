@@ -15,7 +15,9 @@ class index extends admin
         parent::__construct();
     }
 
-    //获取设置
+    /**
+     * 获取设置
+     */
     public function doGetSetup()
     {
         global $_M;
@@ -50,7 +52,9 @@ class index extends admin
         $this->success($list);
     }
 
-    //删除安装文件
+    /**
+     * 删除安装文件
+     */
     public function doDelInstallFile()
     {
         global $_M;
@@ -66,7 +70,9 @@ class index extends admin
         $this->error();
     }
 
-    //请除模板缓存
+    /**
+     * 清除模板缓存
+     */
     public function clear_cache()
     {
         global $_M;
@@ -83,7 +89,9 @@ class index extends admin
         }
     }
 
-    //保存设置
+    /**
+     * 存设置
+     */
     public function doSaveSetup()
     {
         global $_M;
@@ -175,66 +183,246 @@ class index extends admin
     public function doSaveDatabase()
     {
         global $_M;
-        if (!in_array($_M['form']['db_type'], array('mysql', 'sqlite'))) {
+        $db_type = $_M['form']['db_type'];
+        if (!in_array($db_type, array('mysql', 'sqlite','dmsql'))) {
             $this->error('参数错误');
         }
 
-        $config = array();
-        if ($_M['form']['db_type'] == $_M['config']['db_type']) {
+        if ($db_type == $_M['config']['db_type']) {
             $this->success('', $_M['word']['jsok']);
         }
 
-        switch ($_M['form']['db_type']) {
-            case 'sqlite':
-                if (!class_exists('SQLite3')) {
-                    $this->error('Class SQLite3 not found');
-                }
-                if (!file_exists(PATH_WEB . $_M['config']['db_name'])) {
-                    $fp = fopen(PATH_WEB . $_M['config']['db_name'], 'w');
-                    if (!$fp) {
-                        $this->error(PATH_WEB . $_M['config']['db_name'] . ' File creation failed');
-                    }
-                    fclose($fp);
-                }
-                load::mod_class('databack/transfer', 'new')->mysqlExportSqlite();
+        $chtype = strtolower($_M['config']['db_type'] . $db_type);
+        switch ($chtype) {
+            case 'mysqlsqlite':
+                self::mySqlToSqlite();
+                logs::addAdminLog('数据库切换', 'mySqlToSqlite', '操作成功', 'doSaveDatabase');
                 break;
-            case 'mysql':
-                $config['con_db_host'] = $_M['form']['db_host'];
-                $config['con_db_port'] = $_M['form']['db_port'] ? $_M['form']['db_port'] : 3306;
-                $config['con_db_id'] = $_M['form']['db_username'];
-                $config['con_db_pass'] = $_M['form']['db_pass'];
-                $config['con_db_name'] = $_M['form']['db_name'];
-                $config['tablepre'] = $_M['form']['db_prefix'];
-
-                $db = mysqli_connect($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], '', $config['con_db_port']);
-                if (!$db) {
-                    $this->error(mysqli_connect_error());
-                }
-
-                if (!@mysqli_select_db($db, $config['con_db_name'])) {
-                    $res = mysqli_query($db, "CREATE DATABASE {$config['con_db_name']} ");
-                    if (!$res) {
-                        $this->error('创建数据库失败: ' . mysqli_error($db));
-                    }
-                }
-                $mysqli = @new mysqli($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], $config['con_db_name'], $config['con_db_port']);
-                if ($mysqli->connect_errno) {
-                    $this->error($mysqli->connect_error);
-                }
-
-                mysqli_select_db($db, $config['con_db_name']);
-                load::mod_class('databack/transfer', 'new')->sqliteExportMysql($config);
+            case 'sqlitemysql':
+                self::sqliteToMySql();
+                logs::addAdminLog('数据库切换', 'sqliteToMySql', '操作成功', 'doSaveDatabase');
+                break;
+            case 'mysqldmsql':
+                self::mySqlToDmSql();
+                logs::addAdminLog('数据库切换', 'mySqlToDmSql', '操作成功', 'doSaveDatabase');
+                break;
+            case 'dmsqlmysql':
+                self::dmSqlToMySql();
+                logs::addAdminLog('数据库切换', 'dmSqlToMySql', '操作成功', 'doSaveDatabase');
                 break;
             default:
                 $this->error('参数错误');
-                die();
                 break;
         }
 
-        $config['db_type'] = $_M['form']['db_type'];
-        setDbConfig($config);
         $this->success('', $_M['word']['jsok']);
     }
+
+    /**
+     * MySQL->Sqlite
+     */
+    protected function mySqlToSqlite()
+    {
+        global $_M;
+        if ($_M['config']['db_type'] !== 'mysql') {
+            $this->error('无法切数据库');
+        }
+
+        if (!class_exists('SQLite3')) {
+            $this->error('不支持连接SQLite数据库');
+        }
+
+        if (!file_exists(PATH_WEB . $_M['config']['db_name'])) {
+            $fp = fopen(PATH_WEB . $_M['config']['db_name'], 'w');
+            if (!$fp) {
+                $this->error(PATH_WEB . $_M['config']['db_name'] . ' File creation failed');
+            }
+            fclose($fp);
+        }
+        load::mod_class('databack/transfer', 'new')->mysqlExportSqlite();
+
+        $config['db_type'] = 'sqlite';
+        setDbConfig($config);
+        return;
+    }
+
+    /**
+     *Sqlite->MySQL
+     */
+    protected function sqliteToMySql()
+    {
+        global $_M;
+        if ($_M['config']['db_type'] !== 'sqlite') {
+            $this->error('无法切数据库');
+        }
+
+        if (!function_exists('mysqli_connect')) {
+            $this->error('不支持连接MySQL数据库');
+        }
+
+        $config['con_db_host'] = $_M['form']['db_host'];
+        $config['con_db_port'] = $_M['form']['db_port'] ? $_M['form']['db_port'] : 3306;
+        $config['con_db_id'] = $_M['form']['db_username'];
+        $config['con_db_pass'] = $_M['form']['db_pass'];
+        $config['con_db_name'] = $_M['form']['db_name'];
+        $config['tablepre'] = $_M['form']['db_prefix'];
+
+        $db = mysqli_connect($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], '', $config['con_db_port']);
+        if (!$db) {
+            $this->error(mysqli_connect_error());
+        }
+
+        if (!@mysqli_select_db($db, $config['con_db_name'])) {
+            $res = mysqli_query($db, "CREATE DATABASE {$config['con_db_name']} ");
+            if (!$res) {
+                $this->error('创建数据库失败: ' . mysqli_error($db));
+            }
+        }
+        $mysqli = @new mysqli($config['con_db_host'], $config['con_db_id'], $config['con_db_pass'], $config['con_db_name'], $config['con_db_port']);
+        if ($mysqli->connect_errno) {
+            $this->error($mysqli->connect_error);
+        }
+
+        mysqli_select_db($db, $config['con_db_name']);
+        load::mod_class('databack/transfer', 'new')->sqliteExportMysql($config);
+
+        $config['db_type'] = 'mysql';
+        setDbConfig($config);
+        return;
+    }
+
+    /**
+     * MySQL->DMSQL
+     */
+    protected function mySqlToDmSql()
+    {
+        global $_M;
+        if ($_M['config']['db_type'] !== 'mysql') {
+            $this->error('无法切数据库');
+        }
+
+        if (!function_exists('dm_connect')) {
+            $this->error('不支持连接达梦数据库');
+        }
+
+        $db_username = $_M['form']['db_username'];
+        $db_pass = $_M['form']['db_pass'];
+        $db_name = $_M['form']['db_name'];
+        $db_prefix = $_M['form']['db_prefix'];
+        $db_host = $_M['form']['db_host'];
+
+        if (strstr($db_host, ':')) {
+            $arr = explode(':', $db_host);
+            $db_host = $arr[0];
+            $db_port = $arr[1] ? $arr[1] : 5236;
+        } else {
+            $db_host = trim($db_host);
+            $db_port = '5236';
+        }
+
+        $db_prefix = trim($db_prefix);
+        $pattern = "/^\w+_$/is";
+        $res = preg_match($pattern, $db_prefix);
+        if (!$res) {
+            $this->error('数据表前缀仅支持数字字母和下划线且使用“_”结尾');
+        }
+
+        $link = dm_connect("{$db_host}:{$db_port}", $db_username, $db_pass);
+
+        if(!$link){
+            halt(dm_error() . ':' . dm_errormsg());
+        }
+
+        $config['con_db_host'] = $db_host;
+        $config['con_db_port'] = $db_port;
+        $config['con_db_id'] = $db_username;
+        $config['con_db_pass'] = $db_pass;
+        $config['con_db_name'] = $db_name;
+        $config['tablepre'] = $db_prefix;
+        $config['db_type'] = 'dmsql';
+        $res = load::mod_class('databack/transfer', 'new')->mySQLExportDMSQL($config);
+
+        setDbConfig($config);
+        return;
+    }
+
+    /**
+     * DMSQL->MySQL
+     */
+    protected function dmSqlToMySql()
+    {
+        global $_M;
+        if ($_M['config']['db_type'] !== 'dmsql') {
+            $this->error('无法切数据库');
+        }
+
+        if (!function_exists('mysqli_connect')) {
+            $this->error('不支持连接MySQL数据库');
+        }
+
+        $db_username = $_M['form']['db_username'];
+        $db_pass = $_M['form']['db_pass'];
+        $db_name = $_M['form']['db_name'];
+        $db_prefix = $_M['form']['db_prefix'];
+        $db_host = $_M['form']['db_host'];
+
+        if (strstr($db_host, ':')) {
+            $arr = explode(':', $db_host);
+            $db_host = $arr[0];
+            $db_port = $arr[1] ? $arr[1] : 3306;
+        } else {
+            $db_host = trim($db_host);
+            $db_port = 3306;
+        }
+
+        $db_prefix = trim($db_prefix);
+        $pattern = "/^\w+_$/is";
+        $res = preg_match($pattern, $db_prefix);
+        if (!$res) {
+            $this->error('数据表前缀仅支持数字字母和下划线且使用“_”结尾');
+        }
+
+
+        $db = mysqli_connect($db_host, $db_username, $db_pass, '', $db_port);
+        if (!$db) {
+            $this->error(mysqli_connect_error());
+        }
+
+        if (!@mysqli_select_db($db, $db_name)) {
+            $res = mysqli_query($db, "CREATE DATABASE {$db_name} ");
+            if (!$res) {
+                $this->error('创建数据库失败: ' . mysqli_error($db));
+            }
+        }
+        $mysqli = @new mysqli($db_host, $db_username, $db_pass, $db_name, $db_port);
+        if ($mysqli->connect_errno) {
+            $this->error($mysqli->connect_error);
+        }
+
+        mysqli_select_db($db, $db_name);
+
+        $config['con_db_host'] = $db_host;
+        $config['con_db_port'] = $db_port;
+        $config['con_db_id'] = $db_username;
+        $config['con_db_pass'] = $db_pass;
+        $config['con_db_name'] = $db_name;
+        $config['tablepre'] = $db_prefix;
+        $config['db_type'] = 'mysql';
+        $res = load::mod_class('databack/transfer', 'new')->dmSQLExportMySQL($config);
+
+        setDbConfig($config);
+        return;
+    }
+
+//    public function dotest1()
+//    {
+//        self::dmSqlToMySql();
+//    }
+//
+//    public function dotest2()
+//    {
+//        self::mySqlToDmSql();
+//    }
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

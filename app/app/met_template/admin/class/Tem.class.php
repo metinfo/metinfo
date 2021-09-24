@@ -34,7 +34,7 @@ class Tem
                 }
                 $temp['version'] = $has['ver'] ? $has['ver'] : '1.0';
             } else {
-                if (file_exists(PATH_WEB.'templates/'.$skin_name.'/ui.json')) {
+                if (file_exists(PATH_WEB . 'templates/' . $skin_name . '/ui.json')) {
                     $temp['import'] = 1;
                 } else {
                     $temp['install'] = 1;
@@ -50,8 +50,8 @@ class Tem
     public function updateUiList($skin_name = '')
     {
         global $_M;
-        $tem_path = PATH_WEB.'templates/'.$skin_name;
-        $ui_json = $tem_path.'/ui.json';
+        $tem_path = PATH_WEB . 'templates/' . $skin_name;
+        $ui_json = $tem_path . '/ui.json';
         $uilist = array();
         if (!file_exists($ui_json)) {
             error('模板配置文件不存在');
@@ -97,8 +97,8 @@ class Tem
     {
         global $_M;
 
-        $tem_path = PATH_WEB.'templates/'.$skin_name;
-        $ui_json = $tem_path.'/ui.json';
+        $tem_path = PATH_WEB . 'templates/' . $skin_name;
+        $ui_json = $tem_path . '/ui.json';
         $uilist = array();
         if (!file_exists($ui_json)) {
             error('模板配置文件不存在');
@@ -110,8 +110,8 @@ class Tem
         }
         foreach ($config['page'] as $page) {
             foreach ($page as $key => $val) {
-                if (!file_exists($tem_path.'/ui/'.$val['parent_name'].'/'.$val['ui_name'])) {
-                    $uilist[] = $val['parent_name'].'/'.$val['ui_name'];
+                if (!file_exists($tem_path . '/ui/' . $val['parent_name'] . '/' . $val['ui_name'])) {
+                    $uilist[] = $val['parent_name'] . '/' . $val['ui_name'];
                 }
                 $ui = $val;
                 $ui['skin_name'] = $skin_name;
@@ -146,7 +146,7 @@ class Tem
     public function importUi($skin_name = '')
     {
         global $_M;
-        $json = PATH_WEB.'templates/'.$skin_name.'/ui.json';
+        $json = PATH_WEB . 'templates/' . $skin_name . '/ui.json';
         $uiconfig = json_decode(file_get_contents($json), true);
         foreach ($uiconfig['page'] as $page) {
             foreach ($page as $key => $val) {
@@ -169,10 +169,10 @@ class Tem
     {
         global $_M;
 
-        $ui_json = PATH_WEB.'templates/'.$skin_name.'/ui/'.$ui['parent_name'].'/'.$ui['ui_name'].'/install.json';
+        $ui_json = PATH_WEB . 'templates/' . $skin_name . '/ui/' . $ui['parent_name'] . '/' . $ui['ui_name'] . '/install.json';
 
         if (!file_exists($ui_json)) {
-            return $ui_json.'不存在';
+            return $ui_json . '不存在';
         }
 
         $json = json_decode(file_get_contents($ui_json), true);
@@ -222,7 +222,7 @@ class Tem
     public function downloadUI($skin_name = '', $ui_name = '', $update = 0)
     {
         global $_M;
-        $ui_path = PATH_WEB.'templates/'.$skin_name.'/ui/'.$ui_name;
+        $ui_path = PATH_WEB . 'templates/' . $skin_name . '/ui/' . $ui_name;
         if (!file_exists($ui_path)) {
             mkdir($ui_path, 0777, true);
         } else {
@@ -241,16 +241,16 @@ class Tem
         $res = json_decode($result, true);
 
         if ($res['status'] != 200) {
-            file_put_contents(PATH_WEB.'cache/test.txt', var_export($result, true), FILE_APPEND);
+            file_put_contents(PATH_WEB . 'cache/test.txt', var_export($result, true), FILE_APPEND);
             error($res['msg']);
         }
 
-        $cache = PATH_WEB.'cache/ui';
+        $cache = PATH_WEB . 'cache/ui';
         if (!file_exists($cache)) {
             mkdir($cache, 0777, true);
         }
 
-        $cache_zip = $cache.'/'.str_replace('/', '#', $ui_name).'.zip'; //ui缓存
+        $cache_zip = $cache . '/' . str_replace('/', '#', $ui_name) . '.zip'; //ui缓存
 
         file_put_contents($cache_zip, base64_decode($res['data']));
         $zip = new ZipArchive();
@@ -270,7 +270,7 @@ class Tem
     public function checkUiParse()
     {
         global $_M;
-        $ui = PATH_ALL_APP.'met_template/include/class/ui_tag.class.php';
+        $ui = PATH_ALL_APP . 'met_template/include/class/ui_tag.class.php';
 
         return file_exists($ui);
     }
@@ -300,7 +300,7 @@ class Tem
 
         $status = $this->setCurrentSkin($skin_name);
         $this->copyUiConfig($skin_name);
-        if (file_exists(PATH_CACHE.'templates')) {
+        if (file_exists(PATH_CACHE . 'templates')) {
             // 防止删错
             deldir(PATH_CACHE);
         }
@@ -398,19 +398,19 @@ class Tem
         if (!$uilist) {
             $uilist = $this->uiList($skin_name);
         }
-        $tem_path = PATH_WEB.'templates/'.$skin_name;
+        $tem_path = PATH_WEB . 'templates/' . $skin_name;
         $data = array();
 
         foreach ($uilist as $key => $val) {
             if (is_numeric($key)) {
-                $uiname = $val['parent_name'].'/'.$val['ui_name'];
+                $uiname = $val['parent_name'] . '/' . $val['ui_name'];
                 $version = $val['ui_version'];
             } else {
                 $uiname = $key;
                 $version = $val;
             }
 
-            if (!file_exists($tem_path.'/ui/'.$uiname.'/install.json')) {
+            if (!file_exists($tem_path . '/ui/' . $uiname . '/install.json')) {
                 $data[$uiname] = -1;
             } else {
                 $data[$uiname] = $version;
@@ -486,7 +486,7 @@ class Tem
     {
         global $_M;
         // return array('status'=>200,'total'=>3,'piece'=>2);
-        $skin_zip = PATH_WEB.'cache/'.$skin_name.'.zip';
+        $skin_zip = PATH_WEB . 'cache/' . $skin_name . '.zip';
         if (!$piece && file_exists($skin_zip)) {
             @unlink($skin_zip);
         }
@@ -516,19 +516,19 @@ class Tem
             if ($_M['config']['db_type'] == 'sqlite' && stristr($query, 'CREATE TABLE')) {
                 $query = $transfer->mysqlToSqlite($query);
             }
-            if (strstr($query, $tablepre.'admin_table')) {
+            if (strstr($query, $tablepre . 'admin_table')) {
                 return;
             }
 
-            if (strstr($query, $tablepre.'templates')) {
+            if (strstr($query, $tablepre . 'templates')) {
                 return;
             }
 
-            if (strstr($query, $tablepre.'admin_column')) {
+            if (strstr($query, $tablepre . 'admin_column')) {
                 return;
             }
 
-            if (strstr($query, $tablepre.'language')) {
+            if (strstr($query, $tablepre . 'language')) {
                 return;
             }
             $query = trim($query, ';');
@@ -540,7 +540,7 @@ class Tem
                 $query = DB::escapeSqlite($query);
                 $rs = DB::$link->exec($query);
                 if (!$rs) {
-                    file_put_contents(PATH_WEB.'sqlte_error.txt', DB::$link->lastErrorMsg(), FILE_APPEND);
+                    file_put_contents(PATH_WEB . 'sqlte_error.txt', DB::$link->lastErrorMsg(), FILE_APPEND);
                 }
             } else {
                 DB::query($query);
@@ -564,7 +564,7 @@ class Tem
 
         switch ($piece) {
             case 0:
-                $skin_zip = PATH_WEB.'cache/'.$skin_name.'.zip';
+                $skin_zip = PATH_WEB . 'cache/' . $skin_name . '.zip';
                 if (!file_exists($skin_zip)) {
                     error($_M['word']['met_template_demonoexist']);
                 }
@@ -582,7 +582,7 @@ class Tem
                 set_time_limit(0);
                 $update_database->temp_data();
                 $version = $_M['config']['metcms_v'];
-                $string = @file_get_contents(PATH_WEB.$skin_name.'_1.sql');
+                $string = @file_get_contents(PATH_WEB . $skin_name . '_1.sql');
 
                 $transfer = load::mod_class('databack/transfer', 'new');
                 $transfer->importSql($string);
@@ -592,37 +592,35 @@ class Tem
 
                 $query = "SELECT * FROM {$_M['table']['config']} WHERE name = 'metcms_v'";
                 $config = DB::get_one($query);
-                if ($config['value'] != $version) {
+                if(version_compare($config['value'], $version,'<')){
+                #if ($config['value'] != $version) {
                     $update_database->update_system($version);
                 } else {
                     $update_database->diff_fields($version);
                     $update_database->alter_table($version);
                     $update_database->recovery_data();
-                    $update_database->update_admin_column();
+                    $update_database->table_regist($version);
                 }
 
                 $query = "UPDATE {$_M['table']['config']} SET value = '{$version}' WHERE name = 'metcms_v'";
                 DB::query(($query));
 
                 return array('status' => 1, 'total' => 3);
-
                 break;
-
             case 2:
                 $update_database->check_shop();
                 $columnclass = load::mod_class('column/column_op', 'new');
                 $columnclass->do_recover_column_files();
                 load::sys_func('file');
-                deldir(PATH_WEB.'cache', 1);
-                @unlink(PATH_WEB.$skin_name.'_1.sql');
+                deldir(PATH_WEB . 'cache', 1);
+                @unlink(PATH_WEB . $skin_name . '_1.sql');
 
                 return array('status' => 1, 'total' => 3);
-
                 break;
         }
     }
 
-    private function createSkin($skin_name = '',$config = array())
+    private function createSkin($skin_name = '', $config = array())
     {
         global $_M;
         $query = "SELECT * FROM {$_M['table']['skin_table']} WHERE skin_name = '{$skin_name}'";
@@ -679,9 +677,9 @@ class Tem
     {
         global $_M;
         $data = array();
-        foreach (scandir(PATH_WEB.'templates') as $t) {
-            if ($t != '.' && $t != '..' && file_exists(PATH_WEB.'templates/'.$t.'/ui.json')) {
-                $data[$t] = $_M['url']['site'].'templates/'.$t.'/view.jpg';
+        foreach (scandir(PATH_WEB . 'templates') as $t) {
+            if ($t != '.' && $t != '..' && file_exists(PATH_WEB . 'templates/' . $t . '/ui.json')) {
+                $data[$t] = $_M['url']['site'] . 'templates/' . $t . '/view.jpg';
             }
         }
 
@@ -695,8 +693,8 @@ class Tem
         $temlist = DB::get_all($query);
         $data = array();
         foreach ($temlist as $key => $val) {
-            if (!file_exists(PATH_WEB.'templates/'.$val['skin_name'].'/ui.json')) {
-                $val['view'] = $_M['url']['site'].'/templates/'.$val['skin_name'].'/view.jpg';
+            if (!file_exists(PATH_WEB . 'templates/' . $val['skin_name'] . '/ui.json')) {
+                $val['view'] = $_M['url']['site'] . '/templates/' . $val['skin_name'] . '/view.jpg';
                 if ($_M['config']['met_skin_user'] == $val['skin_name']) {
                     $val['enable'] = 1;
                 } else {
@@ -714,8 +712,8 @@ class Tem
     private function downloadParse()
     {
         global $_M;
-        $parse = PATH_WEB.'app/app/met_template/include/class/parse.class.php';
-        $path = PATH_WEB.'app/app/met_template/include/class';
+        $parse = PATH_WEB . 'app/app/met_template/include/class/parse.class.php';
+        $path = PATH_WEB . 'app/app/met_template/include/class';
         $url = base64_decode('aHR0cHM6Ly91Lm1pdHVvLmNuL2FwaS9jbGllbnQ=');
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
@@ -740,7 +738,7 @@ class Tem
             file_put_contents($parse, $string);
         }
 
-        $ui_tag = PATH_WEB.'app/app/met_template/include/class/ui_tag.class.php';
+        $ui_tag = PATH_WEB . 'app/app/met_template/include/class/ui_tag.class.php';
         if (!file_exists($ui_tag) || time() - filemtime($ui_tag) > 86400 * 7) {
             $data = array(
                 'action' => 'downloadFile',
@@ -776,13 +774,13 @@ class Tem
             error($res['msg']);
         }
         $list = json_decode(base64_decode($res['data']), true);
-        $tem_path = PATH_WEB.'templates/'.$skin_name;
+        $tem_path = PATH_WEB . 'templates/' . $skin_name;
         foreach ($list as $file => $val) {
-            $path = pathinfo($tem_path.'/'.$file);
+            $path = pathinfo($tem_path . '/' . $file);
             if (!file_exists($path['dirname'])) {
                 mkdir($path['dirname'], 0777, true);
             }
-            file_put_contents($tem_path.'/'.$file, base64_decode($val));
+            file_put_contents($tem_path . '/' . $file, base64_decode($val));
         }
         self::downloadParse();
 
@@ -841,7 +839,7 @@ class Tem
     {
         global $_M;
         if (!$this->checkUiParse() && strstr($skin_name, 'ui')) {
-            error('切换失败，请检查当前域名是否绑定'.$skin_name.'模板');
+            error('切换失败，请检查当前域名是否绑定' . $skin_name . '模板');
         }
         $query = "UPDATE {$_M['table']['config']} SET value = '{$skin_name}' WHERE name = 'met_skin_user' AND lang = '{$_M['lang']}'";
 
@@ -879,3 +877,7 @@ class Tem
         return $row;
     }
 }
+
+
+// This program is an open source system, commercial use, please consciously to purchase commercial license.
+// Copyright (C) MetInfo Co., Ltd. (http://www.metinfo.cn). All rights reserved.

@@ -1,9 +1,12 @@
 <?php
 defined('IN_MET') or exit('No permission');
 $data = $data['handle'];
-$data['value']=$data['modules']?$data['modules']:$data['columns'];
 $data['sort']=$data['sort']?$data['sort']:0;
-$id=$data['modules']?'module':'cid';
+$area=array(
+    'name'=>$data['modules']?'module':'cid',
+    'options'=>$data['modules']?$data['modules']:$data['columns'],
+    'value'=>$data['modules']?$data['module']:$data['cid'],
+);
 ?>
 <form method="POST" action="{$url.own_name}c=index&a=doSaveTags&id={$data.id}" class="tags-form" data-submit-ajax="1">
     <div class="metadmin-fmbx">
@@ -65,8 +68,8 @@ $id=$data['modules']?'module':'cid';
             </dt>
             <dd>
                 <div class="form-group">
-                    <select name="{$id}" class="form-control mr-1 prov w-a" required data-checked="{$data.id}">
-                        <list data="$data['value']">
+                    <select name="{$area.name}" class="form-control mr-1 prov w-a" required data-checked="{$area.value}">
+                        <list data="$area['options']">
                             <option value="{$val.id}">{$val.name}</option>
                         </list>
                     </select>

@@ -62,7 +62,7 @@
         var $icon_modal=$('.met-icon-modal'),
             $icon_active=$icon_modal.find('.icon-detail .icondemo-wrap.active'),
             $self=$(this);
-        metui.use('alertify', function() {
+        M.load('alertify', function() {
             if($icon_active.length){
                 var icon_active=$icon_active.parents('.icon-detail').data('prev')+$icon_active.data('name'),
                     $form_group=$('#'+$self.attr('data-id')).parents('.btn-group').parent();

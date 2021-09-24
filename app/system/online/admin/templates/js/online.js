@@ -52,7 +52,7 @@
         };
     });
     // 拖拽排序
-    metui.use('dragsort',function(){
+    M.load('dragsort',function(){
         dragsortFun[that.obj.find('table tbody').attr('data-dragsort_order')]=function(wrapper){
             wrapper.find('tr [name*="no_order-"]').each(function(index, el) {
                 $(this).val($(this).parents('tr').index());

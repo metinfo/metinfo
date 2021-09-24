@@ -55,6 +55,7 @@ class common
         $this->load_url(); //加载url数据
         $this->jump_url();//301跳转
         $_M['config']['met_api'] = 'https://u.mituo.cn/api/client';
+        return;
     }
 
     /**
@@ -86,7 +87,6 @@ class common
     protected function load_mysql()
     {
         global $_M;
-
         $_M['config'] = parse_ini_file(PATH_CONFIG . 'config_db.php');
         @extract($_M['config']);
 
@@ -94,6 +94,7 @@ class common
             $_M['config']['db_type'] = 'mysql';
             $_M['config']['db_name'] = 'config/metinfo.db';
         }
+
         if ($_M['config']['db_type'] == 'sqlite' && class_exists('SQLite3')) {
             load::sys_class('sqlite');
             $default = PATH_CONFIG . 'metinfo.db';
@@ -108,16 +109,23 @@ class common
                 setDbConfig($db);
             }
             DB::dbconn(PATH_WEB . $_M['config']['db_name']);
-        } else {
+        } elseif($_M['config']['db_type'] == 'mysql') {
             load::sys_class('mysql');
             DB::dbconn($con_db_host, $con_db_id, $con_db_pass, $con_db_name, $con_db_port);
             if ($_M['config']['db_type'] == 'sqlite') {
                 $db = array('db_type' => 'mysql');
                 setDbConfig($db);
             }
+        }elseif($_M['config']['db_type'] == 'dmsql'){
+            load::sys_class('dmsql');
+            DB::dbconn($con_db_host, $con_db_id, $con_db_pass, $con_db_name,$con_db_port);
+            if ($_M['config']['db_type'] == 'sqlite') {
+                $db = array('db_type' => 'dmsql');
+                setDbConfig($db);
+            }
         }
-        $_M['config']['tablepre'] = $tablepre;
 
+        $_M['config']['tablepre'] = $tablepre;
         return true;
     }
 
@@ -162,7 +170,7 @@ class common
     }
 
     /**
-     * 获取网站的语言设置，存放在$_M['langlist']，语言设置数组.
+     * 获取网站的语言设置，存放在$_M['langlist']，语言设置数组.mysq
      */
     protected function load_lang()
     {
@@ -452,20 +460,21 @@ class common
             }
             buffer::setLang($langtype, $lang, $_M['word']);
         }
+
+
         //生成js语言文件  app或者array字段为1则为js语言
         $langtype = $site ? 'admin_' : '';
         $js_lang_cache = PATH_CACHE . 'lang_json_' . $langtype . $lang . '.js';
 
         if (!file_exists($js_lang_cache)) {
-            if ($site) {
-                $query = "SELECT * FROM {$_M['table']['language']} WHERE lang='{$lang}' AND site='{$site}'";
-            } else {
-                $query = "SELECT * FROM {$_M['table']['language']} WHERE lang='{$lang}' AND (app=1 OR array=1) AND site='{$site}'";
+            $query = "SELECT * FROM {$_M['table']['language']} WHERE lang='{$lang}' AND site='{$site}'";
+            $result = DB::get_all($query);
+
+            $jsword = array();
+            foreach ($result as $row) {
+                $jsword[$row['name']] = trim($row['value']);
             }
-            $result = DB::query($query);
-            while ($listlang = DB::fetch_array($result)) {
-                $_M['jsword'][$listlang['name']] = trim($listlang['value']);
-            }
+            $_M['jsword'] = $jsword;
             $jslang = 'window.METLANG = ';
             $jslang .= jsonencode($_M['jsword']);
             file_put_contents($js_lang_cache, $jslang);

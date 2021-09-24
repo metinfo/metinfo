@@ -44,7 +44,7 @@
     	};
 	});
 	// 底部菜单列表排序
-	metui.use('dragsort',function(){
+	M.load('dragsort',function(){
         setTimeout(function(){
         	dragsortFun[that.obj.find('table tbody').attr('data-dragsort_order')]=function(wrapper,item){
 	        	wrapper.find('tr [name*="no_order-"]').each(function(index, el) {

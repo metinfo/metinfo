@@ -307,7 +307,7 @@ function unicode_encode($name = '')
 function contnets_replace($content = '')
 {
     if (strstr($content, '_ueditor_page_break_tag_')) {
-        $content = "<div class='tab-content met-editor-tabcontent'>\n<div class='tab-pane clearfix animation-fade'>\n" . str_replace('_ueditor_page_break_tag_', "\n</div>\n<div class='tab-pane clearfix animation-fade fade'>\n", $content) . "\n</div>\n</div>";
+        $content = "<div class='tab-content met-editor-tabcontent'>\n<div class='tab-pane clearfix animation-fade'>\n" . str_replace('_ueditor_page_break_tag_', "\n</div>\n<div class='tab-pane clearfix animation-fade'>\n", $content) . "\n</div>\n</div>";
         $content .= "\n<div class='met-editor-tab m-t-15 text-xs-center'>\n<ul class='pagination pagination-sm m-y-0'>\n</ul>\n</div>";
     }
     return $content;

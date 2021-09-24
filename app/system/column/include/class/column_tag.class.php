@@ -104,7 +104,6 @@ str;
         $php = <<<str
 <?php
     \$cid=$cid;
-
     \$num = $num;
     \$module = "$module";
     \$type = $type;

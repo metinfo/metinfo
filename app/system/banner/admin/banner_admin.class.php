@@ -80,7 +80,6 @@ class banner_admin extends base_admin
         global $_M;
         $lang = $_M['lang'];
         $module = $_M['form']['module'];
-        $met_flasharray = load::sys_class('label', 'new')->get('banner')->get_config();
         $where = "lang='$lang' and wap_ok='0'";
         if ($_M['form']['search'] == 'detail_search' && $_M['form']['ftype'] != 'all') {
             $tp = $_M['form']['ftype'] == 1 ? "and img_path!=''" : "and flash_path!=''";
@@ -88,8 +87,7 @@ class banner_admin extends base_admin
         }
 
         if ($module <> "") {
-            $dule = $met_flasharray[$module]['type'] == 2 ? "(flash_path !='' and module = 'metinfo')" : "(img_path !='' and module = 'metinfo')";
-            $where = "lang='$lang' and wap_ok='0' and (module like '%,{$module},%' or {$dule}) ";
+            $where = "lang='$lang' and wap_ok='0' and (module like '%,{$module},%' OR (img_path !='' and module = 'metinfo') ) ";
             $module1[$module] = 'selected';
         }
         $order = " no_order ASC, id DESC ";
@@ -246,9 +244,12 @@ class banner_admin extends base_admin
         $_M['form']['height_m'] = is_numeric($_M['form']['height_m']) ? $_M['form']['height_m'] : 0;
         // 添加banner属性img_title_color、img_des、img_des_color、img_text_position（新模板框架v2）
         if ($_M['form']['action'] == 'add') {
-            $query = "INSERT INTO {$_M['table']['flash']} (module,img_path,mobile_img_path,img_link,img_title,img_title_color,img_des,img_des_color,img_text_position,img_title_fontsize,img_des_fontsize,flash_path,flash_back,no_order,width,height,height_t,height_m,img_title_mobile,img_title_color_mobile,img_text_position_mobile,img_title_fontsize_mobile,img_des_mobile,img_des_color_mobile,img_des_fontsize_mobile,wap_ok,target,lang) VALUES('$module','{$_M['form']['img_path']}','{$_M['form']['mobile_img_path']}','{$_M['form']['img_link']}','{$_M['form']['img_title']}','{$_M['form']['img_title_color']}','{$_M['form']['img_des']}','{$_M['form']['img_des_color']}','{$_M['form']['img_text_position']}','{$_M['form']['img_title_fontsize']}','{$_M['form']['img_des_fontsize']}','{$_M['form']['flash_path']}','{$_M['form']['flash_back']}','{$_M['form']['no_order']}','{$_M['form']['width']}','{$_M['form']['height']}','{$_M['form']['height_t']}','{$_M['form']['height_m']}','{$_M['form']['img_title_mobile']}','{$_M['form']['img_title_color_mobile']}','{$_M['form']['img_text_position_mobile']}','{$_M['form']['img_title_fontsize_mobile']}','{$_M['form']['img_des_mobile']}','{$_M['form']['img_des_color_mobile']}','{$_M['form']['img_des_fontsize_mobile']}','0','{$_M['form']['target']}','{$_M['lang']}')";
-           
-            $res = DB::query($query);
+
+            $save_data = $_M['form'];
+            $save_data['module'] = $module;
+            $save_data['lang'] = $_M['lang'];
+            $res = $this->database->insert($save_data);
+
             if (!$res) {
                 //写日志
                 logs::addAdminLog("indexflash", 'add', 'opfailed', 'doeditorsave');
@@ -266,37 +267,10 @@ class banner_admin extends base_admin
 
 
         if ($_M['form']['action'] == 'editor') {
-            $query = "UPDATE  {$_M['table']['flash']} SET
-            module             = '$module',
-            img_path           = '{$_M['form']['img_path']}',
-            mobile_img_path    = '{$_M['form']['mobile_img_path']}',
-            img_link           = '{$_M['form']['img_link']}',
-            img_title          = '{$_M['form']['img_title']}',
-            img_title_color    = '{$_M['form']['img_title_color']}',
-            img_des            = '{$_M['form']['img_des']}',
-            img_des_color      = '{$_M['form']['img_des_color']}',
-            img_text_position  = '{$_M['form']['img_text_position']}',
-            img_title_fontsize = '{$_M['form']['img_title_fontsize']}',
-            img_des_fontsize   = '{$_M['form']['img_des_fontsize']}',
-            flash_path         = '{$_M['form']['flash_path']}',
-            flash_back         = '{$_M['form']['flash_back']}',
-            no_order           = '{$_M['form']['no_order']}',
-            width              = '{$_M['form']['width']}',
-            height             = '{$_M['form']['height']}',
-            height_t           = '{$_M['form']['height_t']}',
-            height_m           = '{$_M['form']['height_m']}',
-            img_title_mobile   = '{$_M['form']['img_title_mobile']}',
-            img_title_color_mobile = '{$_M['form']['img_title_color_mobile']}',
-            img_text_position_mobile = '{$_M['form']['img_text_position_mobile']}',
-            img_title_fontsize_mobile = '{$_M['form']['img_title_fontsize_mobile']}',
-            img_des_mobile     = '{$_M['form']['img_des_mobile']}',
-            img_des_color_mobile = '{$_M['form']['img_des_color_mobile']}',
-            img_des_fontsize_mobile = '{$_M['form']['img_des_fontsize_mobile']}',
-            wap_ok             = '0',
-            target             = '{$_M['form']['target']}',
-            lang               = '{$_M['lang']}'
-            where id='{$_M['form']['id']}'";
-            $res = DB::query($query);
+            $save_data = $_M['form'];
+            $save_data['module'] = $module;
+            $save_data['lang'] = $_M['lang'];
+            $res = $this->database->update_by_id($save_data);
             if (!$res) {
                 //写日志
                 logs::addAdminLog("indexflash", 'save', 'opfailed', 'doeditorsave');

@@ -27,15 +27,6 @@ class banner_label
         $this->handle = load::mod_class('banner/banner_handle', 'new');
     }
 
-    /**
-     * 获取所有banner栏目配置//兼容系统v5
-     * @return array         banner栏目配置数组
-     */
-    public function get_config()
-    {
-        $banner = $this->database->get_banner_config_by_lang($this->lang);
-        return $this->handle->config_para_handle($banner);
-    }
 
     /**
      * 获取所有栏目benner图片列表//兼容系统v5
@@ -55,18 +46,11 @@ class banner_label
     public function get_column_banner($column_id)
     {
         global $_M;
-        if ($_M['config']['met_bannerpagetype'] && $_M['config']['metinfover'] != 'v2') { //其他页面banner样式是否和首页一致，v5模板兼容代码
-            $column_id = 10001;
-        }
+        //页面如果没有type类型，就采用默认设置，兼容v5代码
+        $banner['config']['type'] = 1;
+        $banner['config']['y'] = 1000;
 
-        $banner_config = $this->handle->config_para_handle($this->database->get_banner_config_by_column($column_id));
-
-        if (!isset($banner_config['type'])) {//页面如果没有type类型，就采用默认设置，兼容v5代码
-            $banner_config = $this->handle->config_para_handle($this->database->get_banner_config_by_column(10000));
-        }
-        $banner['config']['type'] = $banner_config['type'];
-        $banner['config']['y'] = $banner_config['y'];
-
+        //Banner列表
         $banner['img'] = $this->handle->img_para_handle($this->database->get_banner_img_by_column($column_id, $this->lang));
 
         return $banner;

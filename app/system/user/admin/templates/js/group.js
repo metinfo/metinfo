@@ -6,7 +6,7 @@
     that.table && that.table.ajax.reload()
   }
   function renderTable(refresh) {
-    metui.use(['table', 'alertify'], function() {
+    M.load(['table', 'alertify'], function() {
       const table = that.obj.find('#group-table')
       table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
       datatable_option['#group-table'] = {
@@ -52,7 +52,7 @@
                 `
                     : METLANG.useinfopay
                 }`,
-                `<input name="access" value="${val.access}" class="form-control" type="text" />`,
+                `<input name="access" value="${val.access}" class="form-control text-center" type="text" />`,
                 `<button class="btn btn-delete" data-id="${val.id}">${METLANG.delete}</button>`
               ]
 

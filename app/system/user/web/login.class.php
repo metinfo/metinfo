@@ -49,9 +49,15 @@ class login extends userweb
 
         if (isset($_M['form']['gourl']) && $_M['form']['gourl']) {
             setcookie("referer", base64_decode($_M['form']['gourl']));
+            $this->input['gourl'] = urlencode($_M['form']['gourl']);
         }
 
         if ($session->get("logineorrorlength") > 3) $_M['code'] = 1;
+
+        $login_position = $_M['config']['met_login_box_position'] == 1 ? 'm-x-auto' : ($_M['config']['met_login_box_position'] == 2 ? 'pull-xs-right' : '');
+
+        $this->input['login_position'] = $login_position;
+        $this->input['page_title'] = $_M['word']['memberLogin'] . $this->input['page_title'];
 
         $this->view('app/login', $this->input);
     }

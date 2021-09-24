@@ -50,6 +50,8 @@ class open extends web
             $i = -1;
         }
         $_M['url']['site'] = $_M['form']['module'] == 10001 ? '' : '../';
+        $web_site = $_M['url']['web_site'];
+
         foreach ($array['class1'] as $key => $val) { //一级级栏目
             if ($_M['config']['advanced_search_range'] == 'parent') {
                 if (!in_array($val['id'], $cid)) {
@@ -59,7 +61,7 @@ class open extends web
             $i++;
             $metinfo['citylist'][$i]['p'] = $val['name'];
             $metinfo['citylist'][$i]['value'] = $val['id'];
-            $metinfo['citylist'][$i]['url'] = $_M['url']['site'] . "{$val['foldername']}/index.php?lang=" . $_M['lang'];
+            $metinfo['citylist'][$i]['url'] = $web_site . "{$val['foldername']}/index.php?lang=" . $_M['lang'];
             //if (count($array['class2'][$val['id']]) && $_M['config']['advanced_search_linkage']) { //二级栏目
             if ($array['class2'][$val['id']] && $_M['config']['advanced_search_linkage']) { //二级栏目
                 $k = 0;
@@ -68,7 +70,7 @@ class open extends web
 
                 $first_son = reset($array['class2'][$val['id']]);
                 if ($val['module'] == 1) {//简介模块下的下级列表栏目
-                    $metinfo['citylist'][$i]['url'] = $_M['url']['site'] . "{$first_son['foldername']}/index.php?lang=" . $_M['lang'];
+                    $metinfo['citylist'][$i]['url'] = $web_site . "{$first_son['foldername']}/index.php?lang=" . $_M['lang'];
                 }
 
                 foreach ($array['class2'][$val['id']] as $k1 => $val2) {

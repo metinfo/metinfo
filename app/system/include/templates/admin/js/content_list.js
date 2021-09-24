@@ -15,10 +15,10 @@
 							$.each(result.data, function(index, val) {
 								var item=[],
 									status='';
-								if(parseInt(val.com_ok)) status+='<span class="badge font-weight-normal mx-1 badge-success">'+METLANG.recom+'</span>';
-								if(parseInt(val.top_ok)) status+='<span class="badge font-weight-normal mx-1 badge-info">'+METLANG.top+'</span>';
-								if(!parseInt(val.displaytype)) status+='<span class="badge font-weight-normal mx-1 badge-secondary">'+METLANG.displaytype2+'</span>';
-								if(parseInt(val.addtype)) status+='<span class="badge font-weight-normal mx-1 badge-secondary">'+METLANG.timedrelease+'</span>';
+								if(parseInt(val.com_ok)) status+='<span class="badge font-weight-normal m-1 badge-success">'+METLANG.recom+'</span>';
+								if(parseInt(val.top_ok)) status+='<span class="badge font-weight-normal m-1 badge-info">'+METLANG.top+'</span>';
+								if(!parseInt(val.displaytype)) status+='<span class="badge font-weight-normal m-1 badge-secondary">'+METLANG.displaytype2+'</span>';
+								if(parseInt(val.addtype)) status+='<span class="badge font-weight-normal m-1 badge-secondary">'+METLANG.timedrelease+'</span>';
 								item.push(M.component.checkall('item',val.id));
 								if(that.module=='img'||that.module=='product'){
 									item.push('<a href="'+val.url+'" target="_blank" class="media align-items-center"><img src="'+val.imgurl+'" width="100" class="mr-2"/><div class="media-body">'+val.title+'</div></a>');
@@ -28,7 +28,7 @@
 								item.push(val.hits);
 								item.push(val.updatetime);
 								item.push(status);
-								item.push(M.component.formWidget('no_order-'+val.id,val.no_order,'text',1,0,'text-center'));
+								item.push(M.component.formWidget('no_order-'+val.id,val.no_order,'number',1,0,'text-center'));
 								item.push('<button type="button" class="btn btn-sm btn-primary mr-1" data-toggle="modal" data-target=".'+that.module+'-details-modal" data-modal-title="'+METLANG.editor+'" data-modal-size="xl" data-modal-url="'+edit_dataurl+val.id+'" data-modal-fullheight="1">'+METLANG.editor+'</button>'
 									+M.component.btn('del_item',{del_url:val.del_url}));
 								data.push(item);
@@ -74,7 +74,7 @@
 	$(document).on('click', '.content-show .content-show-item .contentlist-copy-langlist a[data-val]', function(event) {
 		var $contentlist_copy=$(this).parents('table').find('.contentlist-copy'),
 			tolang=$(this).data('val');
-		metui.ajax({
+		M.ajax({
 			url:M.url.admin+'?n=manage&index&a=doGetLangColumn',
 			data:{tolang:tolang,module:$(this).parents('table').find('[name="module"]').val()}
 		},function(result){
@@ -134,11 +134,12 @@
 			var $form=$(key+' .modal-body form'),
 				validate_order=$form.attr('data-validate_order');
 			$form.find('.btn-content-para-refresh').click();
+			$form.find('.content-details-relationlist').length && getRelationlist($form.find('.content-details-relationlist'));
 			productTab($form);
 			if(!M.component.modal_call_status.content_list[validate_order]){
 				M.component.modal_call_status.content_list[validate_order]=1;
 				// 弹框内表单提交后的回调
-				metui.use('form',function(){
+				M.load('form',function(){
 					formSaveCallback(validate_order,{
 				        true_fun: function(result) {
 				        	// 静态页面更新
@@ -149,14 +150,14 @@
 					        		$modal_body=$('.html-update-modal .modal-body');
 					        		$modal_body.find('.html-update-list').html('');
 					        	},0)
-					            metui.ajax({
+					            M.ajax({
 					            	url:result.html_res
 					            },function(result1){
 					            	var $html_update_list=$modal_body.find('.html-update-list'),
 					            		length=result1.data.length,
 					            		key=0;
 					            	result1.data.map(val => {
-					            		metui.ajax({
+					            		M.ajax({
 											url: val.url
 										}, function(res) {
 											key++;
@@ -234,7 +235,7 @@
 				10:'text'
 			};
 		$(this).attr({disabled:''}).find('i').addClass('fa-spin');
-		metui.ajax({
+		M.ajax({
 			url: $paralist.attr('data-url')
 		},function(result){
 			metAjaxFun({result:result,true_fun:function(){
@@ -321,7 +322,7 @@
     	var $navtab=form.find('.product-details-navtab'),
     		$content=form.find('.product-details-content');
 		if(!$navtab.length) return;
-    	metui.ajax({
+    	M.ajax({
 			url: $navtab.data('url'),
 			data: {
 				class1: form.find('[name="class1"]').val(),
@@ -343,7 +344,7 @@
     // 产品详情页选项卡设置框回调
     M.component.modal_options['.product-details-tabset-modal']={
 		callback:function(key){
-			metui.use('form',function(){
+			M.load('form',function(){
 				setTimeout(function(){
 					formSaveCallback($(key+' .modal-body form').attr('data-validate_order'),{
 				        true_fun: function(result) {
@@ -354,6 +355,85 @@
         	});
 		}
 	};
+	// 内容详情页-获取关联内容
+	function getRelationlist(obj){
+		M.ajax({
+			url: obj.attr('data-url')
+		},function(result){
+			metAjaxFun({result:result,true_fun:function(){
+				var list=[];
+				result.data.length && result.data.map(item=>{
+					list.push({
+						id:parseInt(item.relation_id),
+						module:parseInt(item.relation_module),
+						relation_class:parseInt(item.relation_class),
+						relation_class_name:item.relation_class_name,
+						title:item.content.title,
+						url:item.content.url
+					});
+				});
+				obj.html(`<dl><dd></dd></dl><textarea name="relations" hidden>${JSON.stringify(list)}</textarea>`);
+				renderRelationlist(obj);
+			}});
+		});
+	};
+	// 内容详情页-渲染关联内容列表
+	function renderRelationlist(obj){
+		var list=JSON.parse(obj.find('textarea').val()),
+			new_list={},
+			html='';
+		$.each(list, function(index, val) {
+			if(!new_list[val.relation_class]){
+				new_list[val.relation_class]={
+					relation_class_name:val.relation_class_name,
+					module:val.module,
+					list:[]
+				};
+			}
+			new_list[val.relation_class].list.push(val);
+		});
+		$.each(new_list, function(index, val) {
+			html+=`<li class="parents border-top pt-3">
+				<h3 class="h6">${val.relation_class_name}</h3>
+				<ul>`;
+			$.each(val.list, function(index1, val1) {
+				html+=`<li class="border-top p-2 d-flex align-items-center">
+					<a href="${val1.url}" target="_blank" class="media-body pr-3">${val1.title}</a>
+					<div><a href="javascript:;" class="text-content h6 mb-0 p-2 relation-del" data-info="${val1.id}|${val1.module}"><i class="fa-close"></i></a></div>
+				</li>`;
+			});
+			html+=`</ul></li>`;
+		});
+		html=html?`<ul class="">${html}</ul>`:METLANG.csvnodata;
+		obj.find('dd').html(html);
+		obj.scrollTop(0);
+	}
+	$(document).on('render','.content-details-relationlist',function(){
+		renderRelationlist($(this));
+	});
+	// 内容详情页-关联内容列表-取消关联
+	$(document).on('click','.content-details-relationlist .relation-del',function(){
+		var $parents=$(this).parents('.content-details-relationlist'),
+			$self=$(this);
+		M.load('alertify',()=>{
+			alertify.confirm('确定要取消关联吗？', function (ev) {
+				var list=JSON.parse($parents.find('textarea').val()),
+					info=$self.data('info').split('|'),
+					del_index=0;
+				info[0]=parseInt(info[0]);
+				info[1]=parseInt(info[1]);
+				list.map((item,index)=>{
+					if(parseInt(item.id)==info[0] && parseInt(item.module)==info[1]){
+						del_index=index;
+						return false;
+					}
+				});
+				list.splice(del_index,1);
+				$parents.find('textarea').val(JSON.stringify(list));
+				$self.parents('li').eq(0).remove();
+			});
+		});
+	});
 })();
 // 下载模块文件上传后文件大小值更新
 function downloadFilesize(obj){

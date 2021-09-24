@@ -74,6 +74,12 @@ class base_op
     public function list_move($nowclass1 = '', $nowclass2 = '', $nowclass3 = '', $toclass1 ='', $toclass2 ='', $toclass3 = '')
     {
         global $_M;
+        $nowclass1 = $nowclass1 ?: 0;
+        $nowclass2 = $nowclass2 ?: 0;
+        $nowclass3 = $nowclass3 ?: 0;
+        $toclass1 = $toclass1 ?: 0;
+        $toclass2 = $toclass2 ?: 0;
+        $toclass3 = $toclass3 ?: 0;
         return $this->database->move_list_by_class($nowclass1, $nowclass2, $nowclass3, $toclass1, $toclass2, $toclass3);
     }
 

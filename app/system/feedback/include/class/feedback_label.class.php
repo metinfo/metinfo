@@ -49,7 +49,7 @@ class feedback_label extends base_label
         $feedback = $this->get_module_form($id);
 
         if ($_M['form']['fdtitle']) {
-            $fdtitle = $_M['form']['fdtitle'];
+            $fdtitle = urlencode($_M['form']['fdtitle']);
         }
 
         if ($_M['form']['lang']) {

@@ -10,13 +10,14 @@
         delurl=that.own_name+'c=index&a=doDeleteColumn&id=',
         moveurl=that.own_name+'c=index&a=domove',
         edit_dataurl='?c=index&a=doGetColumn&id=',
+        relation_dataurl='?c=relation&a=doGetRelationClass&cid=',
         subcolumns={},
         allsubcolumn=0,
         config={
             module_option:function(classtype,parent_module,fn){
                 var html='',
                     parent_module=parent_module||'';
-                metui.ajax({
+                M.ajax({
                     url: that.own_name+'c=index&a=doGetModlist'
                 },function(result){
                     $.each(result, function(index, val) {
@@ -76,14 +77,14 @@
                     +'</div>'
                     +'</div>';
                 }
-                list.push('<button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="'+METLANG.columnmeditor+'" data-modal-size="lg" data-modal-url="column/edit/'+edit_dataurl+val.id+'" data-modal-fullheight="1" data-modal-tablerefresh="'+column_list+'">'+METLANG.seting+'</button>'
-                    +'<div class="dropdown d-inline-block">'
-                        +'<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-submenu>'+METLANG.columnmore+'</button>'
-                        +'<div class="dropdown-menu dropdown-menu-right">'
-                            +action_more
-                            +M.component.btn('del',{del_url:delurl+val.id,class:'dropdown-item btn-del-column',confirm_title:METLANG.delete_information+METLANG.jsx39})
-                        +'</div>'
-                    +'</div>');
+                list.push(`<button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="${METLANG.columnmeditor}" data-modal-size="lg" data-modal-url="column/edit/${edit_dataurl+val.id}" data-modal-fullheight="1" data-modal-tablerefresh="${column_list}">${METLANG.seting}</button>
+                <div class="dropdown d-inline-block">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-submenu>${METLANG.columnmore}</button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        ${action_more}
+                        ${M.component.btn('del',{del_url:delurl+val.id,class:'dropdown-item btn-del-column',confirm_title:METLANG.delete_information+METLANG.jsx39})}
+                    </div>
+                </div>`);
                 $.each(list,function(index,item){
                     list[index]='<div>'+list[index]+'</div>';
                 })
@@ -118,7 +119,7 @@
         $column_list.find('tbody tr').each(function(index, el) {
             $(this).attr({'data-bigclass':$(this).find('[name*="bigclass"]').val(),'data-classtype':$(this).find('[name*="classtype"]').val()});
         });
-        if($column_list.find('.btn-show-allsubcolumn i').hasClass('rotate180')){
+        if($column_list.find('.btn-show-allsubcolumn i').hasClass('fa-rotate-180')){
             obj.find('.btn-show-allsubcolumn2').click();
         }else{
             var showcolumn=parseInt($column_list.attr('data-showcolumn'));
@@ -141,7 +142,7 @@
         }
     });
     // 列表保存回调
-    metui.use('form',function(){
+    M.load('form',function(){
         formSaveCallback($column_list.parents('form').attr('data-validate_order'),{
             true_fun:function(){
                 window.column_refresh=1;
@@ -152,15 +153,15 @@
     $column_list.find('.btn-show-allsubcolumn').click(function(event) {
         if(!$('i',this).hasClass('transition500')) $('i',this).addClass('transition500');
         $column_list.find('.btn-show-subcolumn i:not(.transition500)').addClass('transition500');
-        obj.find('.btn-show-allsubcolumn2').html(METLANG[($('i.rotate180',this).length?'open':'close')+'_allchildcolumn_v6']);
-        if($('i.rotate180',this).length){
+        obj.find('.btn-show-allsubcolumn2').html(METLANG[($('i.fa-rotate-180',this).length?'open':'close')+'_allchildcolumn_v6']);
+        if($('i.fa-rotate-180',this).length){
             $column_list.find('tbody tr:not(.class1) td>div').stop().slideUp(300);
-            $column_list.find('tbody tr').find('.btn-show-subcolumn i').removeClass('rotate180');
+            $column_list.find('tbody tr').find('.btn-show-subcolumn i').removeClass('fa-rotate-180');
             setTimeout(function(){
                 $column_list.find('tbody tr:not(.class1)').addClass('hide');
             },300);
         }else{
-            $column_list.find('tbody tr').removeClass('hide').find('td>div').stop().slideDown(300).find('.btn-show-subcolumn:not(.noshow) i').addClass('rotate180');
+            $column_list.find('tbody tr').removeClass('hide').find('td>div').stop().slideDown(300).find('.btn-show-subcolumn:not(.noshow) i').addClass('fa-rotate-180');
             if(!allsubcolumn){
                 allsubcolumn=1;
                 var $noshow=$column_list.find('tbody tr .btn-show-subcolumn.noshow');
@@ -170,7 +171,7 @@
                 // },0);
             }
         }
-        $('i',this).toggleClass('rotate180');
+        $('i',this).toggleClass('fa-rotate-180');
     });
     obj.find('.btn-show-allsubcolumn2').click(function(event) {
         $column_list.find('.btn-show-allsubcolumn').click();
@@ -186,13 +187,13 @@
                 if(!$icon.hasClass('transition500')) $icon.addClass('transition500');
                 if(is_click){
                     if(hide){
-                        $icon.removeClass('rotate180');
-                    }else $icon.toggleClass('rotate180');
+                        $icon.removeClass('fa-rotate-180');
+                    }else $icon.toggleClass('fa-rotate-180');
                 }
                 var id=$tr.find('[name="id"]').val(),
                     son_classtype=parseInt($tr.find('[name*="classtype-"]').val())+1,
                     $sub=$column_list.find('[name*="bigclass-"][value="'+id+'"]').parents('tr.class'+son_classtype);
-                if($icon.hasClass('rotate180')||!is_click){
+                if($icon.hasClass('fa-rotate-180')||!is_click){
                     if(!$sub.length){
                         var html=Tbody({
                                 data:columnList(subcolumns[id]),
@@ -209,7 +210,7 @@
                     }
                     if(is_click){
                         $sub.removeClass('hide').find('td>div').stop().slideDown(300);
-                        if(bigclass && !$bigclass_btn_show_subcolumn.find('i[class*="fa-caret-"]').hasClass('rotate180')) $bigclass_btn_show_subcolumn.click();
+                        if(bigclass && !$bigclass_btn_show_subcolumn.find('i[class*="fa-caret-"]').hasClass('fa-rotate-180')) $bigclass_btn_show_subcolumn.click();
                     }
                 }else{
                     $sub.find('td>div').stop().slideUp(300);
@@ -217,7 +218,7 @@
                         $sub.addClass('hide');
                     },300);
                 }
-                if(is_click&&son_classtype==2&&!$icon.hasClass('rotate180')){
+                if(is_click&&son_classtype==2&&!$icon.hasClass('fa-rotate-180')){
                     $sub.each(function(index, el) {
                         toggleColumn($(this).find('.btn-show-subcolumn'),1);
                     });
@@ -231,7 +232,7 @@
     var column_add_id=0,
         column_add_modal='.column-add-modal';
     M.component.modal_call_status[column_add_modal]=[];
-    metui.use('modal',function(){
+    M.load('modal',function(){
         M.component.modal_options[column_add_modal]={
             modalSize:'lg',
             modalTitle:METLANG.add+METLANG.settopcolumns,
@@ -264,7 +265,7 @@
                 setTimeout(function(){
                     $(column_add_modal+' .btn-add-columns').click();
                 },100);
-                metui.use('form',function(){
+                M.load('form',function(){
                     var validate_order=$(column_add_modal+' form').attr('data-validate_order');
                     if(!M.component.modal_call_status[column_add_modal][validate_order]){
                         M.component.modal_call_status[column_add_modal][validate_order]=1;
@@ -391,7 +392,7 @@
     });
     // 移动栏目
     $column_list.on('click', '.move-column-list a:not([data-uplv])', function(event) {
-        metui.ajax({
+        M.ajax({
             url: moveurl,
             data: {
                 nowid: $(this).parents('tr').find('[name="id"]').val(),
@@ -403,7 +404,7 @@
     });
     // 升为一级栏目
     var uplv=function(id,foldername){
-            metui.ajax({
+            M.ajax({
                 url: moveurl,
                 data: {nowid: id,uplv: 1,foldername:foldername}
             },function(result){
@@ -414,7 +415,7 @@
         var $tr=$(this).parents('tr'),
             id=$tr.find('[name="id"]').val();
         if(parseInt($(this).data('top_column'))==2){
-            metui.use('alertify',function(){
+            M.load('alertify',function(){
                 var confirm_text='<h5>'+METLANG.column_inputcolumnfolder_v6+'</h5><span class="text-danger">'+METLANG.js56+'</span><br /><input name="foldername" required class="form-control mt-2 mb-0"/>';
                 alertify.confirm(confirm_text, function (ev) {
                     uplv(id,$('.alertify .dialog [name="foldername"]').val());
@@ -427,7 +428,7 @@
     // 栏目增删后更新侧栏
     var $metadmin_sidebar_nav=$('.metadmin-sidebar-nav');
     function sidebarReload(){
-        $metadmin_sidebar_nav.length && metui.ajax({
+        $metadmin_sidebar_nav.length && M.ajax({
             url: M.url.adminurl+'sidebar_reload=1',
             dataType: 'html',
             success:function(result){
@@ -444,10 +445,10 @@
     // 栏目编辑保存回调
     var column_details_modal='.column-details-modal';
     M.component.modal_call_status[column_details_modal]=[];
-    metui.use('modal',function(){
+    M.load('modal',function(){
         M.component.modal_options[column_details_modal]={
             callback:function(key,data){
-                metui.use('form',function(){
+                M.load('form',function(){
                     var validate_order=$(key+' form').attr('data-validate_order');
                     if(!M.component.modal_call_status[key][validate_order]){
                         M.component.modal_call_status[key][validate_order]=1;

@@ -10,7 +10,7 @@
     that.table && that.table.ajax.reload()
   }
   function renderTable() {
-    metui.use(['table', 'alertify'], function() {
+    M.load(['table', 'alertify'], function() {
       const table = that.obj.find('#admin-table')
       table.attr({ 'data-table-ajaxurl': table.data('ajaxurl') })
       datatable_option['#admin-table'] = {
@@ -81,7 +81,7 @@
         modal.find(`[name="admin_name"]`).val(that.userInfo['admin_name'])
         modal.find(`[name="admin_email"]`).val(that.userInfo['admin_email'])
         modal.find(`[name="admin_mobile"]`).val(that.userInfo['admin_mobile'])
-        metui.use('form',function(){
+        M.load('form',function(){
           formSaveCallback(modal.find('form').attr('data-validate_order'), {
             true_fun: function(result) {
               if(modal.find(`[name="admin_pass"]`).val()) setTimeout(function(){window.location.href = M.url.admin + '?n=login&c=login&a=dologinout'},1000);
@@ -424,7 +424,7 @@
   }
 
   function renderColumn(modal, callback) {
-    metui.request({ url: that.own_name + 'c=index&a=doGetColumn' }, function(res) {
+    M.ajax({ url: that.own_name + 'c=index&a=doGetColumn' }, function(res) {
       const data = res.data.metinfocolumn
       let newArr = []
       Object.keys(data).map(item => {

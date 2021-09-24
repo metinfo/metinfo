@@ -24,6 +24,7 @@ class news_admin extends base_admin
         $this->module = 2;
         $this->database = load::mod_class('news/news_database', 'new');
         $this->para_op = load::mod_class('parameter/parameter_op', 'new');
+        $this->relation_op = load::mod_class('relation/relation_op', 'new');
     }
 
     /**
@@ -125,10 +126,16 @@ class news_admin extends base_admin
         // 更新TAG标签
         load::sys_class('label', 'new')->get('tags')->updateTags($list['tag'], $this->module, $list['class1'], $pid, 1);
         if ($pid) {
-            if ($this->module == 3 || $this->module == 4 || $this->module == 5) {
-                //更新系统属性产品 下载 图片
+            if (in_array($this->module,array(3, 4, 5))) {
+                    //更新系统属性产品 下载 图片
                 $this->para_op->insert($pid, $this->module, $list);
             }
+
+            if (in_array($this->module,array(2, 3, 4, 5))) {
+                //更新系统属性产品 下载 图片
+                $this->relation_op->setRelations($pid, $this->module, $list['relations']);
+            }
+
             return $pid;
         } else {
             $this->error[] = "Data error";
@@ -252,6 +259,11 @@ class news_admin extends base_admin
             if ($this->module == 3 || $this->module == 4 || $this->module == 5) {
                 $this->para_op->update($id, $this->module, $list);
             }
+
+            if (in_array($this->module,array(2, 3, 4, 5))) {
+                //更新系统属性产品 下载 图片
+                $this->relation_op->setRelations($id, $this->module, $list['relations']);
+            }
             return true;
         } else {
             $this->error[] = 'Data error';
@@ -370,8 +382,8 @@ class news_admin extends base_admin
             $list['top_ok'] = $val['top_ok'];
             $list['addtype'] = strtotime($val['addtime']) > time() ? 1 : 0;
             $list['imgurl'] = $val['imgurl'];
-            $list['updatetime'] = $val['updatetime'];
-            $list['addtime'] = $val['addtime'];
+            $list['updatetime'] = date("Y-m-d H:m:s", strtotime($val['updatetime']));
+            $list['addtime'] = date("Y-m-d H:m:s", strtotime($val['addtime']));
             $list['displaytype'] = $val['displaytype'];
             $list['editor_url'] = "{$_M['url']['own_form']}a=doeditor&id={$val['id']}&class1={$class1}&class2={$class2}&class3={$class3}";
             $list['del_url'] = "{$_M['url']['own_form']}a=dolistsave&submit_type=del&allid={$val['id']}";
@@ -701,6 +713,7 @@ class news_admin extends base_admin
             } else {
                 //删除数据
                 $this->para_op->del_plist($id, $this->module); //删除属性值
+                $this->relation_op->delRelations($id, $this->module); //删除关联数据
                 return $this->database->del_by_id($id);
             }
         }

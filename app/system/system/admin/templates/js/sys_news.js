@@ -26,7 +26,7 @@
 	});
 	// 点击消息标记为已读
 	that.obj.find('#sysnews-list tbody').on('click', 'a', function(event) {
-		if(!parseInt($(this).data('see_ok'))) $(this).attr('data-see_ok',1) && metui.ajax({
+		if(!parseInt($(this).data('see_ok'))) $(this).attr('data-see_ok',1) && M.ajax({
 			url:that.own_name+'c=news&a=donews_seeok',
 			data:{id:$(this).data('id')}
 		});

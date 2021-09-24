@@ -14,11 +14,6 @@ class login extends admin
     {
         global $_M;
         parent::__construct();
-        // $query = "select * from {$_M['table']['language']} where lang='{$_M['form']['langset']}' and site = 1";
-        // $langwordlist = DB::get_all($query);
-        // foreach ($langwordlist as $key => $value) {
-        //     $_M['word'][$value['name']] = $value['value'];
-        // }
     }
 
     //获取后台基本信息
@@ -42,6 +37,7 @@ class login extends admin
             'lang'=>$_M['lang'],
             'langok'=>$_M['user']['langok']
         );
+
         $sys_json = parent::sys_json();
         $data = array_merge($data, $sys_json);
 
@@ -60,7 +56,7 @@ class login extends admin
         $_M['url']['own_tem'] = $_M['url']['own'] . 'templates/';
         $_M['url']['own_name'] = $_M['url']['site_admin'] . '?n=login&';
         $_M['url']['own_form'] = $_M['url']['own_name'] . 'c=login&';
-        $_M['url']['get_pass'] = $_M['url']['own_name'] . 'c=getpassword&a=doindex&langset=' . $_M['langset'];
+        $_M['url']['get_pass'] = $_M['url']['own_name'] . 'c=getpassword&a=doindex&langset=' . urlencode($_M['langset']);
 
         if (is_mobile()) {
             $this->view('sys/mobile/admin/templates/index', $data);

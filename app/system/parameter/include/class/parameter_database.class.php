@@ -56,6 +56,7 @@ class  parameter_database extends database
         $para_list = load::mod_class('parameter/parameter_list_database', 'new');
         $para_list->construct($module);
         $plist = $para_list->get_by_listid($id);
+        $relist = array();
         foreach ($plist as $key => $val) {
             $relist[$val['paraid']] = $val;
         }
@@ -277,6 +278,9 @@ class  parameter_database extends database
     public function get_parameter_value_by_id($id = '')
     {
         global $_M;
+        if (!is_numeric($id)) {
+            return $id;
+        }
         $query = "SELECT `value` FROM {$_M['table']['para']} WHERE id = '{$id}'";
         $para = DB::get_one($query);
         return $para['value'];
@@ -315,7 +319,8 @@ class  parameter_database extends database
             return false;
         }
 
-        $query = "INSERT INTO {$_M['table']['para']} SET pid = {$option['pid']},module = '{$option['module']}',`order`='{$option['order']}',value='{$option['value']}',lang='{$lang}'";
+        //$query = "INSERT INTO {$_M['table']['para']} SET pid = {$option['pid']},module = '{$option['module']}',`order`='{$option['order']}',value='{$option['value']}',lang='{$lang}'";
+        $query = "INSERT INTO {$_M['table']['para']} (`pid` ,`module` ,`order`, `value`, `lang`) VALUES ('{$option['pid']}' , '{$option['module']}', '{$option['order']}' , '{$option['value']}','{$lang}');";
         $res = DB::query($query);
 
         if ($res) {

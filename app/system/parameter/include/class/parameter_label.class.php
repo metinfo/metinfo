@@ -89,7 +89,7 @@ class parameter_label
      * 获取字段内容，前台产品，图片，下载模块使用
      * @param  string $module 表单模块类型(feedback, message, job)
      * @param  number $id 一级栏目
-     * @return array            表单数组
+     * @return array  表单数组
      */
     public function get_parameter_contents($module, $id, $class1, $class2, $class3, $type = 0)
     {
@@ -137,7 +137,7 @@ class parameter_label
                     } else {
                         $value = '';
                     }
-                } elseif ($val['type'] == 2 || $val['type'] == 4 || $val['type'] == 6) {//单选、多选、下拉
+                } elseif (in_array($val['type'], array(2, 4, 6))) {//单选、多选、下拉
                     $value = '';
                     $info = $list[$val['id']]['info'];
                     $para_ids = array();
@@ -162,9 +162,9 @@ class parameter_label
                 $para['id'] = $val['id'];
                 $para['name'] = $val['name'];
                 if ($val['type'] == 10) {
-                    $para['value'] = $val['access'] ? $userclass->check_power_link($value, $val['access']) : $value;
+                    $para['value'] = $val['access'] ? ($value != '' ? $userclass->check_power_link($value, $val['access']) : '') : $value;
                 } else {
-                    $para['value'] = $val['access'] ? $userclass->check_power_script($value, $val['access']) : $value;
+                    $para['value'] = $val['access'] ? ($value != '' ? $userclass->check_power_script($value, $val['access']) : '') : $value;
                 }
 
                 $relist[] = $para;

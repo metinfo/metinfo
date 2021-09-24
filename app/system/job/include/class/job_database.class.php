@@ -93,7 +93,7 @@ class  job_database extends base_database
             }
             if ($class_sum123['class2']['id']) {
                 #$sql .= "AND class2 = '{$class_sum123['class2']['id']}' ";
-                $sql .= "AND class2 != 0 ";
+                $sql .= "AND class2 != '0' ";
             }
             if ($class_sum123['class3']['id']) {
                 $sql .= "AND class3 = '{$class_sum123['class3']['id']}' ";

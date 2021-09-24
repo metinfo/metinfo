@@ -208,7 +208,7 @@
     ${M.component.loader({ class_name: 'w-100' })}
   `
     body.html(html)
-    metui.request(
+    M.ajax(
       {
         url: M.url.admin + '?n=databack&c=index&a=dopackdata'
       },
@@ -227,7 +227,7 @@
       }})
     }
     if (result.status === 2) {
-      metui.request(
+      M.ajax(
         {
           url: `${M.url.admin}?${result.call_back}`
         },

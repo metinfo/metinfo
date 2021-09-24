@@ -43,8 +43,10 @@ class config_tem
         global $_M;
         foreach ($config as $key => $value) {
             $id = str_replace('_metinfo', '', $key);
-            $query = "UPDATE {$_M['table']['templates']} SET value='{$value}' WHERE id='{$id}' AND lang='{$_M['lang']}' AND no='{$this->no}'";
-            $row = DB::query($query);
+            if (is_numeric($id)) {
+                $query = "UPDATE {$_M['table']['templates']} SET value='{$value}' WHERE id='{$id}' AND lang='{$_M['lang']}' AND no='{$this->no}'";
+                $row = DB::query($query);
+            }
         }
     }
 
@@ -60,11 +62,13 @@ class config_tem
         global $_M;
         foreach ($config as $key => $value) {
             $id = str_replace('_metinfo', '', $key);
-            $query = "UPDATE {$_M['table']['templates']} SET value='{$value}' WHERE id='{$id}' AND lang='{$_M['lang']}' AND no='{$this->no}'";
-            $row = DB::query($query);
+            if (is_numeric($id)) {
+                $query = "UPDATE {$_M['table']['templates']} SET value='{$value}' WHERE id='{$id}' AND lang='{$_M['lang']}' AND no='{$this->no}'";
+                $row = DB::query($query);
+            }
         }
 
-        return array('status' => 1);
+        return array('status' => 1, 'msg' => $_M['word']['jsok']);
     }
 
     /*public function set_page_config($config = array())

@@ -47,7 +47,7 @@ echo <<<EOT
 </div>
 <div class="text-center mt-3">
 	<a href="" class="btn btn-default">重新检查</a>
-	<a href="index.php?action=db_setup" class="btn btn-success ml-3 btn-nextprocess $disabled">下一步</a>
+	<a href="index.php?action=db_setup&db_type={$db_type}" class="btn btn-success ml-3 btn-nextprocess {$disabled}">下一步</a>
 </div>
 <script language="javascript">
 	setTimeout(function(){

@@ -30,7 +30,7 @@ class database
         global $_M;
         if ($lang) {
             if ($lang == '#all') {
-                $this->langsql = ' 1 = 1 ';
+                $this->langsql = " lang != '' ";
             } else {
                 $this->langsql = " lang = '{$lang}' ";
             }
@@ -44,7 +44,7 @@ class database
         global $_M;
         if ($lang) {
             if ($lang == '#all') {
-                return ' 1 = 1 ';
+                return " lang != '' ";
             } else {
                 return " lang = '{$lang}' ";
             }
@@ -85,9 +85,7 @@ class database
 
     /**
      * 更新.
-     *
      * @param array $list 需要更新字段
-     *
      * @return bool 更新是否成功
      */
     public function update_by_id($list = array())

@@ -11,7 +11,7 @@
     if (value === 'module') module_collapse.addClass('show');
     if (value === 'column') column_collapse.addClass('show');
   });
-  metui.use('dragsort',function(){
+  M.load('dragsort',function(){
     dragsortFun[that.obj.find('[data-plugin="dragsort"]').attr('data-dragsort_order')]=function(wrapper,item){
       var global_search_weight='';
       wrapper.find('li').each(function() {

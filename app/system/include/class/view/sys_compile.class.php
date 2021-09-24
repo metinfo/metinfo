@@ -100,9 +100,7 @@ class sys_compile extends compile
                 foreach ($tem_config as $name => $value) {
                     $content = str_replace("\${$name}\$", $value, $content);
                 }
-                //集成UI 静态内容
-                /*$met_compile = load::sys_class('view/met_compile','new');
-                $this->met_ui_data = $met_compile->parse_met_ui($this->template_type, $tem_config);*/
+
 
                 $add_content = $this->parse_tag_path($type);
                 $content = $add_content . "\n" . $content;

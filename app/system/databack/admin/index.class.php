@@ -10,6 +10,8 @@ load::sys_func('file');
 class index extends admin
 {
     protected $ver_allow;
+    protected $admin_table_path;
+
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class index extends admin
         $adminfile = $_M['config']['met_adminfile'];
         define('ADMIN_FILE', $adminfile);
         $this->ver_allow = '7.0.0';
+        $this->admin_table_path = PATH_CACHE . "admin_table.sql";
     }
 
     public function doindex()
@@ -46,6 +49,7 @@ class index extends admin
         //$tables     = isset($_M['form']['tables']) ? $_M['form']['tables'] : '';
         $localurl = $_M['config']['met_weburl'];
         $tablepre = $_M['config']['tablepre'];
+        $db_type = $_M['config']['db_type'];
 
         //if (!$tables) {
         $tables = self::getTableList($tablepre);
@@ -62,7 +66,14 @@ class index extends admin
         //生成.sql文件
         if (trim($sqldump)) {
             $version = 'version:' . $_M['config']['metcms_v'];
-            $sqldump = "#MetInfo.cn Created {$version} \n#$localurl\n#$tablepre\n# --------------------------------------------------------\n\n\n" . $sqldump;
+//            $sqldump = "#MetInfo.cn Created {$version} \n#$localurl\n#$tablepre\n# --------------------------------------------------------\n\n\n" . $sqldump;
+            $sql_head = "#MetInfo.cn Created {$version} \n";
+            $sql_head .= "#{$localurl}\n";
+            $sql_head .= "#{$tablepre}\n";
+            $sql_head .= "#{$db_type}\n";
+            $sql_head .= "# --------------------------------------------------------\n\n\n";
+            $sqldump = $sql_head . $sqldump;
+
             $tableid = $i;
             $db_settings = parse_ini_file(PATH_CONFIG . 'config_db.php');
             //@extract($db_settings);
@@ -113,7 +124,6 @@ class index extends admin
 
     /**
      * 生成数据表备份语句.
-     *
      * @param $table         表名
      * @param int $startfrom 起始偏移
      * @param int $currsize 字符串长度
@@ -135,32 +145,56 @@ class index extends admin
         if (!$startfrom) {
             //生成创表语句
             $tabledump = "DROP TABLE IF EXISTS $table;\n";
-            if ($_M['config']['db_type'] == 'mysql') {
-                $createtable = DB::query("SHOW CREATE TABLE $table");
-                $create = DB::fetch_row($createtable);
-                $tabledump .= str_replace(strtolower($table), $table, $create[1]) . ";\n\n";
-            } else {
-                $res = DB::$link->query("PRAGMA table_info(${table})");
-                $tabledump .= "CREATE TABLE `{$table}` (\n";
-                while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-                    if ($row['name'] == 'id') {
-                        $tabledump .= "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n";
-                        continue;
+            switch (strtolower($_M['config']['db_type'])) {
+                case 'mysql':
+                    $createtable = DB::query("SHOW CREATE TABLE $table");
+                    $create = DB::fetch_row($createtable);
+                    $tabledump .= str_replace(strtolower($table), $table, $create[1]) . ";\n\n";
+                    break;
+                case "sqlite":
+                    $res = DB::$link->query("PRAGMA table_info(${table})");
+                    $tabledump .= "CREATE TABLE `{$table}` (\n";
+                    while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
+                        if ($row['name'] == 'id') {
+                            $tabledump .= "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n";
+                            continue;
+                        }
+                        $type = str_replace('text(', 'varchar(', $row['type']);
+                        $type = str_replace('integer(', 'int(', $type);
+                        $notnull = $row['notnull'] ? '' : 'NOT NULL';
+                        $default = $row['dflt_value'] == 'NULL' ? '' : "DEFAULT {$row['dflt_value']}";
+                        if (trim($default) == 'DEFAULT') {
+                            $default = '';
+                        }
+                        $tabledump .= "`{$row['name']}` {$type} {$notnull} {$default},\n";
                     }
-                    $type = str_replace('text(', 'varchar(', $row['type']);
-                    $type = str_replace('integer(', 'int(', $type);
-                    $notnull = $row['notnull'] ? '' : 'NOT NULL';
-                    $default = $row['dflt_value'] == 'NULL' ? '' : "DEFAULT {$row['dflt_value']}";
-                    if (trim($default) == 'DEFAULT') {
-                        $default = '';
+                    $tabledump .= "PRIMARY KEY (`id`)\n";
+                    $tabledump .= ") ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;\n";
+                    $res->finalize();
+                    break;
+                case 'dmsql':
+                    //表字段
+                    $db_name = $_M['config']['con_db_name'];
+                    $query = "SELECT table_name FROM all_tables WHERE owner='{$db_name}' AND table_name = '{$table}'";
+                    $table_exists = DB::get_one($query);
+                    if ($table_exists) {
+                        $sql = "CALL SP_TABLEDEF ('{$db_name}' , '{$table}')";
+                        $t_info = DB::get_all($sql);
+
+                        $str = '';
+                        if (is_array($t_info)) {
+                            foreach ($t_info as $row_ddl) {
+                                $str .= $row_ddl['COLUMN_VALUE'];
+                            }
+                            $str = str_replace("\"$db_name\".", '', $str);
+                        }
+                        $tabledump .= $str . "\n\n";
+                    }else{
+                        return $tabledump;
                     }
-                    $tabledump .= "`{$row['name']}` {$type} {$notnull} {$default},\n";
-                }
-                $tabledump .= "PRIMARY KEY (`id`)\n";
-                $tabledump .= ") ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;\n";
-                $res->finalize();
             }
         }
+
         //剔除不备份的数据表
         $exclude = array(
             $_M['config']['tablepre'] . 'visit_day',
@@ -175,29 +209,68 @@ class index extends admin
         $offset = 100;
         $numrows = $offset;
 
-        while ($currsize + strlen($tabledump) < $sizelimit * 1000 && $numrows == $offset) {
-            $rows = DB::query("SELECT * FROM {$table} LIMIT {$startfrom}, $offset");
-            $numfields = DB::num_fields($rows);
-            $numrows = DB::num_rows($rows);
-            /*if ($numrows <= 0) {
-                return;
-            }*/
-            while ($row = DB::fetch_row($rows)) {
-                $comma = '';
-                $tabledump .= "INSERT INTO $table VALUES(";
-                for ($i = 0; $i < $numfields; ++$i) {
-                    //剔除系统商城登录信息
-                    if ($row[1] == 'met_secret_key') {
-                        $row[2] = '';
+        switch (strtolower($_M['config']['db_type'])) {
+            case 'mysql':
+            case 'sqlite':
+                while ($currsize + strlen($tabledump) < $sizelimit * 1000 && $numrows == $offset) {
+                    $sql = "SELECT * FROM {$table} LIMIT {$startfrom}, $offset";
+                    $rows = DB::query($sql);
+                    $numfields = DB::num_fields($rows);
+                    $numrows = DB::num_rows($rows);
+                    /*if ($numrows <= 0) {
+                        return;
+                    }*/
+                    while ($row = DB::fetch_row($rows)) {
+                        $comma = '';
+                        $tabledump .= "INSERT INTO $table VALUES(";
+                        for ($i = 0; $i < $numfields; ++$i) {
+                            //剔除系统商城登录信息
+                            if ($row[1] == 'met_secret_key') {
+                                $row[2] = '';
+                            }
+                            //转义sql特殊字符
+                            $tabledump .= $comma . "'" . DB::escapeString(DB::$link, $row[$i]) . "'";
+                            $comma = ',';
+                        }
+
+                        $tabledump .= ");\n";
                     }
-                    //转义sql特殊字符
-                    $tabledump .= $comma . "'" . DB::escapeString(DB::$link, $row[$i]) . "'";
-                    $comma = ',';
+                    $startfrom = $startfrom + $offset;
+                }
+                break;
+            case 'dmsql':
+                $query = "SELECT table_name FROM all_tables WHERE owner='{$db_name}' AND table_name = '{$table}'";
+                $table_exists = DB::get_one($query);
+                if (!$table_exists) {
+                    return '';
                 }
 
-                $tabledump .= ");\n";
-            }
-            $startfrom = $startfrom + $offset;
+                while ($currsize + strlen($tabledump) < $sizelimit * 1000 && $numrows == $offset) {
+                    $sql = "SELECT * FROM {$table} LIMIT {$startfrom}, $offset";
+                    $res = DB::query($sql);
+                    $numrows = DB::num_rows($res);
+
+                    $rows = DB::get_all($sql);
+
+                    foreach ($rows as $row) {
+                        $comma = '';
+                        $row_str = "INSERT INTO $table VALUES(";
+                        foreach ($row as $k => $v) {
+                            $v = DB::escapeString($v);
+                            $comma .= "'{$v}' ,";
+                        }
+                        $comma = trim($comma, ',');
+                        $comma = trim($comma);
+                        $row_str .= $comma .");\n";
+
+                        $tabledump .= $row_str;
+                    }
+
+                    $startfrom = $startfrom + $offset;
+                }
+                break;
+            default:
+                break;
         }
 
         $this->startrow = $startfrom;
@@ -247,7 +320,10 @@ class index extends admin
 
         //磁盘空间检测
         $file_total = file_size($upload_path);      //文件总大小
-        $res = self::checkDisk($file_total);         //磁盘可用空间
+        if (is_numeric($file_total)) {
+            $file_total = $file_total + 10;
+        }
+        $res = checkDisk($file_total);         //磁盘可用空间
         if (!$res) {
             //写日志
             logs::addAdminLog('databackup6', 'databackup1', 'setBackuoDiskFull', 'dopackupload');
@@ -295,7 +371,10 @@ class index extends admin
 
         //磁盘空间检测
         $file_total = file_size(PATH_WEB); //文件总大小
-        $res = self::checkDisk($file_total);   //磁盘可用空间
+        if (is_numeric($file_total)) {
+            $file_total = $file_total + 10;
+        }
+        $res = checkDisk($file_total);   //磁盘可用空间
         if (!$res) {
             //写日志
             logs::addAdminLog('databackup7', 'databackup7', 'setBackuoDiskFull', 'doallfile');
@@ -370,23 +449,6 @@ class index extends admin
         @closedir($handler);
     }
 
-    /**
-     * 获取磁盘信息
-     * @return int
-     */
-    public function checkDisk($file_total = 0)
-    {
-        if (!function_exists('disk_free_space')) {
-            return true;
-        }
-        $disk_total = byte_format(disk_free_space('.'), 2, "mb");
-        if (ceil($file_total) < ceil($disk_total)) {
-            return true;
-        }
-        return false;
-
-    }
-
     /*******************备份操作********************/
 
     /*******************数据恢复********************/
@@ -405,6 +467,7 @@ class index extends admin
         foreach ($list as $row) {
             $new_list[] = $row;
         }
+
         $this->ajaxReturn($new_list);
     }
 
@@ -462,16 +525,20 @@ class index extends admin
         $infos = $this->array_sort($infos2, 'time', 'we');
 
         foreach ($infos as $key => $val) {
+            //检测本份数据系统版本
+            $filepath = PATH_WEB . ADMIN_FILE . '/databack/' . $val['filename'];
+            $sql = file_get_contents($filepath);
+            $split = $this->dosql_split($sql);
+            $head_info = $split['info'];
+            $head_info = explode('#', $head_info);
+            $import_version = trim(str_replace('MetInfo.cn Created version:', '', $head_info[1]));
+            $db_type = strtolower($head_info[4]) == 'dmsql' ? 'dmsql' : 'mysql';
+
+            $infos[$key]['ver'] = $import_version;
+            $infos[$key]['db_type'] = $db_type;
             $infos[$key]['filename'] = $key . '1';
             $infos[$key]['error'] = '0';
             $infos[$key]['error_info'] = '';
-
-            //检测本份数据系统版本
-            $fp = @fopen(PATH_WEB . ADMIN_FILE . '/databack/' . $val['filename'], 'rb');
-            $str = @fgets($fp);
-            @fclose($fp);
-            $import_version = trim(str_replace('#MetInfo.cn Created version:', '', $str));
-            $infos[$key]['ver'] = $import_version;
 
             //检测导入数据版本
             if (version_compare($import_version, $this->ver_allow, '<')) {
@@ -597,21 +664,36 @@ class index extends admin
                 $info = $split['info'];
                 $infos = explode('#', $info);
                 $import_version = trim(str_replace('MetInfo.cn Created version:', '', $infos[1]));
+                $f_list = glob(PATH_WEB . ADMIN_FILE . "/databack/{$pre}*.sql");
+                $total_num = count($f_list);
 
                 //检测导入数据版本
                 if (version_compare($import_version, $this->ver_allow, '<')) {
                     $this->error($_M['word']['recoveryisntallinfo']);
                 }
 
+                //数据库类型检测
+                $db_type = strtolower($infos[4]) == 'dmsql' ? 'dmsql' : 'mysql';
+                if ($_M['config']['db_type'] == 'dmsql' && $db_type != 'dmsql') {
+                    $msg = '当前站点不支持MySQL备份数据导入，请切换数据库类型。';
+                    $this->error($msg);
+                }
+
+                if ($_M['config']['db_type'] != 'dmsql' && $db_type == 'dmsql' ) {
+                    $msg = '当前站点不支持DMsql备份数据导入，请切换数据库类型。';
+                    $this->error($msg);
+                }
+
                 // 用户临时数据 applist 语言 生成数据缓存
                 $update_database = load::mod_class('update/update_database', 'new');
                 $update_database->temp_data();
+                delfile($this->admin_table_path);
 
                 $result['status'] = 1;
                 //不覆盖管理员账号
-                $result['import_1'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&admin_rewrite=1&fileid=1";
+                $result['import_1'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&total_num={$total_num}&fileid=1&admin_rewrite=0";
                 //覆盖管理员账号
-                $result['import_2'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&admin_rewrite=0&fileid=1";
+                $result['import_2'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&total_num={$total_num}&fileid=1&admin_rewrite=1";
                 $this->ajaxReturn($result);
             }
         }
@@ -623,33 +705,32 @@ class index extends admin
     {
         global $_M;
         $admin = admin_information();
-        $transfer = load::mod_class('databack/transfer', 'new');
+
         if (strstr($admin['admin_op'], 'metinfo') === false) {
             //写日志
             logs::addAdminLog('databackup2', 'setdbImportData', 'jsx38', 'dosql_execute');
-            $result['status'] = 0;
-            $result['msg'] = $_M['word']['jsx38'];
-            $this->ajaxReturn($result);
+            $this->error($_M['word']['jsx38']);
         }
+
         if (!$_M['form']['fileid'] || !is_numeric($_M['form']['fileid'])) {
             //写日志
             logs::addAdminLog('databackup2', 'setdbImportData', 'dataerror', 'dosql_execute');
-            $result['status'] = 0;
-            $result['msg'] = $_M['word']['dataerror'];
-            $result['error'] = 'no fileid';
-            $this->ajaxReturn($result);
+            $this->error($_M['word']['dataerror'],'no fileid ');
         }
 
         $fileid = $_M['form']['fileid'];
         $filename = $_M['form']['pre'] . $fileid . '.sql';
-        $admin_rewrite = $_M['form']['admin_rewrite'] == '1' ? $_M['form']['admin_rewrite'] : '0';
+        $admin_rewrite = $_M['form']['admin_rewrite'] == '1' ? 1 : 0; // 1更新 | 0不更新
         $old_version = $_M['form']['old_version'];
         $version = $_M['form']['version'] ? $_M['form']['version'] : $_M['config']['metcms_v'];
+        $total_num = $_M['form']['total_num'];
         $tablepre = $_M['config']['tablepre'];
         $filepath = PATH_WEB . ADMIN_FILE . '/databack/' . $filename;
 
         //当备份数据文件存在执行操作
         if (file_exists($filepath)) {
+            $transfer = load::mod_class('databack/transfer', 'new');
+
             $sql = file_get_contents($filepath);
             $split = $this->dosql_split($sql);
             $info = $split['info'];
@@ -658,6 +739,21 @@ class index extends admin
             if ($infos[1] && !$old_version) {
                 $old_version = trim(str_replace('MetInfo.cn Created version:', '', $infos[1]));
             }
+
+            //数据库类型检测
+            $db_type = strtolower($infos[4]) == 'dmsql' ? 'dmsql' : 'mysql';
+            if ($_M['config']['db_type'] == 'dmsql' && $db_type != 'dmsql') {
+                $msg = '当前站点不支持MySQL备份数据导入。';
+                logs::addAdminLog('databackup2', 'setdbImportData', 'dataerror', 'dosql_execute');
+                $this->error($msg);
+            }
+
+            if ($_M['config']['db_type'] != 'dmsql' && $db_type == 'dmsql' ) {
+                $msg = '当前站点不支持DMsql备份数据导入。';
+                logs::addAdminLog('databackup2', 'setdbImportData', 'dataerror', 'dosql_execute');
+                $this->error($msg);
+            }
+
             //备份数据文件站点地址
             $old_site = $infos[2];
             $upload_site = $old_site . 'upload';
@@ -674,10 +770,23 @@ class index extends admin
                 if ($_M['config']['db_type'] == 'sqlite') {
                     DB::$link->exec('begin;');
                 }
+
+                if ($_M['config']['db_type'] == 'dmsql') {
+                    dm_autocommit(DB::$link);
+                }
+
                 foreach ($sqls as $sql) {
                     //替换表前缀
                     if ($sqlre1 == 1) {
-                        $sql = preg_replace(array('/^INSERT INTO ' . $infos[3] . '/', '/^DROP TABLE IF EXISTS ' . $infos[3] . '/', '/^CREATE TABLE `' . $infos[3] . '/'), array('INSERT INTO ' . $tablepre, 'DROP TABLE IF EXISTS ' . $tablepre, 'CREATE TABLE `' . $tablepre), $sql, 1);
+                        switch (strtolower($_M['config']['db_type'])) {
+                            case 'mysql':
+                            case 'sqlite':
+                                $sql = preg_replace(array('/^INSERT INTO ' . $infos[3] . '/', '/^DROP TABLE IF EXISTS ' . $infos[3] . '/', '/^CREATE TABLE `' . $infos[3] . '/'), array('INSERT INTO ' . $tablepre, 'DROP TABLE IF EXISTS ' . $tablepre, 'CREATE TABLE `' . $tablepre), $sql, 1);
+                                break;
+                            case 'dmsql':
+                                $sql = preg_replace(array('/^INSERT INTO ' . $infos[3] . '/', '/^DROP TABLE IF EXISTS ' . $infos[3] . '/', '/^CREATE TABLE "' . $infos[3] . '/'), array('INSERT INTO ' . $tablepre, 'DROP TABLE IF EXISTS ' . $tablepre, 'CREATE TABLE "' . $tablepre), $sql, 1);
+                                break;
+                        }
                     }
 
                     //Sqlite 创表语句转换
@@ -685,16 +794,13 @@ class index extends admin
                         $sql = $transfer->mysqlToSqlite($sql);
                     }
 
+                    if ($_M['config']['db_type'] == 'dmsql' && stristr($sql, 'CREATE TABLE')) {
+                        $sql = $transfer->mysqlToDmsql($sql);
+                    }
+
                     //不更新后台看栏目表
                     if (strstr($sql, $tablepre . 'admin_column')) {
                         continue;
-                    }
-
-                    //不更新管理员信息
-                    if ($admin_rewrite == '1') {
-                        if (strstr($sql, $tablepre . 'admin_table')) {
-                            continue;
-                        }
                     }
 
                     //替换资源文件绝对路径
@@ -713,7 +819,6 @@ class index extends admin
                         continue;
                     }
 
-
                     $pattern = '/^insert\s+into\s(\w+)\svalues(.*)/i';
                     if (preg_match($pattern, $sql)) {
                         $sql = preg_replace_callback($pattern, function ($match) {
@@ -728,20 +833,30 @@ class index extends admin
                                 $string = str_ireplace('load_file', "\load\_\file", $string);
                                 $string = str_ireplace('outfile', "\out\file", $string);
                                 $string = str_ireplace('sleep', "\sle\ep", $string);
+                                $string = str_replace('0000-00-00 00:00:00', date("Y-m-d H:i:s"),$string);
                             }
                             return str_replace($match[2], $string, $match[0]);
                         }, $sql);
                     }
 
-                    if ($_M['config']['db_type'] == 'sqlite') {
-                        $sql = DB::escapeSqlite($sql);
-                        $rs = DB::$link->exec($sql);
-                    } else {
-                        $res = DB::query($sql);
+                    //记录管理员信息
+                    if (strstr($sql, $tablepre . 'admin_table')) {
+                        $admin_table_data = "\n{$sql}\n";
+                        file_put_contents($this->admin_table_path, $admin_table_data, FILE_APPEND);
+                        continue;
                     }
+
+                    //执行SQL语句
+                    self::sqlExec($sql);
                 }
+
+
                 if ($_M['config']['db_type'] == 'sqlite') {
                     DB::$link->exec('commit;');
+                }
+                if ($_M['config']['db_type'] == 'dmsql') {
+                    //事务
+                    dm_commit(DB::$link);
                 }
             }
 
@@ -752,12 +867,16 @@ class index extends admin
             //写日志
             logs::addAdminLog('databackup2', 'setdbImportData', 'jsok', 'dosql_execute');
             $redata['status'] = 2;
-            $redata['call_url'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&admin_rewrite={$admin_rewrite}&fileid={$fileid}&version={$version}&old_version={$old_version}";
+            $redata['call_url'] = "{$_M['url']['own_form']}a=dosql_execute&pre={$_M['form']['pre']}&admin_rewrite={$admin_rewrite}&total_num={$total_num}&fileid={$fileid}&version={$version}&old_version={$old_version}";
+            $redata['total_num'] = $total_num;
+            $redata['fileid'] = $fileid;
             $this->ajaxReturn($redata);
         } else {
             //更新系统版本信息
             $query = "UPDATE {$_M['table']['config']} SET value = '{$version}' WHERE name = 'metcms_v'";
             DB::query($query);
+
+            self::adminRewrite($admin_rewrite);
 
             //导入数据后执行数据迁移操作//  对比导入数据版本和当前版本字段并修复
             $update_database = load::mod_class('update/update_database', 'new');
@@ -772,7 +891,6 @@ class index extends admin
             $this->dorecover_column();
             //检测商城应用配置变更
             $update_database->check_shop();
-
             //非同版本数据迁移
             if ($version != $old_version) {
                 //注册数据表
@@ -780,27 +898,7 @@ class index extends admin
                 //更新配置
                 $update_database->add_config();
 
-                if (version_compare($old_version, '7.0.0beta', '<')) {//6.1/6.2->7.0.0beta
-                    //更改配置
-                    $update_database->motify_config();
-                    //更新栏目数据
-                    $update_database->recovery_column();
-                    //表单模块数据迁移
-                    $update_database->recovery_form_seting();
-                    //迁移客服数据
-                    $update_database->recovery_online();
-                    //更新友情链接数据
-                    $update_database->recovery_link();
-                    //更新新闻发布人
-                    $update_database->recovery_news();
-                    //更新applist
-                    $update_database->update_app_list();
-                    //tags数据迁移
-                    $update_database->update_tags();
-                    //更新语言
-                    $update_database->update_language($version);
-                }
-                if (version_compare($old_version, '7.3.0', '<')) {//7.0.0beta->7.1.0
+                if (version_compare($old_version, '7.5.0', '<')) {//7.0.0beta->7.1.0
                     //更新语言
                     $update_database->update_language($version);
                 }
@@ -816,6 +914,92 @@ class index extends admin
             $redata['msg'] = $_M['word']['setdbImportOK'];
             $this->ajaxReturn($redata);
         }
+    }
+
+    /**
+     * 执行语句
+     * @param string $sql
+     */
+    protected function sqlExec($sql = '')
+    {
+        global $_M;
+        switch (strtolower($_M['config']['db_type'])) {
+            case 'mysql':
+                $res = DB::query($sql);
+                break;
+            case 'sqlite':
+                $sql = DB::escapeSqlite($sql);
+                $rs = DB::$link->exec($sql);
+                break;
+            case 'dmsql':
+                //INSERT
+                if (strtoupper(substr($sql, 0, 6)) == 'INSERT') {
+                    preg_match('/insert\s+into\s+(([`a-z0-9A-Z_]+)\s?values)(.+)/i', $sql, $match);
+                    $db_name = $_M['config']['con_db_name'];
+                    $table = $match[2];
+
+                    //表字段
+                    $query = "select COLUMN_NAME,DATA_TYPE from all_tab_columns where table_name='{$table}' AND  owner='{$db_name}';";
+                    $table_info = DB::get_all($query);
+                    $fields = array_column($table_info, 'COLUMN_NAME');
+                    if (!is_array($fields)) {
+                        continue;
+                    }
+                    $field_str = '(';
+                    foreach ($fields as $field) {
+                        $field_str .= "\"{$field}\" ,";
+                    }
+                    $field_str = trim($field_str, ',');
+                    $field_str = trim($field_str);
+                    $field_str .= ')';
+
+                    //***
+                    $query = "SET IDENTITY_INSERT {$table} ON;";
+                    dm_exec(DB::$link, $query);
+
+                    $sql = str_replace($match[1], $match[2] . " {$field_str} VALUES ", $sql);
+                    $sql = DB::escapeDmsql($sql);
+                    $rs = dm_exec(DB::$link, $sql);
+                    if (!$rs) {
+                        file_put_contents(PATH_CACHE.'dmsql_error.log', $sql . DB::errno() . "\n\n", FILE_APPEND);
+                    }
+
+                    //***
+                    $query = "SET IDENTITY_INSERT {$table} OFF;";
+                    dm_exec(DB::$link, $query);
+                }else{
+                    // Create table
+                    $sql = DB::escapeDmsql($sql);
+                    $res = dm_exec(DB::$link, $sql);
+                    if (!$res) {
+                        file_put_contents(PATH_CACHE.'dmsql_error.log', $sql.DB::errno()."\n\n", FILE_APPEND);
+                    }
+                }
+                break;
+        }
+        return;
+    }
+
+    /**
+     * 重写管理员数据
+     * @param int $admin_rewrite
+     */
+    protected function adminRewrite($admin_rewrite = 0)
+    {
+        global $_M;
+        if (file_exists($this->admin_table_path)) {
+            $sql_raw = file_get_contents($this->admin_table_path);
+            delfile($this->admin_table_path);
+        }
+
+        if ($admin_rewrite) {
+            $transfer = load::mod_class('databack/transfer', 'new');
+            $sqls = $transfer->getQuery($sql_raw);
+            foreach ($sqls as $sql) {
+                self::sqlExec($sql);
+            }
+        }
+        return;
     }
 
     /**
@@ -875,17 +1059,13 @@ class index extends admin
 
     /**
      * 信息数组排序.
-     *
      * @param $arr
      * @param $keys
      * @param string $type
-     *
      * @return array
      */
     public function array_sort($arr, $keys, $type = 'asc')
     {
-        // dump($arr);
-        // exit;
         $keysvalue = $new_array = array();
         foreach ($arr as $k => $v) {
             $keysvalue[$k] = $v[$keys];
@@ -1195,146 +1375,6 @@ class index extends admin
         if (is_dir($old_path)) {
             deldir($old_path);
         }
-    }
-
-    /*************数据打包方法***************/
-    /**
-     * 生成系统数据指纹
-     */
-    public function doGetSysDate()
-    {
-        global $_M;
-        $action = $_M['form']['action'];
-        echo "acrion : {$_M['form']['action']} <hr>";
-        echo "
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=sqldata'>系统数据库指纹</a><br>
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=langdata'>系统语言指纹</a><br>
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=configdata'>配置库指纹</a><br>
-        ";
-
-        if ($action =='sqldata') {
-            $this->dogetTablesjson();
-            die('Complete');
-        }
-        if ($action == 'langdata') {
-            $this->dogetLangData();
-            die('Complete');
-        }
-        if ($action == 'configdata') {
-            $this->dogetconfigData();
-            die('Complete');
-        }
-    }
-
-    /** 获取系统数据表json */
-    public function dogetTablesjson()
-    {
-        //return;
-        global $_M;
-        $table_list = $_M['table'];
-        foreach ($table_list as $table) {
-            //$query = "desc {$table}";
-            $query = "SHOW FULL FIELDS FROM {$table}";
-            $res = DB::get_all($query);
-            $col = array();
-            foreach ($res as $row) {
-                $col[$row['Field']] = $row;
-            }
-            $tables[$table] = $col;
-        }
-        $tables = json_encode($tables, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        $time = time();
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}mysql.json", $tables);
-        die('table_json_complete');
-    }
-
-    /**
-     * 获取语言数据json.
-     */
-    public function dogetLangData()
-    {
-        //return;
-        global $_M;
-        $sql = "select `name`,`value`,`site`,`no_order`,`array`,`app`,`lang` FROM {$_M['table']['language']} WHERE app = '' OR app = 0 OR app = 1";
-        $lang_list = DB::get_all($sql);
-
-        $lang_cn = array();
-        $lang_en = array();
-        $lang_admin_cn = array();
-        $lang_web_cn = array();
-        $lang_admin_en = array();
-        $lang_web_en = array();
-
-        $lang_ini_cn_admin = "#\n";
-        $lang_ini_cn_web = "#\n";
-        $lang_ini_en_admin = "#\n";
-        $lang_ini_en_web = "#\n";
-
-        foreach ($lang_list as $lang) {
-            if ($lang['lang'] == 'cn') {
-                $lang_cn[$lang['name']] = $lang;
-
-                if ($lang['site'] == 1) {
-                    $lang_admin_cn[$lang['name']] = $lang;
-                    $lang_ini_cn_admin .= "{$lang['name']}={$lang['value']}\n";
-                } else {
-                    $lang_web_cn[$lang['name']] = $lang;
-                    $lang_ini_cn_web .= "{$lang['name']}={$lang['value']}\n";
-                }
-            } elseif ($lang['lang'] == 'en') {
-                $lang_en[$lang['name']] = $lang;
-
-                if ($lang['site'] == 1) {
-                    $lang_admin_en[$lang['name']] = $lang;
-                    $lang_ini_en_admin .= "{$lang['name']}={$lang['value']}\n";
-                } else {
-                    $lang_web_en[$lang['name']] = $lang;
-                    $lang_ini_en_web .= "{$lang['name']}={$lang['value']}\n";
-                }
-            }
-        }
-
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}lang_cn.json", json_encode($lang_cn, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}lang_en.json", json_encode($lang_en, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}lang_admin_cn.json", json_encode($lang_admin_cn, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}lang_web_cn.json", json_encode($lang_web_cn, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}lang_admin_en.json", json_encode($lang_admin_en, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}lang_web_en.json", json_encode($lang_web_en, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-
-        file_put_contents(PATH_WEB . "language_cn1.ini", $lang_ini_cn_admin);
-        file_put_contents(PATH_WEB . "language_cn.ini", $lang_ini_cn_web);
-        file_put_contents(PATH_WEB . "language_en1.ini", $lang_ini_en_admin);
-        file_put_contents(PATH_WEB . "language_en.ini", $lang_ini_en_web);
-        die('lang_json_complete');
-    }
-
-    /**
-     * 系统系统标准配置
-     */
-    public function dogetconfigData()
-    {
-        global $_M;
-        $sql = "select * FROM {$_M['table']['config']} WHERE (lang = 'cn' OR lang = 'metinfo') AND columnid = '0' AND flashid = 0";
-        $list = DB::get_all($sql);
-
-        $config_list = array();
-        foreach ($list as $config) {
-            $config_list[$config['name']] = $config;
-        }
-
-        file_put_contents(PATH_WEB . "v{$_M['config']['metcms_v']}config.json", json_encode($config_list, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        die('dogetconfigData');
-    }
-
-    public function doTry()
-    {
-        global $_M;
-        $ver = $_M['form']['ver'];
-        $sys_ver = $_M['config']['metcms_v'];
-
-        $update_database = load::mod_class('update/update_database', 'new');
-
-        $update_database->diff_fields($sys_ver);
     }
 }
 

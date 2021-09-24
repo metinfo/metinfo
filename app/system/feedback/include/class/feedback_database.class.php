@@ -68,6 +68,14 @@ class  feedback_database extends base_database
         }
     }
 
+    public function del_contents_by_class($cid = '', $lang = '')
+    {
+        global $_M;
+        $lang = $lang ?: $_M['lang'];
+        $query = "DELETE FROM {$_M['table']['feedback']} WHERE class1 = '{$cid} AND 'lang = '{$lang}'";
+        DB::query($query);
+    }
+
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

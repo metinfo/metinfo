@@ -18,7 +18,7 @@
 	if(!M.admin_folder_safe){
 		that.obj.find('[name="admin_folder_safe"]').click();
 		$('.admin-folder-safe-modal .no-prompt').click(function(event) {
-			 metui.ajax({
+			 M.ajax({
 	            url: $(this).data('url')
 	        });
 		});
@@ -30,7 +30,7 @@
 		$home_news_list=that.obj.find('.home-news-list');
 	// 推荐应用
 	if($home_app_list.length){
-		metui.ajax({
+		M.ajax({
 			url:M.url.api+'n=platform&c=platform&a=dotable_applist_json&type=dlist',
 			type:'GET',
 			dataType:'jsonp'
@@ -55,7 +55,7 @@
 	}
 	// MetInfo 新闻
 	if($home_news_list.length){
-		metui.ajax({
+		M.ajax({
 			url:$home_news_list.data('url')+'&fromurl='+M.weburl,
 			type:'GET',
 			dataType:'jsonp',

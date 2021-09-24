@@ -51,7 +51,7 @@ class config_ui
         global $_M;
         $query = "SELECT * FROM {$_M['table']['ui_config']} WHERE pid = '{$mid}' AND lang = '{$_M['lang']}' AND uip_type = 6";
         $column = DB::get_all($query);
-        if (count($column) > 1) {
+        if (is_array($column) && count($column) > 1) {
             return 2;
         }
         return DB::get_one($query);
@@ -82,7 +82,7 @@ class config_ui
                 DB::query($query);
             }
         }
-        return array('status' => 1);
+        return array('status' => 1, 'msg' => $_M['word']['jsok']);
     }
 
     /*配置文件保存*/

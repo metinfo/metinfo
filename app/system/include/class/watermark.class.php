@@ -354,7 +354,9 @@ class watermark
                 $tmp_img = imagecreatefromstring($img_name);
                 break;
         }
-        imagesavealpha($tmp_img, true);
+        if ($tmp_img) {
+            imagesavealpha($tmp_img, true);
+        }
 
         return $tmp_img;
     }

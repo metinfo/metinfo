@@ -157,6 +157,7 @@ class pseudo_static extends admin
         $htaccess .= '# Rewrite ' . $_M['word']['seohtaccess1'] . "\n";
 
         $htaccess .= 'RewriteRule ^index-([a-zA-Z0-9_^\x00-\xff]+).html$ index.php?lang=$1&pseudo_jump=1' . "\n";
+        $htaccess .= 'RewriteRule ^public/plugins/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ public/plugins/ueditor/$1.htm [L]' . "\n";
         $htaccess .= 'RewriteRule ^public/plugins/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ public/plugins/ueditor/$1.html [L]' . "\n";
         $htaccess .= 'RewriteRule ^app/app/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ app/app/ueditor/$1.html [L]' . "\n";
         $htaccess .= 'RewriteRule ^wap/([a-zA-Z0-9_^\x00-\xff]+).html$ wap/$1.html [L]' . "\n";
@@ -194,6 +195,7 @@ class pseudo_static extends admin
     private function createNginxHttpdurl($metbase = '')
     {
         $htaccess = 'rewrite ^'.$metbase.'index-([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'index.php?lang=$1&pseudo_jump=1;' . "\n";
+        $htaccess .= 'rewrite ^'.$metbase.'public/plugins/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'public/plugins/ueditor/$1.htm last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'public/plugins/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'public/plugins/ueditor/$1.html last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'app/app/ueditor/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'app/app/ueditor/$1.html last;' . "\n";
         $htaccess .= 'rewrite ^'.$metbase.'wap/([a-zA-Z0-9_^\x00-\xff]+).html$ '.$metbase.'wap/$1.html last;' . "\n";

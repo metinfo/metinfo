@@ -108,7 +108,6 @@ class language_label
                 return $redata;
             }
         }
-
         return $return;
     }
 
@@ -277,6 +276,9 @@ class language_label
                 break;
             case 'cn':
                 $vga = 'cn';
+                break;
+            default:
+                $vga = $lang;
                 break;
         }
         return $vga;

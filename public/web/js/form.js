@@ -33,7 +33,7 @@ $(function(){
                     $input_group_file.parents('.form-group').removeClass('has-danger');
                 }
             }
-            if(value) $text.val(value).trigger('change');
+            /* if(value)  */$text.val(value).trigger('change');
         }
     });
     // 验证码点击刷新

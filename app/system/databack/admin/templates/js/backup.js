@@ -2,7 +2,7 @@
 ;(function() {
   var that = $.extend(true, {}, admin_module),
       loop_ajax=function(url,btn){
-        metui.request({
+        M.ajax({
           url: url,
           success: function(result) {
             if (result.status == 0) callback(0,result.msg,btn);
@@ -19,7 +19,7 @@
       },
       callback=function(type,msg,btn){
         metAlert('',1);
-        metui.use('alertify', function() {
+        M.load('alertify', function() {
           type?alertify.success(msg):alertify.error(msg);
         });
         type && (M.is_admin ? (window.location.href = `${M.url.admin}#/databack/?head_tab_active=1`) : that.obj.parents('.nav-modal-item').find('.met-headtab a:eq(1)').click());

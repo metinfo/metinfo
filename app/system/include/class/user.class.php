@@ -487,33 +487,12 @@ class user
         return $user;
     }
 
-    public function get_user_para($id = '')
-    {
-        global $_M;
-        $para = $this->get_user_para_info();
-
-        $query = "SELECT * FROM {$_M['table']['user_list']} WHERE userid='{$id}' AND lang='{$_M['lang']}'";
-        $result = DB::query($query);
-
-        while ($list = DB::fetch_array($result)) {
-            $para_info[$list['paraid']] = $list;
-        }
-
-        foreach ($para as $key => $val) {
-            $l['name'] = $val['name'];
-            $l['info'] = $para_info[$val['id']]['info'];
-            $paralist[] = $l;
-        }
-        return $paralist;
-    }
-
     // $user 会员信息，增加会员的会员组权限以及会员组名
     public function analyze($user = array())
     {
         if ($user) {
             $user['access'] = $this->get_group_access($user['groupid']);
             $user['group_name'] = $this->get_group_name($user['groupid']);
-            //$user['para'] = $this->get_user_para($user['id']);
         }
         return $user;
     }

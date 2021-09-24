@@ -20,9 +20,9 @@ class index extends admin {
         $where = 'id>0';
         $list = $table->getdata($_M['table']['admin_logs'], '*',$where, "time DESC");
         foreach ($list as $key => $value){
-            $list[$key]['name'] = $_M['word'][$value['name']];
-            $list[$key]['module'] = $_M['word'][$value['module']];
-            $list[$key]['result'] = $_M['word'][$value['result']];
+            $list[$key]['name'] = $_M['word'][$value['name']] ?: $value['name'];
+            $list[$key]['module'] = $_M['word'][$value['module']]?: $value['module'];
+            $list[$key]['result'] = $_M['word'][$value['result']]?: $value['result'];
             $list[$key]['time'] = date("Y-m-d H:i:s",$value['time']);
         }
 

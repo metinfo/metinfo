@@ -159,11 +159,12 @@ class parameter_admin extends base_admin
             $res[] = array('name' => $_M['word']['parameter8'], 'val' => 8);
             $res[] = array('name' => $_M['word']['parameter9'], 'val' => 9);
         }
+
         if ($module == 3) {
             $res[] = array('name' => $_M['word']['parameter10'], 'val' => 10);
         }
 
-        if (in_array($module, array(4, 6, 7, 8))) {
+        if (in_array($module, array(3, 4, 6, 7, 8))) {
             $res[] = array('name' => $_M['word']['parameter5'], 'val' => 5);
         }
 

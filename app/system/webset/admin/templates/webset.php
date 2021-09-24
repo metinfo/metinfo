@@ -165,7 +165,7 @@ if($_M['langlist']['web'][$_M['lang']]['link']){
                                 <label class="custom-control-label" for="met_copyright_type2"></label>
                             </div>
                         </div>
-                        <span class="text-help ml-2">{$word.copyright_type_tips1}<a href="https://www.metinfo.cn/metinfo/license.html" title="米拓企业建站系统最终用户授权许可协议" target="_blank">{$word.copyright_type_tips2}</a>，{$word.copyright_type_tips3}“<a href="https://www.mituo.cn/copyright/" title="版权标识修改许可" target="_blank">{$word.copyright_type_tips4}</a>”。</span>
+                        <span class="text-help ml-2">{$word.copyright_type_tips1}<a href="https://www.metinfo.cn/metinfo/license.html" title="米拓企业建站系统最终用户授权许可协议" target="_blank">{$word.copyright_type_tips2}</a>，{$word.copyright_type_tips3}“<a href="https://www.metinfo.cn/copyright/" title="版权标识修改许可" target="_blank">{$word.copyright_type_tips4}</a>”。</span>
                     </dd>
                 </dl>
             </if>

@@ -193,7 +193,8 @@ class base_admin extends admin
         $list['wap_ok'] = $list['wap_ok'] ? 1 : 0;
         $list['top_ok'] = $list['top_ok'] ? 1 : 0;
         $list['new_ok'] = $list['new_ok'] ? 1 : 0;
-        $list['addtime'] = $list['addtype'] == 2 ? $list['addtime'] : $list['updatetime'];
+        $list['addtime'] = $list['addtype'] == 2 ? $list['addtime'] : $list['addtime_l'];
+
         return $this->database->update_by_id($list);
     }
 

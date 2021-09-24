@@ -528,7 +528,8 @@ class column_handle extends handle
             $url .= '-' . $content['lang'];
             return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
         }else{
-            if ($_M['config']['met_index_type'] != $content['lang']) {
+            $website = $_M['langlist']['web'][$content['lang']]['link'];    //独立域名
+            if ($_M['config']['met_index_type'] != $content['lang'] && !$website) {
                 $url .= '-' . $content['lang'];
                 return $this->url_transform($content['foldername'] . '/' . $url . '.html', $content['lang']);
             }

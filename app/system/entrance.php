@@ -3,8 +3,9 @@
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 
 //版本号
-define('SYS_VER', '7.3.0');
-define('SYS_VER_TIME', '20200512');
+define('SYS_VER', '7.5.0');
+define('SYS_VER_TIME', '20210922');
+define('SYS_TYPE', 'metinfo');
 
 header("Content-type: text/html;charset=utf-8");
 error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR);

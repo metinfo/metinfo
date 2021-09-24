@@ -12,10 +12,13 @@
 			<h4 class="media-heading font-size-16">
 				<a class="name" href="{$v.url}" title="{$v.title}" target='_self'>{$v._title}</a>
 			</h4>
-			<small class='font-size-14 blue-grey-500'>
-				<span>{$v.filesize} kb</span>
-				<span class="m-l-10">{$v.updatetime}</span>
-			</small>
+            <small class='font-size-14 blue-grey-500'>
+                <?php
+                $v['filesize'] = is_numeric($v['filesize']) ? $v['filesize'] . " KB" : $v['filesize'];
+                ?>
+                <span>{$v.filesize} </span>
+                <span class="m-l-10">{$v.updatetime}</span>
+            </small>
 		</div>
 	</div>
 </li>

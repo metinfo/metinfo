@@ -154,7 +154,7 @@ $.fn.metDataTable=function(){
                         $info.addClass('pull-md-right');
                         if(pagenum>2){
                             // 跳转到某页
-                            var gotopage_html='<div class="gotopage inline-block m-t-15 m-l-10"><span>'+(M['synchronous']=='cn'?'跳转至':'Go to')+'</span> <input type="number" name="gotopage" min="1" max="'+pagenum+'" class="form-control form-control-sm w-50 text-xs-center"/> 页 <input type="button" class="btn btn-default btn-sm gotopage-btn" value="'+(M['synchronous']=='cn'?'跳转':'to')+'"/></div>';
+                            var gotopage_html='<div class="gotopage inline-block m-t-15 m-l-10"><span>'+(M['synchronous']=='cn'?'跳转至':'Go to')+'</span> <input type="number" name="gotopage" min="1" max="'+pagenum+'" class="form-control form-control-sm w-50 text-xs-center"/> '+(M['synchronous']=='cn'?'页':'page')+' <input type="button" class="btn btn-default btn-sm gotopage-btn" value="'+(M['synchronous']=='cn'?'跳转':'to')+'"/></div>';
                             $paginate.after(gotopage_html);
                             var $gotopage=$paginate.next('.gotopage');
                             $gotopage.find('.gotopage-btn').click(function(event) {

@@ -8,7 +8,6 @@ defined('IN_MET') or exit('No permission');
 load::mod_class('base/admin/base_admin');
 load::mod_class('ui_set/class/config_ui.class.php');
 load::mod_class('ui_set/class/config_tem.class.php');
-load::mod_class('ui_set/class/config_metui.class.php');
 load::sys_func('file');
 
 class index extends base_admin
@@ -40,7 +39,6 @@ class index extends base_admin
             $this->type = $template_type;
             $this->config = new config_tem($this->no, $_M['lang']);
         }
-        $this->met_ui_config = new config_metui($_M['lang']);
     }
 
     function doindex()
@@ -59,7 +57,7 @@ class index extends base_admin
                 if (!strstr($power['admin_type'], 'a' . $value['no']) && !strstr($power['admin_type'], 'metinfo')) {
                     continue;
                 }
-                $value['url'] = $value['version'] ? str_replace($_M['url']['site_admin'] . '#/', '', $value['url']) : $_M['url']['adminurl'] . "n={$value['m_name']}&c={$value['m_class']}&a={$value['m_action']}";
+                $value['url'] = $value['newapp'] ? str_replace($_M['url']['site_admin'] . '#/', '', $value['url']) : $_M['url']['adminurl'] . "n={$value['m_name']}&c={$value['m_class']}&a={$value['m_action']}";
                 $applist[] = $value;
             }
         }
@@ -94,7 +92,7 @@ class index extends base_admin
         if (!file_exists(PATH_WEB . 'upload/file/license.html')) {
             $data['license'] = 0;
         }
-        
+
         $sys_json = parent::sys_json();
         $data = array_merge($data, $sys_json);
 
@@ -705,7 +703,7 @@ class index extends base_admin
         global $_M;
         $query = "select * from {$_M['table']['applist']}";
         $list = DB::get_all($query);
-        $apphandle = load::mod_class('ui_set/class/config_app.class.php', 'new');
+        $apphandle = load::mod_class('ui_set/class/config_app', 'new');
         $exception = array('0','50002');
         if (!$_M['config']['met_agents_sms']) {
             $exception[] = '10070';

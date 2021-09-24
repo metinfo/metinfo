@@ -63,6 +63,14 @@ class  message_database extends base_database
         $message = DB::get_one("select * from {$_M['table']['column']} where module = 7 and lang ='{$_M['lang']}'");
         return $message['id'];
     }
+
+    public function del_contents_by_class($cid = '', $lang = '')
+    {
+        global $_M;
+        $lang = $lang ?: $_M['lang'];
+        $query = "DELETE FROM {$_M['table']['message']} WHERE 'lang = '{$lang}'";
+        DB::query($query);
+    }
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

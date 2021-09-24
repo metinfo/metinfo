@@ -32,7 +32,7 @@ class language_web extends admin
         $where = "lang!='metinfo'";
         $language_data = $table->getdata($_M['table']['lang'], '*', $where, "no_order");
 
-        $query = "SELECT value FROM {$_M['table']['config']} WHERE name='met_index_type' and lang='metinfo'";
+        $query = "SELECT * FROM {$_M['table']['config']} WHERE name='met_index_type' AND lang='metinfo'";
         $met_index_type = DB::get_one($query);
         $met_index_type = $met_index_type['value'];
         $data['language_data'] = $language_data;
@@ -62,7 +62,7 @@ class language_web extends admin
             $this->error($_M['word']['js41']);
         }
 
-        $query = "SELECT no_order FROM {$_M['table']['lang']} WHERE no_order='{$order}' AND mark!='{$mark}' and lang!= 'metinfo'";
+        $query = "SELECT no_order FROM {$_M['table']['lang']} WHERE no_order='{$order}' AND mark!='{$mark}' AND lang!= 'metinfo'";
         if (DB::get_one($query)) {
             //写日志
             logs::addAdminLog('langwebmanage', 'edite', 'langnameorder', 'doSaveEdite');
@@ -81,7 +81,7 @@ class language_web extends admin
         DB::query($query);
 
         if ($useok && $met_index_type) {
-            $query = "UPDATE {$_M['table']['config']} SET value = '{$mark}' WHERE name='met_index_type'";
+            $query = "UPDATE {$_M['table']['config']} SET value = '{$mark}' WHERE name = 'met_index_type'";
             DB::query($query);
         }
         //写日志
@@ -227,7 +227,7 @@ class language_web extends admin
             $this->error($_M['word']['js41']);
         }
 
-        $query = "SELECT lang FROM {$_M['table']['lang']}  WHERE lang!='metinfo' AND id='{$id}'";
+        $query = "SELECT lang FROM {$_M['table']['lang']}  WHERE lang != 'metinfo' AND id='{$id}'";
         $lang_info = DB::get_one($query);
         if (!$lang_info) {
             //写日志
@@ -236,7 +236,7 @@ class language_web extends admin
         }
 
         //唯一语言不可删除
-        $query = "SELECT id FROM {$_M['table']['lang']} order by no_order where lang!='metinfo'";
+        $query = "SELECT id FROM {$_M['table']['lang']} WHERE `lang` != 'metinfo'  ORDER BY no_order ";
         $lang_data = DB::get_all($query);
         if (count($lang_data) == 1) {
             //写日志
@@ -255,7 +255,7 @@ class language_web extends admin
         $excepted = array(
             "lang_admin",
         );
-        $query = "SELECT id FROM {$_M['table']['lang']} order by no_order where lang!='metinfo'";
+        $query = "SELECT id FROM {$_M['table']['lang']} WHERE `lang` != 'metinfo'  ORDER BY no_order ";
         $lang_data = DB::get_all($query);
         if (count($lang_data) == 1) {
             //写日志

@@ -332,7 +332,7 @@ EOT;
      * @param $data
      * @return string
      */
-    public function get_search_advanced($data)
+    public function get_search_advanced($data = array())
     {
         global $_M;
         $add = '';//增加到search表单中的隐藏字段
@@ -557,8 +557,12 @@ EOT;
     {
         global $_M;
         // 搜索列表分页
-        $stype = isset($_M['form']['stype']) ? "&stype={$_M['form']['stype']}" : '';
-        if ($_M['form']['search'] == 'tag') {
+        $stype = urlencode($_M['form']['stype']) ;
+        $searchword = urlencode($_M['form']['searchword']);
+        $module = urlencode($_M['form']['module']);
+        $search = urlencode($_M['form']['search']);
+
+        if ($search == 'tag') {
             if ($_M['config']['met_pseudo']) {
                 $url = "search/tag/{$_M['form']['searchword']}";
                 if ($_M['lang'] != $_M['config']['met_index_type']) {
@@ -566,10 +570,10 @@ EOT;
                 }
                 $url .= '-#page#';
             } else {
-                $url = "search/index.php?search=tag&searchword={$_M['form']['searchword']}{$stype}&module={$_M['form']['module']}&lang={$_M['lang']}&page=#page#";
+                $url = "search/index.php?search=tag&searchword={$searchword}&stype={$stype}&module={$module}&lang={$_M['lang']}&page=#page#";
             }
         } else {
-            $url = "search/index.php?search={$_M['form']['search']}&searchword={$_M['form']['searchword']}{$stype}&module={$_M['form']['module']}&lang={$_M['lang']}&page=#page#";
+            $url = "search/index.php?search={$search}&searchword={$searchword}&stype={$stype}&module={$module}&lang={$_M['lang']}&page=#page#";
         }
         $info['url'] = $this->handle->url_transform($url);
         $info['count'] = ceil($this->search_page / $this->page_num);

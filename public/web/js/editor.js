@@ -85,6 +85,7 @@
 		setTimeout(function(){
 			$(".met-editor .met-editor-tab .pagination li").click(function(event) {
 				var $obj=$($(this).attr('href'));
+				$(this).siblings('li').removeClass('active');
 				setTimeout(function(){
 					if($(window).scrollTop()>$obj.offset().top) $('html,body').stop().animate({scrollTop:$obj.offset().top}, 300);
 				},300);

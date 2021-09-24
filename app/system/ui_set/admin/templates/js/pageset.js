@@ -5,7 +5,7 @@
 (function(){
     M.url.own_form=M.url.admin+'?n=ui_set&c=index&';
     // 手机端弹出引导提示
-    M.device_type=='m' && $('.pageset-mobile-tips-wrapper').length && metui.use('alertify',function(){
+    M.device_type=='m' && $('.pageset-mobile-tips-wrapper').length && M.load('alertify',function(){
         alertify.error($('.pageset-mobile-tips-wrapper').html());
         setTimeout(function(){
             $('.pageset-mobile-tips').next('.close').click(function(event) {
@@ -37,7 +37,7 @@
         M.load('alertify',function(){
             alertify.alert('点击可视化界面顶部导航栏->支持->操作引导，可重新查看刚才的操作引导');
         });
-        metui.ajax({
+        M.ajax({
             url: $uiset_guide_modal.data('url')
         },function(result){
             metAjaxFun({result:result});
@@ -74,7 +74,7 @@
     // 不再提示更改后台目录名称
     $('.no-prompt,.btn-uiset-guide-cancel').click(function(){
         if(!checkLogin()) return;
-        metui.ajax({
+        M.ajax({
             url: $(this).data('url')
         },function(result){
             metAjaxFun({result:result});
@@ -86,7 +86,7 @@
     });
     // 关闭用户协议框
     $('.met-agreement-modal .modal-footer button').click(function(event) {
-        metui.ajax({
+        M.ajax({
             url: M.url.own_form+'a=doagreement&license=1'
         });
     });
@@ -112,7 +112,7 @@
             if(typeof dynamic != 'undefined') setCookie('page_iframe_url',dynamic);
         }
         // 页面弹框设置参数
-        metui.use('modal',function(){
+        M.load('modal',function(){
             M.component.modal_options[pageset_modal.nav]={
                 modalSize:'100',
                 modalOktext:'',
@@ -174,7 +174,7 @@
                         $modal_title.attr('data-title','');
                     }
                     $modal_title.html(title);
-                    
+
                     if(data.module||data.class1||data.class2||data.class3||data.head_tab_active){
                         if(hash!='manage') admin_module.obj.find('.met-headtab[data-ajaxchange] a:eq('+(data.head_tab_active)+')').click();
                         setTimeout(function(){
@@ -261,7 +261,7 @@
             var $self=$(this),
                 moal_class=$(this).attr('data-target');
             setTimeout(function(){
-                metui.use('form',function(){
+                M.load('form',function(){
                     var $modal_body=$(moal_class).find('.modal-body:eq(0)');
                     // 弹框内锚点链接兼容
                     $modal_body.find('a[href^="#/"]').attr({target:'_blank'}).each(function(index, el) {
@@ -273,7 +273,7 @@
         });
         // 导航菜单设置保存后回调
         setTimeout(function(){
-            metui.use('form',function(){
+            M.load('form',function(){
                 formSaveCallback('#pageset-nav-set', {
                     true_fun: function() {
                         setTimeout(function(){
@@ -305,7 +305,7 @@
         //     $nav_modal.find('.nav-iframe:visible').prop('contentWindow').location.href=$(this).attr('href');
         // });
         // 系统消息数量
-        metui.ajax({
+        M.ajax({
             url: M.url.admin + '?n=system&c=news&a=docurlnews'
         },function(result) {
             metAjaxFun({result:result,true_fun:function(){
@@ -414,7 +414,7 @@
                     $mid=$page_iframe_contents.find('[m-id='+mid+'][m-type='+type+']:eq('+index+')'),
                     id=$mid.find('[name="id"]').length?$mid.find('[name="id"]').val():(page_iframe_window.M.id?page_iframe_window.M.id:''),
                     classnow=$mid.find('[name="class"]').length?$mid.find('[name="class"]').val():($mid.find('[name="id"]').length?$mid.find('[name="id"]').val():page_iframe_window.M.classnow);
-                metui.ajax({
+                M.ajax({
                     url: M.url.own_form+'a=doset_content',
                     data: {
                         mid:mid,
@@ -459,7 +459,7 @@
                                             modalFullheight: 1
                                         }).click();
                                     };
-                                /*is_listmodule?*/metui.use('#pub/js/content_list',function(){
+                                /*is_listmodule?*/M.load('#pub/js/content_list',function(){
                                     handle();
                                 })/*:handle();*/
                             }
@@ -562,7 +562,7 @@
                     if(img_url.indexOf('met-id=')>=0) img_url=(img_url.split('met-id=')[0]).slice(0,-1);
                     img_url.substr(0,4)!='http' && img_url.substr(0,3)!='../' && (img_url='../'+img_url);
                     setTimeout(function(){
-                        metui.use('fileinput',function(){
+                        M.load('fileinput',function(){
                             var $pageset_img_modal=$(pageset_modal.img);
                             $pageset_img_modal.find('[name="met_skin_user"]').val(page_iframe_window.MSTR[3]);
                             $pageset_img_modal.find('[name="table"]').val($obj_img.attr('met-table'));
@@ -575,7 +575,7 @@
                 }else if($(this).attr('data-obj')=='.met-icon'){
                     var index=$(this).attr('data-index');
                     // 弹出图标选择框
-                    metui.use('iconset',function(){
+                    M.load('iconset',function(){
                         $btn_common_modal.click();
                         setTimeout(function(){
                             $('.met-icon-modal .modal-footer button[data-ok]').attr({'data-obj':'pageset-iconset-'+index});
@@ -586,7 +586,7 @@
                         field=$editable_click.attr('met-field'),
                         id=$editable_click.attr('met-id');
                     // 获取输入框的显示内容
-                    metui.ajax({
+                    M.ajax({
                         url: pageset_url.get_text_content,
                         data: {
                             table: table,
@@ -604,7 +604,7 @@
                                         is_editor_init=$textarea.attr('data-plugin');
                                     if(M.met_editor=='ueditor') $textarea.val(result.text);
                                     !is_editor_init && $textarea.attr({'data-plugin':'editor','data-editor-y':$pageset_editor_modal.find('.modal-body').height()-(M.met_editor=='ueditor'?138:79)}).metEditor();
-                                    metui.use(M.met_editor_plugin,function(){
+                                    M.load(M.met_editor_plugin,function(){
                                         setTimeout(function(){
                                             $pageset_editor_modal.find('[name="table"]').val(table);
                                             $pageset_editor_modal.find('[name="field"]').val(field);
@@ -631,7 +631,7 @@
                                 var text_w=(text_fz*0.6+text_ls)*text_l;
                                 if(text_w>width) type='textarea';
                                 // 弹出显示框
-                                metui.use('editable',function(){
+                                M.load('editable',function(){
                                     $pageeditor_editor.hide();
                                     $pageeditor_remark.editable('destroy').html(result.text).editable({
                                         type: type,
@@ -684,7 +684,7 @@
                 if(!checkLogin()) return;
                 var text=$pageeditor_btn.find('.editable-container .editable-input .form-control').val(),
                     $editable_click=$page_iframe_contents.find($pageeditor_editor.attr('data-obj')).eq($pageeditor_editor.attr('data-index'));
-                metui.ajax({
+                M.ajax({
                     url: pageset_url.set_text_content,
                     data: {table: $editable_click.attr('met-table'),field: $editable_click.attr('met-field'),id: $editable_click.attr('met-id'),text:text}
                 },function(result){
@@ -709,7 +709,7 @@
             if(icon_active){
                 var index=$(this).attr('data-obj').split('-')[2],
                     $icon=$page_iframe.contents().find('.met-icon:eq('+index+')');
-                metui.ajax({
+                M.ajax({
                     url: pageset_url.set_text_content,
                     data: {table: $icon.attr('met-table'),field: $icon.attr('met-field'),id: $icon.attr('met-id'),text:icon_active}
                 },function(result){
@@ -877,7 +877,7 @@
         $(this).on('click', selector, function(event) {
             if(!checkLogin()) return;
             var mid=$(this).attr('data-mid');
-            metui.ajax({
+            M.ajax({
                 url: M.url.own_form+'a=doset_area',
                 data: {mid:mid,type:$(this).attr('data-type'),classnow:$page_iframe.prop('contentWindow').M.classnow},
             },function(result){
@@ -940,7 +940,7 @@
                     $pageset_config_modal.find('.modal-title').html(title);
                 });
             }else{
-                metui.ajax({
+                M.ajax({
                     url: $(this).data('config-url'),
                     data: data,
                 },function(result){
@@ -962,7 +962,7 @@
     });
     $(document).on('click', '.btn-blockui-change', function(event) {
         if(!checkLogin()) return;
-        metui.ajax({
+        M.ajax({
             url: M.url.own_form+'a=dochangeUi',
             data: {
                 mid:$(this).parents('form').find('[name="mid"]').val(),
