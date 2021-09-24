@@ -951,7 +951,7 @@ INSERT INTO met_language VALUES (null, 'should_used', '应  用', 1, 0, 3, 0, 'c
 INSERT INTO met_language VALUES (null, 'sys_template', '模  板', 1, 0, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'sys_purchase', '购买', 1, 0, 3, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'sys_payment', '支付', 1, 0, 3, 0, 'cn');
-INSERT INTO met_language VALUES (null, 'extension_school', '米拓学院', 1, 0, 0, 0, 'cn');
+INSERT INTO met_language VALUES (null, 'extension_school', '米拓学堂', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'the_bit', '位', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'the_server', '服务器', 1, 0, 0, 0, 'cn');
 INSERT INTO met_language VALUES (null, 'the_version', '版本', 1, 0, 0, 0, 'cn');

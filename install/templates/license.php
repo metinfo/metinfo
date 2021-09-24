@@ -44,7 +44,7 @@ echo <<<EOT
     <div class="clearfix">
         <div class="float-left">
             <span>官方网站：<a href="https://www.metinfo.cn" target="_blank">www.MetInfo.cn</a></span>
-            <span class="ml-3">米拓学院：<a href="https://edu.metinfo.cn" target="_blank">edu.MetInfo.cn</a></span>
+            <span class="ml-3">米拓学堂：<a href="https://edu.metinfo.cn" target="_blank">edu.MetInfo.cn</a></span>
         </div>
         <div class="float-right">长沙米拓信息技术有限公司</div>
     </div>

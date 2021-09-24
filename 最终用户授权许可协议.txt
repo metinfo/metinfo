@@ -27,6 +27,6 @@
    修订的条款始终公开在「https://www.mituo.cn/metinfo/license.html或https://www.metinfo.cn/metinfo/license.html」。
 
 官方网站：www.metinfo.cn
-米拓学院：edu.metinfo.cn
+米拓学堂：edu.metinfo.cn
 
 长沙米拓信息技术有限公司

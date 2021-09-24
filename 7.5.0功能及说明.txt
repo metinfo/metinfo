@@ -1,7 +1,7 @@
 ﻿软件版本：MetInfo 7.5.0
 发布日期：2021-9-23
 官方网站：www.metinfo.cn
-米拓学院：edu.metinfo.cn
+米拓学堂：edu.metinfo.cn
 
 更新日志：
 新增关联内容设置
