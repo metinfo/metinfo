@@ -56,9 +56,10 @@ class login extends userweb
 
         $login_position = $_M['config']['met_login_box_position'] == 1 ? 'm-x-auto' : ($_M['config']['met_login_box_position'] == 2 ? 'pull-xs-right' : '');
 
-        $this->input['login_position'] = $login_position;
-        $this->input['page_title'] = $_M['word']['memberLogin'] . $this->input['page_title'];
-
+        $this->add_input('page_keywords', $_M['config']['met_keywords']);
+        $this->add_input('page_description', $_M['config']['met_description']);
+        $this->add_input('login_position', $login_position);
+        $this->add_input('page_title', $_M['word']['memberLogin'] . $this->input['page_title']);
         $this->view('app/login', $this->input);
     }
 

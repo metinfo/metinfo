@@ -1,7 +1,7 @@
 /**
  * Created with JetBrains PhpStorm.
  * User: taoqili
- * Date: 12-6-12
+ * @Date：2022-03-24 14:13:00
  * Time: 下午6:57
  * To change this template use File | Settings | File Templates.
  */
@@ -22,7 +22,7 @@ UE.I18N['en'] = {
         'justifyjustify':'Justify', 'forecolor':'FontColor', 'backcolor':'BackColor', 'insertorderedlist':'OL',
         'insertunorderedlist':'UL', 'fullscreen':'FullScreen', 'directionalityltr':'EnterFromLeft', 'directionalityrtl':'EnterFromRight',
         'rowspacingtop':'RowSpacingTop', 'rowspacingbottom':'RowSpacingBottom', 'pagebreak':'PageBreak', 'insertframe':'Iframe', 'imagenone':'Default',
-        'imageleft':'ImageLeft', 'imageright':'ImageRight', 'attachment':'Attachment', 'imagecenter':'ImageCenter', 'wordimage':'WordImage',
+        'imageleft':'ImageLeft', 'imageright':'ImageRight', 'attachment':'Attachment', 'imagecenter':'ImageCenter', 'wordimage':'WordImage','importword':'import word file',
         'lineheight':'LineHeight','edittip':'EditTip','customstyle':'CustomStyle', 'scrawl':'Scrawl', 'autotypeset':'AutoTypeset',
         'webapp':'WebAPP', 'touppercase':'UpperCase', 'tolowercase':'LowerCase','template':'Template','background':'Background','inserttable':'InsertTable',
         'music':'Music', 'charts': 'charts','drafts': 'Load from Drafts'
@@ -247,7 +247,7 @@ UE.I18N['en'] = {
             'lang_background_netimg':'Net-Image',
             'lang_background_align':'Align Type',
             'lang_background_position':'Position',
-            'repeatType':{'options':["Center", "Repeat-x", "Repeat-y", "Tile","Custom"]}
+            'repeatType':{'options':["Center", "Repeat-x", "Repeat-y", "Tile",'Cover','Contain',"Custom"]}
         },
         'noUploadImage':"No pictures has been uploaded！",
         'toggleSelect':'Change the active state by click!\n Image Size: '
@@ -340,7 +340,37 @@ UE.I18N['en'] = {
         'errorHttp':'Http Error',
         'errorServerUpload':'Server Result Error.'
     },
-
+    'importword':{
+        'static':{
+            'lang_tab_upload': 'Upload word file',
+            'lang_tab_online': 'Online word file',
+            'lang_start_upload':"Start upload",
+            'lang_drop_remind':"You can drop files here, a single maximum of 300 files",
+            'lang_start_tips':"Only files with the suffix docx can be imported. If you want to import files in doc format, first open the file through office or WPS and save it as a docx format file."
+        },
+        'uploadSelectFile':'Select File',
+        'uploadAddFile':'Add File',
+        'uploadStart':'Start Upload',
+        'uploadPause':'Pause Upload',
+        'uploadContinue':'Continue Upload',
+        'uploadRetry':'Retry Upload',
+        'uploadDelete':'Delete',
+        'uploadTurnLeft':'Turn Left',
+        'uploadTurnRight':'Turn Right',
+        'uploadPreview':'Doing Preview',
+        'updateStatusReady': 'Selected _ files, total _KB.',
+        'updateStatusConfirm': '_ uploaded successfully and _ upload failed',
+        'updateStatusFinish': 'Total _ files (_KB), _  uploaded successfully',
+        'updateStatusError': ' and _ upload failed',
+        'errorNotSupport': 'WebUploader does not support the browser you are using. Please upgrade your browser or flash player',
+        'errorLoadConfig': 'Server config not loaded, upload can not work.',
+        'errorExceedSize':'File Size Exceed',
+        'errorFileType':'File Type Not Allow',
+        'errorInterrupt':'File Upload Interrupted',
+        'errorUploadRetry':'Upload Error, Please Retry.',
+        'errorHttp':'Http Error',
+        'errorServerUpload':'Server Result Error.'
+    },
     'insertvideo':{
         'static':{
             'lang_tab_insertV':"Video",
@@ -651,7 +681,7 @@ UE.I18N['en'] = {
         'static':{
             lang_resave:"The re-save step",
             uploadBtn:{src:"upload.png", alt:"Upload"},
-            clipboard:{style:"background: url(copy.png) -153px -1px no-repeat;"},
+            clipboard:{innerHTML:'Copy url'},
             lang_step:" 1. Click top button to copy the url and then open the dialog to paste it. 2. Open after choose photos uploaded process."
         },
         fileType:"Image",

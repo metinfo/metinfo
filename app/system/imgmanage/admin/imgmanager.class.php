@@ -81,6 +81,8 @@ class imgmanager extends admin {
         $data['met_wate_img'] = isset($_M['config']['met_wate_img']) ? $_M['config']['met_wate_img'] : '';
         $data['met_wate_bigimg'] = isset($_M['config']['met_wate_bigimg']) ? $_M['config']['met_wate_bigimg'] : '';
         $data['met_text_angle'] = isset($_M['config']['met_text_angle']) ? $_M['config']['met_text_angle'] : '';
+        $data['met_wate_img_scale'] = isset($_M['config']['met_wate_img_scale']) ? $_M['config']['met_wate_img_scale'] : '0';
+        $data['met_wate_img_gif_hold'] = isset($_M['config']['met_wate_img_gif_hold']) ? $_M['config']['met_wate_img_gif_hold'] : '0';
 
         $this->success($data);
     }
@@ -110,6 +112,8 @@ class imgmanager extends admin {
         $configlist[] = 'met_text_color';
         $configlist[] = 'met_wate_img';
         $configlist[] = 'met_wate_bigimg';
+        $configlist[] = 'met_wate_img_scale';
+        $configlist[] = 'met_wate_img_gif_hold';
         configsave($configlist);
 
         //写日志

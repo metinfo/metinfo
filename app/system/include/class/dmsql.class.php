@@ -265,8 +265,6 @@ class DB
         if (!$result) {
             dm_rollback(self::$link);
 //            self::errno();
-            dumP($bind);
-            dd($sql);
             self::errorlist($sql);
         }
         dm_commit(self::$link);

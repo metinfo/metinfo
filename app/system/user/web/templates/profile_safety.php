@@ -172,7 +172,7 @@ $data['page_title']=$_M['word']['accsafe'].$data['page_title'];
                                        data-fv-identical-field="confirmpassword"
                                        data-fv-identical-message="{$word.passwordsame}"
                                        data-fv-stringlength="true"
-                                       data-fv-stringlength-min="3"
+                                       data-fv-stringlength-min="6"
                                        data-fv-stringlength-max="30"
                                        data-fv-stringlength-message="{$word.passwordcheck}"
                                 >

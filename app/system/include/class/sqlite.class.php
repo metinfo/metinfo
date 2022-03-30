@@ -45,7 +45,7 @@ class DB
     {
         $rs = self::$link->querySingle($sql, true);
         //如果是前台可视化编辑模式
-        if (IN_ADMIN !== true && $_GET['pageset'] == 1) {
+        if (defined('IN_ADMIN') !== true && $_GET['pageset'] == 1) {
             $rs = load::sys_class('view/met_datatags', 'new')->replace_sql_one($sql, $rs);
         }
 
@@ -77,7 +77,7 @@ class DB
             $rs[] = $row;
         }
         $result->finalize();
-        if (IN_ADMIN !== true && $_GET['pageset'] == 1) {
+        if (defined('IN_ADMIN') !== true && $_GET['pageset'] == 1) {
             $rs = load::sys_class('view/met_datatags', 'new')->replace_sql_all($sql, $rs);
         }
 
@@ -361,7 +361,7 @@ class DB
         return str_replace("'", "\'", $sql);
     }
 
-    public function escapeSqlite($sql)
+    public static function escapeSqlite($sql)
     {
         $sql = str_replace("\\'", "''", $sql);
         $sql = str_replace('\\', '', $sql);

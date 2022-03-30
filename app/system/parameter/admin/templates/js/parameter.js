@@ -134,6 +134,7 @@
 	    			+'</tr>'
 	    };
     M.component.modal_options['.parameter-options-modal']={
+		modalFullheight:1,
     	modalBody:'<form action="javascript:;" class="form-inline">'
     		+M.component.formWidget('para_id')
     		+M.component.formWidget('table_order')

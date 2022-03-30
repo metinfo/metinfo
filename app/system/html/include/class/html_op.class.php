@@ -11,7 +11,6 @@ load::sys_func('admin');
 
 class html_op
 {
-
     /**
      * 初始化
      */
@@ -37,8 +36,9 @@ class html_op
         //开启静态化 并自动生成
         if ($_M['config']['met_webhtm'] != 0 && $_M['config']['met_htmway'] == 0) {
             //生成静态页
-            load::sys_class('label', 'new')->get('column')->get_column($_M['lang']);
-            $c = load::sys_class('label', 'new')->get('column')->get_column_id($column_id);
+            $column_label = load::sys_class('label', 'new')->get('column');
+            $column_label->get_column($_M['lang']);
+            $c = $column_label->get_column_id($column_id);
             $html_res = "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}&n=html&c=html&a=doCreatePage&type=column&module={$c['module']}&class1={$column_id}&content={$content_id}&index=1";
 
             return $html_res;

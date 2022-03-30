@@ -10,8 +10,8 @@
    met_nextarrow    slick插件翻页按钮自定义html
  * M['device_type'] 客户端判断（d：PC端，t：平板端，m：手机端）
  */
-$(function(){
-    
+   $(function(){
+
     /*导航处理*/
     //#region
    var aLink=$(".met-nav").find('.dropdown a.nav-link');
@@ -25,10 +25,10 @@ $(function(){
             }
         }
     });
-    
+
     // 导航下拉菜单三级栏目展开处理
     $met_navlist=$('.met-nav .navlist');
-    if(M['device_type']=='d'){
+    if(M['device_type'] =='d'){
         if($met_navlist.find('.dropdown-submenu').length){
             $met_navlist.find('.dropdown-submenu').hover(function(){
                 $(this).parent('.dropdown-menu').addClass('overflow-visible');
@@ -86,9 +86,7 @@ $(function(){
         })
     }
     imgh();
-    $(window).resize(function() {
-        imgh();
-    });
+    $(window).resize(debounce(imgh));
     // banner新增设置
     var btns=$(".met-banner .slick-btn");
     if(btns.length){
@@ -141,18 +139,18 @@ $(function(){
         spaceBetween: 22,
         // observer: true,
         // observeParents: true,
-        // observeSlideChildren:true,    
+        // observeSlideChildren:true,
         speed: 500,
         prevButton:'.swiper-button-prev1',
         nextButton:'.swiper-button-next1',
-        breakpoints: { 
-          767: {  
+        breakpoints: {
+          767: {
             slidesPerView: 1,
           },
-          992: {  
+          992: {
             slidesPerView: 3,
           },
-          1280: {  
+          1280: {
             slidesPerView: 3,
           }
         }
@@ -264,9 +262,6 @@ $(function(){
     var $foot_menu=$(".met-menu-list");
     if($foot_menu.length){
         var h_m=$foot_menu.height();
-        $(window).resize(function(){
-            pd();
-        })
         function pd(){
             if($foot_menu.hasClass('iskeshi') || $(window).width()<768){
                     $(".met-foot-info").css("padding-bottom",h_m);
@@ -274,6 +269,7 @@ $(function(){
                 }
         }
         pd();
+        $(window).resize(debounce(pd));
     }
     var $foot_menu_list=$foot_menu.find(".item");
     $foot_menu_list.each(function(){
@@ -288,7 +284,7 @@ $(function(){
         });
 
 
-        
+
     // 产品列表
     var $met_indexpro=$('.met-index-product'),
         $met_indexpro_navtabs=$met_indexpro.find(".nav-tabs");
@@ -302,7 +298,7 @@ $(function(){
         });
     }
 
-    
+
     // 图片区块
     var $met_indexcase=$('.met-index-case').find(".met-index-list"),
         indexcase_num=$met_indexcase.data('num');

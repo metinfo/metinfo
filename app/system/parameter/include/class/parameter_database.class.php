@@ -312,7 +312,7 @@ class  parameter_database extends database
     {
         global $_M;
         $lang = $lang ? $lang : $_M['lang'];
-        $query = "SELECT * FROM {$_M['table']['para']} WHERE pid = {$option['pid']} AND value='{$option['value']}' AND module = {$option['module']} AND lang = '{$lang}'";
+        $query = "SELECT * FROM {$_M['table']['para']} WHERE pid = '{$option['pid']}' AND value='{$option['value']}' AND module = '{$option['module']}' AND lang = '{$lang}'";
         $para = DB::get_one($query);
 
         if ($para) {
@@ -334,10 +334,10 @@ class  parameter_database extends database
         global $_M;
         if (!empty($pids)) {
             $paraid = implode(',', $pids);
-            $query = "DELETE FROM {$_M['table']['para']} WHERE id NOT IN ($paraid) AND pid = {$pid}";
+            $query = "DELETE FROM {$_M['table']['para']} WHERE id NOT IN ($paraid) AND pid = '{$pid}'";
             return DB::query($query);
         } else {
-            $query = "DELETE FROM {$_M['table']['para']} WHERE pid = {$pid}";
+            $query = "DELETE FROM {$_M['table']['para']} WHERE pid = '{$pid}'";
             return DB::query($query);
         }
 

@@ -167,14 +167,23 @@ class base_handle extends handle
     /**
      * 返回分页url
      * @param string $id 栏目id
-     * @param string $type url 类型 默认空
+     * @param string $type url类型 默认空
      * @return string
      */
-    public function get_page_url($id = '', $type = '')
+    public function get_page_url($id = '', $url_type = '')
     {
         $c = load::sys_class('label', 'new')->get('column')->get_column_id($id);
         $class = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($id);
-        $url = $this->get_list_page_url($class['class1']['id'], $class['class2']['id'], $class['class3']['id'], $c['foldername'], $this->contents_page_name, $c['filename'], $c['lang'], $type);
+        $url = $this->get_list_page_url(
+            $class['class1']['id'],
+            $class['class2']['id'],
+            $class['class3']['id'],
+            $c['foldername'],
+            $this->contents_page_name,
+            $c['filename'],
+            $c['lang'],
+            $url_type
+        );
         return $url;
     }
 
@@ -209,23 +218,33 @@ class base_handle extends handle
     public function url_add_contents_filename($column_file, $module_name, $id, $filename, $lang, $addtime, $type = '')
     {
         global $_M;
-
-        $type = $this->url_type($type, 0);
+        $url_type = $this->url_type($type, 0);
 
         $url = '';
         $url .= $column_file . '/';
-        $url .= $this->url_add_content_filename($type, $id, $column_file, $module_name, $addtime, $filename);
-        $url .= $this->url_add_id($type, $id, $column_file, $module_name, $filename);
-        $url .= $this->url_add_lang($type, $lang);
-        $url .= $this->url_add_suffix($type);
+        $url .= $this->url_add_content_filename($url_type, $id, $column_file, $module_name, $addtime, $filename);
+        $url .= $this->url_add_id($url_type, $id, $column_file, $module_name, $filename);
+        $url .= $this->url_add_lang($url_type, $lang);
+        $url .= $this->url_add_suffix($url_type);
         $url = $this->url_transform($url, $lang);
-        if ($type == 1) {
+        if ($url_type == 1) {
             $url = str_replace('.php&', '.php?', $url);
         }
         return $url;
     }
 
-    public function get_list_page_url($column_class1, $column_class2, $column_class3, $column_file, $module_name, $filename, $lang, $type = '')
+    /**
+     * @param $column_class1
+     * @param $column_class2
+     * @param $column_class3
+     * @param $column_file
+     * @param $module_name
+     * @param $filename
+     * @param $lang
+     * @param string $type 链接类型（1:动态，2:伪静态，3:静态）
+     * @return string
+     */
+    public function get_list_page_url($column_class1, $column_class2, $column_class3, $column_file, $module_name, $filename, $lang, $type = 1)
     {
         global $_M;
         $url = '';
@@ -235,28 +254,27 @@ class base_handle extends handle
             $data = array('cid' => $column_class1, 'module' => load::sys_class('handle', 'new')->file_to_mod($module_name));
             $tags = load::sys_class('label', 'new')->get('tags');
             $tag = $tags->getTagInfo($_M['form']['content'], $data);
-            $url = $tags->getTagUrl($tag, $column_class1);
+            $url = $tags->getTagUrl($tag);
 
             if ($_M['config']['met_pseudo']) {
-                $type = 2;
+                $url_type = 2;
             } else {
-                $type = 1;
+                $url_type = 1;
             }
-
-            $url .= $this->url_add_page($type);
+            $url .= $this->url_add_page($url_type);
 
         } else {
             $url .= $column_file . '/';
-            $type = $this->url_type($type, 2);
-            $url .= $this->url_add_list_filename($type, $filename, $column_file, $module_name);
-            $url .= $this->url_add_list_class($type, $column_class1, $column_class2, $column_class3, $filename);
-            $url .= $this->url_add_page($type);
-            $url .= $this->url_add_lang($type, $lang);
-            $url .= $this->url_add_suffix($type);
+            $url_type = $this->url_type($type, 2);
+            $url .= $this->url_add_list_filename($url_type, $filename, $column_file, $module_name);
+            $url .= $this->url_add_list_class($url_type, $column_class1, $column_class2, $column_class3, $filename);
+            $url .= $this->url_add_page($url_type);
+            $url .= $this->url_add_lang($url_type, $lang);
+            $url .= $this->url_add_suffix($url_type);
         }
 
         $url = $this->url_transform($url, $lang);
-        if ($type == 1) {
+        if ($url_type == 1) {
             $url = str_replace('.php&', '.php?', $url);
         }
         return $url;
@@ -275,6 +293,9 @@ class base_handle extends handle
             case '3'://静态
                 $pname = "_#page#";
                 break;
+//            case '4'://混合模式
+//                $pname = "-#page#";
+//                break;
         }
         return $pname;
     }

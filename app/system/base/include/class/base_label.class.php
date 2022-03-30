@@ -40,20 +40,20 @@ class base_label
 
     /**
      * 按栏目获取列表数据
-     * @param string $id 栏目id
+     * @param string $cid 栏目cid
      * @param string $rows 取的条数
      * @param string $type 调用内容com(推荐)／news(最新，已废除)//all（所有）
      * @param string $order 排序规则
      * @param int $para 是否获取参数信息
      * @return mixed
      */
-    public function get_module_list($id = '', $rows = '', $type = '', $order = '', $para = 0)
+    public function get_module_list($cid = '', $length = '', $cond = null, $order = null, $para = 0)
     {
         global $_M;
-        if (!$type) {
-            $type = 'all';
+        if (!$cond) {
+            $cond = 'all';
         }
-        $data = $this->database->get_list_by_class($id, 0, $rows, $type, $order);
+        $data = $this->database->get_list_by_class($cid, 0, $length, $cond, $order);
         $data = $this->handle->para_handle($data);
 
         if ($para) {
@@ -67,12 +67,12 @@ class base_label
 
     /**
      * 获取栏目列表页数据
-     * @param string $id 栏目id
+     * @param string $cid 栏目id
      * @param string $page 分页数
      * @param int $para 是否获取参数信息
      * @return mixed
      */
-    public function get_list_page($id = '', $page = '', $para = 1)
+    public function get_list_page($cid = '', $page = '', $para = 1)
     {
         global $_M;
         $page = is_numeric($page) ? $page : 1;
@@ -83,19 +83,19 @@ class base_label
         //搜索信息
         $search = $this->search();
         if ($search['type']) {
-            $type = $search['type'];
+            $cond = $search['type'];
         }
         if ($search['order']) {
             $order = $search['order'];
         }
         $_M['config']['list_page_flag'] = 1;
-        if (!$type) {
-            $type = 'all';
+        if (!$cond) {
+            $cond = 'all';
         }
 
         //内容权限检测
         $data = $this->handle->para_handle(
-            $this->database->get_list_by_class($id, $start, $rows, $type, $order)
+            $this->database->get_list_by_class($cid, $start, $rows, $cond, $order)
         );
 
         //内容参数
@@ -112,9 +112,13 @@ class base_label
             }
         }
 
-        return $data;
+        return $data ?: array();
     }
 
+    /**
+     * @param string $id
+     * @return string
+     */
     public function get_one_content($id = '')
     {
         global $_M;
@@ -223,12 +227,12 @@ class base_label
 
     /**
      * @param string $id 栏目id
-     * @param string $type url类型（动态，静态，伪静态）
+     * @param string $url_type url类型（动态，静态，伪静态）
      * @return mixed
      */
-    public function get_page_url($id = '', $type = '')
+    public function get_page_url($id = '', $url_type = '')
     {
-        return $this->handle->get_page_url($id, $type);
+        return $this->handle->get_page_url($id, $url_type);
     }
 
     /**
@@ -273,42 +277,45 @@ class base_label
 
     /**
      * @param string $id
-     * @param string $type
+     * @param string $url_type
      * @return mixed
      */
-    public function get_page_info_by_class($id = '', $type = '')
+    public function get_page_info_by_class($id = '', $url_type = '')
     {
         global $_M;
         //分页url
         if (method_exists($this->handle, 'get_page_url')) {
-            $info['url'] = $this->handle->get_page_url($id, $type);
+            $info['url'] = $this->handle->get_page_url($id, $url_type);
         }
+
         //搜索信息
         $search = $this->search();
         if ($search['type']) {
-            $type = $search['type'];
+            $cond = $search['type'];
         }
 
-        #$info['count'] = ceil($this->database->get_page_count_by_class($id, $type) / $this->page_num);
         $lenght = $this->get_list_page_lenght($id);
-        $info['count'] = ceil($this->database->get_page_count_by_class($id, $type) / $lenght);
+        $info['count'] = ceil($this->database->get_page_count_by_class($id, $cond) / $lenght);
         if (!$info['count']) {
             $info['count'] = 1;
         }
         return $info;
     }
 
+    /******分页数据处理******/
     /**
-     * 分页数据 返回HTML
+     * 分页标签 返回HTML
      * @param $classnow 当前栏目ID
      * @param $pagenow  当前页码
-     * @param $page_type    分页类型 内容/栏目
+     * @param $page_type 分页类型 内容/栏目
      * @return string
      */
     public function get_list_page_html($classnow, $pagenow, $page_type)
     {
         global $_M;
         $pagenow = is_numeric($pagenow) ? $pagenow : 1;
+        $pagenow = $pagenow ? $pagenow : 1;
+
         if ($page_type == 1) {
             $column_label = load::sys_class('label', 'new')->get('column');
             $sub_conlumn = $column_label->get_column_by_type('son', $classnow);
@@ -319,10 +326,13 @@ class base_label
         }
 
         $pageinfo = $this->get_page_info_by_class($classnow);
+        if ($_M['config']['met_webhtm'] == 3) {//混合模式
+            $pageinfo = $this->get_page_info_by_class($classnow, 2);
+        }
+
         if ($_M['form']['search']) {
             $pageinfo['url'] .= load::sys_class('label', 'new')->get('search')->add_search_url();
         }
-        $pagenow = $pagenow ? $pagenow : 1;
         $pageall = $pageinfo['count'];
         $url = $pageinfo['url'];
         $firestpage = $this->handle->replace_list_page_url($url, 1, $classnow);
@@ -360,6 +370,7 @@ class base_label
         //首页
         $text .= $firstPage;
 
+        //分页按钮
         for ($i = $startnum; $i <= $endnum; $i++) {
             $pageurl = $i == 1 ? $firestpage : $this->handle->replace_list_page_url($url, $i, $classnow);
             if ($i == $pagenow) {
@@ -446,6 +457,7 @@ class base_label
     public function get_list_page_data($classnow, $pagenow)
     {
         global $_M;
+        return;
         $pageinfo = $this->get_page_info_by_class($classnow);
         if ($_M['form']['search']) {
             $pageinfo['url'] .= load::sys_class('label', 'new')->get('search')->add_search_url();
@@ -597,14 +609,13 @@ class base_label
         $redata['page_list'] = $page_list;
         $redata['page_button'] = $button;
         return $redata;
-        #return $text;
     }
 
     /**
      * 共用list标签
-     * @param  string $mod 模块名称或id
-     * @param  string $num 数量
-     * @param  string $type com/news/all
+     * @param $classnow
+     * @param $pagenow
+     * @return mixed
      */
     public function get_list_page_select($classnow, $pagenow)
     {

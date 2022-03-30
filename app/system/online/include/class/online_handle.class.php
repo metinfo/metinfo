@@ -64,6 +64,10 @@ class online_handle extends news_handle
                 $url = "https://crm2.qq.com/page/portalpage/wpa.php?uin={$content['value']}&aty=0&a=0&curl=&ty=1";
                 $content['url'] = $url;
                 break;
+            case 9://Whatsapp
+                $url = "https://wa.me/{$content['value']}";
+                $content['url'] = $url;
+                break;
 
         }
         return $content;

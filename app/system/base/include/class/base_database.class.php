@@ -59,20 +59,18 @@ class base_database extends database
     /**
      * 获取栏目列表内容 （搜索）
      * 获取列表数据（产品，图片，下载，新闻模块使用）.
-     *
-     * @param string $lang 语言
      * @param string $id 栏目id
-     * @param string $start limit开始条数
-     * @param string $rows limit取的条数
-     *
-     * @return array 配置数组get_list_by_class
+     * @param int $offset   偏移量
+     * @param int $length   长度
+     * @param string array|string $cond 搜索条件
+     * @param string array|string   排序规则
+     * @return array|void
      */
-    public function get_list_by_class($id = '', $start = 0, $rows = '', $type = '', $order = '')
+    public function get_list_by_class($id = '', $offset = 0, $length = 8, $cond = null, $order = null)
     {
-        global $_M;
-        $sql = $this->get_list_by_class_sql($id, $type, $order);
-        if ($rows) {
-            $sql .= "LIMIT $start , $rows";
+        $sql = $this->get_list_by_class_sql($id, $cond, $order);
+        if ($length) {
+            $sql .= "LIMIT $offset , $length";
         }
 
         $query = "SELECT * FROM {$this->table} WHERE {$sql} ";
@@ -82,31 +80,25 @@ class base_database extends database
     }
 
     /**
-     * 获取列表数据（产品，图片，下载，新闻模块使用）.
-     *
-     * @param string $lang 语言
-     * @param string $id 栏目id
-     * @param string $start limit开始条数
-     * @param string $rows limit取的条数
-     *
-     * @return array 配置数组
+     * @param string $id
+     * @param string array|string $cond 搜索条件
+     * @return int
      */
-    public function get_page_count_by_class($id = '', $type = '')
+    public function get_page_count_by_class($id = '', $cond = null)
     {
-        $sql = $this->get_list_by_class_sql($id, $type, -1);
+        $sql = $this->get_list_by_class_sql($id, $cond, -1);
 
         return DB::counter($this->table, $sql);
     }
 
     /**
-     * 获取列表数据（产品，图片，下载，新闻模块使用）.
-     *
-     * @param string $lang 语言
+     * 拼装Sql
      * @param string $id 栏目id
-     *
-     * @return array 配置数组
+     * @param string array|mixed|string $cond
+     * @param string $order 排序类型
+     * @return string
      */
-    public function get_list_by_class_sql($id = '', $type = '', $order = '')
+    public function get_list_by_class_sql($id = '', $cond = null, $order = null)
     {
         global $_M;
         $time = date('Y-m-d H:i:s');
@@ -143,43 +135,42 @@ class base_database extends database
             // search_label的search_info的数据
             $search = '';
             $fields = array('ctitle', 'title', 'keywords', 'description', 'content', 'tag');
-            if (isset($type['type']) && ($type['type'] == 'array' || $type['type'] == 'tag')) {
-                if ($type['type'] == 'tag') {
+            if (isset($cond['type']) && ($cond['type'] == 'array' || $cond['type'] == 'tag')) {
+                if ($cond['type'] == 'tag') {
                     $search .= load::sys_class('label', 'new')->get('tags')->getSqlByTag($_M['form']['content'], $class123);
                     if ($_M['config']['tag_show_range']) {//聚合范围配置为 ：设置了相同TAG标签的内容
-                        if ($type['tag']['status'] && is_string($type['tag']['info']) && $type['tag']['info'] != '') {
-                            $search .= " OR tag like '%{$type['tag']['info']}%' AND 1=1";
+                        if ($cond['tag']['status'] && is_string($cond['tag']['info']) && $cond['tag']['info'] != '') {
+                            $search .= " OR tag like '%{$cond['tag']['info']}%' AND 1=1";
                         }
                     } else {
                         foreach ($fields as $val) {
-                            if ($type[$val]['status'] && is_string($type[$val]['info']) && $type[$val]['info'] != '') {
-                                $search .= " OR {$val} like '%{$type[$val]['info']}%' ";
+                            if ($cond[$val]['status'] && is_string($cond[$val]['info']) && $cond[$val]['info'] != '') {
+                                $search .= " OR {$val} like '%{$cond[$val]['info']}%' ";
                             }
                         }
                     }
                 } else {
                     foreach ($fields as $val) {
-                        if ($type[$val]['status'] && is_string($type[$val]['info']) && $type[$val]['info'] != '') {
-                            $search .= " OR {$val} like '%{$type[$val]['info']}%' ";
+                        if ($cond[$val]['status'] && is_string($cond[$val]['info']) && $cond[$val]['info'] != '') {
+                            $search .= " OR {$val} like '%{$cond[$val]['info']}%' ";
                         }
                     }
                 }
 
                 //系统参数筛选
-                if ($type['para']['status'] && $type['para']['info']) {
-                    $para = load::sys_class('label', 'new')->get('parameter')->get_search_list_sql($this->module, $type['para']['precision'], $type['para']['info']);
-                    if (is_array($para)) {
-                        $para = implode(',', $para);
-                        $search .= " OR id in ({$para}) "; //如果以后需要加强字段搜索，就在这里添加代码。
+                if ($cond['para']['status'] && $cond['para']['info']) {
+                    $para = load::sys_class('label', 'new')->get('parameter')->get_search_list_sql($this->module, $cond['para']['precision'], $cond['para']['info']);
+                    if ($para != 'all') {
+                        $search .= " OR id IN ({$para}) "; //如果以后需要加强字段搜索，就在这里添加代码。
                     }
                 }
 
-                //商城規格 价格 筛选
+               //商城规格 价格 筛选
                 if ($this->module == 'product' || strstr($this->module, 'product')) {
-                    if ($type['specv']['status'] && $type['specv']['info'] && $_M['config']['shopv2_open'] && $_M['config']['shopv2_para'] || ($_M['form']['price_low'] || $_M['form']['price_top'])) {
-                        $specv_sql = load::app_class("shop/include/class/shop_search", "new")->get_search_list_by_specv_sql($type['specv']['info']);
+                    if ($cond['specv']['status'] && $cond['specv']['info'] && $_M['config']['shopv2_open'] && $_M['config']['shopv2_para'] || ($_M['form']['price_low'] || $_M['form']['price_top'])) {
+                        $specv_sql = load::app_class("shop/include/class/shop_search", "new")->get_search_list_by_specv_sql($cond['specv']['info']);
                         if ($specv_sql) {
-                            $search .= " OR id in ({$specv_sql}) ";//如果以后需要加强字段搜索，就在这里添加代码。
+                            $search .= " OR id IN ({$specv_sql}) ";//如果以后需要加强字段搜索，就在这里添加代码。
                         }
                     }
                 }
@@ -190,7 +181,7 @@ class base_database extends database
                 }
             }
         } else {
-            if ($type == 'com') {
+            if ($cond == 'com') {
                 $sql .= 'AND com_ok = 1 ';
             }
         }
@@ -241,7 +232,7 @@ class base_database extends database
             $order = $order ? $order : $defult_order;
             $order_sql .= $this->get_column_order($order);
         }
-        $plugin['type'] = $type;
+        $plugin['type'] = $cond;
         $plugin_order = load::plugin('list_order', $plugin); //商城这里加插件，当前代码只作演示用，开发商城的时候，需要根据实际情况修改。
         $sql .= $plugin_order ? $plugin_order : $order_sql;
 

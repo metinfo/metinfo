@@ -41,7 +41,9 @@ class register extends userweb
         if ($_M['user']['id']) {
             okinfo($_M['url']['user_home']);
         }
-
+        $this->add_input('page_keywords', $_M['config']['met_keywords']);
+        $this->add_input('page_description', $_M['config']['met_description']);
+        $this->add_input('page_title', $_M['word']['memberReg'] . $this->input['page_title']);
         $this->view('app/register', $this->input);
     }
 

@@ -2,7 +2,7 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$checkbox_time=time();
+$checkbox_time = time();
 ?>
 <form method="POST" action="{$url.own_name}c=online&a=doSaveSetup" data-submit-ajax='1'>
     <div class="metadmin-fmbx">
@@ -72,13 +72,13 @@ $checkbox_time=time();
                 <label class='form-control-label'>{$word.choice_style}</label>
             </dt>
             <dd class="d-flex">
-                <select name="met_online_skin" class="form-control float-none">
+                <select name="met_online_skin" class="form-control float-none" data-checked="{$data.handle.met_online_skin}">
                     <list data="$data['handle']['online_skin_options']">
                         <option value="{$val.value}" data-view="{$val.view}">{$val.name}</option>
                     </list>
                 </select>
-                <a href="{$data['handle']['online_skin_options'][0]['view']}" title="{$word.clickview}" target="_blank" class="d-block ml-3">
-                    <img src="{$data['handle']['online_skin_options'][0]['view']}" height="300" />
+                <a href="{$data['handle']['online_skin_view']}" title="{$word.clickview}" target="_blank" class="d-block ml-3">
+                    <img src="{$data['handle']['online_skin_view']}" height="300" />
                 </a>
             </dd>
         </dl>

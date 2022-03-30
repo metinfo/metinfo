@@ -249,13 +249,11 @@ class common
             $_M['table'] = $tables;
         }
 
-        $_M['config']['met_webkeys'] = trim(file_get_contents(PATH_WEB . '/config/config_safe.php'));
-        $_M['config']['met_webkeys'] = str_replace(' ', '', $_M['config']['met_webkeys']);
-        $_M['config']['met_webkeys'] = str_replace('<?php/*', '', $_M['config']['met_webkeys']);
-        $_M['config']['met_webkeys'] = str_replace('*/?>', '', $_M['config']['met_webkeys']);
+        $met_webkeys = trim(file_get_contents(PATH_WEB . '/config/config_safe.php'));
+        $_M['config']['met_webkeys'] = str_replace(array('<?php ','/','*','?>'), '', $met_webkeys);
         if (!preg_match('/^[0-9A-Za-z]{32}$/', $_M['config']['met_webkeys'])) {
             $_M['config']['met_webkeys'] = random(32);
-            file_put_contents(PATH_WEB . '/config/config_safe.php', "<?php/*{$_M['config']['met_webkeys']}*/?>");
+            file_put_contents(PATH_WEB . '/config/config_safe.php', "<?php /*{$_M['config']['met_webkeys']}*/?>");
         }
 
         // 获取接口地址
@@ -363,11 +361,12 @@ class common
         $_M['config']['met_weburl'] = sqlinsert($_M['config']['met_weburl']);
         $_M['url']['web_site'] = $_M['config']['met_weburl'];
 
+        $url_site = addslashes($_M['url']['web_site']);
         if ($_M['form']['lang']) {
-            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$_M['url']['web_site']}' AND lang = '{$_M['form']['lang']}'";
+            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$url_site}' AND lang = '{$_M['form']['lang']}'";
             $lang = DB::get_one($query);
         } else {
-            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$_M['url']['web_site']}'";
+            $query = "SELECT * FROM {$_M['table']['lang']} WHERE link = '{$url_site}'";
             $lang = DB::get_one($query);
         }
 
@@ -399,8 +398,24 @@ class common
         $this->load_url_unique();
         // 如果是后台，路径不影响，是前台就就成相对路径
         $_M['url']['site'] = '../';
-        if (($_M['form']['search'] == 'tag' || @$_GET['search'] == 'tag') && $_M['config']['met_pseudo']) {
-            $_M['url']['site'] = '../../';
+        self::tagsUrlReplace();
+    }
+
+    /**
+     * 集合标签页面url路径替换
+     */
+    protected function tagsUrlReplace()
+    {
+        global $_M;
+        if (($_M['form']['search'] == 'tag' || @$_GET['search'] == 'tag') ) {
+            $tags_label = load::sys_class('label', 'new')->get('tags');
+            if (method_exists($tags_label, 'getUrlType')) {
+                $type = $tags_label->getUrlType();
+                if ($type == 2) {
+                    $_M['url']['site'] = '../../';
+                }
+            }
+            return;
         }
     }
 
@@ -661,10 +676,9 @@ class common
                 $_M['url']['site'] = '';
             } else {
                 $_M['url']['site'] = '../';
-                if (($_M['form']['search'] == 'tag' || @$_GET['search'] == 'tag') && $_M['config']['met_pseudo']) {
-                    $_M['url']['site'] = '../../';
-                }
+                self::tagsUrlReplace();
             }
+
             foreach ($_M['url'] as $key => $value) {
                 if ($key != 'web_site' && strpos($value, $_M['url']['web_site']) === 0) {
                     $_M['url'][$key] = str_replace($_M['url']['web_site'], $_M['url']['site'], $value);
@@ -682,7 +696,7 @@ class common
     {
         global $_M;
         //读取缓冲区数据
-        //#$admin_url = $_M['url']['site_admin'];
+        //$admin_url = $_M['url']['site_admin'];
         $output = str_replace(array('<!--<!---->', '<!---->', '<!--fck-->', '<!--fck', 'fck-->', '', "\r", substr($admin_url, 0, -1)), '', ob_get_contents());
         ob_end_clean(); //清空缓冲区
         echo $output; //输出内容

@@ -61,9 +61,9 @@ $data['module_imgdetail_y']=$c['met_'.$data['module_name'].'detail_y'];
 				<label class='form-control-label'>{$word.thumb_size_list}</label>
 			</dt>
 			<dd class="form-group">
-				<input type="text" name="thumb_list_x" value="{$data.thumb_list.0}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_list_default.0}" class="form-control w-a">
+				<input type="number" min="0" max="1500" name="thumb_list_x" value="{$data.thumb_list.0}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_list_default.0}" class="form-control w-a text-center">
 				<span class="float-left text-help text-muted mx-2">x</span>
-				<input type="text" name="thumb_list_y" value="{$data.thumb_list.1}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_list_default.1}" class="form-control w-a">
+				<input type="number" min="0" max="1000" name="thumb_list_y" value="{$data.thumb_list.1}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_list_default.1}" class="form-control w-a text-center">
 				<span class="text-help ml-2">{$word.setimgWidth}x{$word.setimgHeight}({$word.setimgPixel})</span>
 			</dd>
 		</dl>
@@ -73,9 +73,9 @@ $data['module_imgdetail_y']=$c['met_'.$data['module_name'].'detail_y'];
 				<label class='form-control-label'>{$word.thumb_size_showpage}</label>
 			</dt>
 			<dd class="form-group">
-				<input type="text" name="thumb_detail_x" value="{$data.thumb_detail.0}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_detail_default.0}" class="form-control w-a">
+				<input type="number" min="0" max="1500" name="thumb_detail_x" value="{$data.thumb_detail.0}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_detail_default.0}" class="form-control w-a text-center">
 				<span class="float-left text-help text-muted mx-2">x</span>
-				<input type="text" name="thumb_detail_y" value="{$data.thumb_detail.1}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_detail_default.1}" class="form-control w-a">
+				<input type="number" min="0" max="1000" name="thumb_detail_y" value="{$data.thumb_detail.1}" placeholder="{$word.default_values}{$word.marks}{$data.thumb_detail_default.1}" class="form-control w-a text-center">
 				<span class="text-help ml-2">{$word.setimgWidth}x{$word.setimgHeight}({$word.setimgPixel})</span>
 			</dd>
 		</dl>
@@ -87,7 +87,7 @@ $data['module_imgdetail_y']=$c['met_'.$data['module_name'].'detail_y'];
 				<label class='form-control-label'>{$word.unitytxt_42}</label>
 			</dt>
 			<dd class="form-group">
-				<input type="text" name="list_length" value="{$data.list_length}" placeholder="{$word.default_values}{$word.marks}{$data.list_length_default}" class="form-control w-a">
+				<input type="number" min="1" max="9999" name="list_length" value="{$data.list_length}" placeholder="{$word.default_values}{$word.marks}{$data.list_length_default}" class="form-control w-a text-center">
 			</dd>
 		</dl>
 		</if>

@@ -34,7 +34,8 @@
                     </button>
                     </if>
                 </div>
-                <div class="collapse navbar-collapse navbar-collapse-toolbar pull-md-right p-0" id='met-head-user-collapse'>
+
+                <div class="navbar-collapse-toolbar pull-md-right p-0 collapse" id='met-head-user-collapse'>
                     <if value="$c['met_member_register']">
                     <if value="$user">
                     <ul class="navbar-nav pull-md-right vertical-align p-l-0 m-b-0 met-head-user" m-id="member" m-type="member">
@@ -91,7 +92,7 @@
                     </if>
                     </if>
                 </div>
-                <div class="collapse navbar-collapse navbar-collapse-toolbar pull-md-right p-0" id="met-nav-collapse">
+                <div class="navbar-collapse-toolbar pull-md-right p-0 collapse" id="met-nav-collapse">
                     <ul class="nav navbar-nav navlist">
                         <li class='nav-item'>
                             <a href="{$c.index_url}" title="{$word.home}" class="nav-link
@@ -183,7 +184,7 @@
 
                                     </lang>
                                     <if value="$sub gt 2">
-                                    <ul class="dropdown-menu dropdown-menu-left animate animate-reverse" id="met-langlist-dropdown" role="menu">
+                                    <ul class="dropdown-menu dropdown-menu-left mb-animate-reverse animate animate-reverse" id="met-langlist-dropdown" role="menu">
                                         <lang>
                                         <if value="$data['lang'] neq $v['mark']">
 

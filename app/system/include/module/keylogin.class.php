@@ -24,7 +24,6 @@ class keylogin extends web
             //$_M['form']['loginpass']服务器返回用于登录的用户后台的账号密码MD5，如md5(md5(admin123456))
             //验证账号，密码进行登录
             $this->login($admin);
-            $this->modify_weburl();
             header("location:../{$_M['config']['met_adminfile']}/index.php?lang=" . $_M['config']['met_index_type']);
         } else {
             if ($this->sendmetmd5_error == -2) {
@@ -99,28 +98,6 @@ class keylogin extends web
         $auth = authcode("{$admin[admin_id]}\t{$admin[admin_pass]}", 'ENCODE', $_M['config']['met_webkeys'] . $met_key, 86400);
         setcookie("met_auth", $auth, 0, '/');
         setcookie("met_key", $met_key, 0, '/');
-    }
-
-    function modify_weburl()
-    {
-        global $_M;
-        if (!strstr($_M['config']['met_weburl'], str_replace('www.', '', HTTP_HOST))) {
-            /*网址修改*/
-            $met_weburl = "http://" . HTTP_HOST . '/';
-            $query = "UPDATE {$_M['table']['config']} set value='{$met_weburl}' WHERE name='met_weburl'";
-            DB::query($query);
-            /*语言网址修改*/
-            $query = "UPDATE {$_M['table']['lang']} SET met_weburl = '{$met_weburl}'";
-            DB::query($query);
-            /*重新生成404*/
-            $gent = "{$_M['url']['site']}include/404.php?lang={$_M['config']['met_index_type']}&metinfonow={$_M['config']['met_member_force']}";
-            load::sys_class('curl');
-            $curl = new curl();
-            $curl->set('host', $_M['url']['site']);
-            $curl->set('file', "include/404.php?lang={$_M['config']['met_index_type']}&metinfonow={$_M['config']['met_member_force']}");
-            $curl->curl_post();
-        }
-        deldir(PATH_WEB . 'cache', 1);
     }
 }
 

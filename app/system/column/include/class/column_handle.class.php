@@ -315,10 +315,11 @@ class column_handle extends handle
     /**********URL处理************/
     /**
      * 获取url
-     * @param  array $content 单个栏目数据
-     * @return array            处理过后的栏目数组
+     * @param $content
+     * @param string $type
+     * @return array
      */
-    public function get_content_url($content, $type = '')
+    public function get_content_url($content, $url_type = '')
     {
         global $_M;
         if ($content['out_url']) {
@@ -327,31 +328,34 @@ class column_handle extends handle
             if ($_M['config']['met_index_type'] == $content['lang'] && ($content['releclass'] || $content['samefile'])) {
                 return $this->url_transform($content['foldername'] . '/', $content['lang']);
             } else {
-                return $this->url_full($content, $type);
+                return $this->url_full($content, $url_type);
             }
         }
     }
 
     /**
-     * 处理栏目数组
-     * @param  array $content 单个栏目数据
-     * @return array            处理过后的栏目数组
+     * @param $content
+     * @param string $type
+     * @return array|mixed|string
      */
-    public function url_full($content, $type = '')
+    public function url_full($content, $url_type = '')
     {
         global $_M;
         $page_type = $content['module'] == 1 ? 0: 1;//内容页面
         //$type = $content['isshow'] == 0 ? 1: $type;
 
-        $type = $this->url_type($type, $page_type);
-        if ($type == 2) {
-            return $this->url_pseudo($content);
-        } else if ($type == 3) {
-            return $this->url_static($content);
-        } else {
-            return $this->url_dynamic($content);
-        }
+        $url_type = $this->url_type($url_type, $page_type);
 
+        switch ($url_type) {
+            case 1:
+                return $this->url_dynamic($content);
+            case 2:
+                return $this->url_pseudo($content);
+            case 3:
+                return $this->url_static($content);
+            default:
+                return $this->url_dynamic($content);
+        }
     }
 
     /**
@@ -500,14 +504,15 @@ class column_handle extends handle
     {
         global $_M;
         $url = '';
+        $m_arr = array(2, 3, 4, 5, 6, 7);
         if ($content['filename']) {
-            if (in_array($content['module'],array(2,3,4,5,6))) {
+            if (in_array($content['module'],$m_arr)) {
                 $url .= 'list-' . $content['filename'];
             }else{
                 $url .= $content['filename'];
             }
         } else {
-            if (in_array($content['module'],array(2,3,4,5,6))) {
+            if (in_array($content['module'],$m_arr)) {
                 $url .= 'list-' . $content['id'];
             }
             if ($content['module'] == 1) {

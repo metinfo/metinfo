@@ -5,8 +5,6 @@ defined('IN_MET') or exit('No permission');
 $basic_admin_js_time = filemtime(PATH_PUBLIC_WEB.'js/basic_admin.js');
 $lang_json_admin_js_time = filemtime(PATH_WEB.'cache/lang_json_admin_'.$_M['lang'].'.js');
 if(!$foot_no && !$_M['foot_no']){
-	$foot = str_replace('$metcms_v',$c['metcms_v'], $c['met_agents_copyright_foot']);
-	$foot = str_replace('$m_now_year',date('Y',time()), $foot);
 ?>
 </div>
 <?php } ?>

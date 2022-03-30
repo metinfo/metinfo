@@ -224,6 +224,12 @@ class thumb
         if ($org_info['mime'] == 'image/bmp') {//bmp图无法压缩
             return $this->error($_M['word']['upfileFail5']);
         }
+
+        if ($_M['config']['met_wate_img_gif_hold'] == 1  && $org_info['mime'] == 'image/gif') {//gif
+            $img_path = str_replace(PATH_WEB, '', $thumb_src_image);
+            return $this->sucess($img_path);
+        }
+
         if (!$this->check_img_function($org_info[2])) {
             return $this->error($_M['word']['upfileFail6']);
         }
@@ -329,7 +335,7 @@ class thumb
                 break;
             case 'image/x-png':
             case 'image/png':
-                if (function_exists('imagejpeg')) {
+                if (function_exists('imagepng')) {
                     $re = imagepng($img_thumb, $thumbname);
                 } else {
                     return $this->error($_M['word']['upfileFail11']);

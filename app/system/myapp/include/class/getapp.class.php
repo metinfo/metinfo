@@ -6,7 +6,6 @@ defined('IN_MET') or exit('No permission');
 
 class getapp
 {
-    public $app_anyid = 44;
     public $power;
 
     public function __construct()
@@ -27,39 +26,8 @@ class getapp
     public function get_app()
     {
         global $_M;
-        //$app_in = $this->get_inapp();
         $app_out = $this->get_outapp();
-        if ($app_out && $app_in) {
-            return array_merge($app_in, $app_out);
-        } else {
-            if ($app_in) {
-                return $app_in;
-            }
-            if ($app_out) {
-                return $app_out;
-            }
-        }
-    }
-
-    public function get_inapp()
-    {
-        global $_M;
-        $query = "SELECT * FROM {$_M['table']['admin_column']} WHERE bigclass='{$this->app_anyid}'";
-        $result = DB::query($query);
-        while ($list = DB::fetch_array($result)) {
-            if (!$this->have_power($list['field'])) {
-                continue;
-            }
-
-            if ($list['field'] == 1006) {
-                continue;
-            }
-
-            $list = $this->standard($list);
-            $app[$list['field']] = $list;
-        }
-
-        return $app;
+        return $app_out;
     }
 
     public function get_outapp()
@@ -82,7 +50,7 @@ class getapp
     {
         global $_M;
         if ($no < 2000) {
-
+            return false;
         } else {
             $query = "SELECT * FROM {$_M['table']['applist']} WHERE no='{$no}'";
             $app = DB::get_one($query);
@@ -107,7 +75,7 @@ class getapp
                 $list['appname'] = get_word($list['name']);
                 $list['m_name'] = $list['field'];
                 $list['url'] = "{$_M['url']['site_admin']}{$list['url']}&lang={$_M['lang']}";
-                $list['ico'] = "{$_M['url']['tem']}myapp/images/{$list[icon]}";
+                $list['ico'] = "{$_M['url']['tem']}myapp/images/{$list['icon']}";
             } else {
                 $list['appname'] = get_word($list['name']);
                 $list['m_name'] = $list['file'];

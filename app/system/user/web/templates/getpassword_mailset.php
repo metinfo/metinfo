@@ -19,7 +19,7 @@ $data['page_title']=$_M['word']['getTip5'].$data['page_title'];
 				data-fv-identical-field="confirmpassword"
 				data-fv-identical-message="{$_M['word']['passwordsame']}"
 				data-fv-stringlength="true"
-				data-fv-stringlength-min="3"
+				data-fv-stringlength-min="6"
 				data-fv-stringlength-max="30"
 				data-fv-stringlength-message="{$_M['word']['passwordcheck']}"
 				>

@@ -48,7 +48,7 @@ $area=array(
             </dt>
             <dd>
                 <div class="form-group clearfix">
-                    <textarea name="description" rows="5" class="form-control mr-2">{$data.description}</textarea>
+                    <textarea name="description" rows="5" class="form-control">{$data.description}</textarea>
                     <span class="text-help ml-2">{$word.admin_tag_setting7}</span>
                 </div>
             </dd>

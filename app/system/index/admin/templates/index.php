@@ -91,7 +91,7 @@ $html_class.=' met-admin';
 		<?php
         $lang_name = $_M['langlist']['web'][$_M['lang']]['name'];
 		?>
-		<header class="metadmin-head navbar bg-white px-0 py-3">
+		<header class="metadmin-head navbar bg-white px-0 py-3" style="z-index: 1001;">
 			<div class="container-fluid px-4">
 				<div>
 			        <div class="breadcrumb mb-0 p-0 d-none d-md-flex bg-none float-left mt-1 metadmin-breadcrumb">

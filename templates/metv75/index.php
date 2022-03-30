@@ -154,11 +154,11 @@
 
                                 <li class="invisible" data-plugin="appear" data-animate="slide-bottom" data-repeat="false">
                                     <a class="media media-lg flex" href="{$v.url}" title="{$v.title}" {$g.urlnew}>
-                                        
+
                                         <div class="media-left">
                                             {$v._index}
                                         </div>
-                                        
+
                                         <div class="media-body">
                                             <h4 class="media-heading m-b-10">{$v.title}</h4>
                                             <p class="info m-b-8">
@@ -174,32 +174,32 @@
             <else />
                 <!-- 有图风格 -->
                 <div class="text-xs-left m-t-30 index-news-list">
-                    
+
                     <div class="left_box">
                         <tag action="list" cid="$lang['home_news1']" num="1" type="$lang['home_news_type']">
-                            <if value="$v['_index'] eq 0">     
+                            <if value="$v['_index'] eq 0">
                                 <a class="itembox" href="{$v.url}" title="{$v.title}" {$g.urlnew}>
                                     <div class="imgbox">
                                         <img class="" src="{$v.imgurl|thumb:$lang['home_product_img_w1'],$lang['home_product_img_h1']}" alt="{$v.title}">
-                                    </div> 
+                                    </div>
                                     <div class="textbox">
                                         <h4 class="">{$v.title}</h4>
                                     </div>
                                 </a>
-                                
+
                             </if>
-                        </tag> 
+                        </tag>
                     </div>
 
                     <div class="right_box">
                         <tag action="list" cid="$lang['home_news1']" num="4" type="$lang['home_news_type']">
                             <if value="$v['_index'] neq 0">
                                 <a class="media media-lg" href="{$v.url}" title="{$v.title}" {$g.urlnew}>
-                                    <div class="imgbox">
+                                    <div class="imgbox col-md-4">
                                         <img class="" src="{$v.imgurl|thumb:$lang['home_product_img_w'],$lang['home_product_img_h']}" alt="{$v.title}">
                                     </div>
-                                    
-                                    <div class="">
+
+                                    <div class="col-md-8">
                                         <h4 class=" m-b-10"> {$v.title} </h4>
                                         <p class="info">
                                             <span>{$v.updatetime}</span>
@@ -208,11 +208,11 @@
                                     </div>
                                 </a>
                             </if>
-                        </tag>    
+                        </tag>
                     </div>
-                                                
-                              
-                    
+
+
+
                 </div>
             </if>
 

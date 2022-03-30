@@ -39,14 +39,15 @@
 				$metpagerbtn.removeClass('disabled').find('.fa-refresh').remove();
 				$metpagerbtn.find('.wb-chevron-down').show();
 				if(pagemax){
-					if(pagemax==page) $metpagerbtn.attr({hidden:''})/*addClass('disabled').text('已经是最后一页了')*/;
+					if(pagemax==page) $metpagerbtn.attr({hidden:''}).addClass('disabled').text('已经是最后一页了');
 				}else{
 					$metpagerbtn.attr({hidden:''});
 				}
 			};
 		metpagerbtnText();
 		!pageurl_str && (pageurl_str=$Ahover.prev().attr('href'));
-		!pageurl_str && (pageurl_str=$Ahover.attr('href'));
+		if(!pageurl_str) return;
+		// !pageurl_str && (pageurl_str=$Ahover.attr('href'));
 		pageurl_str.indexOf('.php')>0 && (pageurl_str+=(pageurl_str.indexOf('.php?')>0?'&':'?')+'page=');
 		$metpagerbtn.click(function(){
 			if(!$metpagerbtn.hasClass('disabled')){

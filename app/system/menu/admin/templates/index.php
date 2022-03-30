@@ -7,7 +7,7 @@ if($data['handle']){
 	unset($data['handle']);
 }
 $table_order='bottommenu-list';
-$colspan=8;
+$colspan=9;
 ?>
 <div class='alert alert-primary'>{$word.admin_menu1}</div>
 <div class="metadmin-content-min bg-white p-4">
@@ -18,7 +18,10 @@ $colspan=8;
 				<include file="pub/content_list/checkall_all"/>
 				<th width="150">{$word.button_text}</th>
 				<th>{$word.parameter10}</th>
-				<th width="150" data-table-columnclass="text-center">{$word.onlineimg}</th>
+				<!-- <th>{$word.parameter10}/{$word.account}</th> -->
+				<!-- <th width="80" data-table-columnclass="text-center">{$word.linkType}</th> -->
+				<th width="100" data-table-columnclass="text-center">{$word.onlineimg}</th>
+				<th width="50" data-table-columnclass="text-center">{$word.open_mode}</th>
 				<th width="100" data-table-columnclass="text-center" class="text-wrap">{$word.button_color}</th>
 				<th width="100" data-table-columnclass="text-center" class="text-wrap">{$word.text_color}</th>
 				<th width="50" data-table-columnclass="text-center">{$word.skinusenow}</th>
@@ -51,8 +54,25 @@ $colspan=8;
 							<td>
 								<input type="text" name="url" class="form-control">
 							</td>
+							<!-- <td class="text-center">
+								<select name="type" class="form-control w-auto d-inline-block">
+									<option value=''>普通链接</option>
+									<option value='tel'>{$word.parameter8}</option>
+									<option value='sms'>{$word.short_message}</option>
+									<option value='email'>{$word.mailbox}</option>
+									<option value='qq'>{$word.common_qq}</option>
+									<option value='qyqq'>{$word.enterprise_qq}</option>
+									<option value='wechat'>添加微信好友</option>
+								</select>
+							</td> -->
 							<td class="text-center">
 								<input type="hidden" name="icon" data-plugin="iconset" data-btn_size="sm" data-icon_class="mb-1 mr-0" class="form-control">
+							</td>
+							<td class="text-center">
+								<select name="target" class="form-control w-auto d-inline-block">
+									<option value="0">{$word.original_window}</option>
+									<option value="1">{$word.new_window}</option>
+								</select>
 							</td>
 							<td class="text-center">
 								<input type="text" name="but_color" data-plugin='minicolors' class="form-control">
@@ -61,7 +81,7 @@ $colspan=8;
 								<input type="text" name="text_color" data-plugin='minicolors' class="form-control">
 							</td>
 							<td class="text-center">
-								<select name="enabled" class="form-control">
+								<select name="enabled" class="form-control w-auto d-inline-block">
 									<option value="1">{$word.yes}</option>
 									<option value="0">{$word.no}</option>
 								</select>

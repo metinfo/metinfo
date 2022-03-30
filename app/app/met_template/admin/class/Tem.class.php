@@ -62,23 +62,34 @@ class Tem
             error('模板配置文件不正确');
         }
 
-        foreach ($config['page'] as $page) {
-            foreach ($page as $key => $val) {
-                $ui = $val;
-                $ui['skin_name'] = $skin_name;
-                $ui['ui_installtime'] = $val['ui_edittime'] = time();
-                $query = "SELECT * FROM {$_M['table']['ui_list']} WHERE installid = '{$val['installid']}' AND parent_name = '{$val['parent_name']}' AND ui_name = '{$val['ui_name']}' AND skin_name = '{$skin_name}'";
-                $has = DB::get_one($query);
-                if (!$has) {
-                    unset($ui['config']);
-                    DB::insert($_M['table']['ui_list'], $ui);
-                    foreach ($val['config'] as $c) {
-                        $c['skin_name'] = $skin_name;
-                        $c['lang'] = $_M['lang'];
-                        $query = "SELECT * FROM {$_M['table']['ui_config']} WHERE pid = '{$c['pid']}' AND parent_name = '{$c['parent_name']}' AND ui_name = '{$c['ui_name']}' AND skin_name = '{$skin_name}' AND lang = '{$_M['lang']}'";
-                        $hasConfig = DB::get_one($query);
-                        if (!$hasConfig) {
-                            DB::insert($_M['table']['ui_config'], $c);
+        //多语言模板启用状态
+        $sql = "SELECT * FROM {$_M['table']['config']} WHERE name = 'met_skin_user'";
+        $skin_name_set = DB::get_all($sql);
+
+        foreach ($skin_name_set as $set_row) {
+            if ($set_row['value'] != $skin_name) {
+                continue;
+            }
+
+            foreach ($config['page'] as $page) {
+                foreach ($page as $key => $val) {
+                    $ui = $val;
+                    $ui['skin_name'] = $skin_name;
+                    $ui['ui_installtime'] = $val['ui_edittime'] = time();
+                    $query = "SELECT * FROM {$_M['table']['ui_list']} WHERE installid = '{$val['installid']}' AND parent_name = '{$val['parent_name']}' AND ui_name = '{$val['ui_name']}' AND skin_name = '{$skin_name}'";
+                    $has = DB::get_one($query);
+                    if (!$has) {
+                        unset($ui['config']);
+                        DB::insert($_M['table']['ui_list'], $ui);
+                        foreach ($val['config'] as $c) {
+                            $c['skin_name'] = $skin_name;
+                            $c['lang'] = $set_row['lang'];
+
+                            $query = "SELECT * FROM {$_M['table']['ui_config']} WHERE pid = '{$c['pid']}' AND parent_name = '{$c['parent_name']}' AND ui_name = '{$c['ui_name']}' AND skin_name = '{$skin_name}' AND lang = '{$set_row['lang']}'";
+                            $hasConfig = DB::get_one($query);
+                            if (!$hasConfig) {
+                                DB::insert($_M['table']['ui_config'], $c);
+                            }
                         }
                     }
                 }
@@ -168,7 +179,6 @@ class Tem
     public function updateUi($skin_name = '', $ui = array())
     {
         global $_M;
-
         $ui_json = PATH_WEB . 'templates/' . $skin_name . '/ui/' . $ui['parent_name'] . '/' . $ui['ui_name'] . '/install.json';
 
         if (!file_exists($ui_json)) {
@@ -177,12 +187,12 @@ class Tem
 
         $json = json_decode(file_get_contents($ui_json), true);
 
+        //更新UI信息
         $version = $json['ui']['ui_version'];
         $ui['ui_version'] = $version;
-
         $query = "SELECT * FROM {$_M['table']['ui_list']} WHERE skin_name = '{$skin_name}' AND parent_name = '{$ui['parent_name']}' AND ui_name= '{$ui['ui_name']}'";
-
         $has = DB::get_one($query);
+
 
         if ($has) {
             $query = "UPDATE {$_M['table']['ui_list']} SET ui_version='{$ui['ui_version']}' WHERE parent_name = '{$ui['parent_name']}' AND ui_name='{$ui['ui_name']}' AND skin_name = '{$skin_name}'";
@@ -192,19 +202,29 @@ class Tem
             $pid = $ui['installid'];
         }
 
-        foreach ($json['config'] as $key => $val) {
-            $query = "SELECT * FROM {$_M['table']['ui_config']} WHERE uip_key = '{$val['uip_key']}' AND parent_name = '{$val['parent_name']}' AND ui_name = '{$val['ui_name']}' AND skin_name = '{$skin_name}' AND pid = {$pid} AND lang = '{$_M['lang']}'";
-            $uiconfig = DB::get_one($query);
-            if ($uiconfig) {
-                $query = "UPDATE {$_M['table']['ui_config']} SET uip_type='{$val['uip_type']}',uip_name='{$val['uip_name']}',uip_title='{$val['uip_title']}',uip_order={$val['uip_order']},uip_select='{$val['uip_select']}',uip_hidden='{$val['uip_hidden']}',uip_default='{$val['uip_default']}',lang='{$_M['lang']}',uip_description='{$val['uip_description']}' WHERE id = {$uiconfig['id']}";
-                DB::query($query);
-            } else {
-                $val['lang'] = $_M['lang'];
-                $val['skin_name'] = $skin_name;
-                $val['pid'] = $pid;
-                $row = DB::insert($_M['table']['ui_config'], $val);
-                if (!$row) {
-                    return DB::error();
+        //按语言更新使用该模板的UI配置
+        $sql = "SELECT * FROM {$_M['table']['config']} WHERE name = 'met_skin_user'";
+        $skin_name_set = DB::get_all($sql);
+        foreach ($skin_name_set as $set_row) {
+            if ($set_row['value'] != $skin_name) {
+                continue;
+            }
+
+            foreach ($json['config'] as $key => $val) {
+                $query = "SELECT * FROM {$_M['table']['ui_config']} WHERE uip_key = '{$val['uip_key']}' AND parent_name = '{$val['parent_name']}' AND ui_name = '{$val['ui_name']}' AND skin_name = '{$skin_name}' AND pid = '{$pid}' AND lang = '{$set_row['lang']}'";
+                $uiconfig = DB::get_one($query);
+
+                if ($uiconfig) {//更新UI配置
+                    $query = "UPDATE {$_M['table']['ui_config']} SET uip_type='{$val['uip_type']}',uip_name='{$val['uip_name']}',uip_title='{$val['uip_title']}',uip_order={$val['uip_order']},uip_select='{$val['uip_select']}',uip_hidden='{$val['uip_hidden']}',uip_default='{$val['uip_default']}',uip_description='{$val['uip_description']}' WHERE id = {$uiconfig['id']}";
+                    DB::query($query);
+                } else {//新增UI配置
+                    $val['lang'] = $set_row['lang'];
+                    $val['skin_name'] = $skin_name;
+                    $val['pid'] = $pid;
+                    $row = DB::insert($_M['table']['ui_config'], $val);
+                    if (!$row) {
+                        return DB::error();
+                    }
                 }
             }
         }
@@ -593,12 +613,15 @@ class Tem
                 $query = "SELECT * FROM {$_M['table']['config']} WHERE name = 'metcms_v'";
                 $config = DB::get_one($query);
                 if(version_compare($config['value'], $version,'<')){
-                #if ($config['value'] != $version) {
+                    #if ($config['value'] != $version) {
                     $update_database->update_system($version);
                 } else {
+                    //对比数据库
                     $update_database->diff_fields($version);
                     $update_database->alter_table($version);
+                    //恢复用户数据
                     $update_database->recovery_data();
+                    //注册数据表
                     $update_database->table_regist($version);
                 }
 

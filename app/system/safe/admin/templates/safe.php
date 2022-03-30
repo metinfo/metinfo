@@ -4,8 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-safe-set">
-  <form method="POST" action="{$url.own_name}c=index&a=doSaveSetup" class="info-form" data-submit-ajax="1"
-    id="safe-form" data-validate_order="#safe-form">
+  <form method="POST" action="{$url.own_name}c=index&a=doSaveSetup" class="info-form" data-submit-ajax="1">
     <div class="metadmin-fmbx">
       <h3 class="example-title">{$word.safety_efficiency}</h3>
       <dl>
@@ -128,6 +127,50 @@ defined('IN_MET') or exit('No permission');
           </div>
         </dd>
       </dl>
+     <!--信息安全声明-->
+      <h3 class="example-title">{$word.info_security_statement}</h3>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.info_security_statement_switch}</label>
+            </dt>
+            <dd>
+                <div class="form-group clearfix">
+                    <input type="checkbox" data-plugin="switchery" name="met_info_security_statement_open" value="0" />
+                    <span class="text-help ml-2">{$word.info_security_statement_tips1}</span>
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.info_security_statement_title}</label>
+            </dt>
+            <dd>
+                <div class="form-group clearfix">
+                    <input type="text" name="met_info_security_statement_title" class="form-control" />
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.info_security_statement_modal_title}</label>
+            </dt>
+            <dd>
+                <div class="form-group clearfix">
+                    <input type="text" name="met_info_security_statement_modal_title" class="form-control" />
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>
+                <label class="form-control-label">{$word.info_security_statement_content}</label>
+            </dt>
+            <dd>
+                <div class='form-group clearfix'>
+                    <textarea name="met_info_security_statement_content" data-plugin='editor' data-editor-y='100' hidden></textarea>
+                </div>
+            </dd>
+        </dl>
+        <!--/信息安全声明-->
       <h3 class="example-title">{$word.fdincSlash}</h3>
       <dl>
         <dt>

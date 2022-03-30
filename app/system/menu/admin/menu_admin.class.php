@@ -55,6 +55,7 @@ class menu_admin extends admin
                     $info['enabled'] = $form['enabled-' . $id];
                     $info['no_order'] = $form['no_order-' . $id];
                     $info['lang'] = $_M['lang'];
+                    $info['target'] = $form['target-' . $id];
 
                     if (is_numeric($id)) {
                         $this->updateMenu($id, $info);

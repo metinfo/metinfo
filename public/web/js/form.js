@@ -43,9 +43,32 @@ $(function(){
         src=src.indexOf('&random')>0?src.split('&random')[0]:src;
         $(this).attr({src:src+'&random='+random}).parents('form').find('input[type="hidden"][name="random"]').val(random);
     });
+    // 来源页面赋值
     var $form_referer=$('form.met-form input[name="referer"][type="hidden"]');
     $form_referer.length && $form_referer.val(location.search.indexOf('fdtitle=')>0?document.referrer:'');
+    // 信息安全声明弹框
+    $('form [data-toggle="modal"][data-target=".info-security-statement-modal"]').click(function(){
+        if(!$('.info-security-statement-modal').length && M.info_security_statement){
+            var html='<div class="modal fade modal-primary info-security-statement-modal">'
+                    +'<div class="modal-dialog modal-center modal-lg">'
+                        +'<div class="modal-content flex" style="flex-direction: column;">'
+                            +'<div class="modal-header">'
+                                +'<button type="button" class="close" data-dismiss="modal" aria-label="Close">'
+                                    +'<span aria-hidden="true">×</span>'
+                                +'</button>'
+                                +'<h4 class="modal-title">'+M.info_security_statement.title+'</h4>'
+                            +'</div>'
+                            +'<div class="modal-body oya" style="flex:1;">'+M.info_security_statement.content+'</div>'
+                        +'</div>'
+                    +'</div>'
+                +'</div>';
+            $('body').append(html);
+            $('.info-security-statement-modal').modal();
+        }
+    });
 });
+(function(){
+var is_web=$('.met-web').length;
 $.fn.extend({
     // 表单验证通用
     validation:function(){
@@ -55,7 +78,7 @@ $.fn.extend({
                 framework:'bootstrap4'
             }),
             order=$(this).attr('data-validate_order');
-        $('[name][data-fv-notempty],[name][required],[name][data-required]',this).parents('.form-group:not(.required)').addClass('required');
+        is_web && $('[name][data-fv-notempty],[name][required],[name][data-required]',this).parents('.form-group:not(.required)').addClass('required');
         function success(fun,afterajax_ok){
             setTimeout(function(){
                 validate[order].ajax_submit=1;
@@ -281,3 +304,4 @@ $.fn.metValidate=function(){
     });
 }
 $(document).metValidate();
+})();

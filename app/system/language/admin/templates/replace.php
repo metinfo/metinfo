@@ -6,7 +6,7 @@
       </dt>
       <dd>
         <div class="form-group clearfix">
-          <textarea name="textarea" rows="30" class="form-control mr-2 w-100" required></textarea>
+          <textarea name="textarea" rows="20" class="form-control w-100" required></textarea>
         </div>
       </dd>
     </dl>

@@ -30,6 +30,7 @@
                                             {value:4,name:METLANG.unitytxt_71},
                                             {value:5,name:'Skype'},
                                             {value:6,name:'Facebook'},
+                                            {value:9,name:'WhatsApp'},
                                             {value:7,name:METLANG.external_links}
                                         ]
                                     }),
@@ -69,6 +70,7 @@
         $td.html(M.component.formWidget({
             name: value_name,
             value: '',
+            placeholder : value == 9?'+86130********':'',
             type: value == 4 ? 'file' : 'text',
             required:1,
             attr:value == 4?'data-drop-zone-enabled="false"':''

@@ -101,7 +101,9 @@ EOT;
             //排序选项
             $order_url = $url;
             if ($_M['form']['content']) {
-                $order_url .= "&content={$_M['form']['content']}";
+//                $order_url .= "&content={$_M['form']['content']}";
+                $content = urlencode($_M['form']['content']);
+                $order_url .= "&content={$content}";
             }
             if ($_M['form']['para']) {
                 $para = urlencode($_M['form']['para']);
@@ -290,6 +292,8 @@ EOT;
         if (isset($_M['form'][$field]) && $_M['form'][$field] != '') {
             $searchword = load::sys_class('label', 'new')->get('tags')->getTagName($_M['form'][$field]);
         }
+        $searchword = stripslashes($searchword);
+        $searchword = htmlspecialchars($searchword);
 
         $search_placeholder = $_M['word']['columnSearchInfo'];//搜索框默认提示的内容
         $class_value = $data['classnow'];//搜索栏目的值
@@ -553,7 +557,7 @@ EOT;
      * 收索列表分页信息
      * @return mixed
      */
-    public function get_page_info_by_class($id = '', $type = '')
+    public function get_page_info_by_class($id = '', $url_type = '')
     {
         global $_M;
         // 搜索列表分页

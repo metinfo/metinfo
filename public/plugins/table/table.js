@@ -2,7 +2,7 @@
  * 表格插件调用功能（需调用datatables插件）
  * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
-(function(){
+ (function(){
     var datatable_langurl= M.url.public_plugins+'datatables/language/';
     // datatable多语言选择
     if("undefined" != typeof M){
@@ -75,9 +75,9 @@
     window.datatableOption=function(obj,datatable_order){
         // 列表class
         var columnDefs=[];
-        obj.find("thead th[data-table-columnclass]").each(function(i){
+        obj.find('thead th[data-table-columnclass]').each(function(i){
             columnDefs.push({
-                className:$(this).attr("data-table-columnclass"),
+                className:$(this).attr('data-table-columnclass'),
                 targets:[$(this).index()]
             })
         });
@@ -150,8 +150,17 @@
                         classname=settings._iDisplayLength>500?'hide':'',
                         pagenum = Math.ceil(json.recordsTotal / settings._iDisplayLength);
                     $wrapper.addClass('clearfix');
-                    $paginate.addClass('float-left').parent().addClass('w-100 '+classname);
-                    if($paginate.length && !$paginate.parent().hasClass('hide')) $(this).addClass('border-bottom').find('tfoot th').addClass('border-none');
+                    for (let index = 1; index < 6; index++) {
+                        var has_class=`mt-${index}`;
+                        if($(this).hasClass(has_class)){
+                            $(this).removeClass(has_class);
+                            $wrapper.addClass(has_class);
+                        }
+                    }
+                    $paginate.addClass('float-left').parent().addClass('w-100 dataTables_footer pb-2 '+classname);
+                    if($paginate.length && !$paginate.parent().hasClass('hide')) $('tfoot',this).addClass('has_other_footer').find('th').addClass('border-none').css({bottom:$wrapper.find('.dataTables_footer').outerHeight()-($wrapper.parents('.modal-body').length?16:0)});
+                    $wrapper.find('thead th,tfoot th,.dataTables_footer').addClass('position-sticky bg-white');
+                    $wrapper.find('.dataTables_footer').addClass('clearfix');
                     $info.addClass('float-right');
                     if(pagenum>2){
                         // 跳转到某页
@@ -159,7 +168,7 @@
                         $paginate.after(gotopage_html);
                         var $gotopage=$paginate.next('.gotopage');
                         $gotopage.find('.gotopage-btn').click(function(event) {
-                            var gotopage=parseInt($gotopage.find('input[name=gotopage]').val());
+                            var gotopage=parseInt($gotopage.find('input[name="gotopage"]').val());
                             if(!isNaN(gotopage)){
                                 if(gotopage>=1&&gotopage<=pagenum){
                                     gotopage--;
@@ -190,8 +199,8 @@
                         $('tbody',this).metCommon();
                     }
                     if($(this).attr('data-scrolltop')!=0){
-                        var this_top=$this_scroll.scrollTop()-$show_body.height();
-                        if($this_scroll.scrollTop()>this_top) $this_scroll.scrollTop(this_top);// 页面滚动回表格顶部
+                        var this_top=$(this).offset().top-$this_scroll.offset().top;
+                        if(this_top<0) $this_scroll.scrollTop($this_scroll.scrollTop()+this_top);// 页面滚动回表格顶部
                     }
                     $(this).removeAttr('data-scrolltop');
                     // $('#'+$(this).attr('id')+'_paginate .paginate_button.active').addClass('disabled');
@@ -256,7 +265,7 @@
                 allid=$form.find('[name="allid"]').val(),
                 data={allid:allid};
             $form.removeAttr('data-submited');
-            if(url?$(this).parents('tbody').length:allid!=''){
+            if(url?($(this).parents('tbody').length?1:allid!=''):allid!=''){
                 if(url.indexOf('&allid=')>0) data={};
                 M.ajax({
                     url: url||$form.attr('action'),
@@ -340,10 +349,8 @@
         $(this).parents('tr').find('[name]').each(function(index, el) {
             data[$(this).attr('name')]=$(this).val();
         });
-        $.ajax({
+        M.ajax({
             url: $(this).data('url'),
-            type: 'POST',
-            dataType: 'json',
             data: data,
             success:function(result){
                 $table.attr({'data-scrolltop':0});

@@ -201,6 +201,15 @@
                     });
                 })(that);
                 $self.find('[name][data-safety]').length && M.load(['blueimp-md5','string-handle']);
+                // 增加必填项样式
+                $(this).attr('data-require-style') && $('.form-group',this).filter(function(){
+                    return $('[required],[data-filerequired]',this).length;
+                }).each(function (index, domEle) {
+                    var $label=$(this).parents('.form-group').find('label.col-form-label');
+                    if(!$label.length && $(this).parents('dl').length) $label=$(this).parents('dl').find('label.form-control-label');
+                    if(!$label.length && $(this).parents('.row:eq(0)').length) $label=$(this).parents('.row:eq(0)').find('.col-form-label');
+                    $label.addClass('position-relative').prepend('<span class="text-danger h4 mb-0 position-absolute" style="top:5px;left:-15px;">*</span>');
+                });
             });
         }
     });

@@ -80,6 +80,7 @@
 							},
 							info_str=info.module+'|'+info.class1+'|'+info.class2+'|'+info.class3;
 						var $info=$list.find('.list-group-item[data-info="'+info_str+'"]');
+						!$info.length && info.module && (info_str=info.module+'|'+info.class2+'|'+info.class3+'|',$info=$list.find('.list-group-item[data-info="'+info_str+'"]'));
 						!$info.length && info.module && ($info=$list.find('.list-group-item[data-info*="'+info.module+'|"]').eq(0));
 						if(!$info.length && !view_type){
 							var default_show_column=getCookie('manage_default_show_column')||'';
@@ -155,7 +156,7 @@
 		}
 	});
 	obj.on('click', '.column-view-list .list-group-item .btn-column-slide', function(event) {
-		$('i',this).toggleClass('rotate180').parents('.list-group-item').next('.subcolumn').slideToggle();
+		$('i',this).toggleClass('fa-rotate-180').parents('.list-group-item').next('.subcolumn').slideToggle();
 		if($(this).parents('.subcolumn:hidden').length) $(this).parents('.subcolumn:eq(0)').prev('a').find('.btn-column-slide').click();
 	});
 	// 编辑、列表页面加载

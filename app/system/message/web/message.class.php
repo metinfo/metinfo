@@ -65,6 +65,13 @@ class message extends web
             if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random'])) {
                 okinfo(-1, $_M['word']['membercode']);
             }
+        } else {
+            if ($_M['config']['met_captcha_open']) {    //图形验证插件
+                $checkCode = load::app_class('met_captcha/include/captcha', 'new')->checkCode($_REQUEST['Ticket'], $_REQUEST['Randst']);
+                if (!$checkCode) {
+                    okinfo(-1, $_M['word']['membercode']);
+                }
+            }
         }
 
         if ($this->checkword() && $this->checktime($conlum_configs) && $this->checkToken($info['id'])) {
@@ -120,7 +127,8 @@ class message extends web
             }
 
             if (strstr($content, $word)) {
-                okinfo('-1', $word);
+                $msg = "{$_M['word']['Feedback3']} [" . $word . "] ";
+                okinfo('-1', $msg);
                 die();
             }
         }
@@ -241,9 +249,7 @@ class message extends web
         }
 
         if (in_array(2, $met_msg_type) && $met_msg_admin_tel) {
-            $str = str_replace("http://", "", $_M['config']['met_weburl']);
-            $strdomain = explode("/", $str);
-            $domain = $strdomain[0];
+            $domain = HTTP_HOST ?: $_M['config']['met_weburl'];
             #$message="您网站[{$domain}]收到了新的留言[{$job_list[position]}]，请尽快登录网站后台查看";
             $message = "{$_M['word']['reMessage1']}[{$domain}]{$_M['word']['messagePrompt']}[{$title}]{$_M['word']['reMessage2']}";
             $met_msg_admin_tel = explode('|', $met_msg_admin_tel);

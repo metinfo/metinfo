@@ -225,9 +225,6 @@ final class met_view
             }
 
             if ($onlyfile) {
-                if($file_info && $file_info[0] && $file_info[0]=='tem_ui'){
-                    return str_replace(PATH_TEM, PATH_ALL_APP.'met_ui/admin/', $file);
-                }
                 if ($file == 'user_sidebar') {
                     $file = PATH_WEB . 'app/system/user/web/templates/sidebar';
                 } else {
@@ -252,6 +249,9 @@ final class met_view
             }
             return $file;
         } else {
+            if($file_info && $file_info[0] && $file_info[0]=='tem_ui'){
+                return str_replace(PATH_TEM, PATH_ALL_APP.'met_ui/admin/', $file);
+            }
             if (strstr($filename, '/')) {
                 return false;
             }

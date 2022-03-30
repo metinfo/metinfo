@@ -15,6 +15,7 @@ class weixinapi
     public $error;
     protected $appid;
     protected $secret;
+    protected $token;
 
     public function __construct()
     {

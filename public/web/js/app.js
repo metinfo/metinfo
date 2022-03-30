@@ -122,6 +122,13 @@ M['n']=getQueryString('n');
 M['c']=getQueryString('c');
 M['a']=getQueryString('a');
 if(!M['url']) M['url']=[];
+if(M['url']['basepath']){
+    var pathname=location.pathname,
+        pathname_array=pathname.split('/');
+    siteurl=M['weburl']=location.origin+(pathname.substring(0,pathname.lastIndexOf('/'+pathname_array[pathname_array.length-2]+'/')+1));
+    basepath=M['url']['basepath']=M['url']['basepath'].replace('../',M['weburl']);
+    M.lazyloadbg=M.lazyloadbg.replace('../',M['weburl']);
+}
 M['url']['admin']=M['url']['basepath'];
 M['url']['system']=M['weburl']+'app/system/';
 M['url']['app']=M['weburl']+'app/app/';
@@ -338,10 +345,8 @@ $.fn.extend({
                 $('.img-library-modal').attr({'data-update':1});
             };
         $(this).each(function(index, el) {
-            if(!(typeof MET['url']['basepath']!='undefined' || (typeof $(this).data('url')!='undefined' && $(this).data('url').indexOf('c=uploadify&m=include&a=dohead')>=0))) return;
-            var $self=$(this),
-                $form_group=$(this).parents('.form-group:eq(0)'),
-                name=$(this).attr('name'),
+            if(!(typeof MET['url']['basepath']!='undefined' || $(this).data('url'))) return;
+            var name=$(this).attr('name'),
                 url=$(this).data('url')||M['url']['system']+'entrance.php?lang='+M['lang']+'&c=uploadify&m=include&a=doupfile&type=1',
                 multiple=typeof $(this).attr('multiple') !='undefined'?true:false,
                 minFileCount=$(this).data('fileinput-minfilecount')||1,
@@ -411,7 +416,7 @@ $.fn.extend({
                 language:typeof M.synchronous!='undefined'?(M.synchronous=='cn'?'zh':'en'):'zh',// 语言文字
                 initialPreview:initialPreview,
                 initialCaption:value,         // 初始化输入框值
-                // showCaption:false,         // 输入框
+                showCaption:false,         // 输入框
                 // showRemove:false,          // 删除按钮
                 // browseLabel:'',            // 按钮文字
                 showUpload:false,             // 上传按钮

@@ -419,7 +419,7 @@ class install
                 $this->error();
             }
             $rand_i = self::met_rand_i(32);
-            file_put_contents('../config/config_safe.php', '<?php/* ' . $rand_i . '*/?>');
+            file_put_contents('../config/config_safe.php', '<?php /*' . $rand_i . '*/?>');
             echo "--><script>location.href=\"index.php?action=adminsetup&cndata={$cndata}&endata={$endata}&met_index_type={$met_index_type}&met_admin_type={$met_admin_type}&showdata={$showdata}&db_type={$db_type}\";</script>";
             exit;
         } else {
@@ -699,21 +699,26 @@ class install
             fclose($fp);
 
             //创建连接
-            $db = dm_connect($db_host, $db_username, $db_pass);
+            $db = dm_connect("{$db_host}:{$db_port}", $db_username, $db_pass);
             if (!$db) {
-                $this->error[] = dm_error() . ':' . dm_errormsg();
+                //$this->error[] = dm_error() . ':' . dm_errormsg();
+                $dm_error = iconv("GBK", "UTF-8", dm_error() . ':' . dm_errormsg());
+                $this->error[] = $dm_error;
                 $this->error();
             }
+
+            //设置链接属性
+            dm_setoption($db, 1, 12345, 1);
 
             //创建模式
             $sql = "CREATE SCHEMA \"{$db_name}\" AUTHORIZATION \"{$db_username}\";";
             $result = dm_exec($db, $sql);
             if (!$result) {
                 $this->error[] = dm_error() . ':' . dm_errormsg();
+                $this->error[] = $dm_error;
                 $this->error();
             }
 
-            dm_setoption($db, 1, 12345, 1);
 
             $sql = "SET SCHEMA {$db_name}";
             $result = dm_exec($db, $sql);
@@ -802,7 +807,7 @@ class install
                 $this->error();
             }
             $rand_i = self::met_rand_i(32);
-            file_put_contents('../config/config_safe.php', '<?php/* ' . $rand_i . '*/?>');
+            file_put_contents('../config/config_safe.php', '<?php /*' . $rand_i . '*/?>');
             echo "--><script>location.href=\"index.php?action=adminsetup&cndata={$cndata}&endata={$endata}&met_index_type={$met_index_type}&met_admin_type={$met_admin_type}&showdata={$showdata}&db_type={$db_type}\";</script>";
             exit;
         } else {
@@ -908,12 +913,13 @@ class install
             $lang_index_type = $_M['form']['lang_index_type'];
 
 
-            $link = dm_connect($con_db_host, $con_db_id, $con_db_pass);
+            $link = dm_connect("{$con_db_host}:{$con_db_port}", $con_db_id, $con_db_pass);
             if(!$link){
                 $this->error[] = dm_error().':'.dm_errormsg();
                 $this->error();
             }
 
+            //设置链接属性
             dm_setoption($link, 1, 12345, 1);
 
             $sql = "SET SCHEMA {$con_db_name}";

@@ -1,7 +1,7 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: taoqili
- * Date: 12-2-20
+ * @Date：2022-03-21 18:50:25
  * Time: 上午11:19
  * To change this template use File | Settings | File Templates.
  */
@@ -225,7 +225,7 @@
                  var div = document.createElement( "div" );
                  div.setAttribute( "name", j );
                  if ( j == "none" ) div.className="focus";
-                 div.style.cssText = "background:url(images/" + j + "_focus.jpg);";
+                 div.style.cssText = "background:url(../image/images/" + j + "_focus.jpg);";
                  div.setAttribute( "title", nameMaps[j] );
                  floatContainer.appendChild( div );
              }

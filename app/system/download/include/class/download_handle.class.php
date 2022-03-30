@@ -25,10 +25,8 @@ class download_handle extends base_handle
         global $_M;
         $content = parent::one_para_handle($content);
         $content['downloadurl'] = str_replace('../', $_M['url']['web_site'], $content['downloadurl']);
-        if ($content['downloadaccess']) {
-            $url = urlencode(load::sys_class('auth', 'new')->encode($content['downloadurl']));
-            $groupid = urlencode(load::sys_class('auth', 'new')->encode($content['downloadaccess']));
-            $content['downloadurl'] = "{$_M['url']['entrance']}?m=include&c=access&a=dodown&url={$url}&groupid={$groupid}&lang={$_M['lang']}";
+        if ($content['downloadaccess'] || 1) {
+            $content['downloadurl'] = "{$_M['url']['entrance']}?m=include&c=access&a=dodown&lang={$_M['lang']}&id={$content['id']}";
         }
         return $content;
     }

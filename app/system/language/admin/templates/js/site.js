@@ -57,6 +57,7 @@
               data-target=".lang-search-modal"
               data-modal-url="language/search"
               data-modal-size="lg"
+              data-modal-fullheight="1"
               data-modal-tablerefresh="#lang-table"
               data-modal-title="${METLANG.editor}">${METLANG.langwebeditor}</button>
             ${
@@ -80,6 +81,7 @@
                 data-target=".lang-app-modal"
                 data-modal-size="lg"
                 data-modal-footerok="0"
+                data-modal-fullheight="1"
                 data-modal-title="${METLANG.edit_app_lang}"
                 > ${METLANG.edit_app_lang}</button>`
                             ]
@@ -560,29 +562,29 @@
                 const modal = $('.langweb-replace-modal')
                 setTimeout(() => {
                     modal.find('[name="editor"]').val(that.activeData.mark)
-                modal.find('[name="site"]').val('web')
-                const form = modal.find('form')
-                const order = form.attr('data-validate_order')
-                const btn = modal.find('[data-ok]')
-                validate[order].success(function(e, form) {
-                    btn.attr('disabled', 'disabled')
-                    btn.append(`<i class="fa fa-spinner fa-spin ml-2"></i>`)
-                    alertify.success(METLANG.saving)
-                    return false
-                }, false)
-                formSaveCallback(order, {
-                    true_fun: function() {
-                        btn.removeAttr('disabled')
-                        btn.find('.fa').remove()
-                    },
-                    fasle_fun: function() {
-                        btn.removeAttr('disabled')
-                        btn.find('.fa').remove()
-                    }
-                })
-            }, 230)
-
-            }
+                    modal.find('[name="site"]').val('web')
+                    const form = modal.find('form')
+                    const order = form.attr('data-validate_order')
+                    const btn = modal.find('[data-ok]')
+                    validate[order].success(function(e, form) {
+                        btn.attr('disabled', 'disabled')
+                        btn.append(`<i class="fa fa-spinner fa-spin ml-2"></i>`)
+                        alertify.success(METLANG.saving)
+                        return false
+                    }, false)
+                    formSaveCallback(order, {
+                        true_fun: function() {
+                            btn.removeAttr('disabled')
+                            btn.find('.fa').remove()
+                        },
+                        fasle_fun: function() {
+                            btn.removeAttr('disabled')
+                            btn.find('.fa').remove()
+                        }
+                    })
+                }, 230)
+            },
+            modalType:'centered'
         }
     }
 })()

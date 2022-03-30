@@ -171,8 +171,10 @@ class web extends common
         $this->input['id'] = isset($_M['form']['id']) ? intval($_M['form']['id']) : 0;
         $this->input['lang'] = isset($_M['form']['lang']) ? $_M['form']['lang'] : $_M['config']['met_index_type'];
         $this->input['synchronous'] = $_M['langlist']['web'][$this->input['lang']]['synchronous'];
-        $column = load::sys_class('label', 'new')->get('column')->get_column_id($this->input['classnow']);
-
+        //$column = load::sys_class('label', 'new')->get('column')->get_column_id($this->input['classnow']);
+        if ($this->input['classnow']) {
+            $column = $this->input['module'] = load::mod_class('column/column_database', 'new')->get_column_by_id($this->input['classnow']);
+        }
         $this->input['module'] = $column['module'] ? $column['module'] : 10001;
 
         //unset($_M['form']);
@@ -502,6 +504,7 @@ class web extends common
         }
 
         $this->add_array_input($data);
+        $this->add_input('page_type', 'showpage');
         $this->seo($data['title'], $data['keywords'], $data['description']);
         $this->seo_title($data['ctitle']);
     }
@@ -537,6 +540,7 @@ class web extends common
         }
         $classnow = $this->input_class($classnow);
         $data = load::sys_class('label', 'new')->get('column')->get_column_id($classnow);
+        if (!$data) abort();
 
         //静态页权限验证
         if ($data['access'] && $_M['form']['html_filename']) {
@@ -562,6 +566,7 @@ class web extends common
         }
         $this->add_input('page', $_M['form']['page']);
         $this->add_input('list', 1);
+        $this->add_input('page_type', 'listpage');
         return 'list';
     }
 
@@ -680,9 +685,9 @@ class web extends common
         /*$output = $this->video_replace('/(<video.*?edui-upload-video.*?>).*?<\/video>/', $output);*/
         $output = $this->video_replace('/(<embed.*?edui-faked-video.*?>)/', $output);
 
-        $output = load::plugin('dofooter_replace', 1, array('data' => $output));
+        $output = load::plugin('dofooter_replace', 1, array('data' => $output, 'input' => $this->input));
 
-        load::plugin('doend', 0, array('data' => $output));
+        load::plugin('doend', 0, array('data' => $output, 'input' => $this->input));
 
         //标签数据处理.
         $compile = load::sys_class('view/sys_compile', 'new');

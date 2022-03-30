@@ -159,6 +159,23 @@ function is_simplestr($str = '' , $patten = '/^[0-9A-Za-z_]+$/')
 }
 
 /**
+ * 密码强度验证
+ * @param string $pass
+ * @param string $patten
+ * @return bool
+ */
+function checkPw($pass = '', $patten = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\s\S]{8,30}$/')
+{
+    $match_res = preg_match($patten, $pass, $match);
+    if (!$match_res) {
+        return false;
+    }
+
+    return true;
+}
+
+
+/**
  * 字符串截取（考虑中英文混排）
  * @param  string	$str  		在该字符串中截取
  * @param  int 		$start  	开始截取的位置，如果为负数则从字符串末尾截取出长度为(/$start/）的字符串。默认为0

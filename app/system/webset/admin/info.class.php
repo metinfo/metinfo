@@ -70,7 +70,12 @@ class info extends admin
         }
 
         if (isset($_M['form']['met_ico']) && $_M['form']['met_ico'] != '../favicon.ico') {
-            copy($_M['form']['met_ico'], '../favicon.ico');
+            $pattern = '/^(\.\.\/upload\/)[\w\/]+\/\w+(\.ico)$/';
+            $met_ico = $_M['form']['met_ico'];
+            $res = preg_match($pattern, $met_ico, $match);
+            if ($res) {
+                copy($met_ico, '../favicon.ico');
+            }
         }
 
         if ($_M['form']['met_ico'] == '') {

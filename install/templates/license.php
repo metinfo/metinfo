@@ -38,8 +38,8 @@ echo <<<EOT
     </ul>
     <h2 class="h6"><b>协议修订：</b></h2>
     <ul class="license">
-        <li>米拓信息有权随时对本合约的条款进行修订，并在修订生效日前一个工作日更新在米拓建站官网。</li>
-        <li>修订的条款始终公开在「<a href="https://www.mituo.cn/metinfo/license.html" title="米拓企业建站系统最终用户授权许可协议" target="_blank">https://www.mituo.cn/metinfo/license.html</a> 或 <a href="https://www.metinfo.cn/metinfo/license.html" title="米拓企业建站系统最终用户授权许可协议" target="_blank">https://www.metinfo.cn/metinfo/license.html</a>」。</li>
+        <li>米拓信息有权随时对本合约的条款进行修订，并在修订生效日前一个工作日更新在MetInfo官网。</li>
+        <li>修订的条款始终公开在「<a href="https://www.metinfo.cn/metinfo/license.html" title="米拓企业建站系统最终用户授权许可协议" target="_blank">https://www.metinfo.cn/metinfo/license.html</a>」。</li>
     </ul>
     <div class="clearfix">
         <div class="float-left">

@@ -203,6 +203,7 @@ class index extends admin
 
         $where = "lang='{$_M['lang']}'";
         $keyword = isset($_M['form']['keyword']) ? $_M['form']['keyword'] : '';
+        $cid = $_M['form']['cid'];
         $where .= $keyword ? "AND tag_name LIKE '%{$keyword}%'" : '';
 
         if ($_M['form']['source']) {
@@ -213,15 +214,15 @@ class index extends admin
             }
         }
 
-        if ($_M['form']['cid'] > 0) {
+        if ($cid > 0) {
             if ($_M['config']['tag_search_type'] == 'column') {
-                $where .= " AND cid = {$_M['form']['cid']}";
+                $where .= " AND cid = '{$cid}'";
             } else {
-                $where .= " AND module = {$_M['form']['cid']}";
+                $where .= " AND module = '{$cid}'";
             }
         }
 
-        if ($_M['form']['cid'] == 0) {
+        if ($cid == 0) {
             $where .= ' AND cid = 0';
         }
         $table = load::sys_class('tabledata', 'new');
@@ -242,7 +243,7 @@ class index extends admin
             $field = 'module';
         }
         foreach ($array as &$val) {
-            $val['url'] = $tags->getTagUrl($val, $val['cid']);
+            $val['url'] = $tags->getTagUrl($val);
             $val['cid'] = $val[$field] ? $columns[$val[$field]] : $_M['word']['full_site'];
             $val['module'] = $val[$field] ? $columns[$val[$field]] : $_M['word']['full_site'];
             $val['source'] = $val['list_id'] ? $_M['word']['content'] : $_M['word']['add_manully'];

@@ -10,12 +10,12 @@ defined('IN_MET') or exit('No permission');
             <select name="class2" class="form-control mr-1 w-a city float-left"></select>
             <select name="class3" class="form-control mr-1 w-a dist float-left"></select>
         </div>
-        <!-- <div class="input-group w-a float-left">
+        <div class="input-group w-a float-left">
             <input type="search" name="keyword" placeholder="搜索" class="form-control" data-table-search="#content-relation-list">
             <div class="input-group-append">
                 <div class="input-group-text btn bg-none px-2"><i class="input-search-icon fa-search" aria-hidden="true"></i></div>
             </div>
-        </div> -->
+        </div>
     </div>
     <form action="" method="post" data-content_info="{$data.module}|{$data.content_id}">
         <input type="hidden" name="classid" value="0" data-table-search="#content-relation-list">

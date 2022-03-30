@@ -80,6 +80,7 @@
                   modalTitle: METLANG.metinfoappinstallinfo4,
                   modalSize:'lg',
                   modalFullheight:1,
+                  modalHeight100:1,
                   modal_class: '.update-warning-modal',
                   modalBody: `<div class="update-warning-modal-body font-weight-bold" style="color:red;">${modalHTML}</div>`,
                   modalNotext:'',
@@ -221,7 +222,7 @@
     if (result.status === 1) {
       metAjaxFun({result:result,true_fun:function(){
         modal.find('.modal-body').html(`<div class="p-2">
-        <h4>请继续点击【确定】按钮安装</h4>
+        <h4>请继续点击【安装】按钮安装</h4>
         </div>`);
         modal.find('.modal-footer .btn').removeAttr('disabled');
       }})

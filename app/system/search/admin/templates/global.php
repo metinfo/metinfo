@@ -32,7 +32,7 @@ $data = $data['handle'];
             <dd>
                 <div class='form-group clearfix'>
                     <input type="hidden" name="global_search_weight" class="form-control" value="{$c.global_search_weight}">
-                    <ul class="list-group list-group-horizontal" data-plugin="dragsort" data-dragsort_order=".parameter-list" data-drag_selector="li">
+                    <ul class="list-group list-group-horizontal text-center" data-plugin="dragsort" data-dragsort_order=".parameter-list" data-drag_selector="li">
                         <?php
                         $global_search_weight = $c['global_search_weight'] ? explode('|', $c['global_search_weight']) : array(1, 2, 3, 4, 5, 6);
                         foreach ($global_search_weight as $value) {
@@ -40,7 +40,7 @@ $data = $data['handle'];
                             ?>
                             <li class="list-group-item" data-module="{$value}">{$name}</li>
                         <?php } ?>
-                        
+
                     </ul>
                     <span class="text-help">{$word.search_weight_tips}</span>
                 </div>

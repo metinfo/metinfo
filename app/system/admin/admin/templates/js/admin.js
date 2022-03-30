@@ -38,7 +38,7 @@
                  data-toggle="modal"
                  data-modal-url="admin/admin_sys"
                  data-modal-dataurl="${val.editor_url}"
-                 data-modal-size="lg"
+                 data-modal-type="centered"
                  data-modal-title="${val.action_name}"
                  data-target=".admin-sys-modal"
                  data-modal-tablerefresh="#admin-table"

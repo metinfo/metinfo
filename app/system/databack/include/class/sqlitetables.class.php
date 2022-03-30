@@ -35,6 +35,8 @@ class sqlitetables
             return false;
         }
 
+        self::doOldTableDelAll();
+
         self::doChangAll();
 
         self::doOldTableDelAll();
@@ -168,7 +170,7 @@ class sqlitetables
         $one = DB::get_one($sql);
 
         if ($one) {
-            $sql = "INSERT INTO {$_M['table']['admin_logs']} (id, name, url, bigclass, field, type, list_order, icon, info, display) SELECT id, name, url, bigclass, field, type, list_order, icon, info, display FROM _met_admin_logs_old;";
+            $sql = "INSERT INTO {$_M['table']['admin_logs']} (id, username, name, module, current_url, brower, result, ip, client, time, user_agent) SELECT id, username, name, module, current_url, brower, result, ip, client, time, user_agent FROM _met_admin_logs_old;";
             DB::query($sql);
         }
     }
@@ -1376,7 +1378,7 @@ class sqlitetables
         $one = DB::query($sql);
 
         if ($one) {
-            $sql = "INSERT INTO  {$_M['table']['relation']}  (id, cid, module, relation_id, relation_module, lang) SELECT id, cid, module, relation_id, relation_module, lang FROM _met_relation_old;";
+            $sql = "INSERT INTO  {$_M['table']['relation']}  (id, aid, module, relation_id, relation_module, lang) SELECT id, aid, module, relation_id, relation_module, lang FROM _met_relation_old;";
             DB::query($sql);
         }
     }

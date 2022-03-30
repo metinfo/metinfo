@@ -26,7 +26,7 @@ class product_handle extends base_handle
         $content = parent::one_para_handle($content);
 
         //商品数据
-        if ($_M['config']['shopv2_open'] && $this->contents_page_name == 'product') {
+        if ($content && $_M['config']['shopv2_open'] && $this->contents_page_name == 'product') {
             $goods = load::plugin('doget_goods', 1, $content['id']);
             if ($goods && is_array($goods)) {
                 $content = array_merge($content, $goods);

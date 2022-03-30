@@ -19,7 +19,7 @@ class parameter_handle extends handle
      * @param bool $simplify 表单样式（简洁/详细）
      * @return array
      */
-    public function para_handle_formation($para = array(), $simplify = true)
+    public function para_handle_formation($para = array(), $simplify = true,$module='')
     {
         global $_M;
         !isset($_M['stamp']) && $_M['stamp'] = time();
@@ -203,7 +203,7 @@ class parameter_handle extends handle
         }
 
         //前台验证码
-        if ($_M['config']['met_memberlogin_code']) {
+        if ($_M['config']['met_memberlogin_code']) {    //系统图形验证码
             $random = random(4, 1);
             $memberlogin_code['type_html'] = "<div class='form-group'>";
             if (!$simplify) {
@@ -220,7 +220,45 @@ class parameter_handle extends handle
 			</div>";
             $memberlogin_code['type'] = 100;
             $list[] = $memberlogin_code;
+        }else{
+            if ($_M['config']['met_captcha_open']) {    //图形验证插件
+                $button = load::app_class('met_captcha/include/captcha', 'new')->getCaptchaBut();
+                $captcha['type_html'] = $button;
+                $captcha['type'] = 100;
+                $list[] = $captcha;
+            }
         }
+        // 提交按钮
+        $submit['type_html'] = "<div class='form-group m-b-0'>
+            <button type='submit' class='btn btn-primary btn-squared".($module!='job'?' btn-block':'').($module=='feedback'?' btn-lg':'')."'>{$_M['word'][$module=='message'?'SubmitInfo':'Submit']}</button>"
+            .($module=='job'?"<button type='button' class='btn btn-default btn-squared m-l-5' data-dismiss='modal'>{$_M['word']['cancel']}</button>":'')
+        ."</div>";
+        $submit['type'] = 100;
+        $list[] = $submit;
+        // 信息安全声明
+        if ($_M['config']['met_info_security_statement_open']) {
+            $info_security_statement_json=array(
+                'title'=>$_M['config']['met_info_security_statement_modal_title'],
+                'content'=>$_M['config']['met_info_security_statement_content'],
+            );
+            $info_security_statement_json=json_encode($info_security_statement_json,JSON_UNESCAPED_UNICODE);
+            $info_security_statement['type_html'] = "<div class='m-t-10'>
+                <a href='javascript:;' data-toggle='modal' data-target='.info-security-statement-modal' class='text-danger'>{$_M['config']['met_info_security_statement_title']}</a>
+                <script>
+                (function(){
+                    var this_interval=setInterval(function(){
+                            if(typeof M!='undefined'){
+                                M.info_security_statement={$info_security_statement_json};
+                                clearInterval(this_interval);
+                            }
+                        },200);
+                })();
+                </script>
+            </div>";
+            $info_security_statement['type'] = 100;
+            $list[] = $info_security_statement;
+        }
+
         return $list;
     }
 

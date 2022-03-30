@@ -42,7 +42,7 @@ defined('IN_MET') or exit('No permission');
           </div>
         </dd>
       </dl>
-      <dl>
+      <dl class='border-none'>
         <dd class="text-center">
           <button type="submit" data-loading="1" class="btn btn-primary">{$word.landing}</button>
           <button class="btn btn-default ml-2">

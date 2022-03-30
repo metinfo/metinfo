@@ -56,7 +56,7 @@ $checkbox_time=time();
 				<label class='form-control-label'>{$word.messageeditorReply}{$word.marks}</label>
 			</dt>
 			<dd>
-				<textarea name="useinfo" placeholder="{$word.message_tips1_v6}" rows="5" class="form-control">{$data.list.useinfo}</textarea>
+				<textarea name="useinfo" placeholder="{$word.message_tips1_v6}" data-plugin='editor' data-editor-y='300' hidden>{$data.list.useinfo}</textarea>
 			</dd>
 		</dl>
 		<dl>

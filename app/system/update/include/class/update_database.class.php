@@ -22,7 +22,7 @@ class update_database extends database
     public function __construct()
     {
         global $_M;
-        $this->version = '7.5.0';
+        $this->version = '7.6';
         $this->colum_label = load::sys_class('label', 'new')->get('column');
         $this->tables = load::mod_class('databack/tables', 'new');
     }
@@ -789,6 +789,16 @@ class update_database extends database
             self::_insert_config('met_icp_info', '', 0, $lang);
             self::_insert_config('met_data_null', '', 0, $lang);
             self::_insert_config('met_404content', '', 0, $lang);
+            //水印图设置
+            self::_insert_config('met_wate_img_scale', '0', 0, $lang);
+            self::_insert_config('met_wate_img_gif_hold', '0', 0, $lang);
+            //信息安全声明
+            self::_insert_config('met_info_security_statement_open', '0', 0, $lang);
+            self::_insert_config('met_info_security_statement_title', '', 0, $lang);
+            self::_insert_config('met_info_security_statement_content', '', 0, $lang);
+            self::_insert_config('met_info_security_statement_modal_title', '', 0, $lang);
+            //静态页设置
+            self::_insert_config('met_html_auto', '0', 0, $lang);
         }
 
         //global

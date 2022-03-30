@@ -208,7 +208,8 @@ class sys_column
                             //子栏目不包含不同模块
                             $action['move_columns'][] = array(
                                 'id' => $cval['id'],
-                                'name' => $cval['name'],
+                                //'name' => $cval['name'],
+                                'name' => htmlspecialchars($cval['name']),
                                 'module' => $cval['module'],
                             );
                         }
@@ -221,7 +222,8 @@ class sys_column
                                 if ($c2val['module'] == $column['module']) {
                                     $action['move_columns'][] = array(
                                         'id' => $c2val['id'],
-                                        'name' => " - - " . $c2val['name'],
+                                        //'name' => " - - " . $c2val['name'],
+                                        'name' => " - - " . htmlspecialchars($c2val['name']),
                                         'module' => $c2val['module'],
                                     );
                                 }
@@ -240,14 +242,16 @@ class sys_column
                             if (($cval['module'] == $column['module'] || $column['module'] == 0)) {
                                 $action['move_columns'][] = array(
                                     'id' => $cval['id'],
-                                    'name' => $cval['name'],
+                                    //'name' => $cval['name'],
+                                    'name' => htmlspecialchars($cval['name']),
                                     'module' => $cval['module'],
                                 );
                             }
                         } else {
                             $action['move_columns'][] = array(
                                 'id' => $cval['id'],
-                                'name' => $cval['name'],
+                                //'name' => $cval['name'],
+                                'name' => htmlspecialchars($cval['name']),
                                 'module' => $cval['module'],
                             );
                         }
@@ -257,7 +261,8 @@ class sys_column
                         if (in_array($c2val['module'], array(1, 2, 3, 4, 5)) && $c2val['id'] != $column['id'] && ($c2val['module'] == $column['module'] || $column['module'] == 0) && !$met_class3[$column['id']]) {
                             $action['move_columns'][] = array(
                                 'id' => $c2val['id'],
-                                'name' => " - - " . $c2val['name'],
+                                //'name' => " - - " . $c2val['name'],
+                                'name' => " - - " . htmlspecialchars($c2val['name']),
                                 'module' => $c2val['module']
                             );
                         }
@@ -274,14 +279,16 @@ class sys_column
                             if ($cval['module'] == $column['module'] || $column['module'] == 0) {
                                 $action['move_columns'][] = array(
                                     'id' => $cval['id'],
-                                    'name' => $cval['name'],
+                                    //'name' => $cval['name'],
+                                    'name' => htmlspecialchars($cval['name']),
                                     'module' => $cval['module'],
                                 );
                             }
                         } else {
                             $action['move_columns'][] = array(
                                 'id' => $cval['id'],
-                                'name' => $cval['name'],
+                                //'name' => $cval['name'],
+                                'name' => htmlspecialchars($cval['name']),
                                 'module' => $cval['module'],
                             );
                         }
@@ -290,7 +297,8 @@ class sys_column
                         if (in_array($c2val['module'], array(1, 2, 3, 4, 5)) && $c2val['id'] != $column['bigclass'] && ($c2val['module'] == $column['module'] || $column['module'] == 0)) {
                             $action['move_columns'][] = array(
                                 'id' => $c2val['id'],
-                                'name' => " - - " . $c2val['name'],
+                                //'name' => " - - " . $c2val['name'],
+                                'name' => " - - " . htmlspecialchars($c2val['name']),
                                 'module' => $c2val['module']
                             );
                         }

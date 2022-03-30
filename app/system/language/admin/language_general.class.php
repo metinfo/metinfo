@@ -267,7 +267,8 @@ class language_general extends admin
 
             if (isset($word['value']) && $value != '') {
                 $value  = stripslashes($value);
-                $value  = preg_replace("/\'/", "''", $value);
+                $value  = daddslashes($value);
+                //$value  = preg_replace("/\'/", "''", $value);
                 $query = "UPDATE {$_M['table']['language']} SET value='{$value}' WHERE id='{$word['id']}'";
                 DB::query($query);
             }

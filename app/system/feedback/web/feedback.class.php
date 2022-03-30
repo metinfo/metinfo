@@ -53,7 +53,7 @@ class feedback extends web
             if ($_M['form']['fdtitle']) {//产品询价
                 $fdtitle = urlencode($_M['form']['fdtitle']);
                 $this->input['url'] = $this->input['url'] . "?fdtitle={$fdtitle}";
-            }else{
+            } else {
                 load::sys_class('handle', 'new')->redirectUrl($this->input); //伪静态时动态链接跳转
             }
 
@@ -80,6 +80,13 @@ class feedback extends web
         if ($_M['config']['met_memberlogin_code']) {
             if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random'])) {
                 okinfo(-1, $_M['word']['membercode']);
+            }
+        } else {
+            if ($_M['config']['met_captcha_open']) {    //图形验证插件
+                $checkCode = load::app_class('met_captcha/include/captcha', 'new')->checkCode($_REQUEST['Ticket'], $_REQUEST['Randst']);
+                if (!$checkCode) {
+                    okinfo(-1, $_M['word']['membercode']);
+                }
             }
         }
 
@@ -158,7 +165,8 @@ class feedback extends web
             }
 
             if (strstr($content, $word)) {
-                okinfo('-1', $word);
+                $msg = "{$_M['word']['Feedback3']} [" . $word . "] ";
+                okinfo('-1', $msg);
                 die();
             }
         }
@@ -258,8 +266,8 @@ class feedback extends web
                 $para_url = str_replace('../', $_M['url']['web_site'], $info['para' . $val['id']]);
                 $body = $body . '<tr><td class="l"><b>' . $val['name'] . '</b></td><td class="r">:' . $para_url . '</td>' . $bt . '</tr>' . "\n";
             }
-            $body .= '</table>';
         }
+        $body .= '</table>';
 
         $classnow = $info['id'];
         $conlum_configs = $this->getClsaaConfig($classnow);
@@ -291,9 +299,7 @@ class feedback extends web
         //管理员短信通知
         $met_fd_type = explode('#@met@#', $conlum_configs['met_fd_type']);
         if (in_array(2, $met_fd_type) && $conlum_configs['met_fd_admin_tel'] || 1) {
-            $str = str_replace("http://", "", $_M['config']['met_weburl']);
-            $strdomain = explode("/", $str);
-            $domain = $strdomain[0];
+            $domain = HTTP_HOST ?: $_M['config']['met_weburl'];
             #$message="您网站[{$domain}]您收到了新的反馈[{$job_list[position]}]，请尽快登录网站后台查看";
             $message = "{$_M['word']['reMessage1']}[{$domain}]{$_M['word']['newFeedback']}[{$title}]{$_M['word']['reMessage2']}";
             $met_fd_admin_tel = explode('|', $conlum_configs['met_fd_admin_tel']);

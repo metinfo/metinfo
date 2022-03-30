@@ -1,8 +1,9 @@
 @charset "utf-8";
 /* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
-.btn-column-control{left: -24px;top: 300px;padding-left: 6px;padding-right: 6px;}
+.btn-column-control{top: 300px;margin-left: -24px;}
 .content-btn-group{border-bottom: 1px solid #eee;}
-.column-view-wrapper{width: calc(200px + 1.5rem);}
+.column-view-wrapper{width: calc(200px + 1.5rem);top: 20px;}
+.modal-body .column-view-wrapper{top: 0;}
 .column-view-list .subcolumn{display: none;}
 .column-view-list>li{border-top: 1px solid #eee}
 .column-view-list .list-group-item{background: none;border: none;}

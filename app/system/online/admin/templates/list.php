@@ -53,6 +53,7 @@ $table_addlist='online-list';
                                         <option value="4">{$word.unitytxt_71}</option>
                                         <option value="5">Skype</option>
                                         <option value="6">Facebook</option>
+                                        <option value="9">WhatsApp</option>
                                         <option value="7">{$word.external_links}</option>
                                     </select>
                                 </td>

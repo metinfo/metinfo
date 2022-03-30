@@ -1,18 +1,18 @@
 /**
  * User: Jinqn
- * Date: 14-04-08
+ * @Date：2022-03-03 14:34:14
  * Time: 下午16:34
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
 
-(function () {
-    window.M=parent.M;
-    window.METLANG=parent.METLANG;
+ (function () {
+    window.M=top.M;
+    window.METLANG=top.METLANG;
     var remoteImage,
         uploadImage,
         onlineImage;
-    window.getCookie=parent.getCookie||parent.$.cookie;
-    window.setCookie=parent.setCookie||parent.$.cookie;
+    window.getCookie=top.getCookie||top.$.cookie;
+    window.setCookie=top.setCookie||top.$.cookie;
     window.onload = function () {
         initTabs();
         initAlign();
@@ -740,7 +740,7 @@
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
                     if (json.state == 'SUCCESS') {
-                        _this.imageList.push(json);
+                        _this.imageList[$file.index()]=json;
                         $file.append('<span class="success"></span>');
                     } else {
                         $file.find('.error').text(json.state).show();
@@ -835,10 +835,8 @@
                     $('html').append('<script src="'+M.url.public_plugins+'jquery.lazyload.min.js" id="lazyload-js"></script>');
                 }
                 var dir=$(this).data('path');
-                $.ajax({
+                top.$.ajax({
                     url: M.url.admin + 'index.php?n=system&c=filept&a=doGetFileList',
-                    type: 'POST',
-                    dataType: 'json',
                     data: {dir: dir,sort:$('.alignBar-online a.active').data('type')},
                     success:function(result){
                         if (result) {
@@ -868,7 +866,7 @@
                 $(this).addClass('active').siblings('a').removeClass('active');
                 if(event.type=='click'){
                     $('.online-breadcrumb').is(':visible')?$('.online-breadcrumb a:last-child').dblclick():setTabFocus('online');
-                    setCookie('ueditor-onlineimages-sort',$(this).data('type'),parent.setCookie?'':{path:'/',expires:365},'365');
+                    setCookie('ueditor-onlineimages-sort',$(this).data('type'),setCookie?'':{path:'/',expires:365},'365');
                 }
             });
 
@@ -929,8 +927,8 @@
                         $('#online .online-breadcrumb').hide().html('');
                     },
                     'onerror': function (r) {
-                        parent.metui?parent.M.load('alertify',function(){
-                            parent.alertify.error('error');
+                        M.load?M.load('alertify',function(){
+                            top.alertify.error('error');
                         }):alert('error');
                     }
                 });

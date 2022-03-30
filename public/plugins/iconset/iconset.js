@@ -3,19 +3,22 @@
  * 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved.
  */
 (function(){
-    // 弹框参数
-    M.component.modal_options['.met-icon-modal']={
-        modalTitle:METLANG.column_choosicon_v6||'选择图标',
-        modalSize:'xl',
-        modalUrl:'#pub/icon_list',
-        modalFullheight:1,
-        modalFooter:'<div class="float-left"><button type="button" class="btn btn-warning back-iconlist" hidden>'+METLANG.back_icon_iibrary_list+'</button><span class="ml-2 text-danger">'+METLANG.choose_icon_tips+'</span></div>',
-        modalRefresh:'one',
-        callback:function(key){
-            $(key).find('.back-iconlist').click();
-            $(key).find('.icon-detail .icondemo-wrap').removeClass('checked');
-        }
-    };
+    M.load('modal',function(){
+        // 弹框参数
+        M.component.modal_options['.met-icon-modal']={
+            modalTitle:METLANG.column_choosicon_v6||'选择图标',
+            modalSize:'xl',
+            modalUrl:'#pub/icon_list',
+            modalFullheight:1,
+            modalHeight100:1,
+            modalFooter:'<div class="float-left"><button type="button" class="btn btn-warning back-iconlist" hidden>'+METLANG.back_icon_iibrary_list+'</button><span class="ml-2 text-danger">'+METLANG.choose_icon_tips+'</span></div>',
+            modalRefresh:'one',
+            callback:function(key){
+                $(key).find('.back-iconlist').click();
+                $(key).find('.icon-detail .icondemo-wrap').removeClass('checked');
+            }
+        };
+    });
     // 图标按钮初始化
     $.fn.metIconSet=function(){
         $(this).each(function(index, el) {

@@ -6,7 +6,7 @@ defined('IN_MET') or exit('No permission');
 
 load::sys_func('file.func.php');
 
-/** 
+/**
  * 水印类
  * @param string $water_savepath		添加水印后，图片保存路径
  * @param string $water_mark_type	    添加的水印类型，text:文字，img:图片
@@ -38,6 +38,7 @@ class watermark
     public $water_text_color = "#cccccc";
     public $jpeg_quality = 90;
     public $met_image_transition = 80;
+    public $water_img_scale = 0;    //水印图比例
 
     /**
      * 初始化，默认设置添加后台大图水印
@@ -93,6 +94,7 @@ class watermark
     {
         global $_M;
         $this->set('water_image_name', $_M['config']['met_wate_bigimg']);
+        $this->set('water_img_scale', $_M['config']['met_wate_img_scale']);
         $this->set('water_pos', $_M['config']['met_watermark']);
         $this->set('water_text', $_M['config']['met_text_wate']);
         $this->set('water_text_size', $_M['config']['met_text_bigsize']);
@@ -111,6 +113,7 @@ class watermark
     {
         global $_M;
         $this->set('water_image_name', $_M['config']['met_wate_img']);
+        $this->set('water_img_scale', $_M['config']['met_wate_img_scale']);
         $this->set('water_pos', $_M['config']['met_watermark']);
         $this->set('water_text', $_M['config']['met_text_wate']);
         $this->set('water_text_size', $_M['config']['met_text_size']);
@@ -206,6 +209,9 @@ class watermark
             case 'jpeg_quality':
                 $this->jpeg_quality = $value;
                 break;
+            case 'water_img_scale':
+                $this->water_img_scale = $value;
+                break;
         }
     }
 
@@ -244,12 +250,21 @@ class watermark
             return $this->error($_M['word']['batchtips30']);
         }
 
+        makedir($save_path_water);
+        $save_file = $save_path_water . basename($water_scr_image);
         $src_image_type = $this->get_type($water_scr_image);
+
+        if ($_M['config']['met_wate_img_gif_hold'] == 1  && $src_image_type == 'gif') {//gif
+            copyfile($water_scr_image, $save_file);
+            return $this->sucess(path_relative($save_file));
+        }
 
         $src_image = $this->createImage($src_image_type, $water_scr_image);
         if (!$src_image) return;
         $src_image_w = ImageSX($src_image);
         $src_image_h = ImageSY($src_image);
+
+        //图片水印
         if ($this->water_mark_type == 'img') {
             #$this->water_image_name = strtolower(trim($this->water_image_name));
             $this->water_image_name = trim($this->water_image_name);
@@ -257,19 +272,35 @@ class watermark
             $met_image = $this->createImage($met_image_type, $this->water_image_name);
             $met_image_w = ImageSX($met_image);
             $met_image_h = ImageSY($met_image);
-            $temp_met_image = $this->getPos($src_image_w, $src_image_h, $this->water_pos, $met_image);
+            if ($this->water_img_scale && is_numeric($this->water_img_scale) && $this->water_img_scale > 0) {
+                $water_img_scale = intval($this->water_img_scale) / 100;
+                $water_w = ceil($src_image_w * $water_img_scale);		        //水印宽度
+                $water_h = ceil($met_image_h * ($water_w / $met_image_w));	//水印高度
+                $met_img_size = array(
+                    'width' => $water_w,
+                    'height' => $water_h,
+                );
+            } else {
+                $met_img_size = array(
+                    'width' => $met_image_w,
+                    'height' => $met_image_h
+                );
+            }
+            $temp_met_image = $this->getPos($src_image_w, $src_image_h, $this->water_pos, $met_img_size);
             $met_image_x = $temp_met_image["dest_x"];
             $met_image_y = $temp_met_image["dest_y"];
-            if ($this->get_type($this->water_image_name) == 'png') {
-                imagecopy($src_image, $met_image, $met_image_x, $met_image_y, 0, 0, $met_image_w, $met_image_h);
-            } else {
-                imagecopymerge($src_image, $met_image, $met_image_x, $met_image_y, 0, 0, $met_image_w, $met_image_h, $this->met_image_transition);
-            }
+            imagecopyresized($src_image, $met_image, $met_image_x, $met_image_y, 0, 0, $met_img_size['width'], $met_img_size['height'], $met_image_w, $met_image_h);
+
+//            if ($this->get_type($this->water_image_name) == 'png') {
+//                imagecopy($src_image, $met_image, $met_image_x, $met_image_y, 0, 0, $met_image_w, $met_image_h);
+//            } else {
+//                imagecopymerge($src_image, $met_image, $met_image_x, $met_image_y, 0, 0, $met_image_w, $met_image_h, $this->met_image_transition);
+//            }
         }
+
+        //文字水印
         if ($this->water_mark_type == 'text') {
-            $temp_water_text = $this->getPos($src_image_w, $src_image_h, $this->water_pos);
-            $water_text_x = $temp_water_text["dest_x"];
-            $water_text_y = $temp_water_text["dest_y"];
+
             if (preg_match("/([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])/i", $this->water_text_color, $color)) {
                 $red = hexdec($color[1]);
                 $green = hexdec($color[2]);
@@ -278,10 +309,21 @@ class watermark
             } else {
                 $water_text_color = imagecolorallocate($src_image, 255, 255, 255);
             }
+
+            //文字比例
+            if ($this->water_img_scale && is_numeric($this->water_img_scale) && $this->water_img_scale > 0) {
+                $water_img_scale = intval($this->water_img_scale) / 100;
+                $this->water_text_size = ceil($src_image_w * $water_img_scale);
+            }
+
+            $temp_water_text = $this->getPos($src_image_w, $src_image_h, $this->water_pos);
+            $water_text_x = $temp_water_text["dest_x"];
+            $water_text_y = $temp_water_text["dest_y"];
+
             imagettftext($src_image, $this->water_text_size, $this->water_text_angle, $water_text_x, $water_text_y, $water_text_color, $this->water_text_font, $this->water_text);
         }
-        makedir($save_path_water);
-        $save_file = $save_path_water . basename($water_scr_image);
+
+
         if ($save_path_water) {
             $src_image_type = $this->get_type($save_file);
             if ($src_image_type == "jpg") $src_image_type = "jpeg";
@@ -323,6 +365,7 @@ class watermark
             $this->water_image_name = @iconv("GBK", "utf-8", $this->water_image_name);
             $save_file = @iconv("GBK", "utf-8", $save_file);
         }
+
         return $this->sucess(path_relative($save_file));
     }
 
@@ -378,11 +421,11 @@ class watermark
      * @param string $met_image :            createImage创建的图片资源
      * @return array                        返回水印位置
      */
-    protected function getPos($sourcefile_width, $sourcefile_height, $pos, $met_image = "")
+    protected function getPos($sourcefile_width, $sourcefile_height, $pos, $met_image_size = array())
     {
-        if ($met_image) {
-            $insertfile_width = ImageSx($met_image);
-            $insertfile_height = ImageSy($met_image);
+        if ($met_image_size) {
+            $insertfile_width = $met_image_size['width'] ?: 50;
+            $insertfile_height = $met_image_size['height'] ?: 50;
         } else {
             $lineCount = explode("\r\n", $this->water_text);
             $fontSize = imagettfbbox($this->water_text_size, $this->water_text_angle, $this->water_text_font, $this->water_text);
@@ -391,6 +434,7 @@ class watermark
             $fontSizeone = imagettfbbox($this->water_text_size, $this->water_text_angle, $this->water_text_font, 'e');
             $fontSizeone = ($fontSizeone[2] - $fontSizeone[0]) / 2;
         }
+
         switch ($pos) {
             case 0:
                 $dest_x = ($sourcefile_width / 2) - ($insertfile_width / 2);
@@ -433,7 +477,7 @@ class watermark
                 $dest_y = $sourcefile_height - $insertfile_height;
                 break;
         }
-        if ($met_image) {
+        if ($met_image_size) {
             $dest_y = $dest_y - $insertfile_height;
         }
         return array("dest_x" => $dest_x, "dest_y" => $dest_y);

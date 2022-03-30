@@ -101,9 +101,8 @@ php;
             load::app_class($app_tag);
             $class = $module . '_tag';
         } else {
+            return;
             die($attr['action'] . 'is not find ');
-            //load::sys_class('ui');
-            //$class = 'ui_tag';
         }
         if (!isset($instance[$class])) {
             $instance[$class] = new $class();

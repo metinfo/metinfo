@@ -23,7 +23,6 @@ class config_tem
         } else {
             $query = "SELECT * FROM {$_M['table']['templates']} WHERE bigclass = (SELECT id FROM {$_M['table']['templates']} WHERE lang='{$this->lang}' AND no = '{$this->no}' AND name='{$name}') AND lang='{$this->lang}' ORDER BY no_order";
         }
-
         return DB::get_all($query);
     }
 

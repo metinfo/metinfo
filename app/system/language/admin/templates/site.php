@@ -4,7 +4,7 @@
 defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-lang-web">
-  <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target=".langweb-add-modal"
+  <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target=".langweb-add-modal" data-modal-fullheight="1"
     data-modal-url="language/add" data-modal-size="lg" data-modal-title="{$word.langadd}"
     data-modal-tablerefresh="#lang-table" data-modal-loading="1">
     {$word.langadd}

@@ -251,7 +251,7 @@ $data['list']['thumb_detail_default']=explode('|', $data['list']['thumb_detail_d
 			</dt>
 			<dd>
 				<div class='form-group clearfix'>
-					<input type="text" name="list_length" value="{$data.list.list_length}" placeholder="{$word.default_values}{$word.marks}{$data.list.list_length_default}" class="form-control">
+					<input type="number" min="1" max="9999" name="list_length" value="{$data.list.list_length}" placeholder="{$word.default_values}{$word.marks}{$data.list.list_length_default}" class="form-control w-a text-center">
 				</div>
 			</dd>
 		</dl>
@@ -262,9 +262,9 @@ $data['list']['thumb_detail_default']=explode('|', $data['list']['thumb_detail_d
 				<label class='form-control-label'>{$word.thumb_size_list}</label>
 			</dt>
 			<dd class="form-group">
-				<input type="text" name="thumb_list_x" value="{$data.list.thumb_list.0}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_list_default.0}" class="form-control w-a">
+				<input type="number" min="0" max="1500" name="thumb_list_x" value="{$data.list.thumb_list.0}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_list_default.0}" class="form-control w-a text-center">
 				<span class="float-left text-help text-muted mx-2">x</span>
-				<input type="text" name="thumb_list_y" value="{$data.list.thumb_list.1}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_list_default.1}" class="form-control w-a">
+				<input type="number" min="0" max="1000" name="thumb_list_y" value="{$data.list.thumb_list.1}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_list_default.1}" class="form-control w-a text-center">
 				<span class="text-help ml-2">{$word.setimgWidth}x{$word.setimgHeight}({$word.setimgPixel})</span>
 			</dd>
 		</dl>
@@ -274,9 +274,9 @@ $data['list']['thumb_detail_default']=explode('|', $data['list']['thumb_detail_d
 				<label class='form-control-label'>{$word.page_for_details}{$word.modimgurls}{$word.wapdimensionalsize}</label>
 			</dt>
 			<dd class="form-group">
-				<input type="text" name="thumb_detail_x" value="{$data.list.thumb_detail.0}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_detail_default.0}" class="form-control w-a">
+				<input type="number" min="0" max="1500" name="thumb_detail_x" value="{$data.list.thumb_detail.0}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_detail_default.0}" class="form-control w-a text-center">
 				<span class="float-left text-help text-muted mx-2">x</span>
-				<input type="text" name="thumb_detail_y" value="{$data.list.thumb_detail.1}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_detail_default.1}" class="form-control w-a">
+				<input type="number" min="0" max="1000" name="thumb_detail_y" value="{$data.list.thumb_detail.1}" placeholder="{$word.default_values}{$word.marks}{$data.list.thumb_detail_default.1}" class="form-control w-a text-center">
 				<span class="text-help ml-2">{$word.setimgWidth}x{$word.setimgHeight}({$word.setimgPixel})</span>
 			</dd>
 		</dl>

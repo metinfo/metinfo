@@ -42,7 +42,7 @@ class message_label extends base_label
 
             $data[] = $message;
         }
-        return $data;
+        return $data ?: array();
     }
 
     /**
@@ -89,12 +89,6 @@ EOT;
 
 EOT;
         }
-        $str .= <<<EOT
-		  <div class="form-group m-b-0">
-		    <button type="submit" class="btn btn-primary btn-block btn-squared">{$message['config']['lang']['submit']}</button>
-		  </div>
-		</form>
-EOT;
         return $str;
     }
 

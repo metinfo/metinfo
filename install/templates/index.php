@@ -30,7 +30,7 @@ echo <<<EOT
 		<div class="row justify-content-center">
 			<div class="col-12 col-lg-10 col-xl-9 d-flex justify-content-between align-items-center">
 				<a href="https://www.metinfo.cn" title='米拓企业建站系统' target="_blank"><img src="../public/images/logo-white.png" alt="MetInfo|米拓企业建站系统" height="30"/></a>
-				<div class="text-white h5 mb-0">MetInfo|米拓企业建站系统 7.5.0 <font>全新安装</font></div>
+				<div class="text-white h5 mb-0">MetInfo|米拓企业建站系统 7.6 <font>全新安装</font></div>
 			</div>
 		</div>
 	</div>
@@ -81,7 +81,7 @@ EOT;
 }
 echo <<<EOT
 -->
-<div class="text-center mb-3">Powered by <b><a href="https://www.metinfo.cn" target="_blank">MetInfo 7.5.0</a></b> &copy;2009-$nowyear &nbsp;<a href="https://www.mituo.cn" target="_blank">mituo.cn</a></div>
+<div class="text-center mb-3">Powered by <b><a href="https://www.metinfo.cn" target="_blank">MetInfo 7.6</a></b> &copy;2009-$nowyear &nbsp;<a href="https://www.mituo.cn" target="_blank">mituo.cn</a></div>
 <!--
 EOT;
 if($action=='inspect' || $action=='adminsetup' || $action=='db_setup'){

@@ -6,7 +6,7 @@ $head_tab_active=isset($data['head_tab_active'])?$data['head_tab_active']:(isset
 $content_time=time();
 ?>
 <if value="$head_tab">
-<nav class="nav nav-underline mb-3 met-headtab rounded-xs<if value="$head_tab_ajax && !$no_bg">metadmin-content-min bg-white py-2</if>"<if value="$head_tab_ajax">data-ajaxchange='1'</if> <if value="$head_tab_reload">data-reload="1"</if>>
+<nav class="nav nav-underline mb-3 met-headtab rounded-xs position-sticky<if value="$head_tab_ajax && !$no_bg">metadmin-content-min py-2</if> bg-white"<if value="$head_tab_ajax">data-ajaxchange='1'</if> <if value="$head_tab_reload">data-reload="1"</if>>
 	<list data="$head_tab" name="$v">
 	  <a
 		class="nav-link<if value="$head_tab_active eq $v['_index']">active</if>"

@@ -25,14 +25,18 @@
                 $uiset_guide_modal.find('.modal-content').css({transform:'',left:0,top:''});
             }
         };
+    var debounce_uiset_guide_resize=debounce(uiset_guide_resize);
     $uiset_guide_modal.on('show.bs.modal', function(event) {
         $uiset_guide_process.find('.item').addClass('hide').eq(0).removeClass('hide');
         $('.uiset-guide-content img[data-src]').each(function(){
             $(this).attr('src',$(this).data('src')).removeAttr('data-src');
         });
+        uiset_guide_resize();
+        window.addEventListener('resize', debounce_uiset_guide_resize);
     });
     uiset_guide_visible && $uiset_guide_modal.modal();
     $uiset_guide_modal.find('[data-dismiss="modal"]').click(function(){
+        window.removeEventListener('resize', debounce_uiset_guide_resize);
         if(!uiset_guide_visible) return;
         M.load('alertify',function(){
             alertify.alert('点击可视化界面顶部导航栏->支持->操作引导，可重新查看刚才的操作引导');
@@ -66,10 +70,6 @@
                 }
             });
         }
-    });
-    uiset_guide_resize();
-    $(window).resize(function(){
-        uiset_guide_resize();
     });
     // 不再提示更改后台目录名称
     $('.no-prompt,.btn-uiset-guide-cancel').click(function(){
@@ -133,14 +133,13 @@
                 modalTitle:METLANG.contentdetail,
                 modalBody:'<form action="'+pageset_url.set_text_content+'" data-submit-ajax="1"><input type="hidden" name="table"/><input type="hidden" name="id"/><input type="hidden" name="field"/><textarea name="text" hidden></textarea></form>',
                 modalFullheight:1,
+                modalHeight100:1,
                 modalRefresh:'one'
             };
-            M.component.modal_options[pageset_modal.block_config]={
+            M.component.modal_options[pageset_modal.block_config]=
+            M.component.modal_options[pageset_modal.other_config]={
                 modalSize:'lg',
                 modalFullheight:1
-            };
-            M.component.modal_options[pageset_modal.other_config]={
-                modalSize:'lg'
             };
             M.component.modal_options['.uiset-guide-demo-modal']={
                 modalSize:'xl',
@@ -151,7 +150,7 @@
             };
         });
         // 头部导航栏弹窗、导航弹窗中的tab导航切换
-        $(document).on('click clicks', '.pageset-head-nav [data-target="'+pageset_modal.nav+'"][data-url],'+pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab:not([data-ajaxchange]) a[href^="#"],.btn-adminfolder-change,.btn-pageset-common-page', function(event) {
+        $(document).on('click clicks', '.pageset-head-nav [data-target="'+pageset_modal.nav+'"][data-url],'+pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab:not([data-ajaxchange]) .nav-link[href^="#"],.btn-adminfolder-change,.btn-pageset-common-page', function(event) {
             if(!checkLogin()) return;
             if(!$(this).attr('data-url')) event.preventDefault();
             var url=$(this).attr('data-url')?$(this).attr('data-url'):$(this).attr('href').substr(2),
@@ -194,10 +193,10 @@
                 var $loader=$pageset_nav_modal.find('.modal-loader'),
                     $modal_body=$pageset_nav_modal.find('.modal-body').eq(0);
                 if(hash=='ui_set/package' || (hash=='myapp/login' && getCookie('app_href_source').indexOf('ui_set/package')>=0)){
-                    $pageset_nav_modal.find('.modal-dialog').removeClass('modal-100 my-0 mx-auto h-100 py-2').addClass('modal-dialog-centered').find('.modal-footer').addClass('hide');
+                    $pageset_nav_modal.find('.modal-dialog').removeClass('modal-100 h-100').addClass('modal-dialog-centered').find('.modal-footer').addClass('hide');
                     $pageset_nav_modal.find('.modal-body').removeClass('pl-4');
                 }else{
-                    $pageset_nav_modal.find('.modal-dialog').addClass('modal-100 my-0 mx-auto h-100 py-2').removeClass('modal-dialog-centered').find('.modal-footer').removeClass('hide');
+                    $pageset_nav_modal.find('.modal-dialog').addClass('modal-100 h-100').removeClass('modal-dialog-centered').find('.modal-footer').removeClass('hide');
                     $pageset_nav_modal.find('.modal-body').addClass('pl-4');
                 }
                 hash=='ui_set/package' && $modal_body.find('.nav-modal-item[data-path="'+hash+'"]').remove();
@@ -235,7 +234,7 @@
             },0);
         });
         // 导航弹框标题
-        $(document).on('click', pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab[data-ajaxchange] a[href*="#"]', function(event) {
+        $(document).on('click', pageset_modal.nav+' .modal-body:eq(0) .nav-modal-item .met-headtab[data-ajaxchange] .nav-link[href*="#"]', function(event) {
             var $pageset_nav_modal=$(pageset_modal.nav),
                 $modal_title=$pageset_nav_modal.find('.modal-title'),
                 title=$modal_title.html();
@@ -248,7 +247,7 @@
         });
         // 导航弹框内锚点链接兼容
         $(document).on('click', pageset_modal.nav+' .modal-body:eq(0) a[href^="#/"]', function(event) {
-            if(!$(this).parents('.met-headtab').length){
+            if(!($(this).parents('.met-headtab').length && $(this).hasClass('nav-link'))){
                 var title=$(this).attr('title')||$(this).text();
                 event.preventDefault(),$('.btn-pageset-common-page').attr({'data-url':$(this).attr('href').substr(2),'data-head_tab_active':getQueryString('head_tab_active',$(this).attr('href')),title:title}).trigger('clicks');
                 setTimeout(function(){
@@ -268,7 +267,7 @@
                         $(this).attr({href:M.url.admin+$(this).attr('href')});
                     });
                 });
-                $self.removeAttr('data-modal-url data-modal-title data-modal-load').removeData(['modalTitle','modalSize','modalUrl','modalFullheight','modalOktext','modalNotext']);
+                $self.removeAttr('data-modal-url data-modal-title data-modal-load').removeData(['modalTitle','modalSize','modalUrl','modalFullheight','modalOktext','modalNotext','modalLoad']);
             },1000);
         });
         // 导航菜单设置保存后回调
@@ -441,6 +440,7 @@
                                     modalSize: 'xl',
                                     modalUrl: '',
                                     modalFullheight: 1,
+                                    modalHeight100: 1,
                                     modalOktext:0,
                                     modalNotext:METLANG.close
                                 }).click();
@@ -977,7 +977,9 @@
     });
     // 区块设置按钮定位
     function blocksetBtnPosition(obj,btns,index,windows,thisiframe){
-        var self_info={};
+        var self_info={
+                z_index:obj.css('z-index')!='auto'?parseInt(obj.css('z-index')):1
+            };
         if(obj.css('position')=='fixed'){
             self_info.left=obj.position().left,
             self_info.top=obj.position().top,
@@ -993,18 +995,18 @@
         self_info.thiswidth=btns.outerWidth();
         var scroll=$(windows).scrollTop();
         // 区块被其它区块遮挡时设置按钮位置变换
-        thisiframe.find('[m-id]').each(function(index1, el1) {
-            var this_position=$(this).css('position');
-            if(index1!=index && this_position=='fixed'){
-                var this_h=$(this).outerHeight(),
-                    this_top=$(this).position().top,
-                    this_tops=scroll+this_top,
-                    other_judge=this_top<15?1:0;
-                if(this_tops+this_h>self_info.top && this_tops+this_h<self_info.top+self_info.height && other_judge && $(this).outerWidth()>=self_info.width/2){
-                    self_info.top=this_top+this_h;
-                    self_info.position=this_position;
-                    return false;
-                }
+        thisiframe.find('[m-id]').filter(function(index1,el){
+            var z_index=$(this).css('z-index')!='auto'?parseInt($(this).css('z-index')):1;
+            return $(this).is(':visible') && index!=index1 && $(this).css('position')=='fixed' && (index1<index?z_index>self_info.z_index:z_index>=self_info.z_index);
+        }).each(function(index1,el1){
+            var this_h=$(this).outerHeight(),
+                this_top=$(this).position().top,
+                this_tops=scroll+this_top,
+                other_judge=this_top<15?1:0;
+            if(((this_tops>=self_info.top && this_tops<self_info.top+25) || (this_tops+this_h>=self_info.top && this_tops+this_h<self_info.top+self_info.height)) && other_judge && $(this).outerWidth()>=self_info.width/2){
+                self_info.top=this_top+this_h;
+                self_info.position='fixed';
+                return false;
             }
         });
         // 是否跟其他区块设置按钮重叠

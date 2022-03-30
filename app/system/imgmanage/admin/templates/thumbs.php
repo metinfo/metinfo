@@ -36,9 +36,9 @@ defined('IN_MET') or exit('No permission');
 			</dt>
 			<dd>
 				<div class='form-group clearfix '>
-					<input type="text" name="met_productimg_x" class="form-control width-100"  />
+					<input type="number" min="0" max="1500" name="met_productimg_x" class="form-control width-100 text-center"  />
 					<span class="float-left line-height-35 ml-2 mr-2 ">X</span>
-					<input type="text" name="met_productimg_y" class="form-control width-100"  />
+					<input type="number" min="0" max="1000" name="met_productimg_y" class="form-control width-100 text-center"  />
 					<span class="text-help ml-2">{$word.thumb_tips}</span>
 				</div>
 			</dd>
@@ -49,9 +49,9 @@ defined('IN_MET') or exit('No permission');
 			</dt>
 			<dd>
 				<div class='form-group clearfix '>
-					<input type="text" name="met_productdetail_x" class="form-control width-100"  />
+					<input type="number" min="0" max="1500" name="met_productdetail_x" class="form-control width-100 text-center"  />
 					<span class="float-left line-height-35 ml-2 mr-2 ">X</span>
-					<input type="text" name="met_productdetail_y" class="form-control width-100"  />
+					<input type="number" min="0" max="1000" name="met_productdetail_y" class="form-control width-100 text-center"  />
 					<span class="text-help ml-2">{$word.thumb_tips}</span>
 				</div>
 			</dd>
@@ -62,9 +62,9 @@ defined('IN_MET') or exit('No permission');
 			</dt>
 			<dd>
 				<div class='form-group clearfix '>
-					<input type="text" name="met_imgs_x" class="form-control width-100"  />
+					<input type="number" min="0" max="1500" name="met_imgs_x" class="form-control width-100 text-center"  />
 					<span class="float-left line-height-35 ml-2 mr-2 ">X</span>
-					<input type="text" name="met_imgs_y" class="form-control width-100"  />
+					<input type="number" min="0" max="1000" name="met_imgs_y" class="form-control width-100 text-center"  />
 					<span class="text-help ml-2">{$word.thumb_tips}</span>
 				</div>
 			</dd>
@@ -75,9 +75,9 @@ defined('IN_MET') or exit('No permission');
 			</dt>
 			<dd>
 				<div class='form-group clearfix '>
-					<input type="text" name="met_imgdetail_x" class="form-control width-100"  />
+					<input type="number" min="0" max="1500" name="met_imgdetail_x" class="form-control width-100 text-center"  />
 					<span class="float-left line-height-35 ml-2 mr-2 ">X</span>
-					<input type="text" name="met_imgdetail_y" class="form-control width-100"  />
+					<input type="number" min="0" max="1000" name="met_imgdetail_y" class="form-control width-100 text-center"  />
 					<span class="text-help ml-2">{$word.thumb_tips}</span>
 				</div>
 			</dd>
@@ -88,9 +88,9 @@ defined('IN_MET') or exit('No permission');
 			</dt>
 			<dd>
 				<div class='form-group clearfix '>
-					<input type="text" name="met_newsimg_x" class="form-control width-100"  />
+					<input type="number" min="0" max="1500" name="met_newsimg_x" class="form-control width-100 text-center"  />
 					<span class="float-left line-height-35 ml-2 mr-2 ">X</span>
-					<input type="text" name="met_newsimg_y" class="form-control width-100"  />
+					<input type="number" min="0" max="1000" name="met_newsimg_y" class="form-control width-100 text-center"  />
 					<span class="text-help ml-2">{$word.thumb_tips}</span>
 				</div>
 			</dd>

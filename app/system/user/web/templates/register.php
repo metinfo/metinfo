@@ -1,9 +1,7 @@
 <?php
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
-defined('IN_MET') or exit('No permission');
-$data['page_title']=$_M['word']['memberReg'].$data['page_title'];
-?>
+defined('IN_MET') or exit('No permission');?>
 <include file="sys_web/head"/>
 <include file="app/style"/>
 <div class="register-index met-member page p-y-50 bg-pagebg1">

@@ -10,7 +10,6 @@
         delurl=that.own_name+'c=index&a=doDeleteColumn&id=',
         moveurl=that.own_name+'c=index&a=domove',
         edit_dataurl='?c=index&a=doGetColumn&id=',
-        relation_dataurl='?c=relation&a=doGetRelationClass&cid=',
         subcolumns={},
         allsubcolumn=0,
         config={
@@ -77,7 +76,7 @@
                     +'</div>'
                     +'</div>';
                 }
-                list.push(`<button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="${METLANG.columnmeditor}" data-modal-size="lg" data-modal-url="column/edit/${edit_dataurl+val.id}" data-modal-fullheight="1" data-modal-tablerefresh="${column_list}">${METLANG.seting}</button>
+                list.push(`<button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target=".column-details-modal" data-modal-title="${METLANG.columnmeditor}" data-modal-size="lg" data-modal-url="column/edit/${edit_dataurl+val.id}" data-modal-fullheight="1"  data-modal-height100="1" data-modal-tablerefresh="${column_list}">${METLANG.seting}</button>
                 <div class="dropdown d-inline-block">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-submenu>${METLANG.columnmore}</button>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -138,6 +137,9 @@
                 }
                 $tr.find('.btn-show-subcolumn').click();
                 $column_list.removeAttr('data-showcolumn');
+                setTimeout(()=>{
+                    $tr.attr('tabindex',11).focus().removeAttr('tabindex');
+                },600);
             }
         }
     });
@@ -236,6 +238,7 @@
         M.component.modal_options[column_add_modal]={
             modalSize:'lg',
             modalTitle:METLANG.add+METLANG.settopcolumns,
+            modalFullheight:1,
             modalRefresh:'one',
             modalBody:`<form action="${that.own_name}c=index&a=doAddColumn" class="form-inline" data-submit-ajax="1">
                 <table class="table table-hover w-100 dtr-inline">
@@ -307,14 +310,14 @@
                 </td>
                 <td>${M.component.formWidget('name'+id,'','text',1)}</td>
                 <td class="text-center"><select name="nav${id}" class="form-control">${config.nav_option}</select></td>
-                <td class="text-center"><select name="module${id}" class="form-control"></select></td>
+                <td class="text-center module">加载中</td>
                 <td class="text-center">${M.component.formWidget('foldername'+id,'','text',1,'','text-center')}</td>
                 <td class="text-center">${M.component.btn('cancel')}</td>
             </tr>`;
         $(column_add_modal+' table tbody').append(html);
         var $new_tr=$(column_add_modal+' table tbody tr:last-child');
         config.module_option(classtype,parent_module,function(module_option){
-            $new_tr.find('[name*="module-"]').html(module_option);
+            $new_tr.find('td.module').html(`<select name="module${id}" class="form-control">${module_option}</select>`);
             classtype>1 && $new_tr.find('[name*="module-"]').val(parent_module).change();
             setTimeout(function(){
                 $new_tr.metFormAddField();
@@ -443,15 +446,15 @@
         });
     }
     // 栏目编辑保存回调
-    var column_details_modal='.column-details-modal';
-    M.component.modal_call_status[column_details_modal]=[];
+    var column_details_modal='.column-details-modal',
+        column_details_modal_callback='';
     M.load('modal',function(){
         M.component.modal_options[column_details_modal]={
             callback:function(key,data){
                 M.load('form',function(){
-                    var validate_order=$(key+' form').attr('data-validate_order');
-                    if(!M.component.modal_call_status[key][validate_order]){
-                        M.component.modal_call_status[key][validate_order]=1;
+                    if(!column_details_modal_callback){
+                        column_details_modal_callback=1;
+                        var validate_order=$(key+' form').attr('data-validate_order');
                         formSaveCallback(validate_order, {
                             true_fun: function() {
                                 var id=$(key+' form [name="id"]').val(),

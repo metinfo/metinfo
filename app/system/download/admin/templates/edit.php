@@ -10,13 +10,14 @@ defined('IN_MET') or exit('No permission');
 $checkbox_time=time();
 $upload = array(
     'title' => $word['downloadurl'],
-    'name' => 'downloadurl1',
+    'name' => 'downloadurl',
     'value' => $data['list']['downloadurl'],
     'type' => 'file',
     'noimage' => 1,
     'drop_zone_enabled' => 1,
     'preview_class' => 'hide',
     'noprogress' => 1,
+    'prev_input'=>1,
     'callback' => 'downloadFilesize'
 );
 ?>
@@ -28,7 +29,7 @@ $upload = array(
     <dd>
         <div class='form-group clearfix'>
             <input type="text" name="filesize" value="{$data.list.filesize}" class="form-control w-a">
-            <span class="text-help ml-2"></span>
+            <span class="text-help ml-2">KB</span>
         </div>
     </dd>
 </dl>

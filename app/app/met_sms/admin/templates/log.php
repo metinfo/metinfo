@@ -2,10 +2,9 @@
 # MetInfo Enterprise Content Management System
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
-$head_tab_active=2;
+$head_tab_active=1;
 $head_tab=array(
 	array('title'=>"短信配置",'url'=>'#/app/met_sms'),
-	array('title'=>"短信群发",'url'=>'#/app/met_sms/mass'),
 	array('title'=>"发送记录",'url'=>'#/app/met_sms/log'),
 );
 ?>

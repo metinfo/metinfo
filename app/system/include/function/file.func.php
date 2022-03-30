@@ -236,7 +236,10 @@ function delfile($fileUrl)
     $fileUrl = path_absolute($fileUrl);
     @clearstatcache();
     if (stristr(PHP_OS, "WIN")) {
-        $fileUrl = @iconv("utf-8", "GBK", $fileUrl);
+        $res = @iconv("utf-8", "GBK", $fileUrl);
+        if ($res !== false) {
+            $fileUrl = $res;
+        }
     }
     if (file_exists($fileUrl)) {
         unlink($fileUrl);
@@ -327,11 +330,12 @@ function getfilesize($filename)
  * @param  string  $filename	要获取的文件名
  * @return string				返回文件的后缀名
  */
-function getfileable($filename){
-	$filename = path_absolute($filename);
-	$lastsite = strrpos($filename,'.');
-	$fileable = substr($filename,$lastsite+1);
-	return $fileable;
+function getfileable($filename)
+{
+    $filename = path_absolute($filename);
+    $lastsite = strrpos($filename, '.');
+    $fileable = substr($filename, $lastsite + 1);
+    return $fileable;
 }
 
 /**
@@ -474,8 +478,11 @@ function traversal($jkdir, $suffix='[A-Za-z]*', $jump=null, &$filenamearray = ar
             traversal($filename, $suffix, $jump, $filenamearray);
         } else {
             if ($file != '.' && $file != '..' && $file != './..' && preg_match_all("/\.({$suffix})/i", $filename, $out)) {
-                if (stristr(PHP_OS, "WIN")) {
-                    $filename = iconv("gbk", "utf-8", $filename);
+                //字符编码转换
+                $encode = mb_detect_encoding($filename, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'));
+                $new_str = mb_convert_encoding($filename, 'UTF-8', $encode);
+                if ($new_str) {
+                    $filename = $new_str;
                 }
                 $filenamearray[] = str_replace(PATH_WEB, '', $filename);
             }
@@ -529,7 +536,7 @@ function file_size($file_path = '', $clear = 1)
     if (is_file($file_path)) {
         $size_total += byte_format(filesize($file_path), 3);
     } elseif (is_dir($file_path)) {
-            $handler = opendir($file_path);
+        $handler = opendir($file_path);
         while (($filename = readdir($handler)) !== false) {
             if (!in_array($filename, array(".", "..", 'cache', '.idea','.git', '.gitignore'))) {
                 //dump($file_path . "/" . $filename);

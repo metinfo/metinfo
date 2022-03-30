@@ -67,14 +67,14 @@ $(function(){
     ],function(){
       return typeof $.fn.webuiPopover=='function';
     },function(){
-      $('.met-online-weixin').webuiPopover();
+      $('.onlinebox .met-online-weixin').webuiPopover();
     });
     </if>
     $("#onlinebox-open").click(function(){
         $("#onlinebox").find(".onlinebox_one_list").show();
         $(this).hide();
     });
-    $(".close").click(function(){
+    $(".onlinebox .close").click(function(){
       $("#onlinebox").find(".onlinebox_one_list").hide();
       $("#onlinebox-open").show();
     });

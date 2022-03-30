@@ -69,10 +69,9 @@ defined('IN_MET') or exit('No permission');
         </dt>
         <dd>
           <div class="form-group clearfix">
-						<a tabindex="0" class="watch-rule"
+						<a href="javascript:;" class="watch-rule"
 						data-toggle="modal"
 						data-target=".pseudostatic-modal"
-						data-modal-url="seo/rule"
 						data-modal-size="lg"
 						data-modal-title="{$word.pseudo_static}"
 						data-modal-footerok="0"

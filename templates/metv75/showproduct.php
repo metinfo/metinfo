@@ -2,9 +2,7 @@
 <include file="head.php" />
 <main class="met-showproduct pagetype1 animsition" m-id="product_bar">
     <div class="met-showproduct-head page-content block-bg">
-
-        <div class="container">      
-
+        <div class="container">
             <div class="row">
                 <div class="col-lg-7">
                     <list data="$data['displayimgs']" name="$s"></list>
@@ -19,12 +17,10 @@
                                 ="{$s.img|thumb:$c['met_productdetail_x'],$c['met_productdetail_y']}" class='img-fluid' alt='{$s.title}' />
                             </a>
                         </div>
-
                         </list>
                     </div>
                 </div>
                 <div class="col-lg-5">
-
                     <div class="product-intro">
                         <h1 class='m-t-0 font-size-24'>{$data.title}</h1>
                         <if value="$data['description']">
@@ -47,10 +43,7 @@
                             </list>
                         </div>
                         </if>
-
-
                         <pagination/>
-
                     </div>
                 </div>
             </div>
@@ -61,9 +54,7 @@
             <div class="row">
                 <div class="clearfix">
                     <div class="col-lg-9 pull-lg-left">
-
                         <div class="row">
-                            
                             <div class="panel panel-body m-b-0 product-detail" boxmh-mh>
                                 <ul class="nav nav-tabs nav-tabs-line met-showproduct-navtabs">
                                     <list data="$data['contents']" name="$s">
@@ -94,14 +85,9 @@
                                         <a href="{$tag.url}" {$g.urlnew} title="{$tag.name}">{$tag.name}</a>
                                     </list>
                                 </div>
-                               
-                                
-                                
-                                
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-3">
                         <div class="row">
                             <aside class="panel panel-body m-b-0 product-hot met-sidebar leftsidebar" boxmh-h m-id='product_bar' m-type='nocontent'>
@@ -134,32 +120,25 @@
                                 </div>
                             </aside>
                         </div>
-                    </div>                  
-                    
+                    </div>
                 </div>
-
-                <div class="hot_box col-md-12 clearfix">
-
-                    <h3 class="col-md-12">{$lang.product_hottitle}</h3>
-                    <relations>
-                        <?php
-                        $relations = reset($relations)
-                        ?>
-                        <list data="$relations['list']" name="$relation"> 
-                            <div class="hot_itembox col-md-3 col-sm-6 col-xs-6">
-                                <a href='{$relation.url}' title='{$relation.title}' class='' {$g.urlnew}>
-                                    <img src="{$relation.imgurl}" alt="{$relation.title}" style="width:100%; height:auto;"> 
-                                    <h4 class="hot_itemboxtitle" style="text-align: center;">{$relation.title}</h4>
-                                </a>
-                            </div>  
-                            
-                        </list>
-                        
-                    </relations>
+                <div class="hot_box">
+                    <h3>{$lang.product_hottitle}</h3>
+                    <div class="row">
+                         <relations>
+                             <list data="$relation['list']">
+                                 <div class="hot_itembox col-md-3 col-sm-6 col-xs-6">
+                                     <a href='{$val.url}' title='{$val.title}' {$g.urlnew}>
+                                         <if value="$relation['relation_module'] neq 4">
+                                         <img src="{$val.imgurl}" alt="{$val.title}" style="width:100%; height:auto;">
+                                         </if>
+                                         <h4 class="hot_itemboxtitle" style="text-align: center;">{$val._title}</h4>
+                                     </a>
+                                 </div>
+                             </list>
+                         </relations>
+                     </div>
                 </div>
-
-
-
             </div>
         </div>
     </div>

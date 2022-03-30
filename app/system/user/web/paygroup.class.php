@@ -32,8 +32,8 @@ class paygroup extends web
                 $data['body'] = "{$_M['word']['userbuylist']}-{$out_trade_no}";
                 $data['total_fee'] = $value['price'];
                 $data['out_trade_no'] = $out_trade_no;
-                $data['callback_url'] = "{$_M['url']['profile']}";
-                $data['sys_callback'] = "{$_M['url']['paygroup']}&a=dochangepaygroup";
+                $data['callback_url'] = str_replace('../', $_M['url']['web_site'], $_M['url']['profile']);
+                $data['sys_callback'] = str_replace('../', $_M['url']['web_site'], "{$_M['url']['paygroup']}&a=dochangepaygroup");
                 $data['no'] = $this->no;
                 $data['attach'] = base64_encode(jsonencode($group_data));
             }
@@ -69,7 +69,7 @@ class paygroup extends web
     public function load_url_unique()
     {
         global $_M;
-        $_M['url']['form'] = $_M['url'][''];
+        parent::load_url_unique();
     }
 }
 

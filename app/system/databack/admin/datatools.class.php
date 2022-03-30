@@ -30,9 +30,9 @@ class datatools extends admin
         $action = $_M['form']['action'];
         echo "acrion : {$_M['form']['action']} <hr>";
         echo "
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=sqldata'>系统数据库指纹</a><br>
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=langdata'>系统语言指纹</a><br>
-        <a href='{$_M['url']['site_admin']}?n=databack&c=index&a=doGetSysDate&action=configdata'>配置库指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=datatools&a=doGetSysDate&action=sqldata'>系统数据库指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=datatools&a=doGetSysDate&action=langdata'>系统语言指纹</a><br>
+        <a href='{$_M['url']['site_admin']}?n=databack&c=datatools&a=doGetSysDate&action=configdata'>配置库指纹</a><br>
         ";
 
         if ($action =='sqldata') {

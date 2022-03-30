@@ -19,6 +19,7 @@
 			<dd>
 				<div class="form-group clearfix">
 					<input type="password" name="password" class="form-control" required autocomplete="new-password"/>
+                    <!--<input type="password" name="password" class="form-control" required autocomplete="new-password" data-fv-regexp="true" data-fv-regexp-regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,30}$" data-fv-regexp-message="{$word.pw_check_tips}"/>-->
 				</div>
 			</dd>
 		</dl>

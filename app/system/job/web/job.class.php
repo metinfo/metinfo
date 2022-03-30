@@ -78,6 +78,13 @@ class job extends news
             if (!load::sys_class('pin', 'new')->check_pin($_M['form']['code'], $_M['form']['random'])) {
                 okinfo(-1, $_M['word']['membercode']);
             }
+        } else {
+            if ($_M['config']['met_captcha_open']) {    //图形验证插件
+                $checkCode = load::app_class('met_captcha/include/captcha', 'new')->checkCode($_REQUEST['Ticket'], $_REQUEST['Randst']);
+                if (!$checkCode) {
+                    okinfo(-1, $_M['word']['membercode']);
+                }
+            }
         }
 
         if ($this->checkword() && $this->checktime() && $this->checkToken($_M['form']['jobid'])) {
@@ -130,7 +137,8 @@ class job extends news
             }
 
             if (strstr($content, $word)) {
-                okinfo('-1', $word);
+                $msg = "{$_M['word']['Feedback3']} [" . $word . "] ";
+                okinfo('-1', $msg);
                 die();
             }
         }
@@ -204,7 +212,7 @@ class job extends news
         $body .= '<tr><td class="title" colspan="3">' . $title = "{$_M['word']['member_cv']} {$job_list['position']}" . '</td></tr>' . "\n";
         $j = 0;
 
-        $class123 = load::sys_class('label', 'new')->get('column')->get_class123_reclass($info['id']);
+        $class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($info['id']);
         $cv_para = load::mod_class('parameter/parameter_database', 'new')->get_parameter(6, $class123['class1']['id'], $class123['class2']['id'], $class123['class3']['id']);
         $usename = $_M['form']['para' . $cv_para[0]['id']];
 
@@ -289,9 +297,7 @@ class job extends news
         $met_cv_type = explode('#@met@#', $conlum_configs['met_cv_type']);
         if (in_array('2', $met_cv_type) && $conlum_configs['met_cv_job_tel']) {
             $job_list = DB::get_one("SELECT * FROM {$_M['table']['job']} WHERE id='{$_M['form']['jobid']}'");
-            $str = str_replace("http://", "", $_M['config']['met_weburl']);
-            $strdomain = explode("/", $str);
-            $domain = $strdomain[0];
+            $domain = HTTP_HOST ?: $_M['config']['met_weburl'];
             $title = "{$job_list['position']}";
             #$message="您网站[{$domain}]收到了新的简历[{$job_list['position']}]，请尽快登录网站后台查看";
             $message = "{$_M['word']['reMessage1']}[{$domain}]{$_M['word']['jobPrompt']}[{$title}]{$_M['word']['reMessage2']}";

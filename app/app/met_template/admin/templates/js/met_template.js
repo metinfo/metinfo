@@ -1,12 +1,21 @@
 /* 米拓企业建站系统 Copyright (C) 长沙米拓信息技术有限公司 (https://www.metinfo.cn). All rights reserved. */
 ;(function() {
-  var that = $.extend(true, {}, admin_module)
+  var thats = $.extend(true, {}, admin_module)
   TEMPLOADFUNS[`met_template/other`] = function() {
     const met_template_other = $.extend(true, {}, admin_module)
     renderList(met_template_other)
   }
   TEMPLOADFUNS[`met_template/ui`] = function() {
     const met_template = $.extend(true, {}, admin_module)
+    var $template_right = met_template.obj.find('.met-template-right'),
+		$headtab = met_template.obj.parents('.tab-content').prev('.met-headtab');
+    if ($template_right.length) {
+      if($headtab.find('.met-template-right').length){
+        $template_right.remove();
+      }else{
+        $headtab.append($template_right);
+      }
+    }
     getUserInfo(met_template)
     renderList(met_template)
   }
@@ -22,11 +31,11 @@
       },
       dataType: 'json',
       success: function(result) {
-        const url = that.obj.find('.met-tips').data('url')
-
+        const url = thats.obj.find('.met-tips').data('url')
+        const templates_url = thats.obj.find('.met-tips').data('templates_url')
         const noTemplate = `<div class="alert alert-primary tips w-100">
         <p>还没有购买模板或购买的模板绑定域名不是：${url}（注意域名不能带http://、二级目录） </p>
-        <a href="https://www.metinfo.cn/product/" target="_blank"><button class="btn btn-primary">${METLANG.met_template_buytemplates}</button></a>
+        <a href="${templates_url}" target="_blank"><button class="btn btn-primary">${METLANG.met_template_buytemplates}</button></a>
           </div>`
         if (result.status && !result.data) {
           list.html(noTemplate)
@@ -273,7 +282,7 @@
               url: M.url.admin + '?n=databack&c=index&a=dopackdata'
             },
             function(result) {
-              continueBack(result, params)
+              continueBack(that,result, params)
             }
           )
         })
@@ -315,7 +324,7 @@
       body.html(html)
     }
   }
-  function continueBack(result, params) {
+  function continueBack(that,result, params) {
     if (result.status === 1) {
       that.precent = 0
       renderProgress(params.body, { title: METLANG.download_prompt })
@@ -330,7 +339,7 @@
           setTimeout(() => {
             that.precent = that.precent + Math.floor(Math.random() * 10 + 1)
             renderProgress(params.body, { precent: that.precent })
-            continueBack(result, params)
+            continueBack(that,result, params)
           }, 800)
         }
       )
@@ -467,7 +476,7 @@
     })
   }
   function getUserInfo(that) {
-    const tips = that.obj.find('.met-tips')
+    const tips = thats.obj.find('.met-tips')
     $.ajax({
       url: M.url.admin + '?n=myapp&c=index&a=doUserInfo',
       type: 'GET',
@@ -481,15 +490,15 @@
         <p>请保持账号登录状态，以便正常获取模板升级状态并正常升级</p>
         <span>友情提示：此处显示的模板绑定域名必须为 ${url}</span></div>`
         if (result.status) {
-          const user = that.obj.find('.met-template-right')
+          const user = $('.met-template-right')
           const userHtml = `<div class="d-flex user">
             <div class="user-name">${result.data.username}</div>
             <a href="https://u.mituo.cn/#/user/login" target="_blank">${METLANG.account_Settings}</a>
-            <button class="btn btn-logout btn-default">${METLANG.indexloginout}</button>
+            <button type="button" class="btn btn-logout btn-default">${METLANG.indexloginout}</button>
             </div>`
           user.html(userHtml)
           tips.html(LoginTips)
-          that.obj.find('.btn-logout').click(function() {
+          user.find('.btn-logout').click(function() {
             $.ajax({
               url: M.url.admin + '?n=myapp&c=index&a=doLogout',
               type: 'GET',
@@ -505,9 +514,9 @@
             })
           })
         } else {
-          const user = that.obj.find('.met-template-right')
+          const user = $('.met-template-right')
           const userHtml = `<a href="#/myapp/login" onClick="setCookie('app_href_source','app/met_template/?head_tab_active=0')" class="mr-2">
-          <button class="btn btn-default">
+          <button type="button" class="btn btn-default">
           ${METLANG.loginconfirm}
           </button>
           </a>

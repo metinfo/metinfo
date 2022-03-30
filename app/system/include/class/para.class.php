@@ -193,9 +193,8 @@ class para
 						";
                 if ($module != 10) $query .= "
 							module  = '{$module}',
-							imgname = '',
-				";
-                $query .= "lang    = '{$this->lang}'";
+							imgname = '',";
+                $query .= "lang  = '{$this->lang}'";
                 DB::query($query);
             }
         }
@@ -207,26 +206,27 @@ class para
         $table = $this->table($module);
         foreach ($infos as $paraid => $val) {
             if (isset($val)) {
-                $query = "SELECT * FROM {$table} WHERE listid = '{$listid}' and paraid = '{$paraid}' and lang = '{$this->lang}'";
-                $para = DB::get_all($query);
-                if (count($para) > 1) {
-                    $query = "DELETE FROM {$table} WHERE listid = '{$listid}' and paraid = '{$paraid}' and lang = '{$this->lang}'";
-                    DB::query($query);
-                }
-                if (count($para) == 0 || count($para) > 1) {
+                $query = "SELECT * FROM {$table} WHERE listid = '{$listid}' AND paraid = '{$paraid}' AND lang = '{$this->lang}'";
+                $para = DB::get_one($query);
+
+                if ($para) {
                     $query = "INSERT INTO {$this->table($module)} SET
 							listid  = '{$listid}',
 							paraid  = '{$paraid}',
 							info    = '{$val}',
 						";
+
                     if ($module != 10) $query .= "
 								module  = '{$module}',
-								imgname = '',
-					";
-                    $query .= "lang    = '{$this->lang}'";
+								imgname = '',";
+                    $query .= "lang = '{$this->lang}'";
                     DB::query($query);
-                } else if (count($para) == 1) {
-                    $query = "UPDATE {$table} SET info = '{$val}' WHERE listid = '{$listid}' and paraid = '{$paraid}' and lang = '{$this->lang}'";
+                } else{
+                    $query = "UPDATE {$table} 
+                        SET info = '{$val}' 
+                        WHERE listid = '{$listid}' 
+                        AND paraid = '{$paraid}' 
+                        AND lang = '{$this->lang}'";
                     DB::query($query);
                 }
             }

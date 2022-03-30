@@ -4,17 +4,15 @@
 
 defined('IN_MET') or exit('No permission');
 
-load::sys_class('admin.class.php');
-load::sys_class('nav.class.php');
-load::sys_func('file');
+load::sys_class('admin');
 
 class html extends admin
 {
-
     public function __construct()
     {
         global $_M;
         parent::__construct();
+        $this->html_handle = load::mod_class('html/html_handle', 'new');
     }
 
     //获取静态页面设置
@@ -29,6 +27,7 @@ class html extends admin
         $list['met_htmpagename'] = isset($_M['config']['met_htmpagename']) ? $_M['config']['met_htmpagename'] : '';
         $list['met_listhtmltype'] = isset($_M['config']['met_listhtmltype']) ? $_M['config']['met_listhtmltype'] : '';
         $list['met_htmlistname'] = isset($_M['config']['met_htmlistname']) ? $_M['config']['met_htmlistname'] : '';
+        $list['met_html_auto'] = isset($_M['config']['met_html_auto']) ? $_M['config']['met_html_auto'] : '';
 
         $this->success($list);
     }
@@ -45,6 +44,7 @@ class html extends admin
         $configlist[] = 'met_htmpagename';
         $configlist[] = 'met_listhtmltype';
         $configlist[] = 'met_htmlistname';
+        $configlist[] = 'met_html_auto';
 
         if (isset($_M['form']['met_htmtype'])) {
             $_M['form']['met_htmtype'] = $_M['form']['met_htmtype'] == 'htm' ? $_M['form']['met_htmtype'] : 'html';
@@ -52,62 +52,53 @@ class html extends admin
 
         //开启静态后关闭伪静态 && 删除重写文件
         if ($_M['form']['met_webhtm']) {
-            $_M['config']['met_pseudo'] = 0;
             $query = "UPDATE {$_M['table']['config']} SET value = 0 WHERE name='met_pseudo'";
             DB::query($query);
 
-            //删除重写文件
-            if (file_exists(PATH_WEB . 'httpd.ini')) {
-                @unlink(PATH_WEB . 'httpd.ini');
-            }
-            if (file_exists(PATH_WEB . '.htaccess')) {
-                @unlink(PATH_WEB . '.htaccess');
-            }
-            if (file_exists(PATH_WEB . 'web.config')) {
-                @unlink(PATH_WEB . 'web.config');
+            $seo_open = load::mod_class('seo/seo_open','new');
+            //删除重新文件
+            $seo_open->delRewrite();
+            if ($_M['form']['met_webhtm'] == 3) {
+                //混合模式创建重写文件
+                $seo_open->buildRewrite();
             }
         }
 
         configsave($configlist);/*保存系统配置*/
+        buffer::clearConfig();
 
-        if (file_exists(PATH_WEB . 'cache')) {
-            deldir(PATH_WEB . 'cache', 1);
+        $redata = array();
+        $redata['callback_url'] = '';
+        if ($_M['form']['met_html_auto'] && $_M['form']['met_webhtm']) {//html自动更新
+            $redata['callback_url'] = $url = $_M['url']['web_site'] . "app/system/entrance.php?n=html&c=html&a=doSetval&lang={$_M['lang']}";
         }
+
         //写日志
         logs::addAdminLog('physicalstatic', 'submit', 'jsok', 'doSaveSetup');
-        $this->success('', $_M['word']['jsok']);
+        $this->success($redata, $_M['word']['jsok']);
     }
 
     //删除静态文件
-    public function doDelHtml()
-    {
+    public function doDelHtml(){
         global $_M;
-        $module = load::mod_class('column/column_op', 'new')->get_sorting_by_module(false);
-        foreach ($module as $key => $val) {
-            if ($key >= 1) {
-                foreach ($val['class1'] as $keycalss1 => $valclass1) {
-                    $files = traversal($valclass1['foldername'], 'html|htm');
-                    foreach ($files as $fkey => $fval) {
-                        delfile($fval);
-                    }
-                }
+        $pageinfo = array();
+        $pageinfo[] = $this->html_handle->homePage();
+        $pageinfo = $this->html_handle->getPageInfo($pageinfo, '', '', '', '', 1, '');
+        $pages = $this->html_handle->getQueryList($pageinfo);
+
+        $ext = array('html', 'htm');
+        foreach ($pages as $page) {
+            $fpath = PATH_WEB . $page['filename'];
+            $info = pathinfo($fpath);
+            if (is_file($fpath) && isset($info['extension']) && in_array($info['extension'], $ext)) {
+                delfile($fpath);
             }
         }
-        $lang = load::mod_class('language/language_op', 'new')->get_lang();
-        foreach ($lang as $key => $val) {
-            delfile("index_{$val['mark']}.html");
-            delfile("index_{$val['mark']}.htm");
-        }
-        delfile('index.html');
-        delfile('index.htm');
 
-        if (file_exists(PATH_WEB . 'cache')) {
-            deldir(PATH_WEB . 'cache', 1);
-        }
-        //写日志
+        buffer::clearConfig();
         logs::addAdminLog('physicalstatic', 'delete', 'jsok', 'doDelHtml');
         $this->success('', $_M['word']['jsok']);
-
+        return;
     }
 
     //静态页面生成页面
@@ -115,42 +106,100 @@ class html extends admin
     {
         global $_M;
         buffer::clearConfig();
-        $module = load::mod_class('column/column_op', 'new')->get_sorting_by_module(false, $_M['mark']);
+        $redata = array();
 
         $list = array();
         $list['name'] = $_M['word']['htmAll'];
         $list['content']['name'] = $_M['word']['htmCreateAll'];
         $list['content']['url'] = "{$_M['url']['own_form']}&a=doCreatePage&all=1";
-        $class1[] = $list;
+        $redata[] = $list;
 
         $list = array();
         $list['name'] = $_M['word']['seotips6'];
         $list['content']['name'] = $_M['word']['htmTip3'];
         $list['content']['url'] = "{$_M['url']['own_form']}&a=doCreatePage&index=1";
-        $class1[] = $list;
+        $redata[] = $list;
 
+        $module = load::mod_class('column/column_op', 'new')->get_sorting_by_module(false, $_M['mark']);
         foreach ($module as $mod => $valm) {
-            if (($mod >= 1 && $mod <= 8) || $mod == 12) {
+            if (in_array($mod, array(1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13))) {
                 foreach ($valm['class1'] as $keyc1 => $valc1) {
                     $list = array();
                     $list['name'] = $valc1['name'];
                     $list['content']['name'] = $_M['word']['htmTip1'];
                     $list['content']['url'] = "{$_M['url']['own_form']}&a=doCreatePage&type=content&module={$valc1['module']}&class1={$valc1['id']}";
-                    if (in_array($valc1['module'], array(2, 3, 4, 5, 6, 7)) && $_M['config']['met_webhtm'] == 2) {
+
+                    //模块内容列表页
+                    if (in_array($valc1['module'], array(2, 3, 4, 5, 6, 7)) && in_array($_M['config']['met_webhtm'], array(2, 3))) {
                         $list['column']['name'] = $_M['word']['htmTip2'];
                         $list['column']['url'] = "{$_M['url']['own_form']}&a=doCreatePage&type=column&module={$valc1['module']}&class1={$valc1['id']}";
                     }
-                    $class1[] = $list;
+                    $redata[] = $list;
+                }
+
+                //二级栏目
+                foreach ($valm['class2'] as $keyc2 => $valc2) {
+                    if (!in_array($valc2['module'], array(7, 9, 11, 12, 13))) {
+                        continue;
+                    }
+
+                    $list = array();
+                    if ($valc2['module'] == 7) {
+                        $list['name'] = $valc2['name'];
+                        $list['column']['name'] = $_M['word']['htmTip2'];
+                        $list['column']['url'] = "{$_M['url']['own_form']}&a=doCreatePage&type=column&module={$valc2['module']}&class1={$valc2['id']}";
+                    }else{
+                        $list['name'] = $valc2['name'];
+                        $list['content']['name'] = $_M['word']['htmTip1'];
+                        $list['content']['url'] = "{$_M['url']['own_form']}&a=doCreatePage&type=content&module={$valc2['module']}&class1={$valc2['id']}";
+                    }
+                    $redata[] = $list;
                 }
             }
         }
-        $this->success($class1);
+        $this->success($redata);
     }
-
-    /**********生成静态页面列表**********/
 
     /**
      * 获取静态页URL 生成静态页
+     */
+    public function _doCreatePage()
+    {
+        global $_M;
+        $all = isset($_M['form']['all']) ? $_M['form']['all'] : '';
+        $index = isset($_M['form']['index']) ? $_M['form']['index'] : '';
+        $list_page = isset($_M['form']['list_page']) ? $_M['form']['list_page'] : '';
+        $module = isset($_M['form']['module']) ? $_M['form']['module'] : '';
+        $type = isset($_M['form']['type']) ? $_M['form']['type'] : '';
+        $class1 = isset($_M['form']['class1']) ? $_M['form']['class1'] : '';
+        $content = isset($_M['form']['content']) ? $_M['form']['content'] : '';
+
+        $pageinfo = array();
+        if ($all == 1 || $index == 1) {
+            $pageinfo[] = $this->html_handle->homePage();
+        }
+
+        $pageinfo = $this->html_handle->getPageInfo($pageinfo, $type, $module, $list_page, $class1, $all, $content);
+
+        $pages = $this->html_handle->getQueryList($pageinfo);
+        $total = count($pages);
+
+        Cache::put("static_list_" . $_M['lang'], $pages);
+
+        foreach ($pages as $key => $val) {
+            $f = urldecode($val['filename']);
+            $pages[$key]['suc'] = "<a target=\"_blank\" href=\"{$_M['url']['web_site']}{$f}\">{$f} {$_M['word']['physicalgenok']}</a>";
+            $pages[$key]['fail'] = "<a target=\"_blank\" href=\"{$_M['url']['web_site']}{$f}\" style=\"color:red\">{$f} {$_M['word']['html_createfail_v6']}</a>";
+            $pages[$key]['current'] = $key + 1;
+        }
+
+        //写日志
+        logs::addAdminLog('physicalstatic', 'js54', 'jsok', 'doCreatePage');
+        $this->success($pages);
+    }
+
+    /**
+     * 异步生成静态页
      */
     public function doCreatePage()
     {
@@ -163,199 +212,88 @@ class html extends admin
         $class1 = isset($_M['form']['class1']) ? $_M['form']['class1'] : '';
         $content = isset($_M['form']['content']) ? $_M['form']['content'] : '';
 
+        $pageinfo = array();
         if ($all == 1 || $index == 1) {
-            $pageinfo[] = $this->homepage();
-        }
-        $module_list = load::mod_class('column/column_op', 'new')->get_sorting_by_module(false, $_M['mark']);
-
-        //列表页链接
-        foreach ($module_list as $mod => $valm) {
-            if (($all == 1 || $mod == $module) && in_array($mod, array(1, 2, 3, 4, 5, 6, 7, 8, 12))) {
-                //内容页面
-                if (($_M['config']['met_webhtm'] == 2 || $_M['config']['met_webhtm'] == 3) && ($type == 'column' || $all == 1 || $list_page == 1) && in_array($mod, array(2, 3, 4, 5, 6, 7))) {//循环栏目获取栏目分页链接
-                    foreach ($valm['class1'] as $keyc1 => $valc1) {
-                        if ($all == 1 || $valc1['id'] == $class1) {
-                            $pageinfo[] = $this->getpage($valc1['id'], $valc1['module']);
-                            foreach ($valm['class2'] as $keyc2 => $valc2) {
-                                if ($valc2['bigclass'] == $valc1['id']) {
-                                    $pageinfo[] = $this->getpage($valc2['id'], $valc2['module']);
-                                }
-                                foreach ($valm['class3'] as $keyc3 => $valc3) {
-                                    if ($valc3['bigclass'] == $valc2['id']) {
-                                        $pageinfo[] = $this->getpage($valc3['id'], $valc3['module']);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //列表页面
-                if ($type == 'content' || $all == 1) {
-                    foreach ($valm['class1'] as $keyc1 => $valc1) {
-                        if ($class1 && $class1 != $valc1['id']) {
-                            continue;
-                        }
-                        if ($mod >= 2 && $mod <= 6) {
-                            $pageinfo = array_merge((array)$pageinfo, (array)$this->getlist($valc1['id'], $valc1['module']));
-                        } else {
-                            if ($class1 == $valc1['id'] || $all == 1) {
-                                $pageinfo = array_merge((array)$pageinfo, (array)$this->indexpage($valc1));
-                                if ($mod == 1) {
-                                    foreach ($valm['class2'] as $keyc2 => $valc2) {
-                                        if ($valc2['bigclass'] == $valc1['id']) {
-                                            $pageinfo = array_merge((array)$pageinfo, (array)$this->indexpage($valc2));
-                                        }
-                                        foreach ($valm['class3'] as $keyc3 => $valc3) {
-                                            if ($valc3['bigclass'] == $valc2['id']) {
-                                                $pageinfo = array_merge((array)$pageinfo, (array)$this->indexpage($valc3));
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //内容管理添加或编辑内容时——重新生成列表页
-                if ($content) {
-                    if ($mod >= 2 && $mod <= 6) {
-                        $pageinfo = array_merge((array)$pageinfo, (array)$this->getlist($class1, $module));
-                    }
-                }
-            }
+            $pageinfo[] = $this->html_handle->homePage();
         }
 
-        $pages = array();
-        foreach ($pageinfo as $key => $val) {
-            $mod = load::sys_class('handle', 'new')->mod_to_file($val['module']);
-            if ($val['type'] == 'column') {
-                $path = pathinfo($val['filename']);
-                $html_dir = str_replace($_M['config']['met_weburl'], PATH_WEB, $path['dirname']);
-                if (!file_exists($html_dir)) {
-                    mkdir($html_dir, 0777, true);
-                }
-                $page = 1;
-                while ($page <= $val['count']) {
-                    $p = array();
-                    $p['url'] = load::sys_class('label', 'new')->get($mod)->handle->replace_list_page_url($val['url'], $page, $val['id'], 1) . "&metinfonow={$_M['config']['met_member_force']}";
-                    $p['filename'] = urlencode(
-                        str_replace($_M['url']['web_site'],'',
-                            load::sys_class('label', 'new')->get($mod)->handle->replace_list_page_url($val['filename'], $page, $val['id'], 3)
-                        )
-                    );
-                    $p['url'] .= "&html_filename={$p['filename']}";
-                    $p['url'] = str_replace('.php&', '.php?', $p['url']);
-                    $page++;
-                    $pages[] = $p;
-                }
-            } else {
-                $p = array();
-                $p['filename'] = urlencode(
-                    str_replace($_M['url']['web_site'], '', $val['filename'])
-                );
-                $p['url'] .= $val['url'] . "&metinfonow={$_M['config']['met_member_force']}" . "&html_filename={$p['filename']}";
-                $p['url'] = str_replace('.php&', '.php?', $p['url']);
-                $pages[] = $p;
-            }
-        }
-        $all = count($pages);
+        $pageinfo = $this->html_handle->getPageInfo($pageinfo, $type, $module, $list_page, $class1, $all, $content);
 
-        foreach ($pages as $key => $val) {
-            $now = $key + 1;
-            $f = urldecode($val['filename']);
-            $pages[$key]['suc'] = "<a target=\"_blank\" href=\"{$_M['url']['web_site']}{$f}\">{$f}{$_M['word']['physicalgenok']}</a>";
-            $pages[$key]['fail'] = "<a target=\"_blank\" href=\"{$_M['url']['web_site']}{$f}\" style=\"color:red\">{$f}{$_M['word']['html_createfail_v6']}</a>";
-        }
-        //写日志
-        logs::addAdminLog('physicalstatic', 'js54', 'jsok', 'doCreatePage');
-        $this->success($pages);
+        $pages = $this->html_handle->getQueryList($pageinfo);
+        $total = count($pages);
+
+        logs::addAdminLog('physicalstatic', 'js54', 'jsok', 'doLoop');
+
+        //静态页列表写入缓存
+        Cache::del("static_list_err_" . $_M['lang']);
+        Cache::del("static_list_suc_" . $_M['lang']);
+        Cache::put("static_list_" . $_M['lang'], $pages);
+
+        $redata = array();
+        $redata['total'] = $total;
+        $redata['callback_url'] = $_M['url']['web_site'] . "app/system/entrance.php?n=html&c=html&a=doLoop&lang={$_M['lang']}";
+        $redata['check_url'] = "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}&n=html&c=html&a=doCheckPage";;
+        $redata['retry_url'] = "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}&n=html&c=html&a=doRetry";
+        $this->success($redata);
     }
 
     /**
-     * 获取内容页url
-     * @param $id
-     * @param $module
-     * @return mixed
+     * 重新生成失败页面
      */
-    public function getpage($id = '', $module = '')
-    {
-        $mod = load::sys_class('handle', 'new')->mod_to_file($module);
-        $list = load::sys_class('label', 'new')->get($mod)->get_page_info_by_class($id, 1);
-        $page['id'] = $id;
-        $page['url'] = $list['url'];
-        $page['count'] = $list['count'];
-        $h = load::sys_class('label', 'new')->get($mod)->get_page_info_by_class($id, 3);
-        $page['filename'] = $h['url'];
-        $page['module'] = $module;
-        $page['type'] = 'column';
-        return $page;
-    }
-
-    /**
-     * 获取其他列表内容页url
-     * @param $id
-     * @param $module
-     * @return array
-     */
-    public function getlist($id = '', $module = '')
-    {
-        $mod = load::sys_class('handle', 'new')->mod_to_file($module);
-        $list = load::sys_class('label', 'new')->get($mod)->get_module_list($id);
-
-        foreach ($list as $key => $val) {
-            if ($val['links']) {
-                continue;
-            }
-            $page = array();
-            $page['url'] = load::sys_class('label', 'new')->get($mod)->handle->get_content_url($val, 1);
-            $page['filename'] = load::sys_class('label', 'new')->get($mod)->handle->get_content_url($val, 3);
-            $page['module'] = $module;
-            $page['count'] = 0;
-            $page['type'] = 'content';
-            $redata[] = $page;
-        }
-        return $redata;
-    }
-
-    /**
-     * 获取列表列表页url
-     * @param string $content
-     * @return array|null
-     */
-    public function indexpage($content = '')
-    {
-        if ($content['module'] == 0 || $content['isshow'] == 0) {
-            return NULL;
-        } else {
-            $page['url'] = load::mod_class('column/column_handle', 'new')->url_full($content, 1);
-            $page['count'] = 0;
-            $page['filename'] = load::mod_class('column/column_handle', 'new')->url_full($content, 3);
-            $page['module'] = $content['module'];
-            $page['type'] = 'content';
-            $re[] = $page;
-            return $re;
-        }
-    }
-
-    /**
-     * 首页url
-     * @return mixed
-     */
-    public function homepage()
+    public function doRetry()
     {
         global $_M;
-        $page['url'] = $_M['url']['web_site'] . 'index.php?lang=' . $_M['lang'];
-        $page['count'] = 0;
-        $page['filename'] = 'index';
-        if ($_M['config']['met_index_type'] != $_M['lang']) {
-            $page['filename'] .= '_' . $_M['lang'];
+        $pages = Cache::get("static_list_err_" . $_M['lang']);
+        sleep(1);
+        if (!$pages) {
+            $this->success('','Finished');
         }
-        $page['filename'] .= '.' . $_M['config']['met_htmtype'];
-        $page['module'] = 0;
-        $page['type'] = 'content';
-        return $page;
+
+        Cache::del("static_list_err_" . $_M['lang']);
+        Cache::del("static_list_suc_" . $_M['lang']);
+        Cache::put("static_list_" . $_M['lang'], $pages);
+        sleep(1);
+
+        $redata = array();
+        $redata['total'] = is_array($pages) ? count($pages) : 0;
+        $redata['callback_url'] = $_M['url']['web_site'] . "app/system/entrance.php?n=html&c=html&a=doLoop&lang={$_M['lang']}";
+        $redata['check_url'] = "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}&n=html&c=html&a=doCheckPage";
+        $redata['retry_url'] = "{$_M['url']['site_admin']}index.php?lang={$_M['lang']}&n=html&c=html&a=doRetry";
+        $this->success($redata);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function doCheckPage()
+    {
+        global $_M;
+        $page_list = cache::get("static_list_" . $_M['lang']);
+        if (!$page_list) {
+            //生成完毕
+            $status = 1;
+            sleep(2);
+        }else{
+            //循环
+            $status = 2;
+        }
+
+        $suc = Cache::get("static_list_suc_" . $_M['lang']);
+        if (!$suc) {
+            $suc = array();
+        }
+
+        $err = Cache::get("static_list_err_" . $_M['lang']);
+        if (!$err) {
+            $err = array();
+        }
+
+        $redata['suc'] = $suc;
+        $redata['suc_num'] = is_array($suc) ? count($suc) : 0;
+        $redata['err'] = $err;
+        $redata['err_num'] = is_array($err) ? count($err) : 0;
+        $redata['status'] = $status;
+        return jsoncallback($redata);
     }
 }
 

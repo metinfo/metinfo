@@ -10,4 +10,4 @@ Disallow: /templates/
 Disallow: /upload/
 Disallow: /member/
 Disallow: /wap/templates/
-Sitemap: http://localhost/sitemap.xml
+Sitemap: http://localhost/met_7_6_basic/sitemap.xml

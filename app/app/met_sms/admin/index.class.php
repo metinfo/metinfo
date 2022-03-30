@@ -12,8 +12,7 @@ class index extends admin
 
         parent::__construct();
         nav::set_nav(1, '短信配置', $_M['url']['own_form'].'a=doindex');
-        nav::set_nav(2, '短信群发', $_M['url']['own_form'].'a=domass');
-        nav::set_nav(3, '发送记录', $_M['url']['own_form'].'a=dolog');
+        nav::set_nav(2, '发送记录', $_M['url']['own_form'].'a=dolog');
         $this->sms = load::own_class('met_sms', 'new');
     }
 
@@ -90,7 +89,7 @@ class index extends admin
         }
     }
 
-    public function dosend()
+    /*public function dosend()
     {
         global $_M;
         $sms_content = $_M['form']['sms_content'];
@@ -102,5 +101,5 @@ class index extends admin
         } else {
             $this->error($res['msg']);
         }
-    }
+    }*/
 }

@@ -30,7 +30,6 @@ class feedback_label extends base_label
         global $_M;
         $return['para'] = load::mod_class('parameter/parameter_label', 'new')->get_parameter_form('feedback', $id);
         $return['config']['url'] = load::mod_class('feedback/feedback_handle', 'new')->module_form_url($id);
-        $return['config']['lang']['submit'] = $_M['word']['Submit'];
         $return['config']['lang']['title'] = '';
         return $return;
     }
@@ -71,12 +70,6 @@ EOT;
 
 EOT;
         }
-        $str .= <<<EOT
-			<div class="form-group m-b-0">
-				<button type="submit" class="btn btn-primary btn-lg btn-block btn-squared">{$feedback['config']['lang']['submit']}</button>
-			</div>
-		</form>
-EOT;
         return $str;
     }
 

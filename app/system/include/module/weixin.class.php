@@ -35,9 +35,9 @@ class weixin extends web {
             echo $echostr;
         }else{
             $postStr = file_get_contents("php://input");
-
             $reply = $this->reply->getContent($postStr);
-            echo '';
+            ob_clean();
+            die('success');
         }
     }
 
@@ -59,6 +59,10 @@ class weixin extends web {
             $this->success($redata);
         }
     }*/
+
+    public function __destruct()
+    {
+    }
 
 }
 

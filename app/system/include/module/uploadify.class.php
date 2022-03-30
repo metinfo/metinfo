@@ -219,12 +219,12 @@ class uploadify extends web
         $img_paht = str_replace('../', PATH_WEB, $path);
         $imgattr = @getimagesize($img_paht);
         $pathinfo = pathinfo($img_paht);
-        if (in_array($pathinfo['extension'],array('svg'))) {
+        if (in_array($pathinfo['extension'], array('svg', 'webp'))) {
             return true;
         }
 
         if ($imgattr) {
-            if ($imgattr[0] > $this->max_img_px_size  || $imgattr[1] > $this->max_img_px_size ) {
+            if ($imgattr[0] > $this->max_img_px_size || $imgattr[1] > $this->max_img_px_size) {
                 return false;
             } else {
                 return true;

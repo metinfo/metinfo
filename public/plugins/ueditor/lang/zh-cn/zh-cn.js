@@ -1,7 +1,7 @@
 /**
  * Created with JetBrains PhpStorm.
  * User: taoqili
- * Date: 12-6-12
+ * @Date：2022-03-24 14:06:30
  * Time: 下午5:02
  * To change this template use File | Settings | File Templates.
  */
@@ -22,9 +22,9 @@ UE.I18N['zh-cn'] = {
         'justifyjustify':'两端对齐', 'forecolor':'字体颜色', 'backcolor':'背景色', 'insertorderedlist':'有序列表',
         'insertunorderedlist':'无序列表', 'fullscreen':'全屏', 'directionalityltr':'从左向右输入', 'directionalityrtl':'从右向左输入',
         'rowspacingtop':'段前距', 'rowspacingbottom':'段后距',  'pagebreak':'分页', 'insertframe':'插入Iframe', 'imagenone':'默认',
-        'imageleft':'左浮动', 'imageright':'右浮动', 'attachment':'附件', 'imagecenter':'居中', 'wordimage':'图片转存',
+        'imageleft':'左浮动', 'imageright':'右浮动', 'attachment':'附件', 'imagecenter':'居中', 'wordimage':'word图片转存','importword':'导入word文档',
         'lineheight':'行间距','edittip' :'编辑提示','customstyle':'自定义标题', 'autotypeset':'自动排版',
-        'webapp':'百度应用','touppercase':'字母大写', 'tolowercase':'字母小写','background':'背景','template':'模板','scrawl':'涂鸦',
+        'webapp':'百度应用','touppercase':'字母大写', 'tolowercase':'字母小写','background':'编辑器背景','template':'模板','scrawl':'涂鸦',
         'music':'音乐','inserttable':'插入表格','drafts': '从草稿箱加载', 'charts': '图表'
     },
     'insertorderedlist':{
@@ -246,7 +246,7 @@ UE.I18N['zh-cn'] = {
             'lang_background_netimg':'网络图片',
             'lang_background_align':'对齐方式',
             'lang_background_position':'精确定位',
-            'repeatType':{'options':["居中", "横向重复", "纵向重复", "平铺","自定义"]}
+            'repeatType':{'options':["居中", "横向重复", "纵向重复", "平铺",'单图完全铺满','单图不完全铺满',"自定义"]}
 
         },
         'noUploadImage':"当前未上传过任何图片！",
@@ -316,6 +316,37 @@ UE.I18N['zh-cn'] = {
             'lang_tab_online': '在线附件',
             'lang_start_upload':"开始上传",
             'lang_drop_remind':"可以将文件拖到这里，单次最多可选100个文件"
+        },
+        'uploadSelectFile':'点击选择文件',
+        'uploadAddFile':'继续添加',
+        'uploadStart':'开始上传',
+        'uploadPause':'暂停上传',
+        'uploadContinue':'继续上传',
+        'uploadRetry':'重试上传',
+        'uploadDelete':'删除',
+        'uploadTurnLeft':'向左旋转',
+        'uploadTurnRight':'向右旋转',
+        'uploadPreview':'预览中',
+        'updateStatusReady': '选中_个文件，共_KB。',
+        'updateStatusConfirm': '已成功上传_个文件，_个文件上传失败',
+        'updateStatusFinish': '共_个（_KB），_个上传成功',
+        'updateStatusError': '，_张上传失败。',
+        'errorNotSupport': 'WebUploader 不支持您的浏览器！如果你使用的是IE浏览器，请尝试升级 flash 播放器。',
+        'errorLoadConfig': '后端配置项没有正常加载，上传插件不能正常使用！',
+        'errorExceedSize':'文件大小超出',
+        'errorFileType':'文件格式不允许',
+        'errorInterrupt':'文件传输中断',
+        'errorUploadRetry':'上传失败，请重试',
+        'errorHttp':'http请求错误',
+        'errorServerUpload':'服务器返回出错'
+    },
+    'importword':{
+        'static':{
+            'lang_tab_upload': '上传word文档',
+            'lang_tab_online': '在线word文档',
+            'lang_start_upload':"开始上传",
+            'lang_drop_remind':"可以将文件拖到这里，单次最多可选100个文件",
+            'lang_start_tips':"仅支持导入后缀名为 docx 的文件，如果要导入 doc 格式的文件，请先将文件通过office或wps打开，并另存为 docx 格式文件。"
         },
         'uploadSelectFile':'点击选择文件',
         'uploadAddFile':'继续添加',
@@ -653,8 +684,8 @@ UE.I18N['zh-cn'] = {
         'static':{
             lang_resave:"转存步骤",
             uploadBtn:{src:"upload.png",alt:"上传"},
-            clipboard:{style:"background: url(copy.png) -153px -1px no-repeat;"},
-            lang_step:"1、点击顶部复制按钮，将地址复制到剪贴板；2、点击添加照片按钮，在弹出的对话框中使用Ctrl+V粘贴地址；3、点击打开后选择图片上传流程。"
+            clipboard:{innerHTML:'复制地址'},
+            lang_step:"1、点击顶部复制按钮，将图片地址复制到剪贴板；<br>2、点击编辑器工具栏的【单图上传】<span style='display:inline-block;width:20px;height:20px;background-image: url(../../themes/default/images/icons.png);overflow: hidden;background-position: -380px 0;'></span>；<br>3、在弹出的对话框中使用Ctrl+V粘贴该地址，点击对话框中的【打开】按钮选择图片上传。"
         },
         'fileType':"图片",
         'flashError':"FLASH初始化失败，请检查FLASH插件是否正确安装！",

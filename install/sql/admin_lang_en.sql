@@ -371,6 +371,13 @@ INSERT INTO met_language VALUES (null, 'setbasicTip4', 'It is suggested that the
 INSERT INTO met_language VALUES (null, 'sethtmok', 'Static pages open', 1, 31, 11, 0, 'en');
 INSERT INTO met_language VALUES (null, 'sethtmall', 'Station static', 1, 32, 11, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setbasicTip3', 'Home page, content page static', 1, 33, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtmlmix', 'Mixed mode (static files are generated on the home page, column home page, and content page, and pseudo-static for column list pages)', 1, 33, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtm_auto', 'Static pages are automatically updated', 1, 35, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtm_auto_daily', 'Updated daily', 1, 35, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtm_auto_weekly', 'Updated weekly', 1, 35, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtm_auto_monthly', 'Updated monthly', 1, 35, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtm_auto_tips', 'The automatic update period is 00:00 ~ 04:00', 1, 35, 11, 0, 'en');
+INSERT INTO met_language VALUES (null, 'sethtm_auto_tips1', 'Example: if you select "generate manually" and "update every week", the system will automatically generate static pages at a fixed time every week', 1, 35, 11, 0, 'en');
 INSERT INTO met_language VALUES (null, 'labelUrl', 'link address', 1, 27, 32, 0, 'en');
 INSERT INTO met_language VALUES (null, 'htm', 'Static page has been successfully generated', 1, 30, 11, 0, 'en');
 INSERT INTO met_language VALUES (null, 'labelnum', 'Replacement times', 1, 23, 32, 0, 'en');
@@ -754,6 +761,12 @@ INSERT INTO met_language VALUES (null, 'authAuthorizedCode', 'Authorization code
 INSERT INTO met_language VALUES (null, 'setfilesize', 'File size', 1, 134, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setsafemember', 'Submit a verification code at the front desk', 1, 127, 30, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setsafeadmin', 'Background login verification code', 1, 126, 30, 0, 'en');
+INSERT INTO met_language VALUES (null, 'info_security_statement', 'Information security statement', 1, 126, 30, 0, 'en');
+INSERT INTO met_language VALUES (null, 'info_security_statement_switch', 'Information security statement switch ', 1, 126, 30, 0, 'en');
+INSERT INTO met_language VALUES (null, 'info_security_statement_modal_title', 'Security Statement Pop-up Title', 1, 126, 30, 0, 'en');
+INSERT INTO met_language VALUES (null, 'info_security_statement_title', 'Information security statement title', 1, 126, 30, 0, 'en');
+INSERT INTO met_language VALUES (null, 'info_security_statement_content', 'Information security statement content', 1, 126, 30, 0, 'en');
+INSERT INTO met_language VALUES (null, 'info_security_statement_tips1', 'Prompt users to read the information security statement when user information is collected', 1, 126, 30, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setsafeupdate', 'Delete the upgrade file', 1, 124, 30, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setsafeupdate1', 'After deletion, you can enhance the website''s security performance', 1, 125, 30, 0, 'en');
 INSERT INTO met_language VALUES (null, 'setsafeinstall', 'Delete the installation file', 1, 123, 30, 0, 'en');
@@ -1146,6 +1159,7 @@ INSERT INTO met_language VALUES (null, 'upload_selectimg_v6','Select a picture',
 INSERT INTO met_language VALUES (null, 'upload_pselectimg_v6','Please select the picture', 1, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'upload_libraryimg_v6','Select from the picture library', 1, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'upload_extraimglink_v6','External picture link', 1, 0, 1, 0, 'en');
+INSERT INTO met_language VALUES (null, 'compliance_materials','Compliance materials', 1, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'addbaricon', 'Address bar icon', 1, 0, 39, 0, 'en');
 INSERT INTO met_language VALUES (null, 'webset_tips1_v6', 'If you can not display the new upload icon, clear the browser cache access.', 1, 0, 39, 0, 'en');
 INSERT INTO met_language VALUES (null, 'webset_tips2_v6', 'Click to create ICO', 1, 0, 39, 0, 'en');

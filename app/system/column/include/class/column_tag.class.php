@@ -65,6 +65,14 @@ class column_tag extends tag {
         }else{
             \$m['class'] = '';
         }
+        
+        //产品所属多个栏目时
+        if(\$data['module']==3 && \$data['page_type']=='showpage' && \$data['classother']){
+            if(strpos(\$data['classother'],'-'.\$m['id'].'-')){
+                \$m['class']="$class";
+            }
+        }
+        
         if(in_array(\$m['name'],\$hide)){
             unset(\$m['id']);
             \$m['hide'] = \$hide;

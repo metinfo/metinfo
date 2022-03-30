@@ -580,11 +580,13 @@ class index extends admin
     private function _columnMove($now_id = '', $to_id = '', $uplv = '', $foldername = '')
     {
         global $_M;
+        $column_label = load::sys_class('label', 'new')->get('column');
+        $handle = load::sys_class('handle', 'new');
         if ($now_id) {
             $now_column = $this->database->get_list_one_by_id($now_id);
-            $now_column_class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($now_id);
+            $now_column_class123 = $column_label->get_class123_no_reclass($now_id);
             $to_column = $this->database->get_list_one_by_id($to_id);
-            $to_column_class123 = load::sys_class('label', 'new')->get('column')->get_class123_no_reclass($to_id);
+            $to_column_class123 = $column_label->get_class123_no_reclass($to_id);
 
             if (!$now_column || !$to_column) {
                 if (!$uplv) {
@@ -620,14 +622,14 @@ class index extends admin
                 //升为一级栏目
                 //移动内容
                 if (in_array($now_column['module'], array(2, 3, 4, 5))) {
-                    $module = load::sys_class('handle', 'new')->mod_to_name($now_column['module']);
+                    $module = $handle->mod_to_name($now_column['module']);
                     load::mod_class("{$module}/{$module}_op", 'new')->list_move($now_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column_class123['class3']['id'], $now_column['id'], 0, 0);
                     if ($now_column['classtype'] == 2) {
-                        $son = load::sys_class('label', 'new')->get('column')->get_column_son($now_id);
+                        $son = $column_label->get_column_son($now_id);
                         foreach ($son as $key => $val) {
                             if (in_array($val['module'], array(2, 3, 4, 5))) {
-                                $module_son = $module = load::sys_class('handle', 'new')->mod_to_name($val['module']);
-                                $son123 = load::sys_class('label', 'new')->get('column')->get_class123_reclass($val['id']);
+                                $module_son = $module = $handle->mod_to_name($val['module']);
+                                $son123 = $column_label->get_class123_reclass($val['id']);
                                 load::mod_class("{$module_son}/{$module_son}_op", 'new')->list_move($son123['class1']['id'], $son123['class2']['id'], $son123['class3']['id'], $now_column['id'], $val['id'], 0);
                             }
                         }
@@ -664,22 +666,23 @@ class index extends admin
                     $this->error[] = 'error no toid';
                     return false;
                 }
+
+                //同模块移动
                 if ($now_column['module'] == $to_column['module']) {
-                    //同模块移动
                     //移动内容
                     if (in_array($now_column['module'], array(2, 3, 4, 5))) {
-                        $module = load::sys_class('handle', 'new')->mod_to_name($now_column['module']);
+                        $module = $handle->mod_to_name($now_column['module']);
 
                         //移动到一级栏目
                         if ($to_column['classtype'] == 1) {
                             if ($now_column['classtype'] == 1) {
                                 //被移动的栏目是一级栏目
                                 load::mod_class("{$module}/{$module}_op", 'new')->list_move($now_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column_class123['class3']['id'], $to_column_class123['class1']['id'], $now_column['id'], 0);
-                                $son = load::sys_class('label', 'new')->get('column')->get_column_son($now_id);
+                                $son = $column_label->get_column_son($now_id);
                                 foreach ($son as $key => $val) {
                                     if (in_array($val['module'], array(2, 3, 4, 5))) {
-                                        $module_son = $module = load::sys_class('handle', 'new')->mod_to_name($val['module']);
-                                        $son123 = load::sys_class('label', 'new')->get('column')->get_class123_reclass($val['id']);
+                                        $module_son = $module = $handle->mod_to_name($val['module']);
+                                        $son123 = $column_label->get_class123_reclass($val['id']);
                                         load::mod_class("{$module_son}/{$module_son}_op", 'new')->list_move($son123['class1']['id'], $son123['class2']['id'], $son123['class3']['id'], $to_column_class123['class1']['id'], $son123['class1']['id'], $son123['class2']['id']);
                                     }
                                 }
@@ -687,14 +690,27 @@ class index extends admin
 
                             if ($now_column['classtype'] == 2) {
                                 //被移动的栏目是二级栏目
-                                load::mod_class("{$module}/{$module}_op", 'new')->list_move($now_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column_class123['class3']['id'], $to_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column['id']);
-
-                                $son = load::sys_class('label', 'new')->get('column')->get_column_son($now_id);
-                                foreach ($son as $key => $val) {
-                                    if (in_array($val['module'], array(2, 3, 4, 5))) {
-                                        $module_son = $module = load::sys_class('handle', 'new')->mod_to_name($val['module']);
-                                        $son123 = load::sys_class('label', 'new')->get('column')->get_class123_reclass($val['id']);
-                                        load::mod_class("{$module_son}/{$module_son}_op", 'new')->list_move($son123['class1']['id'], $son123['class2']['id'], $son123['class3']['id'], $to_column_class123['class1']['id'], $son123['class2']['id'], $son123['class3']['id']);
+                                if ($now_column['releclass']) {
+                                    //关联栏目移动
+                                    load::mod_class("{$module}/{$module}_op", 'new')->list_move($now_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column_class123['class3']['id'], $to_column_class123['class1']['id'], $now_column_class123['class1']['id'], $now_column_class123['class2']['id']);
+                                    $son = $column_label->get_column_son($now_id);
+                                    foreach ($son as $key => $val) {
+                                        if (in_array($val['module'], array(2, 3, 4, 5))) {
+                                            $son123 = $column_label->get_class123_no_reclass($val['id']);
+                                            $module_son = $module = $handle->mod_to_name($val['module']);
+                                            load::mod_class("{$module_son}/{$module_son}_op", 'new')->list_move($son123['class1']['id'], $son123['class2']['id'], $son123['class3']['id'], $to_column_class123['class1']['id'], $son123['class1']['id'], $son123['class2']['id']);
+                                        }
+                                    }
+                                }else{
+                                    //非管理按栏目
+                                    load::mod_class("{$module}/{$module}_op", 'new')->list_move($now_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column_class123['class3']['id'], $to_column_class123['class1']['id'], $now_column_class123['class2']['id'], $now_column['id']);
+                                    $son = $column_label->get_column_son($now_id);
+                                    foreach ($son as $key => $val) {
+                                        if (in_array($val['module'], array(2, 3, 4, 5))) {
+                                            $module_son = $module = $handle->mod_to_name($val['module']);
+                                            $son123 = $column_label->get_class123_reclass($val['id']);
+                                            load::mod_class("{$module_son}/{$module_son}_op", 'new')->list_move($son123['class1']['id'], $son123['class2']['id'], $son123['class3']['id'], $to_column_class123['class1']['id'], $son123['class2']['id'], $son123['class3']['id']);
+                                        }
                                     }
                                 }
                             }
@@ -1229,7 +1245,7 @@ class index extends admin
             $module_database = load::mod_class("{$module_name}/{$module_name}_database", 'new');
 
             if(in_array($module,array(2, 3, 4, 5, 6))){
-                if(method_exists($module_database, 'del_contents')) {
+                if(method_exists($module_database, 'del_list_by_class123')) {
                     if ($classtype == 1) {
                         $list = $module_database->del_list_by_class123($cid, null, null);
                     } elseif ($classtype == 2) {
@@ -1239,7 +1255,7 @@ class index extends admin
                     }
                 }
             }else{
-                if(method_exists($module_database, 'del_contents')){
+                if(method_exists($module_database, 'del_contents_by_class')){
                     $list = $module_database->del_contents_by_class($cid);
                 }
             }

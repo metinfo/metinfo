@@ -52,7 +52,10 @@
 .met-template-list .buy {
   text-align: center;
 }
-.met-template-right{margin: -60px 10px 0 0;}
+.met-template-right{
+  right: 15px;
+  top: 12px;
+}
 .met-template-right .user div,
 .met-template-right .user a {
   padding: 0 10px;

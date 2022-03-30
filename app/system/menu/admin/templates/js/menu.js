@@ -17,10 +17,33 @@
 									M.component.checkall('item',val.id)+M.component.formWidget('no_order-'+val.id,val.no_order),
 									M.component.formWidget('name-'+val.id,val.name,'text',1),
 									M.component.formWidget('url-'+val.id,val.url,'text'),
+									// M.component.formWidget({
+									// 	type:'select',
+									// 	name:'type-'+val.id,
+									// 	value:val.type||'',
+									// 	data:[
+									// 		{name:'普通链接',value:''},
+									// 		{name:METLANG.parameter8,value:'tel'},
+									// 		{name:METLANG.short_message,value:'sms'},
+									// 		{name:METLANG.mailbox,value:'email'},
+									// 		{name:METLANG.common_qq,value:'qq'},
+									// 		{name:METLANG.enterprise_qq,value:'qyqq'},
+									// 		{name:'添加微信好友',value:'wechat'}
+									// 	]
+									// }),
 									M.component.formWidget({
 										name:'icon-'+val.id,
 										type:'icon',
 										value:val.icon
+									}),
+									M.component.formWidget({
+										name:'target-'+val.id,
+										type:'select',
+										value:val.target,
+										data:[
+											{name:METLANG.original_window,value:0},
+											{name:METLANG.new_window,value:1},
+										]
 									}),
 									M.component.formWidget('but_color-'+val.id,val.but_color,'color'),
 									M.component.formWidget('text_color-'+val.id,val.text_color,'color'),

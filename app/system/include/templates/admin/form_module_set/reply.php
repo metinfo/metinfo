@@ -109,7 +109,7 @@ $met_fd_sms_content=$data['list'][$met_fd_sms_content_name];
 		<label class='form-control-label'>{$word.fdincAutoContent}{$word.marks}</label>
 	</dt>
 	<dd>
-		<textarea name="{$met_fd_content_name}" rows="5" class="form-control">{$met_fd_content}</textarea>
+		<textarea name="{$met_fd_content_name}" data-plugin='editor' data-editor-y='300' hidden>{$met_fd_content}</textarea>
 	</dd>
 </dl>
 <h3 class='example-title'>{$word.feedbackautosms}</h3>

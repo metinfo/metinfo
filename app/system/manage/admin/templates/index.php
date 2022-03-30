@@ -3,11 +3,11 @@
 # Copyright (C) MetInfo Co.,Ltd (http://www.metinfo.cn). All rights reserved.
 defined('IN_MET') or exit('No permission');
 ?>
-<div class="position-relative">
-	<button type="button" class="btn btn-default position-absolute btn-column-control" title="{$word.manage_tips1}"><i class="fa-angle-left"></i></button>
-</div>
 <div class="d-flex">
-	<div class="column-view-wrapper transition500">
+	<div class="position-relative">
+		<button type="button" class="btn btn-default bg-grey h4 mb-0 text-dark btn-column-control position-sticky px-0 py-5" title="{$word.manage_tips1}"><i class="fa-angle-left"></i></button>
+	</div>
+	<div class="column-view-wrapper transition500 position-sticky align-self-start">
 		<div class="column-view transition500 mr-4">
 			<div class="input-group">
 				<input type="search" name="search" placeholder="{$word.column_searchname}" data-url="{$url.own_name}c=index&a=dosearch" class="form-control column-search">

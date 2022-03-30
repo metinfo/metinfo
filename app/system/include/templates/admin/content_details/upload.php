@@ -12,19 +12,18 @@ defined('IN_MET') or exit('No permission');
 	</dt>
 	<dd>
 		<div class='form-group clearfix'>
-			<if value="$upload['name'] eq 'downloadurl1'">
-			<input type="text" name="downloadurl" value="{$upload.value}" class="form-control mr-1">
-			</if>
 			<div class="d-inline-block mr-2">
 				<input type="file" name="{$upload.name}" value="{$upload.value}"
 				<if value="$upload['required']">data-filerequired='1' data-notEmpty-message="{$word.js15}"</if>
 				data-plugin='fileinput'
-				<if value="$upload['drop_zone_enabled']">data-drop-zone-enabled="false"</if>
+				<if value="$upload['nopreview']">data-drop-zone-enabled="false"</if>
 				<if value="$upload['preview_class']">data-preview-class='{$upload.preview_class}'</if>
 				<if value="$upload['noprogress']">data-noprogress='1'</if>
 				<if value="$upload['noimage']">data-noimage='1'</if>
+				<if value="$upload['prev_input']">data-prev-input='1'</if>
 				<if value="$upload['size']">data-size='1'</if>
 				<if value="$upload['multiple']">multiple</if>
+				<if value="$upload['count']">data-fileinput-maxfilecount='{$upload.count}'</if>
 				<if value="$upload['delimiter']">data-delimiter='{$upload.delimiter}'</if>
 				<if value="$upload['type'] eq 'file'">
 				accept="*"

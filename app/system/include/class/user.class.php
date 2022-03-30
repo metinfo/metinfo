@@ -350,8 +350,9 @@ class user
             load::plugin('douserlogin', 1, array($type, $username, $password));
             # 插件登录
             $user = $this->get_user_by_username($username);
+            $password = (string)$password;
             $password = md5($password);
-            if ($user && ($user['password'] == $password || (md5(md5($user['password'])) == $password && $type = 'md5'))) {
+            if ($user && ($user['password'] === $password || (md5(md5($user['password'])) === $password && $type = 'md5'))) {
                 # 系统登录接口
                 if (!$user['valid']) {
                     return $user;
@@ -412,10 +413,10 @@ class user
     public function get_user_by_username($username)
     {
         global $_M;
+        load::sys_func('str');
         $user = self::get_user_by_nameid($username);
         //查询有值
         if (!$user) {
-            load::sys_func('str');
             # 返回的实体信息，根据邮件获取方法要更换掉
             if (is_email($username)) $user = $this->get_user_by_emailid($username);
             if (is_phone($username)) $user = $this->get_user_by_tel($username);
@@ -709,6 +710,7 @@ class user
     public function get_user_by_nameid($username = '')
     {
         global $_M;
+        $username = addslashes(stripslashes($username));
         $query = "SELECT * FROM {$_M['table']['user']} WHERE username='{$username}' AND lang='{$_M['lang']}'";
         $user = DB::get_one($query);
         return $user;
@@ -741,6 +743,7 @@ class user
     public function get_user_by_emailid($email = '')
     {
         global $_M;
+        $email = addslashes(stripslashes($email));
         $query = "SELECT * FROM {$_M['table']['user']} WHERE email='{$email}' AND lang='{$_M['lang']}'";
         $user = DB::get_one($query);
         return $user;
@@ -750,6 +753,7 @@ class user
     public function get_user_by_tel($tel = '')
     {
         global $_M;
+        $tel = addslashes(stripslashes($tel));
         $query = "SELECT * FROM {$_M['table']['user']} WHERE tel='{$tel}' AND lang='{$_M['lang']}'";
         $user = DB::get_one($query);
         return $user;

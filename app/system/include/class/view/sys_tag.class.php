@@ -137,6 +137,7 @@ h1,h2,h3,h4,h5,h6{font-family:{$g.met_font} !important;}
     public function _met_foot($attr, $content, &$met)
     {
         global $_M;
+        $met_online_data = self::getOnlineDate();
         $php = '
 <?php if($lang_json_file_ok){ ?>
 <input type="hidden" name="met_lazyloadbg" value="{$g.lazyloadbg}">
@@ -202,11 +203,24 @@ if($lang_json_file_ok){
 <?php
     }
 }
-?>
-</body>
+?>'
+.$met_online_data.
+'</body>
 </html>';
 
         return $php;
+    }
+
+    protected function getOnlineDate()
+    {
+        global $_M;
+        if (!$_M['config']['met_webhtm']) return '';
+
+        $online_data = load::mod_class('online/online_op', 'new')->getOnlineHtml();
+        $online_data = $online_data ?: array();
+        $json = json_encode($online_data,JSON_UNESCAPED_UNICODE);
+        $str = "<textarea name=\"met_online_data\" hidden>$json</textarea>\n";
+        return $str;
     }
 }
 

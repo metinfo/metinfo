@@ -81,7 +81,7 @@ class parameter_label
             }
         }
 
-        $paras = load::mod_class('parameter/parameter_handle', 'new')->para_handle_formation($parameter_list);
+        $paras = load::mod_class('parameter/parameter_handle', 'new')->para_handle_formation($parameter_list,true,$module);
         return $paras;
     }
 
@@ -217,7 +217,7 @@ class parameter_label
             }
         } else {
             $listid = $list = array();
-            $para_num = 0;        
+            $para_num = 0;
             foreach ($info as $key => $val) {
                 if (!$val['info']) {
                     continue;
@@ -230,7 +230,6 @@ class parameter_label
                     $query = "SELECT listid FROM {$_M['table']['plist']} WHERE paraid='{$val['id']}' AND info = '{$val['info']}'";
                 }
                 $para_num++;
-
 
                 $res = DB::get_all($query);
                 foreach ($res as $v) {
@@ -247,14 +246,15 @@ class parameter_label
                         $list[] = $key;
                     }
                 }
-                $list = $list ? $list : array();
-                return $list;
+                if (is_array($list)) {
+                    return implode(',', $list);
+                }
+                return '';
             }
         }
 
         return $sql;
     }
-
 }
 
 # This program is an open source system, commercial use, please consciously to purchase commercial license.

@@ -33,7 +33,7 @@ class link_database extends base_database
         $where = "WHERE lang = '{$lang}' AND show_ok = 1 ";
         $where .= $com_ok ? " AND com_ok = 1 " : '';
         if ($classnow) {
-            $where .= "AND (module LIKE '%,{$classnow},%' OR module='')";
+            $where .= "AND (module LIKE '%,{$classnow},%' OR module='' OR module='metinfo')";
         }
         $limit = $rows ? " LIMIT {$start} , {$rows} " : '';
         $order = " ORDER BY com_ok DESC , orderno DESC, id DESC ";

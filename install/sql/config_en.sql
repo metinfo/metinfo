@@ -247,8 +247,8 @@ INSERT INTO met_language VALUES (null, 'bound', 'Bound', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'unbind', 'Unbind', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'weixin_login_error', 'Wechat login is not allowed in the current language', 0, 0, 1, 0, 'en');
 INSERT INTO met_language VALUES (null, 'login_ok', 'Login successful', 0, 0, 1, 0, 'en');
-INSERT INTO met_language VALUES (null, 'new_registe_email_content', 'Your website {webname} has received a registration request from a new user: {user name}. Please log in to the website background to check.', 0, 0, 0, 0, 'en');
-INSERT INTO met_language VALUES (null, 'new_registe_sms_content', 'Your website {webname} has received a registration request from a new user: {user name}. Please log in to the website background to check.', 0, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_registe_email_content', 'Your website {webname} has received a registration request from a new user: {username}. Please log in to the website background to check.', 0, 0, 0, 0, 'en');
+INSERT INTO met_language VALUES (null, 'new_registe_sms_content', 'Your website {webname} has received a registration request from a new user: {username}. Please log in to the website background to check.', 0, 0, 0, 0, 'en');
 INSERT INTO met_language VALUES (null, 'new_regist_notice', 'New member notice', 0, 0, 0, 0, 'en');
 
 #系统配置
@@ -272,14 +272,15 @@ INSERT INTO met_config VALUES (null, 'metconfig_404content', '404 error, the pag
 INSERT INTO met_config VALUES (null, 'metconfig_data_null', 'The page is gone', '', 0, 0, 'en');
 #SEO-优化文字设置
 INSERT INTO met_config VALUES (null, 'metconfig_foottext', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_seo', '<p><a href=\"http://www.metinfo.cn/\" target=\"_blank\">MetInfo CMS</a> | <a href=\"http://www.metinfo.cn/idc\" target=\"_blank\">Foreign Host</a> | <a href=\"http://ok.metinfo.cn/\" target=\"_blank\">Domain Registration</a></p>', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_seo', '', '', 0, 0, 'en');
 #SEO-静态及伪静态配置
 INSERT INTO met_config VALUES (null, 'metconfig_webhtm', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_htmtype', 'html', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_htmpagename', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_listhtmltype', '1', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_htmlistname', '1', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_htmway', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_htmway', '1', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_html_auto', '2', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_htmlurl', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_pseudo', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_defult_lang', '0', '0', 0, 0, 'en');
@@ -330,7 +331,9 @@ INSERT INTO met_config VALUES (null, 'metconfig_thumb_wate', '0', '', 0, 0, 'en'
 INSERT INTO met_config VALUES (null, 'metconfig_wate_class', '1', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_wate_img', '', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_wate_bigimg', '', '', 0, 0, 'en');
-INSERT INTO met_config VALUES (null, 'metconfig_text_wate', 'www.MetInfo.cn', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_wate_img_scale', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_wate_img_gif_hold', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_text_wate', 'MetInfo', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_text_size', '10', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_text_bigsize', '15', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_text_color', '#808080', '', 0, 0, 'en');
@@ -360,6 +363,10 @@ INSERT INTO met_config VALUES (null, 'metconfig_memberlogin_code', '1', '', 0, 0
 INSERT INTO met_config VALUES (null, 'metconfig_login_code', '0', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_file_maxsize', '5', '', 0, 0, 'en');
 INSERT INTO met_config VALUES (null, 'metconfig_file_format', 'rar|zip|sql|doc|docx|pdf|jpg|xls|png|gif|mp3|mp4|jpeg|bmp|swf|flv|ico|csv', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_info_security_statement_open', '0', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_info_security_statement_modal_title', 'Information Security Statement', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_info_security_statement_title', 'Information Security Statement', '', 0, 0, 'en');
+INSERT INTO met_config VALUES (null, 'metconfig_info_security_statement_content', 'Information Security Statement', '', 0, 0, 'en');
 
 #用户设置-会员设置
 INSERT INTO met_config VALUES (null, 'metconfig_member_use', '1', '', 0, 0, 'en');

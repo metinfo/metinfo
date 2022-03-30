@@ -5,10 +5,10 @@ defined('IN_MET') or exit('No permission');
 $url = HTTP_HOST;
 ?>
 <if value="$c['met_agents_metmsg']">
-<div class="met-template-right float-right position-relative"></div>
+<div class="met-template-right position-absolute"></div>
 </if>
 <if value="$c['met_agents_metmsg']">
-<div class="met-tips" data-url="{$url}"></div>
+<div class="met-tips" data-url="{$url}" data-templates_url="{$c.templates_url}"></div>
 </if>
 <div class="content metadmin-content-min bg-white p-4">
     <div class="met-template-list row">

@@ -58,7 +58,13 @@
                 }
                 switch ( tagName.toLowerCase() ) {
                     case "var":
-                        dom.parentNode.replaceChild( document.createTextNode( content ), dom );
+                        if(dom.id=='lang_step'){
+                            var h=document.createElement("div")
+                            h.innerHTML=content;
+                            dom.parentNode.replaceChild(h, dom );
+                        }else{
+                            dom.parentNode.replaceChild( document.createTextNode( content ), dom );
+                        }
                         break;
                     case "select":
                         var ops = dom.options;

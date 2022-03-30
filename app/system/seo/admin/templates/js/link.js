@@ -7,8 +7,8 @@
                 dataSrc: function(result) {
                     var data = [];
                     if (result.data) {
+                        M.list=result.data;
                         $.each(result.data, function(index, val) {
-                            M.list.push(val);
                             let item = [
                                 M.component.checkall('item',val.id),
                                 val.orderno,
@@ -20,7 +20,7 @@
                                 `<button
                                 type="button"
                                 class="btn btn-primary btn-sm"
-                                data-modal-dataurl="M.list[${M.list.length-1}]"
+                                data-modal-dataurl="M.list[${index}]"
                                 data-toggle="modal"
                                 data-target=".link-edit-modal"
                                 data-modal-url="link/add/?n=link&c=link_admin&a=doGetColumnList"
@@ -39,6 +39,7 @@
     M.component.modal_options['.link-edit-modal']= {
         modalSize:'lg',
         modalFullheight:1,
+        modalHeight100:1,
         modalTablerefresh:'#seo-link-table',
     }
 })();

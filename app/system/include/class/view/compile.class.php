@@ -156,7 +156,7 @@ class compile
                 '{$metui_url4}' => PATH_WEB . 'app/app/shop/web/templates/met/',
                 '{$metui_temp}' => PATH_WEB . "templates/{$_M['config']['met_skin_user']}/"
             );
-            if(strstr($path,'$metui_url2') && (strstr($path,'alertify')||strstr($path, 'formvalidation'))){
+            if(strstr($path,'$metui_url2') && strstr($path,'alertify')){
                 $path=str_replace(array('{$metui_url2}/vendor/','{$metui_url2}vendor/'),'{$metui_url3}plugin/',$path);
             }
             if(strstr($path, 'alertify-js')){
@@ -339,8 +339,8 @@ class compile
             } else {
                 $val = $default;
             }
-        } else {
-            if (in_array($type, array(4, 6, 9)) || is_numeric($realvalue)) {
+        } else {//小于或等于4位的数值剔除<m>标签
+            if (in_array($type, array(4, 6, 9)) || (is_numeric($realvalue) && strlen($realvalue) <= 4)) {
                 $val = $realvalue;
             } else {
                 #$val = $value;

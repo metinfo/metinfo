@@ -67,6 +67,11 @@ class admin extends common
             $_M['langset'] = $_M['config']['met_admin_type'];
         }
 
+        $res = preg_match('/^\w+$/', $_M['langset']);
+        if (!$res) {
+            return false;
+        }
+
         $this->load_word($_M['langset'], 1);
         $this->load_agent_word($_M['langset']);
     }
@@ -449,6 +454,7 @@ class admin extends common
             'metcms_v' => $_M['config']['metcms_v'],
             'patch' => $_M['config']['patch'],
             'tem' => $_M['config']['met_skin_user'],
+            'met_agents_metmsg' => $_M['config']['met_agents_metmsg'],
             'langprivelage' => $langprivelage,
             'url' => array(
                 'admin' => $_M['url']['site_admin'],

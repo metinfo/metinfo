@@ -147,7 +147,7 @@ class language_database
             return false;
         }
         $this->filetest($filename);
-        file_put_contents($filename, $curl_result);
+        file_put_contents($filename, $curl_result['data']);
 
         $no_order_l = 0;
         $no_order_s = 0;

@@ -517,8 +517,8 @@ class news_admin extends base_admin
             $content['class2'] = $class2;
             $content['class3'] = $class3;
             $content['classother'] = '';
-            $content['updatetime'] = date("Y-m-d H:i:s");
-            $content['addtime'] = date("Y-m-d H:i:s");
+//            $content['updatetime'] = date("Y-m-d H:i:s");
+//            $content['addtime'] = date("Y-m-d H:i:s");
             $content['title'] = str_replace("'", "\'", $content['title']);
             $content['description'] = str_replace("'", "\'", $content['description']);
             $content['keywords'] = str_replace("'", "\'", $content['keywords']);
@@ -582,8 +582,8 @@ class news_admin extends base_admin
                 $content['class2'] = $new_class[1];
                 $content['class3'] = $new_class[2];
                 $content['classother'] = '';
-                $content['updatetime'] = date("Y-m-d H:i:s");
-                $content['addtime'] = date("Y-m-d H:i:s");
+//                $content['updatetime'] = date("Y-m-d H:i:s");
+//                $content['addtime'] = date("Y-m-d H:i:s");
                 $content['title'] = str_replace("'", "\'", $content['title']);
                 $content['description'] = str_replace("'", "\'", $content['description']);
                 $content['keywords'] = str_replace("'", "\'", $content['keywords']);

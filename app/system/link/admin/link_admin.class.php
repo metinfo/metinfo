@@ -112,6 +112,10 @@ class link_admin extends admin
         $data['nofollow'] = isset($data['nofollow']) ? $data['nofollow'] : '';
         $data['module'] = isset($data['module']) ? ',' . $data['module'] . ',' : '';
 
+        if ($_M['form']['met_clumid_all'] == 1) {
+            $data['module'] = "metinfo";
+        }
+
         if (!$data['webname'] || !$data['weburl'] || !$data['info']) {
             $this->error($_M['word']['jsx10']);
         }

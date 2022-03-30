@@ -101,7 +101,6 @@ class login extends admin
         $admin = DB::get_one($query);
         if ($admin['admin_pass'] === md5($password)) {
             $cookie = $this->login($admin);
-            $this->modify_weburl();
             setcookie('page_iframe_url', '', 0, '/');
             if (!isset($_M['form']['submit_type'])) {
                 if (is_mobile()) {
@@ -177,29 +176,6 @@ class login extends admin
         DB::query($query);
 
         return $cookie;
-    }
-
-    //修改当前网站url
-    public function modify_weburl()
-    {
-        global $_M;
-        if (!strstr($_M['config']['met_weburl'], str_replace('www.', '', HTTP_HOST))) {
-            /*网址修改*/
-            $met_weburl = 'http://' . HTTP_HOST . '/';
-            $query = "UPDATE {$_M['table']['config']} set value='{$met_weburl}' WHERE name='met_weburl'";
-            DB::query($query);
-            /*语言网址修改*/
-            $query = "UPDATE {$_M['table']['lang']} SET met_weburl = '{$met_weburl}'";
-            DB::query($query);
-            /*重新生成404*/
-            load::sys_class('curl');
-            $curl = new curl();
-            $curl->set('host', $_M['url']['site']);
-            $curl->set('file', "include/404.php?lang={$_M['config']['met_index_type']}&metinfonow={$_M['config']['met_member_force']}");
-            $curl->curl_post();
-        }
-
-        deldir(PATH_WEB . 'cache', 1);
     }
 
     public function check($pid = '')

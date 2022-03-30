@@ -10,8 +10,8 @@ a {
   border-color: $first_color$;
 }
 .btn-primary {
-  border-color: $first_color$;
-  background-color: $first_color$;
+  border-color: $thirdcolor$;
+  background-color: $thirdcolor$;
 }
 .btn-outline.btn-primary.active,
 .btn-outline.btn-primary:active,
@@ -139,8 +139,8 @@ body.met-navfixed {
   position: relative;
 }
 .met-nav .nav-item .nav-link {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 .met-nav .nav-item .nav-link:after {
   content: "";
@@ -158,11 +158,7 @@ body.met-navfixed {
   z-index: -1;
   border: none;
 }
-@media (max-width: 767px) {
-  .met-nav .nav-item .nav-link:after {
-    content: unset;
-  }
-}
+
 .met-nav .nav-item:hover .nav-link:after,
 .met-nav .nav-item .nav-link.active::after {
   opacity: 1;
@@ -285,7 +281,7 @@ body.met-navfixed {
   -webkit-transition: all 0.66s cubic-bezier(0.17, 0.84, 0.44, 1);
   transition: all 0.66s cubic-bezier(0.17, 0.84, 0.44, 1);
 }
-@media (min-width: 768px) {
+@media (min-width: 1367px) {
   .navbar-nav > .nav-item {
     padding: 0px;
   }
@@ -320,8 +316,11 @@ body.met-navfixed {
   .met-nav .mblogo {
     display: none;
   }
+  .met-nav .navbar-collapse-toolbar{
+    display: block;
+  }
 }
-@media (max-width: 991px) {
+@media (max-width: 1366px) {
   .met-nav .navbar-logo img {
     max-height: 30px;
   }
@@ -335,7 +334,10 @@ body.met-navfixed {
     float: right;
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 1366px) {
+  .met-nav .nav-item .nav-link:after {
+    content: unset;
+  }
   .met-nav-btn:after {
     display: table;
     clear: both;
@@ -394,6 +396,7 @@ body.met-navfixed {
     width: 100%;
     margin: 0;
     text-align: center;
+    /* display: none; */
   }
   .met-nav .pclogo {
     display: none;
@@ -401,6 +404,17 @@ body.met-navfixed {
   .navbar-header.pull-xs-left {
     margin-left: 0.9375rem;
   }
+  .met-nav .navbar-toggler{
+    display: block;
+  }
+  .met-nav .navbar-collapse-toolbar{
+    height: 0;
+    width: 100%;
+  }
+  .met-nav .collapse.in{
+    height: auto;
+  }
+  
 }
 .navbar-shadow {
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
@@ -847,6 +861,7 @@ body.met-navfixed {
   }
   .met-index-product .index-product-list p.moretext{
     font-size: 14px;
+    display: none;
   }
   .met-index-product ul.nav-pills {
     justify-content: inherit;
@@ -914,15 +929,16 @@ body.met-navfixed {
   padding: 12px 15px 14px 15px;
   background: #fff;
   margin-top: 11px;
-  display: flex;
+  display: block;
   align-items: center;
-  justify-content: space-between;
+  overflow: hidden;
+  /* justify-content: space-between; */
 }
 .met-index-news .right_box .media:first-child {
   margin-top: 0;
 }
 .met-index-news .right_box .imgbox {
-  margin-right: 15px;
+  /* margin-right: 15px; */
 }
 .met-index-news .left_box .itembox {
   display: block;
@@ -976,6 +992,9 @@ body.met-navfixed {
     padding: 0;
     margin-top: 15px;
   }
+  .met-index-news .index-news-list{
+    flex-wrap: wrap;
+  }
 }
 @media (max-width: 767px) {
   .met-index-news .index-news-list {
@@ -987,7 +1006,9 @@ body.met-navfixed {
     width: 100%;
     margin: 0;
     margin-bottom: 15px;
+    display: none;
   }
+
 }
 
 .met-index-news .list-group li .media {
@@ -1440,9 +1461,9 @@ body.met-navfixed {
   border-color: $thirdcolor$;
   border-color: $hovercolor$;
 }
-.met-column-nav .subcolumn-nav {
+/* .met-column-nav .subcolumn-nav {
   overflow: hidden;
-}
+} */
 .met-column-nav .subcolumn-nav-location {
   float: left;
   font-size: 12px;

@@ -5,7 +5,7 @@ defined('IN_MET') or exit('No permission');
 ?>
 <div class="met-myapp metadmin-content-min">
     <if value="$c['met_agents_metmsg']">
-    <div class="met-myapp-right position-relative float-right">
+    <div class="met-myapp-right position-absolute">
     </div>
     </if>
     <div class="met-myapp-list row px-2"></div>

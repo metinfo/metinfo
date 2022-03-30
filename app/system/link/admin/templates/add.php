@@ -8,6 +8,7 @@ $data['show_ok']=isset($data['show_ok'])?$data['show_ok']:1;
 if($data['module']){
     $data['module']=implode(',', $data['module']);
 }
+$data['met_clumid_all']=$data['module']=='metinfo'?1:0;
 ?>
 <form method="POST" action="{$url.own_name}c=link_admin&a=doSaveLink&id={$data.id}" class="link-form" data-submit-ajax="1">
     <div class="metadmin-fmbx">

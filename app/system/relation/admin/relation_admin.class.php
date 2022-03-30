@@ -143,6 +143,7 @@ class relation_admin extends base_admin
         global $_M;
         $form = $_M['form'];
         $classid = $form['classid'] ?: 0;
+        $keyword = $form['keyword'];
         $start = $form['start'] ? $form['start'] : 0;
         $length = $form['length'] ? $form['length'] : 20;
 
@@ -172,6 +173,10 @@ class relation_admin extends base_admin
 
         //查询构造
         $_where = " lang = '{$_M['lang']}' AND (recycle = '0' or recycle = '-1') AND ";
+        if ($keyword != '') {
+            //$_where .= " (title LIKE '%{$keyword}%' OR description LIKE '%{$keyword}%' OR keywords LIKE '%{$keyword}%') AND ";
+            $_where .= " (title LIKE '%{$keyword}%') AND ";
+        }
         //where
         switch ($class['classtype']) {
             case 1:

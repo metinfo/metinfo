@@ -14,6 +14,7 @@ data-modal-size="lg"
 data-modal-title="{$word.langadd}"
 data-modal-tablerefresh="#lang-admin-table"
 data-modal-loading="1"
+data-modal-type="centered"
 >
 {$word.langadd}
 </button>

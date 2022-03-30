@@ -315,7 +315,6 @@ class index extends admin
         $upload_path = PATH_WEB . 'upload';
         $upload_back_path = PATH_WEB . ADMIN_FILE . '/databack/upload/';
         $zipname = $upload_back_path . $_M['config']['met_agents_backup'] . '_upload_' . date('YmdHis', time()) . '.zip';
-
         makedir($upload_back_path);
 
         //磁盘空间检测
@@ -824,15 +823,15 @@ class index extends admin
                         $sql = preg_replace_callback($pattern, function ($match) {
                             if ($match) {
                                 $string = $match[2];
-                                $string = str_ireplace('select', "\sel\ect", $string);
-                                $string = str_ireplace('insert', "\ins\ert", $string);
-                                $string = str_ireplace('update', "\up\date", $string);
-                                $string = str_ireplace('delete', "\de\lete", $string);
-                                $string = str_ireplace('union', "\un\ion", $string);
+                                //$string = str_ireplace('select', "\sel\ect", $string);
+                                //$string = str_ireplace('insert', "\ins\ert", $string);
+                                //$string = str_ireplace('update', "\up\date", $string);
+                                //$string = str_ireplace('delete', "\de\lete", $string);
+                                //$string = str_ireplace('union', "\un\ion", $string);
+                                //$string = str_ireplace('sleep', "\sle\ep", $string);
                                 $string = str_ireplace('into', "\in\to", $string);
                                 $string = str_ireplace('load_file', "\load\_\file", $string);
                                 $string = str_ireplace('outfile', "\out\file", $string);
-                                $string = str_ireplace('sleep', "\sle\ep", $string);
                                 $string = str_replace('0000-00-00 00:00:00', date("Y-m-d H:i:s"),$string);
                             }
                             return str_replace($match[2], $string, $match[0]);
@@ -843,6 +842,11 @@ class index extends admin
                     if (strstr($sql, $tablepre . 'admin_table')) {
                         $admin_table_data = "\n{$sql}\n";
                         file_put_contents($this->admin_table_path, $admin_table_data, FILE_APPEND);
+                        continue;
+                    }
+
+                    //关键词过滤
+                    if (!self::checkKeyWords($sql)) {
                         continue;
                     }
 
@@ -898,7 +902,7 @@ class index extends admin
                 //更新配置
                 $update_database->add_config();
 
-                if (version_compare($old_version, '7.5.0', '<')) {//7.0.0beta->7.1.0
+                if (version_compare($old_version, '7.6', '<')) {//7.0.0beta->7.1.0
                     //更新语言
                     $update_database->update_language($version);
                 }
@@ -914,6 +918,26 @@ class index extends admin
             $redata['msg'] = $_M['word']['setdbImportOK'];
             $this->ajaxReturn($redata);
         }
+    }
+
+    /**
+     * @param string $sql
+     * @return bool|string
+     */
+    protected function checkKeyWords($sql = '')
+    {
+        $key_words = array(
+            'set global',
+            'general_log',
+            'general_log_file',
+        );
+
+        foreach ($key_words as $word) {
+            if (stristr($sql, $word)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1315,9 +1339,10 @@ class index extends admin
             if (file_exists($f_paht)) {
                 $admin_dir = PATH_WEB . ADMIN_FILE . '/';
                 $f_name = basename($f_paht);
-                $f_type = array_pop(explode('.', $f_name));
+                $path_info = pathinfo($f_name);
+                $ext = isset($path_info['extension']) ? $path_info['extension'] : '';
 
-                if ($f_type == 'zip') {
+                if ($ext == 'zip') {
                     $random = random(5);
                     $tagdir = $admin_dir . 'databack/' . $random;
                     if (!is_dir($tagdir)) {
@@ -1327,25 +1352,31 @@ class index extends admin
                     if ($res) {
                         $this->moveSqlFile($tagdir, $admin_dir . 'databack/');
                     }
-                    if (is_file(PATH_WEB . 'upload/sql/' . $f_name)) {
+
+                    if (is_dir($tagdir)) {//删除零时文件
+                        deldir($tagdir);
+                    }
+
+                    if (is_file(PATH_WEB . 'upload/sql/' . $f_name)) {//删除上传文件
                         delfile(PATH_WEB . 'upload/sql/' . $f_name);
                     }
-                } elseif ($f_type == 'sql') {
+                } elseif ($ext == 'sql') {
                     $new_path = $admin_dir . 'databack/' . $f_name;
                     $res = movefile($f_paht, $new_path);
                 }
 
                 if ($res == true) {
+                    $redata['msg'] = "{$f_name} {$_M['word']['jsx17']}";
+                    $redata['filesize'] = round($back['size'] / 1024, 2);
+                    //写日志
+                    logs::addAdminLog('databackup2', 'unitytxt_70', 'jsx17', 'dounzip_upload');
+
+                } else {
+                    $redata['error'] = "{$f_name} {$_M['word']['uplaoderr1']}";
                     $redata['msg'] = $_M['word']['uplaoderr1'];
                     $redata['filesize'] = round($back['size'] / 1024, 2);
                     //写日志
                     logs::addAdminLog('databackup2', 'unitytxt_70', 'uplaoderr1', 'dounzip_upload');
-                } else {
-                    $redata['error'] = $f_name . '__' . $_M['word']['jsx17'];
-                    $redata['msg'] = $f_name . '__' . $_M['word']['jsx17'];
-                    $redata['filesize'] = round($back['size'] / 1024, 2);
-                    //写日志
-                    logs::addAdminLog('databackup2', 'unitytxt_70', 'jsx17', 'dounzip_upload');
                 }
             }
         }

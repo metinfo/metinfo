@@ -130,6 +130,8 @@
 	M.component.modal_options['.download-add-modal']=
 	M.component.modal_options['.job-add-modal']={
 		modalOtherclass:'content-details-modal',
+		modalFullheight: 1,
+		modalHeight100: 1,
 		callback:function(key){
 			var $form=$(key+' .modal-body form'),
 				validate_order=$form.attr('data-validate_order');
@@ -144,30 +146,58 @@
 				        true_fun: function(result) {
 				        	// 静态页面更新
 				        	if(result.html_res){
-				        		var $modal_body='';
 					        	$('.btn-admin-common-modal,.btn-pageset-common-modal').attr({'data-target':'.html-update-modal'}).click();
 					        	setTimeout(function(){
-					        		$modal_body=$('.html-update-modal .modal-body');
-					        		$modal_body.find('.html-update-list').html('');
-					        	},0)
-					            M.ajax({
-					            	url:result.html_res
-					            },function(result1){
-					            	var $html_update_list=$modal_body.find('.html-update-list'),
-					            		length=result1.data.length,
-					            		key=0;
-					            	result1.data.map(val => {
-					            		M.ajax({
-											url: val.url
-										}, function(res) {
-											key++;
-											$html_update_list.append(`<p>${res.suc?val.suc:val.fail}</p>`).find('p:last-child span').html((key)+'/'+length);
-											var scrolltop=$html_update_list.height()-$modal_body.height();
-											scrolltop>0 && $modal_body.stop().animate({scrollTop:scrolltop},300);
-											key==length && alertify.success(METLANG.html_createend_v6) && setTimeout(function(){$('.html-update-modal').modal('hide')},500);
-										});
-					            	});
-					            })
+					        		var $modal_body=$('.html-update-modal .modal-body'),
+										$html_loading = $modal_body.find(".html-loading"),
+										handle=(other_url)=>{
+											$html_loading.html(
+												`<div class="html-list"></div><p style="font-size:16px;" class="createing mb-0">${METLANG.indexhtm}${METLANG.ing}...</p>`
+											);
+											var $html_list = $html_loading.find('.html-list');
+											M.ajax({
+													url: other_url||result.html_res
+												},
+												function (result) {
+													var modal_body_h = $modal_body.outerHeight(),
+														loop_load=()=>{
+															setTimeout(()=>{
+																M.ajax({
+																	url:result.data.check_url,
+																	success:(res)=>{
+																		if(res.status && (res.suc_num+res.err_num)>=$html_list.find('p').length){
+																			let html = res.suc.map((item,index)=>{
+																					return `<p style="color:green">(${index+1}/${result.data.total}) <a href="${M.weburl}${item.filename}" target="_blank">${item.filename}</a> ${METLANG.physicalgenok}</p>`;
+																				}).join('')+res.err.map((item,index)=>{
+																					return `<p style="color:red">(${res.suc_num+index+1}/${result.data.total}) ${item.filename} ${METLANG.html_createfail_v6}</p>`;
+																				}).join('');
+																			$html_list.html(html);
+																			if(res.status==1){
+																				$html_loading.find(".createing").html(`${METLANG.static_page_success}
+																				<br><span class='text-success'>${METLANG.physicalgenok}${res.suc_num}${METLANG.page}</span>
+																				<br><span class='text-danger'>${METLANG.html_createfail_v6}${res.err_num}${METLANG.page}${res.err_num?` <button type="button" class='btn btn-primary html-link-reset-fail'>重新生成</button>`:''}</span>`);
+																				res.err_num && $html_loading.find('.html-link-reset-fail').click(function () {
+																					handle(result.data.retry_url);
+																				});
+																			}else{
+																				loop_load();
+																			}
+																			var scrolltop = $html_list.outerHeight() - modal_body_h+120;
+																			scrolltop && $modal_body.scrollTop(scrolltop);
+																		}
+																	}
+																});
+															},1000);
+														}
+													M.ajax({
+														url:result.data.callback_url
+													});
+													loop_load();
+												}
+											);
+										};
+									handle();
+								},0);
 				        	}
 				        	if(key=='.about-details-modal') return;
 				        	// 添加内容后跳转到对应内容列表
@@ -216,9 +246,10 @@
 	// 静态页面生成弹框
 	M.component.modal_options['.html-update-modal']={
 		modalTitle: METLANG.indexhtm,
-		modalBody:'<div class="html-update-list"></div>',
+		modalBody:'<div class="html-loading"></div>',
 		modalRefresh:0,
 		modalFullheight: 1,
+		modalHeight100: 1,
 		modalFooterok:0
 	};
 	// 内容详情页-参数刷新
@@ -439,5 +470,4 @@
 function downloadFilesize(obj){
 	var $file=obj.parents('.file-input').find('.file-preview-thumbnails .file-preview-frame:last-child .file-preview-view');
 	obj.parents('form').find('[name="filesize"]').val($file.attr('data-size')||'');
-	obj.parents('form').find('[name="downloadurl"]').val($file.attr('href'));
 }

@@ -294,7 +294,7 @@ class DB
      */
     public static function error()
     {
-        return self::$link->error;
+        return self::$link->connect_errno;
     }
 
     /**
@@ -304,7 +304,7 @@ class DB
      */
     public static function errno()
     {
-        return self::$link->errno;
+        return self::$link->connect_errno;
     }
 
     /**
@@ -314,7 +314,7 @@ class DB
      */
     public static function errorlist()
     {
-        return self::$link->error_list;
+        return isset(self::$link->error_list) ? self::$link->error_list : self::$link->connect_errno;
     }
 
     /**
@@ -450,9 +450,9 @@ class DB
      */
     public static function halt($dbhost)
     {
-        $sqlerror = self::$link->error;
-        $sqlerrno = self::$link->connect_error;
-        $sqlerror = str_replace($dbhost, 'dbhost', $sqlerror);
+        $sqlerrno = self::$link->connect_errno;
+        $sqlerror = self::$link->connect_error;
+        //$sqlerror = str_replace($dbhost, 'dbhost', $sqlerror);
 
         header('HTTP/1.1 500 Internal Server Error');
         halt("$sqlerror  ( $sqlerrno )");

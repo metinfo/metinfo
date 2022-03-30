@@ -28,9 +28,7 @@ class job_label  extends base_label
             $return['config']['url'] = load::mod_class('job/job_handle', 'new')->module_form_url($classnow);
             $return['config']['url'] .= '?id=' . $classnow;
             $return['config']['classnow'] .= $classnow;
-            $return['config']['lang']['submit'] = $_M['word']['Submit'];
             $return['config']['lang']['cvtitle'] = $_M['word']['cvtitle'];
-            $return['config']['lang']['cancel'] = $_M['word']['cancel'];
             $return['config']['lang']['title'] = '';
             return $return;
         }
@@ -63,13 +61,6 @@ EOT;
 
 EOT;
         }
-        $str .= <<<EOT
-		<div class="form-group m-b-0">
-		    <button type="submit" class="btn btn-primary btn-squared">{$job['config']['lang']['submit']}</button>
-		    <button type="button" class="btn btn-default btn-squared m-l-5" data-dismiss="modal">{$job['config']['lang']['cancel']}</button>
-	  	</div>
-		</form>
-EOT;
         return $str;
     }
 

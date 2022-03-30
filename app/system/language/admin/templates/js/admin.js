@@ -33,6 +33,7 @@
                 data-modal-url="language/admin_edit"
                 data-modal-size="lg"
                 data-modal-loading="1"
+                data-modal-type="centered"
                 data-modal-title="${METLANG.editor}"
                 data-modal-tablerefresh="#lang-admin-table"
                 data-refresh="1"
@@ -57,6 +58,7 @@
               data-target=".langadmin-search-modal"
               data-modal-url="language/admin_search"
               data-modal-size="lg"
+              data-modal-fullheight="1"
               data-modal-tablerefresh="#lang-admin-table"
               data-modal-title="${METLANG.langwebeditor}">${METLANG.langwebeditor}</button>
             ${
@@ -80,6 +82,7 @@
                 data-target=".langadmin-app-modal"
                 data-modal-size="lg"
                 data-modal-footerok="0"
+                data-modal-fullheight="1"
                 data-modal-title="${METLANG.edit_app_lang}"
                 > ${METLANG.edit_app_lang}</button>`
               ]

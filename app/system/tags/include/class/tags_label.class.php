@@ -191,7 +191,7 @@ class tags_label extends base_label
         $query = "SELECT * FROM {$_M['table']['tags']} WHERE lang = '{$lang}' ORDER BY sort DESC,id DESC";
         $tags = DB::get_all($query);
         foreach ($tags as &$val) {
-            $val['url'] = $this->getTagUrl($val, $val['cid'], $lang);
+            $val['url'] = $this->getTagUrl($val);
             $style = '';
             if ($val['tag_size']) {
                 $style .= "font-size:{$val['tag_size']}px;";
@@ -314,20 +314,23 @@ class tags_label extends base_label
         return $sql;
     }
 
-    public function getTagUrl($tag, $cid = 0, $lang = '')
+    public function getTagUrl($tag, $type = null)
     {
         global $_M;
-        $lang = $lang ? $lang : $_M['lang'];
-        $cid = $tag['cid'];
+        $lang = isset($tag['lang']) ? $tag['lang'] : $_M['lang'];
+        $cid = isset($tag['cid']) ? $tag['cid'] : '';
+        $module = $tag['module'] ? $tag['module'] : 0;
+        $url_type = self::getUrlType($type);
+
         $lang_site = $_M['langlist']['web'][$lang]['link'];
         if ($lang_site) {
             $site = $_M['langlist']['web'][$lang]['link'];
         } else {
             $site = $_M['url']['web_site'];
         }
-        $module = $tag['module'] ? $tag['module'] : 0;
+
         // 如果是伪静态
-        if ($_M['config']['met_pseudo']) {
+        if ($url_type == 2) {
             $url = 'tag/' . $tag['tag_pinyin'];
             /*if($_M['config']['tag_search_type'] == 'module'){
                 $url .= '-' . $module;
@@ -370,6 +373,26 @@ class tags_label extends base_label
         }
     }
 
+
+    /**
+     * Url 类型
+     * @param $type
+     * @return int
+     */
+    public function getUrlType($type = null)
+    {
+        global $_M;
+        if ($type) {
+            return $type;
+        }else{
+            if ($_M['config']['met_pseudo'] || $_M['config']['met_webhtm'] == 3) {//伪静态地址
+                return 2;            //动态地址
+            }else{
+                return 1;            //静态地址
+            }
+        }
+    }
+
     // 新闻详情页面获取当前内容的所有TAG标签
     public function getTagsByNews($tagStr, $id)
     {
@@ -378,7 +401,7 @@ class tags_label extends base_label
         foreach (explode('|', $tagStr) as $key => $val) {
             $query = "SELECT * FROM {$_M['table']['tags']} WHERE tag_name = '{$val}' AND list_id like '%|{$id}|%' AND lang = '{$_M['lang']}'";
             $tag = DB::get_one($query);
-            $data[$key]['url'] = $this->getTagUrl($tag, $tag['cid']);
+            $data[$key]['url'] = $this->getTagUrl($tag);
             $data[$key]['name'] = $val;
         }
 

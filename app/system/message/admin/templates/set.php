@@ -135,7 +135,7 @@ $checkbox_time=time();
                 <label class='form-control-label'>{$word.fdincAutoContent}{$word.marks}</label>
             </dt>
             <dd>
-                <textarea name="met_msg_content" rows="5" class="form-control">{$data.list.met_msg_content}</textarea>
+                <textarea name="met_msg_content" data-plugin='editor' data-editor-y='300' hidden>{$data.list.met_msg_content}</textarea>
                 <span class="text-help ml-2">{$word.fdinc_msg_content}</span>
             </dd>
         </dl>

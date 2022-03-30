@@ -55,7 +55,7 @@
     btn_add.click(function() {
       tr_add.append(that.obj.find('textarea[table-addlist-data]').val())
       var $new_tr = tr_add.find('tr:last-child')
-      that.obj.find('#anchor-table tbody .dataTables_empty').hide()
+      that.obj.find('#anchor-table tbody .dataTables_empty').parents('tr').remove()
       $new_tr.find('td:last-child').append(M.component.btn('cancel'))
     })
   }

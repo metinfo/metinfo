@@ -10,13 +10,7 @@ $random = random(4, 1);
 		<input type="text" name="phone" required class="form-control" placeholder="{$word.memberbasicCell}"
 		data-fv-phone="true"
 		data-fv-phone-message="{$word.telok}"
-
 		data-fv-notempty-message="{$word.noempty}"
-
-		data-fv-stringlength="true"
-		data-fv-stringlength-min="2"
-		data-fv-stringlength-max="30"
-		data-fv-stringlength-message="{$word.usernamecheck}"
 		/>
 	</div>
 </div>
@@ -31,7 +25,7 @@ $random = random(4, 1);
 		data-fv-identical-message="{$word.passwordsame}"
 
 		data-fv-stringlength="true"
-		data-fv-stringlength-min="3"
+		data-fv-stringlength-min="6"
 		data-fv-stringlength-max="30"
 		data-fv-stringlength-message="{$word.passwordcheck}"
 		>

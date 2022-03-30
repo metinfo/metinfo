@@ -161,7 +161,7 @@ class met_datatags
         }
 
         // 其他字段碰到数字类型的值不添加m标签
-        if (preg_match($string, $val) || strlen($val) >= 7) {
+        if (preg_match($string, $val) || strlen($val) >= 4) {
             return $val . "<m met-id={$id} met-table={$table} met-field={$field}></m>";
         }
         return $val;

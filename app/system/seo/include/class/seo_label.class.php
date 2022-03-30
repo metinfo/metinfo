@@ -123,7 +123,7 @@ class seo_label
         $get_webhtm = DB::get_one("select value from {$_M['table']['config']} where name='met_webhtm' and lang='{$lang}'");
         $met_webhtm = $get_webhtm['value'];
 
-        $type = load::sys_class('handle', 'new')->url_type('', 0, $met_pseudo, $met_webhtm);
+        $url_type = load::sys_class('handle', 'new')->url_type('', 0, $met_pseudo, $met_webhtm);
 
         $met_langok = load::sys_class('label', 'new')->get('language')->get_lang();
 
@@ -142,7 +142,7 @@ class seo_label
         $c = $colunm->get_all_list();
         $class1list = '';
         foreach ($c as $key => $val) {
-            if ($val['display']) {
+            if ($val['display'] || $val['isshow'] = 0) {
                 continue;
             }
             if ($val['module'] == 9) {
@@ -165,7 +165,7 @@ class seo_label
                 $sitemaplist[] = array(
                     'updatetime' => date($_M['config']['met_listtime']),
                     'title' => $val['name'],
-                    'url' => $colunm->handle->get_content_url($val, $type),
+                    'url' => $colunm->handle->get_content_url($val, $url_type),
                 );
             }
         }
@@ -212,8 +212,8 @@ class seo_label
                 $sitemaplist[] = array(
                     'updatetime' => $val['updatetime'],
                     'title' => $val['title'],
-                    'url' => $handle->get_content_url($val, $type),
-                    //'url' => $content->handle->get_content_url($val, $type),
+                    'url' => $handle->get_content_url($val, $url_type),
+                    //'url' => $content->handle->get_content_url($val, $url_type),
                 );
             }
         }

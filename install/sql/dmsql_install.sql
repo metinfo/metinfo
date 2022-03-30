@@ -916,7 +916,7 @@ INSERT INTO met_applist VALUES ('50002','1.0', 'metconfig_template', 'temtool', 
 
 
 #系统全局配置
-INSERT INTO met_config VALUES('metcms_v','7.5.0','','0','0','metinfo');
+INSERT INTO met_config VALUES('metcms_v','7.6','','0','0','metinfo');
 INSERT INTO met_config VALUES('metconfig_ch_lang','1','','0','0','metinfo');
 INSERT INTO met_config VALUES('metconfig_lang_mark','1','','0','0','metinfo');
 INSERT INTO met_config VALUES('metconfig_admin_type_ok','0','','0','0','metinfo');
@@ -966,7 +966,7 @@ INSERT INTO met_config VALUES('metconfig_agents_code','','','0','0','metinfo');
 INSERT INTO met_config VALUES('metconfig_agents_backup','metinfo','','0','0','metinfo');
 INSERT INTO met_config VALUES('metconfig_agents_sms','1','','0','0','metinfo');
 INSERT INTO met_config VALUES('metconfig_agents_app','1','','0','0','metinfo');
-INSERT INTO met_config VALUES('metconfig_agents_metmsg', '1', '', '', '', 'metinfo');
+INSERT INTO met_config VALUES('metconfig_agents_metmsg', '1', '', '0', '0', 'metinfo');
 #代理信息
 INSERT INTO met_config VALUES('metconfig_agents_thanks','感谢使用 Metinfo','','0','0','cn-metinfo');
 INSERT INTO met_config VALUES('metconfig_agents_name','MetInfo|米拓企业建站系统','','0','0','cn-metinfo');
